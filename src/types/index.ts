@@ -490,4 +490,8 @@ export interface OrganizationHistory {
 export interface College {
   name: string;
   city: string;
+  state: string;
+  latitude: number;
+  longitude: number;
+  fuzzy: string;
 }

@@ -31,6 +31,8 @@ import { Id } from 'react-toastify';
 import { College } from '@/types';
 import getHandler from '@/handlers/get_handler';
 import postHandler from '@/handlers/post_handler';
+import fuzzysort from 'fuzzysort'
+import { collegesData } from 'public/colleges';
 
 const Onboarding = () => {
   const [clickedOnBuild, setClickedOnBuild] = useState(false);
@@ -64,24 +66,11 @@ const Onboarding = () => {
     setClickedOnNewCollege(false);
   };
 
-  const fetchColleges = (search: string, abortController: AbortController) => {
+  const fetchColleges = async (search: string, abortController: AbortController) => {
     if (search == '') setColleges([]);
     else {
-      const URL = `${EXPLORE_URL}/colleges?search=${search}`;
-      getHandler(URL, abortController.signal)
-        .then(res => {
-          if (res.statusCode === 200) {
-            setColleges(res.data.colleges);
-          } else {
-            if (res.status != -1) {
-              if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
-              else Toaster.error(SERVER_ERROR, 'error_toaster');
-            }
-          }
-        })
-        .catch(err => {
-          Toaster.error(SERVER_ERROR, 'error_toaster');
-        });
+      const results = fuzzysort.go(search, collegesData, { key: 'fuzzy' , limit: 10});
+      setColleges(results.map((result) => result.obj));
     }
   };
 
