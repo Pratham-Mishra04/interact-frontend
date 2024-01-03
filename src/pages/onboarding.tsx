@@ -66,14 +66,6 @@ const Onboarding = () => {
     setClickedOnNewCollege(false);
   };
 
-  const fetchColleges = async (search: string, abortController: AbortController) => {
-    if (search == '') setColleges([]);
-    else {
-      const results = fuzzysort.go(search, collegesData, { key: 'fuzzy' , limit: 10});
-      setColleges(results.map((result) => result.obj));
-    }
-  };
-
   useEffect(() => {
     if (process.env.NODE_ENV != 'development') {
       const onboardingRedirect = sessionStorage.getItem('onboarding-redirect') || '';
@@ -188,12 +180,11 @@ const Onboarding = () => {
   };
 
   useEffect(() => {
-    const abortController = new AbortController();
-    fetchColleges(schoolSearch, abortController);
-
-    return () => {
-      abortController.abort();
-    };
+    if (schoolSearch == '') setColleges([]);
+    else {
+      const results = fuzzysort.go(schoolSearch, collegesData, { key: 'fuzzy' , limit: 10});
+      setColleges(results.map((result) => result.obj));
+    }
   }, [schoolSearch]);
 
   return (
