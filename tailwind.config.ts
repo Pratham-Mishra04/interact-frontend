@@ -81,6 +81,8 @@ const config: Config = {
         fade_1: 'fade 1s ease-in-out',
         fade_2: 'fade 2s ease-in-out',
         shrink: 'shrink 0.1s ease-in-out 0.4s forwards',
+        reveal: 'reveal 0.3s ease-in-out',
+        reveal_reverse: 'reveal_reverse 0.3s ease-in-out',
       },
       keyframes: {
         shrink: {
@@ -90,6 +92,14 @@ const config: Config = {
         fade: {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
+        },
+        reveal: {
+          '0%': { transform: 'translateY(20px)', opacity: '0' },
+          '100%': { transform: 'translateY(0px)', opacity: '1' },
+        },
+        reveal_reverse: {
+          '0%': { transform: 'translateY(0px)', opacity: '1' },
+          '100%': { transform: 'translateY(20px)', opacity: '0' },
         },
       },
       lineClamp: {

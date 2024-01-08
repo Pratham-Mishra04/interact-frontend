@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { userSelector } from '@/slices/userSlice';
 import { useSelector } from 'react-redux';
 import NewPostImages from '@/components/home/new_post_images';
+import NewPostHelper from '@/components/home/new_post_helper';
 import { Post, User } from '@/types';
 import { useWindowWidth } from '@react-hook/window-size';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
@@ -21,6 +22,7 @@ interface Props {
 const NewPost = ({ setShow, setFeed, org = false }: Props) => {
   const [content, setContent] = useState<string>('');
   const [images, setImages] = useState<File[]>([]);
+  const [showTips, setShowTips] = useState<boolean>(false);
 
   const [taggedUsernames, setTaggedUsernames] = useState<string[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -126,24 +128,6 @@ const NewPost = ({ setShow, setFeed, org = false }: Props) => {
     setShowUsers(false);
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'b' && (event.ctrlKey || event.metaKey)) {
-      event.preventDefault();
-      wrapSelectedText('**', '**');
-    }
-  };
-
-  const wrapSelectedText = (prefix: string, suffix: string) => {
-    const textarea = document.getElementById('textarea_id') as HTMLTextAreaElement;
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = content.substring(start, end);
-    const newText = content.substring(0, start) + prefix + selectedText + suffix + content.substring(end);
-    setContent(newText);
-    textarea.focus();
-    textarea.setSelectionRange(start + prefix.length, end + prefix.length);
-  };
-
   const currentOrgID = useSelector(currentOrgIDSelector);
 
   const handleSubmit = async () => {
@@ -189,9 +173,16 @@ const NewPost = ({ setShow, setFeed, org = false }: Props) => {
 
   return (
     <>
-      <div className="fixed top-24 max-md:top-[calc(50%-75px)] w-[953px] max-lg:w-5/6 h-[560px] max-md:h-2/3 shadow-2xl dark:shadow-none backdrop-blur-xl bg-[#ffffff] dark:bg-[#ffe1fc22] flex flex-col justify-between max-md:items-end p-8 max-md:p-6 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg right-1/2 translate-x-1/2 max-md:-translate-y-1/2 animate-fade_third z-30">
+      <div
+        className="fixed top-24 max-md:top-[calc(50%-75px)] w-[953px] max-lg:w-5/6 h-[560px] max-md:h-2/3 shadow-2xl dark:shadow-none backdrop-blur-xl bg-[#ffffff] dark:bg-[#ffe1fc22] flex flex-col justify-between max-md:items-end p-8 max-md:p-6 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg right-1/2 translate-x-1/2 max-md:-translate-y-1/2 animate-fade_third z-30"
+        onKeyDown={e => {
+          if (e.key === 'Escape') {
+            setShow(false);
+          }
+        }}
+      >
         <div className="w-full flex flex-col gap-6">
-          <div className="flex gap-4 max-md:w-full">
+          <div className="flex gap-4 max-md:w-full" onClick={() => setShowTips(false)}>
             <Image
               crossOrigin="anonymous"
               className="w-16 h-16 rounded-full"
@@ -214,15 +205,16 @@ const NewPost = ({ setShow, setFeed, org = false }: Props) => {
                 </div>
               </div>
               {width > 640 ? (
-                <div className="w-full flex flex-col gap-4">
-                  <NewPostImages setSelectedFiles={setImages} />
+                <div className="w-full flex flex-col gap-4 relative">
+                  <div className="w-full flex gap-4">
+                    <NewPostImages setSelectedFiles={setImages} />
+                    <NewPostHelper setShowTips={setShowTips} showTips={showTips} />
+                  </div>
                   <textarea
-                    id="textarea_id"
-                    className="w-full bg-transparent focus:outline-none min-h-[154px]"
+                    className="w-full bg-transparent focus:outline-none min-h-[154px] resize-none"
                     value={content}
                     onChange={handleContentChange}
-                    onKeyDown={handleKeyDown}
-                    maxLength={2000}
+                    maxLength={1000}
                     placeholder="Start a conversation..."
                   ></textarea>
                 </div>
@@ -233,14 +225,15 @@ const NewPost = ({ setShow, setFeed, org = false }: Props) => {
           </div>
           {width <= 640 ? (
             <div className="md:hidden w-full flex flex-col gap-4">
-              <NewPostImages setSelectedFiles={setImages} />
+              <div className="w-full flex gap-4">
+                <NewPostImages setSelectedFiles={setImages} />
+                <NewPostHelper setShowTips={setShowTips} showTips={showTips} smallScreen={true} />
+              </div>
               <textarea
-                id="textarea_id"
                 className="w-full bg-transparent focus:outline-none min-h-[154px]"
                 value={content}
                 onChange={handleContentChange}
-                onKeyDown={handleKeyDown}
-                maxLength={2000}
+                maxLength={1000}
                 placeholder="Start a conversation..."
               ></textarea>
             </div>
