@@ -1,17 +1,17 @@
-import { ChangeEvent, KeyboardEvent, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, useState, useRef, useEffect } from 'react';
 import TagSuggestions from './tag_suggestions';
 
 interface Props {
   tags: string[];
   setTags: React.Dispatch<React.SetStateAction<string[]>>;
+
   maxTags?: number;
   blackBorder?: boolean;
   suggestions?: boolean;
 }
 
-const Tags = ({ tags, setTags, maxTags = 5, blackBorder = false, suggestions = false }: Props) => {
+const Tags = ({ tags, setTags, maxTags = 5, blackBorder = false, suggestions = false, }: Props) => {
   const [tagInput, setTagInput] = useState('');
-
   const handleTagInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTagInput(event.target.value);
   };
@@ -19,49 +19,56 @@ const Tags = ({ tags, setTags, maxTags = 5, blackBorder = false, suggestions = f
   const handleTagInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       event.preventDefault();
-      if (tagInput.trim() !== '') {
-        // Split the input value by commas, trim each part, and add to tags
-        const newTags = tagInput
-          .split(',')
-          .map(tag => tag.trim().toLowerCase())
-          .filter(tag => tag !== '');
-
-        // Add unique new tags to the existing tags
-        const uniqueNewTags = Array.from(new Set(newTags));
-        const updatedTags = [...tags, ...uniqueNewTags.slice(0, maxTags - tags.length)];
-
-        setTags(updatedTags);
+      if (tags.length == maxTags) return;
+      const newTag = tagInput.trim();
+      if (!tags.includes(newTag) && newTag !== '') {
+        setTags([...tags, newTag.toLowerCase()]);
         setTagInput('');
       }
-    } else if (event.key === 'Backspace' && tagInput === '') {
-      event.preventDefault();
-      const lastTag = tags[tags.length - 1];
-      if (lastTag) {
-        handleTagRemove(lastTag);
-      }
     }
+  };
+
+  const dragItem = useRef<number | null>(null);
+  const dragOverItem = useRef<number | null>(null);
+  const dragStart = (e: any, position: number) => {
+    dragItem.current = position;
+  };
+  const dragEnter = (e: any, position: number) => {
+    dragOverItem.current = position;
+
+  };
+  const drop = (e: any) => {
+    const copyListItems = [...tags];
+    const dragItemContent = copyListItems[dragItem.current as number];
+    copyListItems.splice(dragItem.current as number, 1);
+    copyListItems.splice(dragOverItem.current as number, 0, dragItemContent);
+    dragItem.current = null;
+    dragOverItem.current = null;
+    setTags(copyListItems);
+
+
   };
 
   const handleTagRemove = (tagToRemove: string) => {
     setTags(tags.filter(tag => tag !== tagToRemove));
   };
 
+
   return (
     <>
       <div
-        className={`w-full ${
-          blackBorder
-            ? 'p-4 border-black placeholder:text-[#202020c6] bg-[#ffffff40]'
-            : 'p-2 bg-transparent border-primary_btn dark:border-dark_primary_btn'
-        } border-[1px] flex flex-wrap items-center gap-2 rounded-md`}
+        className={`w-full ${blackBorder
+          ? 'p-4 border-black placeholder:text-[#202020c6] bg-[#ffffff40]'
+          : 'p-2 bg-transparent border-primary_btn dark:border-dark_primary_btn'
+          } border-[1px] flex flex-wrap items-center gap-2 rounded-md`}
       >
-        {tags.map(tag => (
+        {tags.map((tag, i) => (
           <div
             key={tag}
-            className={`flex-center px-3 py-2 border-[1px] ${
-              blackBorder ? 'border-black bg-[#ffffff40]' : 'border-gray-400 dark:border-dark_primary_btn'
-            } text-sm rounded-full cursor-default`}
-          >
+            className={`flex-center px-3 py-2 border-[1px] ${blackBorder ? 'border-black bg-[#ffffff40]' : 'border-gray-400 dark:border-dark_primary_btn'
+              } text-sm rounded-full cursor-default active:border-2 active:border-[#000000]`}
+            onDragStart={(e) => dragStart(e, i)} onDragEnter={(e) => dragEnter(e, i)} onDragEnd={drop}
+            draggable={true}>
             {tag}
             <svg
               onClick={() => handleTagRemove(tag)}
