@@ -4,7 +4,7 @@ import TagSuggestions from './tag_suggestions';
 interface Props {
   tags: string[];
   setTags: React.Dispatch<React.SetStateAction<string[]>>;
-  
+
   maxTags?: number;
   blackBorder?: boolean;
   suggestions?: boolean;
@@ -45,7 +45,7 @@ const Tags = ({ tags, setTags, maxTags = 5, blackBorder = false, suggestions = f
     dragItem.current = null;
     dragOverItem.current = null;
     setTags(copyListItems);
-    
+
 
   };
 
