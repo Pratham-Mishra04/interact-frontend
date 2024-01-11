@@ -1,4 +1,3 @@
-import Loader from '@/components/common/loader';
 import PostComponent from '@/components/home/post';
 import getHandler from '@/handlers/get_handler';
 import { userSelector } from '@/slices/userSlice';
@@ -98,7 +97,7 @@ const Feed = () => {
                 loader={<PostsLoader />}
               >
                 {feed.map(post => {
-                  if (post.rePost) return <RePostComponent key={post.id} setFeed={setFeed} post={post} />;
+                  if (post.isRePost) return <RePostComponent key={post.id} setFeed={setFeed} post={post} />;
                   else return <PostComponent key={post.id} setFeed={setFeed} post={post} />;
                 })}
               </InfiniteScroll>

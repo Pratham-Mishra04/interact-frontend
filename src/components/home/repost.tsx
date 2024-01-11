@@ -209,10 +209,11 @@ const RePost = ({ post, showLowerPost = true, setFeed, org = false }: Props) => 
             )}
           </div>
         </div>
-        {post.rePost && (
-          <div className="w-full border-primary_btn  dark:border-dark_primary_btn dark:border-[1px] rounded-md px-4 max-md:px-0">
-            <PostComponent post={post.rePost} isRepost={true} />
-          </div>
+
+        {post.isRePost && post.rePost ? (
+          <PostComponent post={post.rePost} isRepost={true} />
+        ) : (
+          <div className="border-[1px] rounded-lg p-2 text-sm font-medium">* This post has been deleted *</div>
         )}
 
         {clickedOnEdit ? (

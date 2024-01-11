@@ -230,6 +230,7 @@ export interface Post {
   noComments: number;
   noImpressions: number;
   noReposts: number;
+  isRePost: boolean;
   comments: string[];
   postedAt: Date;
   tags: string[];
