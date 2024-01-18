@@ -6,11 +6,10 @@ const isArrEdited = (arr1: string[], arr2: string[]): boolean => {
     return true;
   }
 
-  const sortedArr1 = arr1.slice().sort();
-  const sortedArr2 = arr2.slice().sort();
+  
 
-  for (let i = 0; i < sortedArr1.length; i++) {
-    if (sortedArr1[i] !== sortedArr2[i]) {
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) {
       return true;
     }
   }
@@ -19,3 +18,4 @@ const isArrEdited = (arr1: string[], arr2: string[]): boolean => {
 };
 
 export default isArrEdited;
+

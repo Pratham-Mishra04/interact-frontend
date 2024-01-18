@@ -4,13 +4,11 @@ import { SERVER_ERROR } from '@/config/errors';
 import { ORG_URL, USER_URL } from '@/config/routes';
 import patchHandler from '@/handlers/patch_handler';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
-import { College, Profile, User } from '@/types';
-import { collegesData } from '@/utils/colleges';
+import { Profile, User } from '@/types';
 import isArrEdited from '@/utils/funcs/check_array_edited';
 import Toaster from '@/utils/toaster';
-import { Buildings, CalendarBlank, Certificate, Envelope, MapPin, PencilSimple, Phone, X } from '@phosphor-icons/react';
-import fuzzysort from 'fuzzysort';
-import React, { useEffect, useState } from 'react';
+import { Buildings, CalendarBlank, Certificate, Envelope, MapPin, PencilSimple, Phone } from '@phosphor-icons/react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 interface Props {
@@ -20,6 +18,7 @@ interface Props {
 }
 
 const About = ({ profile, setUser, org = false }: Props) => {
+
   const [school, setSchool] = useState(profile.school || '');
   const [degree, setDegree] = useState(profile.degree || '');
   const [yog, setYOG] = useState(profile.yearOfGraduation || 0);
@@ -43,16 +42,14 @@ const About = ({ profile, setUser, org = false }: Props) => {
   const [clickedOnEmail, setClickedOnEmail] = useState(false);
   const [clickedOnPhoneNo, setClickedOnPhoneNo] = useState(false);
   const [clickedOnLocation, setClickedOnLocation] = useState(false);
-
-  const [schoolSearch, setSchoolSearch] = useState('');
-
-  const [colleges, setColleges] = useState<College[]>([]);
-
+ 
   const currentOrgID = useSelector(currentOrgIDSelector);
+
 
   const handleSubmit = async (field: string) => {
     if (mutex) return;
     setMutex(true);
+
 
     const toaster = Toaster.startLoad('Updating your Profile...');
     const formData = new FormData();
@@ -97,14 +94,6 @@ const About = ({ profile, setUser, org = false }: Props) => {
     setMutex(false);
   };
 
-  useEffect(() => {
-    if (schoolSearch == '') setColleges([]);
-    else {
-      const results = fuzzysort.go(schoolSearch, collegesData, { key: 'fuzzy', limit: 10 });
-      setColleges(results.map(result => result.obj));
-    }
-  }, [schoolSearch]);
-
   interface SaveBtnProps {
     setter: React.Dispatch<React.SetStateAction<boolean>>;
     field: string;
@@ -137,7 +126,7 @@ const About = ({ profile, setUser, org = false }: Props) => {
           </div>
         ) : (
           <div
-            onClick={() => handleSubmit(field)}
+            onClick={() => { handleSubmit(field);  }}
             className="bg-primary_black text-white flex-center rounded-full w-16 p-1 cursor-pointer"
           >
             Save
@@ -153,11 +142,7 @@ const About = ({ profile, setUser, org = false }: Props) => {
         <>
           <div className="w-full flex flex-col gap-2">
             <div className="w-full flex justify-between items-center flex-wrap gap-4">
-              <div
-                className={`w-fit min-w-[80%] flex gap-2 ${
-                  clickedOnSchool ? 'items-start' : 'items-center'
-                } text-xl font-medium`}
-              >
+              <div className="w-fit min-w-[80%] flex gap-2 items-center text-xl font-medium">
                 <Buildings weight="bold" size={24} />
 
                 {clickedOnSchool ? (
@@ -165,62 +150,24 @@ const About = ({ profile, setUser, org = false }: Props) => {
                     <div className="text-xs ml-1 font-medium uppercase text-gray-500">
                       College Name ({school.trim().length}/25)
                     </div>
-                    {school != '' ? (
-                      <div className="w-full relative group rounded-lg p-2 flex justify-between items-center bg-gray-100">
-                        <div className="text-lg cursor-default">{school}</div>
-                        <X
-                          onClick={() => {
-                            setSchool('');
-                            setSchoolSearch('');
-                          }}
-                          className="cursor-pointer"
-                        />
-                      </div>
-                    ) : (
-                      <input
-                        className="w-full text-primary_black focus:outline-none border-[1px] border-primary_btn dark:border-dark_primary_btn rounded-lg p-2 font-semibold bg-transparent"
-                        type="text"
-                        maxLength={50}
-                        value={schoolSearch}
-                        onChange={el => setSchoolSearch(el.target.value)}
-                      />
-                    )}
+                    <input
+                      maxLength={25}
+                      value={school}
+                      onChange={el => setSchool(el.target.value)}
+                      placeholder="Interact University"
+                      className="w-full text-primary_black focus:outline-none border-[1px] border-primary_btn dark:border-dark_primary_btn rounded-lg p-2 font-semibold bg-transparent"
+                    />
                     <SaveBtn setter={setClickedOnSchool} field="school" />
-
-                    {school == '' && schoolSearch != '' && (
-                      <div className="w-full flex flex-col gap-2">
-                        <div className="w-fit h-5 text-sm font-medium cursor-default">Suggestions</div>
-
-                        <div className="w-full flex flex-wrap gap-2">
-                          {colleges?.map(college => (
-                            <div
-                              key={college.name}
-                              onClick={() => {
-                                setSchool(college.name);
-                                setSchoolSearch(college.name);
-                                setLocation(college.city);
-                                setColleges([]);
-                              }}
-                              className="border-[1px] border-primary_black rounded-lg px-2 py-1 text-xs cursor-pointer"
-                            >
-                              {college.name}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
                   </div>
                 ) : (
                   <div
                     onClick={() => setClickedOnSchool(true)}
-                    className={`w-fit relative group rounded-lg p-2 pr-10 ${
-                      profile.school.trim() == '' ? 'bg-gray-100' : 'hover:bg-gray-100'
-                    } cursor-pointer transition-ease-300`}
+                    className={`w-fit relative group rounded-lg p-2 pr-10 ${profile.school.trim() == '' ? 'bg-gray-100' : 'hover:bg-gray-100'
+                      } cursor-pointer transition-ease-300`}
                   >
                     <PencilSimple
-                      className={`absolute ${
-                        profile.school.trim() == '' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                      }  -translate-y-1/2 top-1/2 right-2 transition-ease-300`}
+                      className={`absolute ${profile.school.trim() == '' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                        }  -translate-y-1/2 top-1/2 right-2 transition-ease-300`}
                     />
                     {profile.school.trim() == '' ? (
                       <div className="text-sm font-normal">Add College Name</div>
@@ -232,9 +179,8 @@ const About = ({ profile, setUser, org = false }: Props) => {
               </div>
               {profile.school != '' ? (
                 <div
-                  className={`flex items-center ${
-                    yog == 0 ? 'flex-row-reverse gap-2' : 'gap-1 max-md:flex-row-reverse'
-                  }`}
+                  className={`flex items-center ${yog == 0 ? 'flex-row-reverse gap-2' : 'gap-1 max-md:flex-row-reverse'
+                    }`}
                 >
                   {clickedOnYOG ? (
                     <div className="w-fit">
@@ -251,18 +197,16 @@ const About = ({ profile, setUser, org = false }: Props) => {
                   ) : (
                     <div
                       onClick={() => setClickedOnYOG(true)}
-                      className={`w-fit relative group rounded-lg p-2 ${
-                        profile.yearOfGraduation == 0
-                          ? 'bg-gray-100 pr-8'
-                          : 'hover:bg-gray-100 pl-8 max-md:pr-8 max-md:pl-0'
-                      } cursor-pointer transition-ease-300`}
+                      className={`w-fit relative group rounded-lg p-2 ${profile.yearOfGraduation == 0
+                        ? 'bg-gray-100 pr-8'
+                        : 'hover:bg-gray-100 pl-8 max-md:pr-8 max-md:pl-0'
+                        } cursor-pointer transition-ease-300`}
                     >
                       <PencilSimple
-                        className={`absolute ${
-                          profile.yearOfGraduation == 0
-                            ? 'opacity-100 right-2'
-                            : 'opacity-0 group-hover:opacity-100 md:left-2 max-md:right-2'
-                        } -translate-y-1/2 top-1/2 transition-ease-300`}
+                        className={`absolute ${profile.yearOfGraduation == 0
+                          ? 'opacity-100 right-2'
+                          : 'opacity-0 group-hover:opacity-100 md:left-2 max-md:right-2'
+                          } -translate-y-1/2 top-1/2 transition-ease-300`}
                       />
                       {profile.yearOfGraduation == 0 ? (
                         <div className="text-sm">Add Degree Completion Year</div>
@@ -298,14 +242,12 @@ const About = ({ profile, setUser, org = false }: Props) => {
               ) : (
                 <div
                   onClick={() => setClickedOnDegree(true)}
-                  className={`w-fit relative group rounded-lg p-2 pr-10 ${
-                    profile.degree.trim() == '' ? 'bg-gray-100' : 'hover:bg-gray-100'
-                  } cursor-pointer transition-ease-300`}
+                  className={`w-fit relative group rounded-lg p-2 pr-10 ${profile.degree.trim() == '' ? 'bg-gray-100' : 'hover:bg-gray-100'
+                    } cursor-pointer transition-ease-300`}
                 >
                   <PencilSimple
-                    className={`absolute ${
-                      profile.degree.trim() == '' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                    }  -translate-y-1/2 top-1/2 right-2 transition-ease-300`}
+                    className={`absolute ${profile.degree.trim() == '' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                      }  -translate-y-1/2 top-1/2 right-2 transition-ease-300`}
                   />
                   {profile.degree.trim() == '' ? (
                     <div className="text-sm">Add Degree Name</div>
@@ -341,14 +283,12 @@ const About = ({ profile, setUser, org = false }: Props) => {
             ) : (
               <div
                 onClick={() => setClickedOnEmail(true)}
-                className={`w-fit relative group rounded-lg p-2 pr-10 ${
-                  profile.email.trim() == '' ? 'bg-gray-100' : 'hover:bg-gray-100'
-                } cursor-pointer transition-ease-300`}
+                className={`w-fit relative group rounded-lg p-2 pr-10 ${profile.email.trim() == '' ? 'bg-gray-100' : 'hover:bg-gray-100'
+                  } cursor-pointer transition-ease-300`}
               >
                 <PencilSimple
-                  className={`absolute ${
-                    profile.email.trim() == '' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                  }  -translate-y-1/2 top-1/2 right-2 transition-ease-300`}
+                  className={`absolute ${profile.email.trim() == '' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                    }  -translate-y-1/2 top-1/2 right-2 transition-ease-300`}
                 />
                 {profile.email.trim() == '' ? (
                   <div className="text-sm font-normal">Add Public Email</div>
@@ -374,14 +314,12 @@ const About = ({ profile, setUser, org = false }: Props) => {
             ) : (
               <div
                 onClick={() => setClickedOnPhoneNo(true)}
-                className={`w-fit relative group rounded-lg p-2 pl-10 max-md:pr-8 max-md:pl-0 ${
-                  profile.phoneNo == '' ? 'bg-gray-100' : 'hover:bg-gray-100'
-                } cursor-pointer transition-ease-300`}
+                className={`w-fit relative group rounded-lg p-2 pl-10 max-md:pr-8 max-md:pl-0 ${profile.phoneNo == '' ? 'bg-gray-100' : 'hover:bg-gray-100'
+                  } cursor-pointer transition-ease-300`}
               >
                 <PencilSimple
-                  className={`absolute ${
-                    profile.phoneNo == '' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                  }  -translate-y-1/2 top-1/2 md:left-2 max-md:right-2 transition-ease-300`}
+                  className={`absolute ${profile.phoneNo == '' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                    }  -translate-y-1/2 top-1/2 md:left-2 max-md:right-2 transition-ease-300`}
                   size={20}
                 />
                 {profile.phoneNo == '' ? (
@@ -414,14 +352,12 @@ const About = ({ profile, setUser, org = false }: Props) => {
           ) : (
             <div
               onClick={() => setClickedOnLocation(true)}
-              className={`w-fit relative group rounded-lg p-2 pr-10 ${
-                profile.location.trim() == '' ? 'bg-gray-100' : 'hover:bg-gray-100'
-              } cursor-pointer transition-ease-300`}
+              className={`w-fit relative group rounded-lg p-2 pr-10 ${profile.location.trim() == '' ? 'bg-gray-100' : 'hover:bg-gray-100'
+                } cursor-pointer transition-ease-300`}
             >
               <PencilSimple
-                className={`absolute ${
-                  profile.location.trim() == '' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                }  -translate-y-1/2 top-1/2 right-2 transition-ease-300`}
+                className={`absolute ${profile.location.trim() == '' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                  }  -translate-y-1/2 top-1/2 right-2 transition-ease-300`}
               />
               {profile.location.trim() == '' ? (
                 <div className="text-sm">Add Location</div>
@@ -451,14 +387,12 @@ const About = ({ profile, setUser, org = false }: Props) => {
       ) : (
         <div
           onClick={() => setClickedOnDescription(true)}
-          className={`w-full relative group rounded-lg flex-center p-4 max-md:p-0 ${
-            profile.description.trim() == '' ? 'bg-gray-100' : 'hover:bg-gray-100'
-          } cursor-pointer transition-ease-300`}
+          className={`w-full relative group rounded-lg flex-center p-4 max-md:p-0 ${profile.description.trim() == '' ? 'bg-gray-100' : 'hover:bg-gray-100'
+            } cursor-pointer transition-ease-300`}
         >
           <PencilSimple
-            className={`absolute opacity-0 ${
-              profile.description.trim() == '' ? 'opacity-100' : 'group-hover:opacity-100'
-            } top-2 right-2 transition-ease-300`}
+            className={`absolute opacity-0 ${profile.description.trim() == '' ? 'opacity-100' : 'group-hover:opacity-100'
+              } top-2 right-2 transition-ease-300`}
           />
           {profile.description.trim() == '' ? (
             <div className="">Click here to add a Descriptive Bio!</div>
@@ -485,29 +419,33 @@ const About = ({ profile, setUser, org = false }: Props) => {
 
             <div
               onClick={() => setClickedOnAreas(true)}
-              className={`w-full relative group rounded-lg flex-center p-4 ${
-                !profile.areasOfCollaboration || profile.areasOfCollaboration?.length == 0
-                  ? 'bg-gray-100'
-                  : 'hover:bg-gray-100'
-              } cursor-pointer transition-ease-300`}
+              className={`w-full relative group rounded-lg flex-center p-4 ${!profile.areasOfCollaboration || profile.areasOfCollaboration?.length == 0
+                ? 'bg-gray-100'
+                : 'hover:bg-gray-100'
+                } cursor-pointer transition-ease-300`}
             >
               <PencilSimple
-                className={`absolute opacity-0 ${
-                  !profile.areasOfCollaboration || profile.areasOfCollaboration?.length == 0
-                    ? 'opacity-100'
-                    : 'group-hover:opacity-100'
-                } top-2 right-2 transition-ease-300`}
+                className={`absolute opacity-0 ${!profile.areasOfCollaboration || profile.areasOfCollaboration?.length == 0
+                  ? 'opacity-100'
+                  : 'group-hover:opacity-100'
+                  } top-2 right-2 transition-ease-300`}
               />
+
+
+
+
+
               {!profile.areasOfCollaboration || profile.areasOfCollaboration.length == 0 ? (
                 <div className="">Click here to edit!</div>
               ) : (
                 <div className="w-full flex flex-wrap gap-4">
-                  {profile.areasOfCollaboration.map((el, i) => (
+                  {areas.map((el, i) => (
                     <div
                       key={i}
                       className="border-gray-500 border-[1px] border-dashed p-2 text-sm rounded-lg flex-center"
+
                     >
-                      {el}
+                      <div className="" style={{ userSelect: "none" }}>{el}</div>
                     </div>
                   ))}
                 </div>
@@ -553,7 +491,7 @@ const About = ({ profile, setUser, org = false }: Props) => {
               ))}
             </div>
           )}
-        </div>
+        </div>  
       )}
     </div>
   );
