@@ -58,7 +58,7 @@ const UpdateEmail = ({ setShow }: Props) => {
     <>
       <form
         onSubmit={el => handleSubmit(el)}
-        className="w-fit h-fit max-md:w-5/6 max-md:h-fit fixed backdrop-blur-xl dark:text-white bg-white dark:bg-[#ffe1fc22] z-30 translate-x-1/2 -translate-y-1/4 top-56 right-1/2 flex flex-col gap-8 font-primary px-12 py-8 max-md:p-4 border-2 border-gray-500 dark:border-dark_primary_btn animate-fade_third rounded-xl"
+        className="w-fit h-fit max-md:w-5/6 max-md:h-fit fixed backdrop-blur-xl dark:text-white bg-white dark:bg-[#ffe1fc22] z-30 absolute top-[40%] translate-y-[-50%] flex flex-col gap-8 font-primary px-12 py-8 max-md:p-4 border-2 border-gray-500 dark:border-dark_primary_btn animate-fade_third rounded-xl "
       >
         <div className="text-center cursor-default">
           Current Email Address: <span className=" text-xl font-bold">{currentEmail}</span>

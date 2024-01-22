@@ -18,7 +18,7 @@ const TabMenu = ({ items, active, setReduxState, setState, width = '500px', stic
     <div
       className={`w-[${width}] max-md:w-[95%] h-[45px] p-1 rounded-lg bg-gradient-to-b dark:from-dark_primary_gradient_start dark:to-dark_primary_gradient_end shadow-lg dark:shadow-outer mx-auto border-gray-300 border-[1px] dark:border-0 bg-white dark:bg-slate-100 flex justify-around gap-1 ${
         sticky ? 'sticky' : 'fixed'
-      } top-[90px] transition-ease-out-500 z-10`}
+      } lg:top-[90px] top-[62px] transition-ease-out-500 z-10`}
     >
       {/* 64+24=88 */}
       {items.map((item, index) => (

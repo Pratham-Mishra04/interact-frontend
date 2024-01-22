@@ -64,7 +64,7 @@ const UpdateResume = ({ setShow }: Props) => {
 
   return (
     <>
-      <div className="w-1/3 h-fit max-md:w-5/6 max-md:h-fit fixed backdrop-blur-xl bg-white dark:bg-[#ffe1fc22] z-50 max-lg:z-[100] translate-x-1/2 -translate-y-1/4 top-56 right-1/2 flex flex-col font-primary p-8 max-md:p-4 gap-8 border-2 border-gray-500 dark:border-dark_primary_btn animate-fade_third rounded-xl">
+      <div className="w-1/3 h-fit max-md:w-5/6 max-md:h-fit fixed backdrop-blur-xl bg-white dark:bg-[#ffe1fc22] z-50 max-lg:z-[100] absolute top-[40%] translate-y-[-50%] flex flex-col font-primary p-8 max-md:p-4 gap-8 border-2 border-gray-500 dark:border-dark_primary_btn animate-fade_third rounded-xl">
         <input
           type="file"
           id="resume"

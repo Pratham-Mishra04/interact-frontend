@@ -85,17 +85,17 @@ const Deactivate = () => {
         ) : (
           <></>
         )}
-        <div className="w-[50vw] max-md:w-full mx-auto dark:text-white flex flex-col gap-12 px-8 max-md:px-4 py-6 font-primary relative transition-ease-out-500">
+        <div className="w-[50vw] max-md:w-full mx-auto dark:text-white flex flex-col gap-12 px-8 max-md:px-4 py-6 font-primary relative top-[50%] transition-ease-out-500">
           <div className="flex gap-3">
             <ArrowArcLeft
               onClick={() => router.replace('/settings')}
               className="w-10 h-10 p-2 dark:bg-dark_primary_comp_hover rounded-full cursor-pointer"
               size={40}
             />
-            <div className="text-4xl font-semibold dark:text-white">Deactivate Account</div>
+            <div className="text-4xl font-semibold dark:text-white m-auto">Deactivate Account</div>
           </div>
-          <div className="w-full text-center text-xl mb-16">
-            <span className="font-bold">Note:</span> Your account will not be immediately deleted. If you log in within
+          <div className="w-full text-center text-xl  flex flex-col justify-center">
+            <div className="font-bold">Note:</div> Your account will not be immediately deleted. If you log in within
             30 days, your account will be fully restored; however, should you fail to do so, it will be subject to
             deletion.
           </div>
