@@ -56,7 +56,7 @@ const UpdatePhoneNumber = ({ setShow }: Props) => {
 
   return (
     <>
-      <div className="w-1/3 h-1/3 max-md:w-5/6 max-md:h-fit fixed backdrop-blur-xl dark:text-white bg-white dark:bg-[#ffe1fc22] z-30 translate-x-1/2 -translate-y-1/4 top-56 right-1/2 flex max-md:flex-col font-primary p-8 max-md:p-4 gap-2 border-2 border-gray-500 dark:border-dark_primary_btn animate-fade_third rounded-xl">
+      <div className="w-1/3 h-1/3 max-md:w-5/6 max-md:h-fit fixed backdrop-blur-xl dark:text-white bg-white dark:bg-[#ffe1fc22] z-30 absolute top-[40%] translate-y-[-50%]  flex max-md:flex-col font-primary p-8 max-md:p-4 border-2 border-gray-500 dark:border-dark_primary_btn animate-fade_third rounded-xl">
         <form
           onSubmit={el => handleSubmit(el)}
           className="w-full h-full flex flex-col max-md:gap-6 justify-between px-4 max-md:px-2 py-4 max-md:py-8"
