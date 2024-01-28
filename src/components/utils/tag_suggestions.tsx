@@ -6,9 +6,15 @@ interface Props {
   tags: string[];
   setTags: React.Dispatch<React.SetStateAction<string[]>>;
   maxTags?: number;
+  fuzzy:any;
+  setFuzzy:any;
 }
 
-const TagSuggestions = ({ tags, setTags, maxTags = 5 }: Props) => {
+
+const TagSuggestions = ({ tags, setTags, maxTags = 5 ,fuzzy,setFuzzy}: Props) => {
+  const fuzzyNames = fuzzy.map((fuz:any)=>{
+    return fuz.target
+  })
   const [page, setPage] = useState(1);
   const [suggestions, setSuggestions] = useState<string[]>([]);
 
@@ -27,7 +33,7 @@ const TagSuggestions = ({ tags, setTags, maxTags = 5 }: Props) => {
 
   return (
     <div className="w-full flex flex-col gap-2 mt-2">
-      <div className="w-full flex items-center justify-between">
+      {/* <div className="w-full flex items-center justify-between">
         <div className="font-semibold">Suggestions</div>
         <div className="flex items-center gap-1">
           {page != 1 ? (
@@ -41,29 +47,24 @@ const TagSuggestions = ({ tags, setTags, maxTags = 5 }: Props) => {
             <CaretCircleRight className="opacity-50" size={24} />
           )}
         </div>
-      </div>
-      <div className="w-full flex flex-wrap gap-2">
-        {suggestions?.map(suggestion =>
-          tags.includes(suggestion) || tags.length >= maxTags ? (
-            <div
-              key={suggestion}
-              className="border-[1px] border-primary_black rounded-lg px-2 py-1 text-xs cursor-default opacity-50"
-            >
-              {suggestion}
-            </div>
-          ) : (
-            <div
-              key={suggestion}
-              onClick={() => setTags(prev => [...prev, suggestion])}
-              className="border-[1px] border-primary_black rounded-lg px-2 py-1 text-xs cursor-pointer"
-            >
-              {suggestion}
-            </div>
-          )
-        )}
+      </div> */}
+      <div className="w-full flex flex-col flex-wrap gap-2">
+        {
+          fuzzyNames && fuzzyNames.length > 0 && <><div className="font-semibold">Suggestions</div>
+          <div className = "flex flex-wrap gap-2">
+          {
+            fuzzyNames.map((fuz:any)=>(
+             <div className = "border-[1px] border-primary_black rounded-lg px-2 py-1 text-xs text-nowrap cursor-pointer w-fit" onClick={() => setTags(prev => [...prev, fuz])}>
+                {fuz}
+              </div>)
+            )
+          }
+          </div></> }
       </div>
     </div>
   );
 };
 
 export default TagSuggestions;
+
+
