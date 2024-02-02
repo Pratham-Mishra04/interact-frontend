@@ -28,7 +28,7 @@ const Openings = () => {
 
   const getOpenings = async () => {
     setLoading(true);
-    const URL = `/org/${currentOrg.id}/orgopenings`;
+    const URL = `/org/${currentOrg.id}/openings`;
     const res = await getHandler(URL);
     if (res.statusCode === 200) {
       setOpenings(res.data.openings || []);
@@ -47,19 +47,17 @@ const Openings = () => {
 
   return (
     <BaseWrapper title="Openings">
-      {clickedOnOpening ? (
-        <ViewOpening
-          setClickedOnOpening={setClickedOnOpening}
-          opening={clickedOpening}
-          setClickedOpening={setClickedOpening}
-          openings={openings}
-          setOpenings={setOpenings}
-        />
-      ) : (
-        ''
-      )}
       <OrgSidebar index={15}></OrgSidebar>
       <MainWrapper>
+        {clickedOnOpening && (
+          <ViewOpening
+            setClickedOnOpening={setClickedOnOpening}
+            opening={clickedOpening}
+            setClickedOpening={setClickedOpening}
+            openings={openings}
+            setOpenings={setOpenings}
+          />
+        )}
         {clickedOnNewOpening ? (
           <NewOpening setShow={setClickedOnNewOpening} openings={openings} setOpenings={setOpenings} />
         ) : (
