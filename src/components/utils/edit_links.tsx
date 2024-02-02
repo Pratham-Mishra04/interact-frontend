@@ -112,7 +112,7 @@ const Links = ({ links, showTitle = false, setLinks, maxLinks = 5, title = 'Link
                     : 'bg-transparent dark:bg-[#10013b30] border-gray-400 dark:border-dark_primary_btn'
                 } focus:outline-none border-[1px] rounded-lg px-4 py-2 text-sm`}
                 value={newLink}
-                onChange={el => setNewLink(el.target.value.toLowerCase())}
+                onChange={el => setNewLink(el.target.value.toLowerCase().trim())}
                 placeholder="New Link"
               />
             </form>

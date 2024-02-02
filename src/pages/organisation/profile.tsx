@@ -31,7 +31,7 @@ import checkOrgAccess from '@/utils/funcs/check_org_access';
 import { ORG_SENIOR } from '@/config/constants';
 import OrgCard from '@/sections/profile/org_card';
 import Reviews from '@/screens/profile/reviews';
-
+import Openings from '@/screens/profile/opening';
 const Profile = () => {
   const [active, setActive] = useState(0);
   const [user, setUser] = useState(initialUser);
@@ -287,7 +287,7 @@ const Profile = () => {
             )}
 
             <TabMenu
-              items={['About', 'Posts', 'Projects', 'Events', 'Reviews']}
+              items={['About', 'Posts', 'Projects', 'Events', 'Reviews','Openings']}
               active={active}
               setState={setActive}
               width={open ? '640px' : '720px'}
@@ -320,6 +320,9 @@ const Profile = () => {
             </div>
             <div className={`${active === 4 ? 'block' : 'hidden'} `}>
               {loading ? <Loader /> : <Reviews orgID={currentOrgID} />}
+            </div>
+            <div className={`${active === 5 ? 'block' : 'hidden'} `}>
+              {loading ? <Loader /> : <Openings orgID={currentOrgID} />}
             </div>
           </div>
         </div>

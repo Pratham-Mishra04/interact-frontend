@@ -16,6 +16,7 @@ import {
   Ticket,
   Wrench,
   BookOpenText,
+  EnvelopeSimpleOpen
 } from '@phosphor-icons/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { navbarOpenSelector, setNavbarOpen } from '@/slices/feedSlice';
@@ -143,6 +144,15 @@ const OrgSidebar = ({ index }: Props) => {
             org={true}
             title="History"
             icon={<ClockCounterClockwise size={24} />}
+            active={active}
+            setActive={setActive}
+            open={open}
+          />
+          <SidebarItem
+            index={15}
+            org={true}
+            title="Openings"
+            icon={<EnvelopeSimpleOpen size={24} />}
             active={active}
             setActive={setActive}
             open={open}
