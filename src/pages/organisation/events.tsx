@@ -5,7 +5,7 @@ import OrgSidebar from '@/components/common/org_sidebar';
 import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
 import Toaster from '@/utils/toaster';
-import { Info, Plus } from '@phosphor-icons/react';
+import { Info, Plus, Envelope } from '@phosphor-icons/react';
 import { ORG_URL } from '@/config/routes';
 import NoFeed from '@/components/empty_fillers/feed';
 import OrgMembersOnlyAndProtect from '@/utils/wrappers/org_members_only';
@@ -26,10 +26,12 @@ import WidthCheck from '@/utils/wrappers/widthCheck';
 import { navbarOpenSelector } from '@/slices/feedSlice';
 import EditCoordinators from '@/sections/organization/events/edit_coordinators';
 import AccessTree from '@/components/organization/access_tree';
+import ViewInvitations from '@/sections/organization/events/view_invitations';
 
 const Events = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [clickedOnNewEvent, setClickedOnNewEvent] = useState(false);
+  const [clickedOnViewInvitation, setClickedOnViewInvitation] = useState(false);
   const [clickedOnEditEvent, setClickedOnEditEvent] = useState(false);
   const [clickedOnEditCollaborators, setClickedOnEditCollaborators] = useState(false);
   const [clickedEditEvent, setClickedEditEvent] = useState(initialEvent);
@@ -98,12 +100,20 @@ const Events = () => {
             <div className="w-fit text-6xl font-semibold dark:text-white font-primary pl-6">Events</div>
             <div className="flex items-center gap-2">
               {checkOrgAccess(ORG_SENIOR) ? (
-                <Plus
-                  onClick={() => setClickedOnNewEvent(true)}
-                  size={42}
-                  className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
-                  weight="regular"
-                />
+                <>
+                  <Plus
+                    onClick={() => setClickedOnNewEvent(true)}
+                    size={42}
+                    className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
+                    weight="regular"
+                  />
+                  <Envelope
+                    onClick={() => setClickedOnViewInvitation(true)}
+                    size={42}
+                    className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
+                    weight="regular"
+                  />
+                </>
               ) : (
                 <></>
               )}
@@ -119,6 +129,7 @@ const Events = () => {
           <div className="w-full max-md:w-full mx-auto flex flex-col items-center gap-4">
             {clickedOnInfo ? <AccessTree type="event" setShow={setClickedOnInfo} /> : <></>}
             {clickedOnNewEvent ? <NewEvent setEvents={setEvents} setShow={setClickedOnNewEvent} /> : <></>}
+            {clickedOnViewInvitation && <ViewInvitations setShow={setClickedOnViewInvitation} />}
             {clickedOnEditEvent ? (
               <EditEvent event={clickedEditEvent} setEvents={setEvents} setShow={setClickedOnEditEvent} />
             ) : (
