@@ -6,17 +6,14 @@ import { SERVER_ERROR } from '@/config/errors';
 import { EXPLORE_URL } from '@/config/routes';
 import { ChartLineUp, X } from '@phosphor-icons/react';
 import { Signal, signal, effect } from '@preact/signals-react';
-import About from '@/screens/profile/my_about';
 
 interface Props {
   search: Signal<string>;
-  // setSearch: React.Dispatch<React.SetStateAction<string>>;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SearchSuggestions = ({ search, setShow }: Props) => {
   const searches = signal([]);
-  // const [searches, setSearches] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
   let oldAbortController: AbortController | null = null;

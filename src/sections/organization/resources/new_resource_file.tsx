@@ -118,7 +118,9 @@ const NewResourceFile = ({
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             const files = e.target.files;
             if (files && files.length > 0) {
-              setSelectedFile(files[0]);
+              const file = files[0];
+              if (file.size > 5 * 1024 * 1024) Toaster.error('File cannot be larger than 5 MB');
+              else setSelectedFile(file);
             }
           }}
         />
@@ -162,7 +164,7 @@ const NewResourceFile = ({
           ) : (
             <input
               type="text"
-              className="w-1/3 focus:w-1/2 focus:scale-110 bg-transparent focus:outline-none text-primary_text text-center rounded-lg p-2 px-6 border-2 border-primary_text transition-ease-300"
+              className="w-1/3 focus:w-1/2 focus:scale-110 bg-transparent focus:outline-none text-sm focus:text-base text-primary_text text-center rounded-lg p-2 px-6 border-2 border-primary_text transition-ease-300"
               placeholder="Enter Link to the file"
               maxLength={25}
               value={fileLink}
