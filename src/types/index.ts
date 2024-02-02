@@ -101,6 +101,7 @@ export interface Opening {
   tags: string[];
   active: boolean;
   createdAt: Date;
+  organizationID:string
 }
 
 export interface Profile {
