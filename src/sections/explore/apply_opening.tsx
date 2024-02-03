@@ -58,9 +58,7 @@ const ApplyOpening = ({ opening, setShow, setOpening, setAddResume, org = false 
 
     const formData = { content, links, includeEmail, includeResume };
 
-    const URL = org
-      ? `/org/:orgID/${opening.organizationID}/applications/${opening.id}`
-      : `${APPLICATION_URL}/${opening.id}`;
+    const URL = org ? `/org/${opening.organizationID}/applications/${opening.id}` : `${APPLICATION_URL}/${opening.id}`;
 
     const res = await postHandler(URL, formData);
     if (res.statusCode === 201) {

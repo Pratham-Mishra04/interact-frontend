@@ -1,5 +1,5 @@
 import Loader from '@/components/common/loader';
-import { PROJECT_PIC_URL, USER_COVER_PIC_URL, WORKSPACE_URL } from '@/config/routes';
+import { PROJECT_PIC_URL, USER_PROFILE_PIC_URL, WORKSPACE_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import { Application } from '@/types';
 import Toaster from '@/utils/toaster';
@@ -11,7 +11,7 @@ import { useDispatch } from 'react-redux';
 import { setExploreTab } from '@/slices/feedSlice';
 import NoApplications from '@/components/empty_fillers/applications';
 import { SERVER_ERROR } from '@/config/errors';
-import { X, Plus, Check } from '@phosphor-icons/react';
+import { X, Plus, Check, Buildings } from '@phosphor-icons/react';
 
 const Applications = () => {
   const [applications, setApplications] = useState<Application[]>([]);
@@ -103,7 +103,7 @@ const Applications = () => {
                         width={100}
                         height={100}
                         alt={'User Pic'}
-                        src={`${USER_COVER_PIC_URL}/${application.organization?.user.profilePic}`}
+                        src={`${USER_PROFILE_PIC_URL}/${application.organization?.user.profilePic}`}
                         className={'w-[120px] h-[120px] max-lg:w-[90px] max-lg:h-[90px] rounded-lg object-cover'}
                       />
                     ) : (
@@ -126,7 +126,13 @@ const Applications = () => {
                             {application.opening.title}
                           </div>
                           <div className="line-clamp-1 font-medium max-lg:text-sm">
-                            @{isOrg(application) ? application.organization?.title : application.project?.title}
+                            {isOrg(application) ? (
+                              <span className="w-fit flex-center gap-1">
+                                {application.organization?.title} <Buildings />
+                              </span>
+                            ) : (
+                              application.project?.title
+                            )}
                           </div>
                           <div className="text-gray-600 text-xs">{moment(application.createdAt).fromNow()}</div>
                         </div>

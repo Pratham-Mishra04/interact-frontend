@@ -12,6 +12,8 @@ import socketService from '@/config/ws';
 import { SERVER_ERROR } from '@/config/errors';
 import { initialApplication } from '@/types/initials';
 import ConfirmDelete from '@/components/common/confirm_delete';
+import { useSelector } from 'react-redux';
+import { currentOrgIDSelector } from '@/slices/orgSlice';
 
 interface Props {
   applicationIndex: number;
@@ -19,6 +21,7 @@ interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   setApplications?: React.Dispatch<React.SetStateAction<Application[]>>;
   setFilteredApplications?: React.Dispatch<React.SetStateAction<Application[]>>;
+  org?: boolean;
 }
 
 const ApplicationView = ({
@@ -27,6 +30,7 @@ const ApplicationView = ({
   setShow,
   setApplications,
   setFilteredApplications,
+  org = false,
 }: Props) => {
   const [clickedOnAccept, setClickedOnAccept] = useState(false);
   const [clickedOnReject, setClickedOnReject] = useState(false);
@@ -34,11 +38,18 @@ const ApplicationView = ({
 
   const application = applications[applicationIndex] || initialApplication;
 
+  const currentOrgID = useSelector(currentOrgIDSelector);
+
   const handleAccept = async () => {
     if (mutex) return;
     setMutex(true);
+
     const toaster = Toaster.startLoad('Accepting the Application...');
-    const URL = `${APPLICATION_URL}/accept/${application.id}`;
+
+    const URL = org
+      ? `/org/${currentOrgID}/applications/accept/${application.id}`
+      : `${APPLICATION_URL}/accept/${application.id}`;
+
     const res = await getHandler(URL);
     if (res.statusCode === 200) {
       if (setApplications) {
@@ -61,7 +72,7 @@ const ApplicationView = ({
       }
       socketService.sendNotification(
         application.userID,
-        `Your Application for ${application.project.title} got Selected!`
+        `Your Application for ${org ? application.organization?.title : application.project?.title} got Selected!`
       );
       setClickedOnAccept(false);
       Toaster.stopLoad(toaster, 'Application accepted!', 1);
@@ -80,7 +91,11 @@ const ApplicationView = ({
     setMutex(true);
 
     const toaster = Toaster.startLoad('Rejecting the Application...');
-    const URL = `${APPLICATION_URL}/reject/${application.id}`;
+
+    const URL = org
+      ? `/org/${currentOrgID}/applications/reject/${application.id}`
+      : `${APPLICATION_URL}/reject/${application.id}`;
+
     const res = await getHandler(URL);
     if (res.statusCode === 200) {
       if (setApplications) {
@@ -103,7 +118,7 @@ const ApplicationView = ({
       }
       socketService.sendNotification(
         application.userID,
-        `Your Application for ${application.project.title} got Rejected`
+        `Your Application for ${org ? application.organization?.title : application.project?.title} got Rejected.`
       );
       setClickedOnReject(false);
       Toaster.stopLoad(toaster, 'Application rejected', 1);
@@ -122,7 +137,11 @@ const ApplicationView = ({
     setMutex(true);
 
     const toaster = Toaster.startLoad('Adding/Removing from Shortlist...');
-    const URL = `${APPLICATION_URL}/review/${application.id}`;
+
+    const URL = org
+      ? `/org/${currentOrgID}/applications/review/${application.id}`
+      : `${APPLICATION_URL}/review/${application.id}`;
+
     const res = await getHandler(URL);
     if (res.statusCode === 200) {
       if (setApplications) {
