@@ -16,9 +16,10 @@ interface Props {
   opening: Opening;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   setOpening: React.Dispatch<React.SetStateAction<Opening>>;
+  org?: boolean;
 }
 
-const OpeningView = ({ opening, setShow, setOpening }: Props) => {
+const OpeningView = ({ opening, setShow, setOpening, org = false }: Props) => {
   const [clickedOnApply, setClickedOnApply] = useState(false);
   const [clickedOnAddResume, setClickedOnAddResume] = useState(false);
 
@@ -51,6 +52,7 @@ const OpeningView = ({ opening, setShow, setOpening }: Props) => {
             setShow={setClickedOnApply}
             setOpening={setOpening}
             setAddResume={setClickedOnAddResume}
+            org={org}
           />
         ) : (
           <SignUp setShow={setClickedOnApply} />
@@ -70,16 +72,26 @@ const OpeningView = ({ opening, setShow, setOpening }: Props) => {
           />
           <div className="flex max-md:flex-col flex-wrap justify-between items-center max-md:items-start gap-2">
             <div className="font-bold text-4xl text-gradient">{opening.title}</div>
-            <LowerOpening opening={opening} />
+            <LowerOpening opening={opening} org={org} />
           </div>
           <div className="w-full flex items-center justify-between flex-wrap gap-2 text-sm">
-            <Link
-              href={`/explore?pid=${opening.project?.slug}`}
-              target="_blank"
-              className="hover-underline-animation after:bg-black font-semibold text-lg"
-            >
-              {opening.project?.title}
-            </Link>{' '}
+            {org ? (
+              <Link
+                href={`/explore?org_id=${opening.organization?.user.username}`}
+                target="_blank"
+                className="hover-underline-animation after:bg-black font-semibold text-lg"
+              >
+                {opening.organization?.title}
+              </Link>
+            ) : (
+              <Link
+                href={`/explore?pid=${opening.project?.slug}`}
+                target="_blank"
+                className="hover-underline-animation after:bg-black font-semibold text-lg"
+              >
+                {opening.project?.title}
+              </Link>
+            )}{' '}
             <div className="w-fit flex gap-2">
               <div className="flex gap-1">
                 <div>•</div>

@@ -43,7 +43,7 @@ const OpeningCard = ({ opening, clickedOpening, setClickedOnOpening, setClickedO
           src={`${PROJECT_PIC_URL}/${opening.project?.coverPic}`}
           className={'w-[140px] h-[140px] max-lg:w-[90px] max-lg:h-[90px] rounded-lg object-cover'}
           placeholder="blur"
-          blurDataURL={opening.project?.blurHash}
+          blurDataURL={opening.project?.blurHash || 'no-hash'}
         />
       )}
 

@@ -11,12 +11,15 @@ import OpeningBookmarkIcon from './opening_bookmark';
 import Report from '../common/report';
 import { WarningCircle } from '@phosphor-icons/react';
 import SignUp from '../common/signup_box';
+import { checkParticularOrgAccess } from '@/utils/funcs/check_org_access';
+import { ORG_MANAGER } from '@/config/constants';
 
 interface Props {
   opening: Opening;
+  org?: boolean;
 }
 
-const LowerOpening = ({ opening }: Props) => {
+const LowerOpening = ({ opening, org = false }: Props) => {
   const [clickedOnShare, setClickedOnShare] = useState(false);
   const [clickedOnReport, setClickedOnReport] = useState(false);
   const [noUserClick, setNoUserClick] = useState(false);
@@ -30,22 +33,34 @@ const LowerOpening = ({ opening }: Props) => {
   return (
     <>
       {noUserClick ? <SignUp setShow={setNoUserClick} /> : <></>}
-      {clickedOnShare ? <ShareOpening setShow={setClickedOnShare} opening={opening} /> : <></>}
+      {clickedOnShare ? <ShareOpening setShow={setClickedOnShare} opening={opening} org={org} /> : <></>}
       {clickedOnReport ? <Report openingID={opening.id} setShow={setClickedOnReport} /> : <></>}
 
       <div className="flex gap-4 items-center">
-        {user.id == opening?.userID || user.editorProjects.includes(opening.projectID) ? (
-          <Gear
-            className="cursor-pointer max-md:w-[32px] max-md:h-[32px]"
-            onClick={() => {
-              router.push(`/workspace/manage/${opening.project?.slug}?action=edit&oid=${opening.id}`);
-            }}
-            size={32}
-            weight="light"
-          />
-        ) : (
-          <></>
-        )}
+        {org
+          ? checkParticularOrgAccess(ORG_MANAGER, opening.organization) && (
+              <Gear
+                className="cursor-pointer max-md:w-[32px] max-md:h-[32px]"
+                onClick={() => {
+                  //TODO use window.location
+                  //TODO handle redirect
+                  router.push(`/organisation?redirect_url=openings?action=edit&oid=${opening.id}`);
+                }}
+                size={32}
+                weight="light"
+              />
+            )
+          : user.id == opening?.userID ||
+            (user.editorProjects.includes(opening.projectID) && (
+              <Gear
+                className="cursor-pointer max-md:w-[32px] max-md:h-[32px]"
+                onClick={() => {
+                  router.push(`/workspace/manage/${opening.project?.slug}?action=edit&oid=${opening.id}`);
+                }}
+                size={32}
+                weight="light"
+              />
+            ))}
         <Export
           onClick={() => {
             if (userID == '') setNoUserClick(true);

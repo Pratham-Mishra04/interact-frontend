@@ -1,4 +1,4 @@
-import { PROJECT_PIC_URL } from '@/config/routes';
+import { PROJECT_PIC_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import { OpeningBookmark } from '@/types';
 import { Check } from '@phosphor-icons/react';
 import Image from 'next/image';
@@ -103,6 +103,17 @@ const OpeningBookmark = ({ bookmark, setClick, setBookmark, handleEdit, handleDe
                       blurDataURL={bookmark.openingItems[0].opening.project.blurHash}
                     />
                   </div>
+                ) : bookmark.openingItems[0].opening.organization?.user.profilePic ? (
+                  <div className="p-2">
+                    <Image
+                      crossOrigin="anonymous"
+                      className="w-full h-[368px] max-md:h-[304px] rounded-md object-cover"
+                      width={500}
+                      height={500}
+                      alt=""
+                      src={`${USER_PROFILE_PIC_URL}/${bookmark.openingItems[0].opening.organization?.user.profilePic}`}
+                    />
+                  </div>
                 ) : (
                   <div className="p-2">
                     <div className="w-full h-96 max-md:h-80 bg-gray-300 dark:bg-[#c578bf63] rounded-md"></div>
@@ -112,11 +123,14 @@ const OpeningBookmark = ({ bookmark, setClick, setBookmark, handleEdit, handleDe
             ) : (
               <div className="w-full h-96 max-md:h-80 flex flex-wrap gap-2 p-2 items-center justify-center">
                 {bookmark.openingItems.map(openingItem => {
-                  if (count >= 4 || !openingItem.opening.project?.coverPic) {
+                  if (
+                    count >= 4 ||
+                    (!openingItem.opening.project?.coverPic && !openingItem.opening.organization?.user.profilePic)
+                  ) {
                     return <></>;
                   }
                   count++;
-                  return (
+                  return openingItem.opening.project?.coverPic ? (
                     <Image
                       key={openingItem.openingID}
                       crossOrigin="anonymous"
@@ -127,6 +141,16 @@ const OpeningBookmark = ({ bookmark, setClick, setBookmark, handleEdit, handleDe
                       src={`${PROJECT_PIC_URL}/${openingItem.opening.project.coverPic}`}
                       placeholder="blur"
                       blurDataURL={openingItem.opening.project.blurHash}
+                    />
+                  ) : (
+                    <Image
+                      key={openingItem.openingID}
+                      crossOrigin="anonymous"
+                      className="w-[48%] h-[49%] object-cover rounded-md"
+                      width={500}
+                      height={500}
+                      alt=""
+                      src={`${USER_PROFILE_PIC_URL}/${openingItem.opening.organization?.user.profilePic}`}
                     />
                   );
                 })}
