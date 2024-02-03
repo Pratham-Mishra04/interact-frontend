@@ -31,16 +31,16 @@ const SharedOpeningMessage = ({ message }: Props) => {
               width={100}
               height={100}
               alt={'User Pic'}
-              src={`${PROJECT_PIC_URL}/${message.opening.project.coverPic}`}
+              src={`${PROJECT_PIC_URL}/${message.opening.project?.coverPic}`}
               className={'w-[200px] h-[200px] max-md:w-[120px] max-md:h-[120px] rounded-lg object-cover'}
               placeholder="blur"
-              blurDataURL={message.opening.project.blurHash}
+              blurDataURL={message.opening.project?.blurHash || 'no-hash'}
             />
 
             <div className="w-full flex flex-col gap-4 max-md:gap-2 px-8">
               <div className="w-full text-center  flex flex-col items-center gap-1">
                 <div className="font-bold text-xl text-gradient">{message.opening.title}</div>
-                <div className="text-xs">@{message.opening.project.title}</div>
+                <div className="text-xs">@{message.opening.project?.title}</div>
                 <div className="text-xs font-thin">{moment(message.opening.createdAt).fromNow()}</div>
               </div>
             </div>

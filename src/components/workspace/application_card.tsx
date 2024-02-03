@@ -25,17 +25,17 @@ const ApplicationCard = ({ application, setClickedOnApplication, setClickedAppli
           width={50}
           height={50}
           alt={'User Pic'}
-          src={`${PROJECT_PIC_URL}/${application.opening.project.coverPic}`}
+          src={`${PROJECT_PIC_URL}/${application.opening.project?.coverPic}`}
           className={'w-[120px] h-[120px] max-md:w-[90px] max-md:h-[90px] rounded-lg object-cover'}
           placeholder="blur"
-          blurDataURL={application.opening.project.blurHash}
+          blurDataURL={application.opening.project?.blurHash || 'no-hash'}
         />
 
         <div className="grow flex flex-col gap-4 max-md:gap-2">
           <div className="flex items-start justify-between">
             <div className="w-5/6 flex flex-col gap-1">
               <div className="font-bold text-2xl max-md:text-lg text-gradient">{application.opening.title}</div>
-              <div className="text-lg max-md:text-sm">{application.opening.project.title}</div>
+              <div className="text-lg max-md:text-sm">{application.opening.project?.title}</div>
             </div>
           </div>
 

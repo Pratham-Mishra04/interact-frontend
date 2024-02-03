@@ -111,6 +111,7 @@ const Openings = () => {
                       clickedOpening={clickedOpening}
                       setClickedOnOpening={setClickedOnOpening}
                       setClickedOpening={setClickedOpening}
+                      org={opening.organization != null}
                     />
                   );
                 })}

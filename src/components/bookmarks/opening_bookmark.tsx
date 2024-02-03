@@ -90,7 +90,7 @@ const OpeningBookmark = ({ bookmark, setClick, setBookmark, handleEdit, handleDe
               </div>
             ) : bookmark.openingItems.length == 1 ? (
               <>
-                {bookmark.openingItems[0].opening.project.coverPic ? (
+                {bookmark.openingItems[0].opening.project?.coverPic ? (
                   <div className="p-2">
                     <Image
                       crossOrigin="anonymous"
@@ -112,7 +112,7 @@ const OpeningBookmark = ({ bookmark, setClick, setBookmark, handleEdit, handleDe
             ) : (
               <div className="w-full h-96 max-md:h-80 flex flex-wrap gap-2 p-2 items-center justify-center">
                 {bookmark.openingItems.map(openingItem => {
-                  if (count >= 4 || !openingItem.opening.project.coverPic) {
+                  if (count >= 4 || !openingItem.opening.project?.coverPic) {
                     return <></>;
                   }
                   count++;

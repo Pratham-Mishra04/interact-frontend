@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import moment from 'moment';
 import isArrEdited from '@/utils/funcs/check_array_edited';
 import patchHandler from '@/handlers/patch_handler';
+import { SERVER_ERROR } from '@/config/errors';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -105,7 +106,7 @@ const EditEvent = ({ setShow, event, setEvents }: Props) => {
       if (res.data.message) {
         Toaster.stopLoad(toaster, res.data.message, 0);
       } else {
-        Toaster.stopLoad(toaster, 'Internal Server Error.', 0);
+        Toaster.stopLoad(toaster, SERVER_ERROR, 0);
       }
     }
     setMutex(false);

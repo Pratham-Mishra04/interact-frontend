@@ -48,10 +48,11 @@ const NewOpening = ({ setShow, openings, setOpenings }: Props) => {
     if (res.statusCode === 201) {
       const addOpening = [...openings, res.data.opening];
       setOpenings(addOpening);
-      Toaster.stopLoad(toaster, 'Opening created', 1);
       setDescription('');
       setTitle('');
       setTags([]);
+      setShow(false);
+      Toaster.stopLoad(toaster, 'Opening created', 1);
     } else {
       if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
       else {

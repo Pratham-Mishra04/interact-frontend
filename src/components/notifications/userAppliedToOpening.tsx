@@ -28,7 +28,7 @@ const UserAppliedToOpening = ({ notification }: Props) => {
         </Link>{' '}
         applied for the opening of {notification.opening.title} at {notification.project.title}
         <Link className="font-bold" href={`/workspace/opening/${notification.opening.id}`}>
-          {notification.opening.project.title}
+          {notification.opening.project?.title}
         </Link>
         .
       </div>

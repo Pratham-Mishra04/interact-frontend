@@ -9,6 +9,7 @@ import { userSelector } from '@/slices/userSlice';
 import { useSelector } from 'react-redux';
 import { currentOrgMembershipSelector, currentOrgSelector } from '@/slices/orgSlice';
 import { initialOrganization, initialOrganizationMembership } from '@/types/initials';
+import { SERVER_ERROR } from '@/config/errors';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -65,7 +66,7 @@ const EditMember = ({ setShow, membership, setOrganization }: Props) => {
       setShow(false);
     } else {
       if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
-      else Toaster.stopLoad(toaster, 'Internal Server Error.', 0);
+      else Toaster.stopLoad(toaster, SERVER_ERROR, 0);
     }
     setMutex(false);
   };

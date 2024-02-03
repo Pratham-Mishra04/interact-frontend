@@ -102,16 +102,16 @@ const ShareOpening = ({ opening, setShow }: Props) => {
               width={100}
               height={100}
               alt={'User Pic'}
-              src={`${PROJECT_PIC_URL}/${opening.project.coverPic}`}
+              src={`${PROJECT_PIC_URL}/${opening.project?.coverPic}`}
               className={'w-[180px] h-[180px] max-lg:w-[120px] max-lg:h-[120px] rounded-lg object-cover'}
               placeholder="blur"
-              blurDataURL={opening.project.blurHash}
+              blurDataURL={opening.project?.blurHash || 'no-hash'}
             />
 
             <div className="w-full flex flex-col gap-4 max-lg:gap-2 px-8">
               <div className="w-full flex flex-col items-center gap-1 text-center">
                 <div className="font-bold line-clamp-2 text-2xl text-gradient">{opening.title}</div>
-                <div className="text-sm">@{opening.project.title}</div>
+                <div className="text-sm">@{opening.project?.title}</div>
                 <div className="text-xs font-thin">{moment(opening.createdAt).fromNow()}</div>
               </div>
 

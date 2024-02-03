@@ -1,6 +1,7 @@
 import Links from '@/components/utils/edit_links';
 import Tags from '@/components/utils/edit_tags';
 import Images from '@/components/utils/new_cover';
+import { SERVER_ERROR } from '@/config/errors';
 import { ORG_URL, PROJECT_URL } from '@/config/routes';
 import patchHandler from '@/handlers/patch_handler';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
@@ -111,7 +112,7 @@ const EditProject = ({ projectToEdit, setShow, setProjectToEdit, setProjects, or
     } else if (res.statusCode == 413) {
       Toaster.stopLoad(toaster, 'Image too large', 0);
     } else {
-      Toaster.stopLoad(toaster, 'Internal Server Error.', 0);
+      Toaster.stopLoad(toaster, SERVER_ERROR, 0);
     }
     setMutex(false);
   };

@@ -8,6 +8,7 @@ import Tags from '@/components/utils/edit_tags';
 import patchHandler from '@/handlers/patch_handler';
 import { PROJECT_EDITOR, PROJECT_MANAGER, PROJECT_MEMBER } from '@/config/constants';
 import Cookies from 'js-cookie';
+import { SERVER_ERROR } from '@/config/errors';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -60,7 +61,7 @@ const EditCollaborator = ({ setShow, membership, project, setProject }: Props) =
       Toaster.stopLoad(toaster, 'Membership Edited', 1);
       setShow(false);
     } else {
-      Toaster.stopLoad(toaster, 'Internal Server Error.', 0);
+      Toaster.stopLoad(toaster, SERVER_ERROR, 0);
     }
     setMutex(false);
   };

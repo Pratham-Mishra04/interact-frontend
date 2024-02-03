@@ -38,7 +38,7 @@ const LowerOpening = ({ opening }: Props) => {
           <Gear
             className="cursor-pointer max-md:w-[32px] max-md:h-[32px]"
             onClick={() => {
-              router.push(`/workspace/manage/${opening.project.slug}?action=edit&oid=${opening.id}`);
+              router.push(`/workspace/manage/${opening.project?.slug}?action=edit&oid=${opening.id}`);
             }}
             size={32}
             weight="light"

@@ -91,16 +91,16 @@ const ApplyOpening = ({ opening, setShow, setOpening, setAddResume }: Props) => 
               width={200}
               height={200}
               alt={'User Pic'}
-              src={`${PROJECT_PIC_URL}/${opening.project.coverPic}`}
+              src={`${PROJECT_PIC_URL}/${opening.project?.coverPic}`}
               className={'w-[180px] h-[180px] max-lg:hidden max-lg:w-[120px] max-lg:h-[120px] rounded-lg object-cover'}
               placeholder="blur"
-              blurDataURL={opening.project.blurHash}
+              blurDataURL={opening.project?.blurHash || 'no-hash'}
             />
 
             <div className="w-full flex flex-col gap-4 max-lg:gap-2 px-8">
               <div className="w-full flex flex-col items-center gap-1">
                 <div className="font-bold text-center line-clamp-2 text-2xl text-gradient">{opening.title}</div>
-                <div className="text-sm text-center">@{opening.project.title}</div>
+                <div className="text-sm text-center">@{opening.project?.title}</div>
                 <div className="text-xs font-thin">{moment(opening.createdAt).fromNow()}</div>
               </div>
             </div>
