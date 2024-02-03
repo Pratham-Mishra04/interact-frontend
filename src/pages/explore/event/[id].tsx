@@ -10,16 +10,7 @@ import { GetServerSidePropsContext } from 'next/types';
 import Loader from '@/components/common/loader';
 import { SERVER_ERROR } from '@/config/errors';
 import Image from 'next/image';
-import {
-  ArrowUpRight,
-  BookmarkSimple,
-  Buildings,
-  CalendarBlank,
-  MapPin,
-  Rocket,
-  Ticket,
-  Users,
-} from '@phosphor-icons/react';
+import { ArrowUpRight, Buildings, CalendarBlank, MapPin, Rocket, Ticket, Users } from '@phosphor-icons/react';
 import EventCard from '@/components/explore/event_card';
 import { Event } from '@/types';
 import Link from 'next/link';

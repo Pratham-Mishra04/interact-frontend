@@ -6,11 +6,9 @@ import postHandler from '@/handlers/post_handler';
 import { setApplications, userSelector } from '@/slices/userSlice';
 import { Opening } from '@/types';
 import Toaster from '@/utils/toaster';
-import { ArrowUpRight, FilePdf, FileText, X } from '@phosphor-icons/react';
+import { ArrowUpRight, X } from '@phosphor-icons/react';
 import moment from 'moment';
 import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -32,8 +30,6 @@ const ApplyOpening = ({ opening, setShow, setOpening, setAddResume, org = false 
   let profilePic = user.profilePic;
 
   const applications = useSelector(userSelector).applications;
-
-  const router = useRouter();
 
   const dispatch = useDispatch();
 
@@ -62,7 +58,10 @@ const ApplyOpening = ({ opening, setShow, setOpening, setAddResume, org = false 
 
     const formData = { content, links, includeEmail, includeResume };
 
-    const URL = `${APPLICATION_URL}/${opening.id}`;
+    const URL = org
+      ? `/org/:orgID/${opening.organizationID}/applications/${opening.id}`
+      : `${APPLICATION_URL}/${opening.id}`;
+
     const res = await postHandler(URL, formData);
     if (res.statusCode === 201) {
       setOpening(prev => {

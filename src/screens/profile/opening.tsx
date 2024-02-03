@@ -43,21 +43,29 @@ export default function Openings({ orgID }: Props) {
       ) : (
         <></>
       )}
-      <div className="w-full relative">
-        {clickedOnOpening && (
-          <OpeningView opening={clickedOpening} setOpening={setClickedOpening} setShow={setClickedOnOpening} />
+      <div className="w-4/5 relative mx-auto flex flex-col gap-4 pb-2">
+        {clickedOnOpening ? (
+          <OpeningView
+            opening={clickedOpening}
+            setOpening={setClickedOpening}
+            setShow={setClickedOnOpening}
+            showBack={true}
+            org={true}
+            fullWeight={true}
+          />
+        ) : (
+          openings.map((opening, index) => {
+            return (
+              <OpeningCard
+                setClickedOnOpening={setClickedOnOpening}
+                key={index}
+                opening={opening}
+                setClickedOpening={setClickedOpening}
+                org={true}
+              />
+            );
+          })
         )}
-        {openings.map((opening, index) => {
-          return (
-            <OpeningCard
-              setClickedOnOpening={setClickedOnOpening}
-              key={index}
-              opening={opening}
-              setClickedOpening={setClickedOpening}
-              org={true}
-            />
-          );
-        })}
       </div>
     </>
   );

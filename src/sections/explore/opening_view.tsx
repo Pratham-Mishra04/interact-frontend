@@ -1,7 +1,7 @@
 import LowerOpening from '@/components/lowers/lower_opening';
 import { Opening } from '@/types';
 import { initialOpening } from '@/types/initials';
-import { ArrowArcLeft } from '@phosphor-icons/react';
+import { ArrowArcLeft, Buildings } from '@phosphor-icons/react';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import ApplyOpening from './apply_opening';
@@ -17,9 +17,11 @@ interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   setOpening: React.Dispatch<React.SetStateAction<Opening>>;
   org?: boolean;
+  showBack?: boolean;
+  fullWeight?: boolean;
 }
 
-const OpeningView = ({ opening, setShow, setOpening, org = false }: Props) => {
+const OpeningView = ({ opening, setShow, setOpening, org = false, showBack = false, fullWeight = false }: Props) => {
   const [clickedOnApply, setClickedOnApply] = useState(false);
   const [clickedOnAddResume, setClickedOnAddResume] = useState(false);
 
@@ -60,10 +62,14 @@ const OpeningView = ({ opening, setShow, setOpening, org = false }: Props) => {
       ) : (
         <></>
       )}
-      <div className="sticky max-md:fixed top-[152px] bg-white dark:bg-transparent max-md:top-navbar max-md:right-0 w-[55%] max-md:w-full max-h-[70vh] max-md:max-h-screen max-md:h-base z-20 max-lg:z-50 max-md:backdrop-blur-2xl max-md:backdrop-brightness-90 overflow-y-auto flex flex-col gap-6 max-md:gap-8 px-12 py-10 max-md:p-8 font-primary dark:text-white border-[1px] max-md:border-0 border-primary_btn  dark:border-dark_primary_btn rounded-lg max-md:rounded-none max-md:animate-fade_third">
+      <div
+        className={`sticky max-md:fixed top-[152px] bg-white dark:bg-transparent max-md:top-navbar max-md:right-0 ${
+          fullWeight ? 'w-full' : 'w-[55%]'
+        } max-md:w-full max-h-[70vh] max-md:max-h-screen max-md:h-base z-20 max-lg:z-50 max-md:backdrop-blur-2xl max-md:backdrop-brightness-90 overflow-y-auto flex flex-col gap-6 max-md:gap-8 px-12 py-10 max-md:p-8 font-primary dark:text-white border-[1px] max-md:border-0 border-primary_btn  dark:border-dark_primary_btn rounded-lg max-md:rounded-none max-md:animate-fade_third`}
+      >
         <div className="flex flex-col gap-2 max-md:gap-6">
           <ArrowArcLeft
-            className="cursor-pointer md:hidden"
+            className={`cursor-pointer ${!showBack ? 'md:hidden' : ''}`}
             size={24}
             onClick={() => {
               setShow(false);
@@ -77,11 +83,11 @@ const OpeningView = ({ opening, setShow, setOpening, org = false }: Props) => {
           <div className="w-full flex items-center justify-between flex-wrap gap-2 text-sm">
             {org ? (
               <Link
-                href={`/explore?org_id=${opening.organization?.user.username}`}
+                href={`/explore/organisation/${opening.organization?.user.username}`}
                 target="_blank"
-                className="hover-underline-animation after:bg-black font-semibold text-lg"
+                className="flex-center gap-1 hover-underline-animation after:bg-black font-semibold text-lg"
               >
-                {opening.organization?.title}
+                {opening.organization?.title} <Buildings />
               </Link>
             ) : (
               <Link

@@ -1,6 +1,6 @@
 import { Event } from '@/types';
 import React, { useEffect, useState } from 'react';
-import { ORG_URL } from '@/config/routes';
+import { EXPLORE_URL } from '@/config/routes';
 import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
 import Toaster from '@/utils/toaster';
@@ -22,7 +22,7 @@ const Events = ({ orgID, displayOnProfile = false }: Props) => {
   const [loading, setLoading] = useState(true);
 
   const getEvents = () => {
-    const URL = `${ORG_URL}/${orgID}/events?page=${page}&limit=${10}`;
+    const URL = `${EXPLORE_URL}/events/org/${orgID}?page=${page}&limit=${10}`;
     getHandler(URL)
       .then(res => {
         if (res.statusCode === 200) {

@@ -6,7 +6,7 @@ import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
 import Toaster from '@/utils/toaster';
 import { Info, Plus } from '@phosphor-icons/react';
-import { ORG_URL } from '@/config/routes';
+import { EXPLORE_URL, ORG_URL } from '@/config/routes';
 import NoFeed from '@/components/empty_fillers/feed';
 import OrgMembersOnlyAndProtect from '@/utils/wrappers/org_members_only';
 import { useSelector } from 'react-redux';
@@ -45,7 +45,7 @@ const Events = () => {
   const currentOrg = useSelector(currentOrgSelector);
 
   const getEvents = () => {
-    const URL = `${ORG_URL}/${currentOrg.id}/events?page=${page}&limit=${10}`;
+    const URL = `${EXPLORE_URL}/events/org/${currentOrg.id}?page=${page}&limit=${10}`;
     getHandler(URL)
       .then(res => {
         if (res.statusCode === 200) {

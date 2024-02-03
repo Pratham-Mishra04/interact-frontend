@@ -87,6 +87,7 @@ const Projects = () => {
     if (tab && tab == 'projects') dispatch(setExploreTab(0));
     else if (tab && tab == 'openings') dispatch(setExploreTab(1));
     else if (tab && tab == 'users') dispatch(setExploreTab(2));
+    else if (tab && tab == 'organisations') dispatch(setExploreTab(3));
   }, []);
 
   const variants = ['grid-cols-1', 'grid-cols-2', 'grid-cols-3'];

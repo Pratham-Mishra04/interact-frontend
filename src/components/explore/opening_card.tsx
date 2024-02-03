@@ -3,6 +3,7 @@ import React from 'react';
 import Image from 'next/image';
 import { PROJECT_PIC_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import moment from 'moment';
+import { Buildings } from '@phosphor-icons/react';
 
 interface Props {
   opening: Opening;
@@ -51,7 +52,13 @@ const OpeningCard = ({ opening, clickedOpening, setClickedOnOpening, setClickedO
         <div className="w-5/6 flex flex-col gap-1">
           <div className="font-bold text-2xl max-lg:text-lg text-gradient">{opening.title}</div>
           <div className="font-medium text-lg max-lg:text-sm">
-            {org ? opening.project?.title : opening.organization?.title}
+            {org ? (
+              <span className="w-fit flex-center gap-1">
+                {opening.organization?.title} <Buildings />
+              </span>
+            ) : (
+              opening.project?.title
+            )}
           </div>
         </div>
 
