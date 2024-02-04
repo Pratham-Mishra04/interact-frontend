@@ -1,5 +1,5 @@
 import Loader from '@/components/common/loader';
-import { PROJECT_PIC_URL, WORKSPACE_URL } from '@/config/routes';
+import { PROJECT_PIC_URL, USER_PROFILE_PIC_URL, WORKSPACE_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import { Application } from '@/types';
 import Toaster from '@/utils/toaster';
@@ -11,7 +11,7 @@ import { useDispatch } from 'react-redux';
 import { setExploreTab } from '@/slices/feedSlice';
 import NoApplications from '@/components/empty_fillers/applications';
 import { SERVER_ERROR } from '@/config/errors';
-import { X, Plus, Check } from '@phosphor-icons/react';
+import { X, Plus, Check, Buildings } from '@phosphor-icons/react';
 
 const Applications = () => {
   const [applications, setApplications] = useState<Application[]>([]);
@@ -42,19 +42,9 @@ const Applications = () => {
     getApplications();
   }, []);
 
-  const getApplicationStatus = (status: number): string => {
-    switch (status) {
-      case -1:
-        return 'Rejected';
-      case 0:
-        return 'Submitted';
-      case 1:
-        return 'Under Review';
-      case 2:
-        return 'Accepted';
-      default:
-        return '';
-    }
+  const isOrg = (application: Application): boolean => {
+    if (application.organizationID) return true;
+    return false;
   };
 
   return (
@@ -106,16 +96,28 @@ const Applications = () => {
                           return <></>;
                       }
                     })()}
-                    <Image
-                      crossOrigin="anonymous"
-                      width={100}
-                      height={100}
-                      alt={'User Pic'}
-                      src={`${PROJECT_PIC_URL}/${application.project.coverPic}`}
-                      className={'w-[120px] h-[120px] max-lg:w-[90px] max-lg:h-[90px] rounded-lg object-cover'}
-                      placeholder="blur"
-                      blurDataURL={application.project.blurHash}
-                    />
+
+                    {isOrg(application) ? (
+                      <Image
+                        crossOrigin="anonymous"
+                        width={100}
+                        height={100}
+                        alt={'User Pic'}
+                        src={`${USER_PROFILE_PIC_URL}/${application.organization?.user.profilePic}`}
+                        className={'w-[120px] h-[120px] max-lg:w-[90px] max-lg:h-[90px] rounded-lg object-cover'}
+                      />
+                    ) : (
+                      <Image
+                        crossOrigin="anonymous"
+                        width={100}
+                        height={100}
+                        alt={'User Pic'}
+                        src={`${PROJECT_PIC_URL}/${application.project?.coverPic}`}
+                        className={'w-[120px] h-[120px] max-lg:w-[90px] max-lg:h-[90px] rounded-lg object-cover'}
+                        placeholder="blur"
+                        blurDataURL={application.project?.blurHash || 'no-hash'}
+                      />
+                    )}
 
                     <div className="grow flex flex-col gap-4 max-lg:gap-2">
                       <div className="flex items-center justify-between">
@@ -123,7 +125,15 @@ const Applications = () => {
                           <div className="w-fit font-bold text-2xl max-lg:text-lg text-gradient">
                             {application.opening.title}
                           </div>
-                          <div className="line-clamp-1 font-medium max-lg:text-sm">@{application.project.title}</div>
+                          <div className="line-clamp-1 font-medium max-lg:text-sm">
+                            {isOrg(application) ? (
+                              <span className="w-fit flex-center gap-1">
+                                {application.organization?.title} <Buildings />
+                              </span>
+                            ) : (
+                              application.project?.title
+                            )}
+                          </div>
                           <div className="text-gray-600 text-xs">{moment(application.createdAt).fromNow()}</div>
                         </div>
                         {/* <div className="text-sm max-lg:text-xs">{getApplicationStatus(application.status)}</div> */}

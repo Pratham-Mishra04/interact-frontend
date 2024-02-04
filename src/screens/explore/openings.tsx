@@ -5,7 +5,7 @@ import { SERVER_ERROR } from '@/config/errors';
 import { EXPLORE_URL, OPENING_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import OpeningView from '@/sections/explore/opening_view';
-import { Opening } from '@/types';
+import { Opening, Organization } from '@/types';
 import { initialOpening } from '@/types/initials';
 import Toaster from '@/utils/toaster';
 import { useWindowWidth } from '@react-hook/window-size';
@@ -88,6 +88,11 @@ const Openings = () => {
     else fetchOpenings(new URLSearchParams(window.location.search).get('search'));
   }, [window.location.search]);
 
+  const isOrg = (opening: Opening): boolean => {
+    if (opening.organizationID) return true;
+    return false;
+  };
+
   return (
     <div className="w-full flex flex-col gap-6 py-2">
       {loading ? (
@@ -111,14 +116,18 @@ const Openings = () => {
                       clickedOpening={clickedOpening}
                       setClickedOnOpening={setClickedOnOpening}
                       setClickedOpening={setClickedOpening}
+                      org={isOrg(opening)}
                     />
                   );
                 })}
               </InfiniteScroll>
-              {clickedOnOpening ? (
-                <OpeningView opening={clickedOpening} setShow={setClickedOnOpening} setOpening={setClickedOpening} />
-              ) : (
-                <></>
+              {clickedOnOpening && (
+                <OpeningView
+                  opening={clickedOpening}
+                  setShow={setClickedOnOpening}
+                  setOpening={setClickedOpening}
+                  org={isOrg(clickedOpening)}
+                />
               )}
             </div>
           ) : (

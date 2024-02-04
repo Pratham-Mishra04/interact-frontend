@@ -1,13 +1,11 @@
 import Loader from '@/components/common/loader';
 import { SERVER_ERROR } from '@/config/errors';
-import { OPENING_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import { Application } from '@/types';
 import Protect from '@/utils/wrappers/protect';
 import Toaster from '@/utils/toaster';
 import BaseWrapper from '@/wrappers/base';
 import MainWrapper from '@/wrappers/main';
-import Sidebar from '@/components/common/sidebar';
 import { ArrowArcLeft, SlidersHorizontal } from '@phosphor-icons/react';
 import { useRouter } from 'next/router';
 import { GetServerSidePropsContext } from 'next/types';
@@ -16,8 +14,8 @@ import ApplicationCard from '@/components/workspace/manage_project/application_c
 import ApplicationView from '@/sections/workspace/manage_project/application_view';
 import WidthCheck from '@/utils/wrappers/widthCheck';
 import { useSelector } from 'react-redux';
-import { userSelector } from '@/slices/userSlice';
 import OrgSidebar from '@/components/common/org_sidebar';
+import { currentOrgIDSelector } from '@/slices/orgSlice';
 
 interface Props {
   oid: string;
@@ -35,8 +33,10 @@ const Applications = ({ oid }: Props) => {
 
   const router = useRouter();
 
+  const currentOrgID = useSelector(currentOrgIDSelector);
+
   const fetchApplications = async () => {
-    const URL = `${OPENING_URL}/applications/${oid}`;
+    const URL = `/org/${currentOrgID}/org_openings/applications/${oid}`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
       const applicationData = res.data.applications || [];
@@ -77,11 +77,9 @@ const Applications = ({ oid }: Props) => {
   //     });
   // }, [clickedApplicationID]);
 
-  const user = useSelector(userSelector);
-
   return (
-    <BaseWrapper title="Applications">
-      {user.isOrganization ? <OrgSidebar index={3} /> : <Sidebar index={3} />}
+    <BaseWrapper title="Openings">
+      <OrgSidebar index={15}></OrgSidebar>
 
       <MainWrapper>
         <div className="w-full flex flex-col gap-4">
@@ -181,6 +179,7 @@ const Applications = ({ oid }: Props) => {
                         setShow={setClickedOnApplication}
                         setApplications={setApplications}
                         setFilteredApplications={setFilteredApplications}
+                        org={true}
                       />
                     ) : (
                       <></>

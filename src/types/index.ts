@@ -90,7 +90,9 @@ export interface Membership {
 export interface Opening {
   id: string;
   projectID: string;
-  project: Project;
+  project: Project | null;
+  organizationID: string;
+  organization: Organization | null;
   userID: string;
   user: User;
   title: string;
@@ -101,7 +103,6 @@ export interface Opening {
   tags: string[];
   active: boolean;
   createdAt: Date;
-  organizationID:string
 }
 
 export interface Profile {
@@ -257,7 +258,9 @@ export interface Application {
   openingID: string;
   opening: Opening;
   projectID: string;
-  project: Project;
+  project: Project | null;
+  organizationID: string;
+  organization: Organization | null;
   userID: string;
   user: User;
   email: string;

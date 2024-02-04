@@ -1,29 +1,32 @@
-import { OPENING_URL, PROJECT_PIC_URL } from '@/config/routes';
-import { Opening, Project } from '@/types';
+import { USER_PROFILE_PIC_URL } from '@/config/routes';
+import { Opening } from '@/types';
 import Toaster from '@/utils/toaster';
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Tags from '@/components/utils/edit_tags';
 import patchHandler from '@/handlers/patch_handler';
 import { SERVER_ERROR } from '@/config/errors';
+import { useSelector } from 'react-redux';
+import { currentOrgSelector } from '@/slices/orgSlice';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   opening: Opening;
-  project: Project;
-  setProject?: React.Dispatch<React.SetStateAction<Project>>;
+  setOpenings: React.Dispatch<React.SetStateAction<Opening[]>>;
 }
 
-const EditOpening = ({ setShow, opening, project, setProject }: Props) => {
+const EditOpening = ({ setShow, opening, setOpenings }: Props) => {
   const [description, setDescription] = useState(opening.description);
   const [tags, setTags] = useState<string[]>(opening.tags || []);
-  const [active, setActive] = useState(opening.active); //TODO have different manager route for this
+  const [active, setActive] = useState(opening.active);
 
   const [mutex, setMutex] = useState(false);
 
+  const currentOrg = useSelector(currentOrgSelector);
+
   const handleSubmit = async () => {
-    if (tags.length == 0) {
-      Toaster.error('Tags Cannot be Empty');
+    if (tags.length < 3) {
+      Toaster.error('Add at least 3 tags');
       return;
     }
 
@@ -38,21 +41,18 @@ const EditOpening = ({ setShow, opening, project, setProject }: Props) => {
       active,
     };
 
-    const URL = `${OPENING_URL}/${opening.id}`;
+    const URL = `/org/${currentOrg.id}/org_openings/${opening.id}`;
 
     const res = await patchHandler(URL, formData);
 
     if (res.statusCode === 200) {
-      if (setProject)
-        setProject(prev => {
-          let openings = prev.openings;
-          openings = openings.map(oldOpening => {
-            if (oldOpening.id == opening.id) {
-              return { ...oldOpening, description, tags, active };
-            } else return oldOpening;
-          });
-          return { ...prev, openings };
-        });
+      setOpenings(prev =>
+        prev.map(o => {
+          if (o.id == opening.id) {
+            return { ...o, description, tags, active };
+          } else return o;
+        })
+      );
       Toaster.stopLoad(toaster, 'Opening Edited', 1);
       setShow(false);
     } else {
@@ -71,16 +71,14 @@ const EditOpening = ({ setShow, opening, project, setProject }: Props) => {
               width={100}
               height={100}
               alt={'User Pic'}
-              src={`${PROJECT_PIC_URL}/${project.coverPic}`}
-              className={'w-[160px] h-[160px] max-lg:w-[120px] max-lg:h-[120px] rounded-lg object-cover'}
-              placeholder="blur"
-              blurDataURL={project.blurHash}
+              src={`${USER_PROFILE_PIC_URL}/${opening.organization?.user.profile}`}
+              className={'w-[140px] h-[140px] max-lg:w-[90px] max-lg:h-[90px] rounded-lg object-cover'}
             />
             <div className="grow flex flex-col gap-2 max-md:text-center">
               <div className="w-full text-4xl max-lg:text-3xl font-bold text-gradient cursor-default">
                 {opening.title}
               </div>
-              <div className="text-xl font-medium cursor-default">@{project.title}</div>
+              <div className="text-xl font-medium cursor-default">@{currentOrg.title}</div>
 
               <div className="w-full flex flex-col gap-2 my-4">
                 <div className="text-xs ml-1 font-medium uppercase text-gray-500">Tags ({tags.length || 0}/10)</div>

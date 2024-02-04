@@ -1,17 +1,19 @@
 import { Opening } from '@/types';
 import React from 'react';
 import Image from 'next/image';
-import { PROJECT_PIC_URL } from '@/config/routes';
+import { PROJECT_PIC_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import moment from 'moment';
+import { Buildings } from '@phosphor-icons/react';
 
 interface Props {
   opening: Opening;
   clickedOpening?: Opening;
   setClickedOnOpening?: React.Dispatch<React.SetStateAction<boolean>>;
   setClickedOpening?: React.Dispatch<React.SetStateAction<Opening>>;
+  org?: boolean;
 }
 
-const OpeningCard = ({ opening, clickedOpening, setClickedOnOpening, setClickedOpening }: Props) => {
+const OpeningCard = ({ opening, clickedOpening, setClickedOnOpening, setClickedOpening, org = false }: Props) => {
   return (
     <div
       onClick={() => {
@@ -24,21 +26,40 @@ const OpeningCard = ({ opening, clickedOpening, setClickedOnOpening, setClickedO
           : 'hover:bg-gray-100 dark:hover:bg-transparent'
       } font-primary dark:text-white border-[1px] border-primary_btn dark:border-dark_primary_btn rounded-lg p-4 flex items-center gap-4 transition-ease-300 cursor-pointer`}
     >
-      <Image
-        crossOrigin="anonymous"
-        width={200}
-        height={200}
-        alt={'User Pic'}
-        src={`${PROJECT_PIC_URL}/${opening.project.coverPic}`}
-        className={'w-[140px] h-[140px] max-lg:w-[90px] max-lg:h-[90px] rounded-lg object-cover'}
-        placeholder="blur"
-        blurDataURL={opening.project.blurHash}
-      />
+      {org ? (
+        <Image
+          crossOrigin="anonymous"
+          width={200}
+          height={200}
+          alt={'User Pic'}
+          src={`${USER_PROFILE_PIC_URL}/${opening.organization?.user?.coverPic}`}
+          className={'w-[140px] h-[140px] max-lg:w-[90px] max-lg:h-[90px] rounded-lg object-cover'}
+        />
+      ) : (
+        <Image
+          crossOrigin="anonymous"
+          width={200}
+          height={200}
+          alt={'User Pic'}
+          src={`${PROJECT_PIC_URL}/${opening.project?.coverPic}`}
+          className={'w-[140px] h-[140px] max-lg:w-[90px] max-lg:h-[90px] rounded-lg object-cover'}
+          placeholder="blur"
+          blurDataURL={opening.project?.blurHash || 'no-hash'}
+        />
+      )}
 
       <div className="grow flex flex-col gap-2">
         <div className="w-5/6 flex flex-col gap-1">
           <div className="font-bold text-2xl max-lg:text-lg text-gradient">{opening.title}</div>
-          <div className="font-medium text-lg max-lg:text-sm">{opening.project.title}</div>
+          <div className="font-medium text-lg max-lg:text-sm">
+            {org ? (
+              <span className="w-fit flex-center gap-1">
+                {opening.organization?.title} <Buildings />
+              </span>
+            ) : (
+              opening.project?.title
+            )}
+          </div>
         </div>
 
         {opening.tags.length > 0 ? (

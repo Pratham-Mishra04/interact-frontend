@@ -130,6 +130,7 @@ export const initialOpening: Opening = {
   projectID: '',
   project: initialProject,
   organizationID: '',
+  organization: null,
   userID: '',
   user: initialUser,
   title: '',

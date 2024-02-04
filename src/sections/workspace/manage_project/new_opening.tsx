@@ -5,6 +5,7 @@ import Toaster from '@/utils/toaster';
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Tags from '@/components/utils/edit_tags';
+import { SERVER_ERROR } from '@/config/errors';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -62,7 +63,7 @@ const NewOpening = ({ setShow, project, setProject }: Props) => {
     } else {
       if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
       else {
-        Toaster.stopLoad(toaster, 'Internal Server Error.', 0);
+        Toaster.stopLoad(toaster, SERVER_ERROR, 0);
       }
     }
     setMutex(false);

@@ -106,7 +106,7 @@ const ProjectView = ({
       setClickedOnProject(false);
       Toaster.stopLoad(toaster, 'Left the Project', 1);
     } else {
-      Toaster.stopLoad(toaster, 'Internal Server Error.', 0);
+      Toaster.stopLoad(toaster, SERVER_ERROR, 0);
     }
   };
 

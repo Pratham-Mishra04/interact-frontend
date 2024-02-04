@@ -8,6 +8,7 @@ import { Opening } from '@/types';
 import { SERVER_ERROR } from '@/config/errors';
 import Image from 'next/image';
 import { USER_PROFILE_PIC_URL } from '@/config/routes';
+import { initialOpening } from '@/types/initials';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -42,16 +43,16 @@ const NewOpening = ({ setShow, openings, setOpenings }: Props) => {
       tags,
     };
 
-    const URL = `org/${currentOrg.id}/openings`;
+    const URL = `org/${currentOrg.id}/org_openings`;
 
     const res = await postHandler(URL, formData);
     if (res.statusCode === 201) {
-      const addOpening = [...openings, res.data.opening];
-      setOpenings(addOpening);
-      Toaster.stopLoad(toaster, 'Opening created', 1);
+      setOpenings([res.data.opening || initialOpening, ...(openings || [])]);
       setDescription('');
       setTitle('');
       setTags([]);
+      setShow(false);
+      Toaster.stopLoad(toaster, 'Opening created', 1);
     } else {
       if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
       else {
