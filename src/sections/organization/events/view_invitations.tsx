@@ -6,6 +6,8 @@ import { Invitation } from '@/types';
 import Toaster from '@/utils/toaster';
 import Loader from '@/components/common/loader';
 import EventInvitationCard from '@/components/invitations/event_invitation_card';
+import { useSelector } from 'react-redux';
+import { currentOrgSelector } from '@/slices/orgSlice';
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -13,10 +15,11 @@ interface Props {
 const ViewInvitations = ({ setShow }: Props) => {
   const [loading, setLoading] = useState(true);
   const [coHostInvitations, setCoHostInvitations] = useState<Invitation[]>([]);
-
+  const currentOrg = useSelector(currentOrgSelector);
   const fetchInvitations = async () => {
     setLoading(true);
-    const URL = `${INVITATION_URL}/me`;
+    console.log(currentOrg.id);
+    const URL = `/org/${currentOrg.id}/events/invitations`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
       const invitationData = res.data.invitations;
