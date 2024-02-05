@@ -15,7 +15,7 @@ import moment from 'moment';
 import getHandler from '@/handlers/get_handler';
 import { Id } from 'react-toastify';
 import Image from 'next/image';
-
+import { EXPLORE_URL } from '@/config/routes';
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   setEvents: React.Dispatch<React.SetStateAction<Event[]>>;
@@ -43,6 +43,13 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
 
   const [mutex, setMutex] = useState(false);
 
+  const [organizations, setOrganizations] = useState<User[]>([]);
+  const [matchedOrgs, setMatchedOrgs] = useState<User[]>([]);
+  const [orgSearch, setOrgSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
+  const [selectedOrganization, setSelectedOrganization] = useState<User[]>([]);
   const currentOrg = useSelector(currentOrgSelector);
 
   const getMemberships = async () => {
@@ -60,6 +67,32 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
       }
     }
   };
+  const getOrganizations = async (search: string | null) => {
+    const sub_url = 'orgs';
+    const URL = `${EXPLORE_URL}/${sub_url}/trending?page=${page}&limit=${20}`;
+    const res = await getHandler(URL);
+    if (res.statusCode == 200) {
+      if (search && search != '') {
+        setOrganizations(res.data.users || []);
+        setMatchedOrgs(res.data.users || []);
+        setHasMore(false);
+      } else {
+        if (!search && page == 1) {
+          setOrganizations(res.data.users || []);
+          setMatchedOrgs(res.data.users || []);
+        } else {
+          const addedUsers = [...users, ...(res.data.users || [])];
+          if (addedUsers.length === users.length) setHasMore(false);
+          setOrganizations(addedUsers);
+        }
+        setPage(prev => prev + 1);
+      }
+      setLoading(false);
+    } else {
+      if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
+      else Toaster.error(SERVER_ERROR, 'error_toaster');
+    }
+  };
 
   const addCoordinators = async (toaster: Id, eventID: string) => {
     if (selectedUsers.length == 0) {
@@ -73,6 +106,23 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
 
     if (res.statusCode === 200) {
       Toaster.stopLoad(toaster, 'Event Added!', 1);
+    } else {
+      if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
+      else Toaster.stopLoad(toaster, SERVER_ERROR, 0);
+    }
+  };
+  const addCohosts = async (toaster: Id, eventID: string) => {
+    if (selectedOrganization.length == 0) {
+      Toaster.stopLoad(toaster, 'Event Added!', 1);
+      return;
+    }
+
+    const URL = `${ORG_URL}/${currentOrg.id}/events/${eventID}/cohost`;
+
+    const res = await postHandler(URL, { organizationID: selectedOrganization.map(org => org.id) });
+
+    if (res.statusCode === 200) {
+      Toaster.stopLoad(toaster, 'Co-host added!', 1);
     } else {
       if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
       else Toaster.stopLoad(toaster, SERVER_ERROR, 0);
@@ -145,6 +195,7 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
       setEvents(prev => [event, ...prev]);
 
       await addCoordinators(toaster, event.id);
+      await addCohosts(toaster, event.id);
       setShow(false);
     } else if (res.statusCode == 413) {
       Toaster.stopLoad(toaster, 'Image too large', 0);
@@ -167,11 +218,23 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
     setUsers(matchedUsers);
   };
 
+  const fetchOrganizations = async (key: string) => {
+    const matchedOrgs: User[] = [];
+    organizations.forEach(organization => {
+      if (organization.name.match(new RegExp(key, 'i'))) matchedOrgs.push(organization);
+      else if (organization.name.match(new RegExp(key, 'i'))) matchedOrgs.push(organization);
+    });
+    setMatchedOrgs(matchedOrgs);
+  };
+
   const handleChange = (el: React.ChangeEvent<HTMLInputElement>) => {
     fetchUsers(el.target.value);
     setSearch(el.target.value);
   };
-
+  const handleOrgChange = (el: React.ChangeEvent<HTMLInputElement>) => {
+    fetchOrganizations(el.target.value);
+    setOrgSearch(el.target.value);
+  };
   const handleClickUser = (user: User) => {
     if (selectedUsers.includes(user)) {
       setSelectedUsers(prev => prev.filter(u => u.id != user.id));
@@ -179,10 +242,18 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
       setSelectedUsers(prev => [...prev, user]);
     }
   };
+  const handleClickOrganization = (org: User) => {
+    if (selectedOrganization.includes(org)) {
+      setSelectedOrganization(prev => prev.filter(u => u.id != org.id));
+    } else {
+      setSelectedOrganization(prev => [...prev, org]);
+    }
+  };
 
   useEffect(() => {
+    setPage(1);
     getMemberships();
-
+    getOrganizations('');
     document.documentElement.style.overflowY = 'hidden';
     document.documentElement.style.height = '100vh';
 
@@ -354,7 +425,7 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
               )}
             </div>
           </div>
-        ) : (
+        ) : step === 2 ? (
           <div className="w-full flex flex-col gap-4 ">
             <div className="text-3xl max-md:text-xl font-semibold">Confirm Coordinators</div>
             {selectedUsers.length == 0 ? (
@@ -397,6 +468,97 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
               </div>
             )}
           </div>
+        ) : step === 3 ? (
+          <div className="w-full flex flex-col gap-4 ">
+            <div className="text-3xl max-md:text-xl font-semibold">Select Co-host</div>
+            <div className="w-full h-[420px] flex flex-col gap-4">
+              <div className="w-full h-12 flex items-center px-4 gap-4 dark:bg-dark_primary_comp_hover rounded-md">
+                <MagnifyingGlass size={24} />
+                <input
+                  className="grow bg-transparent focus:outline-none font-medium"
+                  placeholder="Search"
+                  value={orgSearch}
+                  onChange={handleOrgChange}
+                />
+              </div>
+              {matchedOrgs.length == 0 ? (
+                <div className="h-64 text-xl flex-center">No other Organisation found :(</div>
+              ) : (
+                <div className="w-full flex-1 flex flex-col gap-2 overflow-y-auto">
+                  {matchedOrgs.map(org => {
+                    return (
+                      <div
+                        key={org.id}
+                        onClick={() => handleClickOrganization(org)}
+                        className={`w-full flex gap-2 rounded-lg p-2 ${
+                          selectedOrganization.includes(org)
+                            ? 'bg-primary_comp_hover dark:bg-dark_primary_comp_active'
+                            : 'hover:bg-primary_comp dark:bg-dark_primary_comp dark:hover:bg-dark_primary_comp_hover'
+                        } cursor-pointer transition-ease-200`}
+                      >
+                        <Image
+                          crossOrigin="anonymous"
+                          width={50}
+                          height={50}
+                          alt={'Org Pic'}
+                          src={`${USER_PROFILE_PIC_URL}/${org.profilePic}`}
+                          className={'rounded-full w-12 h-12 cursor-pointer border-[1px] border-black'}
+                        />
+                        <div className="w-5/6 flex flex-col">
+                          <div className="text-lg font-bold">{org.name}</div>
+                          <div className="text-sm dark:text-gray-200">@{org.username}</div>
+                          {org.tagline && org.tagline != '' ? <div className="text-sm mt-2">{org.tagline}</div> : <></>}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="w-full flex flex-col gap-4 ">
+            <div className="text-3xl max-md:text-xl font-semibold">Confirm Co-host&apos;s</div>
+            {selectedOrganization.length == 0 ? (
+              <div className="h-64 text-xl flex-center">Selected Co-host&apos;s will be shown here :)</div>
+            ) : (
+              <div className="w-full  h-[420px] flex flex-col gap-2">
+                {selectedOrganization.map((org, index) => {
+                  return (
+                    <div
+                      key={org.id}
+                      className="w-full flex justify-between items-center rounded-lg p-2 dark:bg-dark_primary_comp_hover cursor-default transition-ease-200"
+                    >
+                      <div className="w-fit flex gap-2 items-center">
+                        <Image
+                          crossOrigin="anonymous"
+                          width={50}
+                          height={50}
+                          alt={'User Pic'}
+                          src={`${USER_PROFILE_PIC_URL}/${org.profilePic}`}
+                          className={'rounded-full w-12 h-12 cursor-pointer border-[1px] border-black'}
+                        />
+                        <div className="grow flex flex-wrap justify-between items-center">
+                          <div className="flex flex-col">
+                            <div className="text-lg font-bold">{org.name}</div>
+                            <div className="text-sm dark:text-gray-200">@{org.username}</div>
+                          </div>
+                        </div>
+                      </div>
+                      <X
+                        onClick={() => {
+                          setSelectedOrganization(prev => prev.filter(u => u.id != org.id));
+                        }}
+                        className="cursor-pointer"
+                        size={24}
+                        weight="bold"
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         )}
 
         <div className="w-full flex items-end justify-between">
@@ -410,7 +572,7 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
           ) : (
             <div></div>
           )}
-          {step != 2 ? (
+          {step != 4 ? (
             <div
               onClick={() => setStep(prev => prev + 1)}
               className="w-fit text-lg py-2 font-medium px-4 shadow-md hover:bg-[#ffffff40] hover:shadow-lg transition-ease-500 rounded-xl cursor-pointer"
