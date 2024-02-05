@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { SERVER_ERROR } from '@/config/errors';
-import { INVITATION_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import { Invitation } from '@/types';
 import Toaster from '@/utils/toaster';
@@ -8,6 +7,7 @@ import Loader from '@/components/common/loader';
 import EventInvitationCard from '@/components/invitations/event_invitation_card';
 import { useSelector } from 'react-redux';
 import { currentOrgSelector } from '@/slices/orgSlice';
+
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -16,16 +16,12 @@ const ViewInvitations = ({ setShow }: Props) => {
   const [loading, setLoading] = useState(true);
   const [coHostInvitations, setCoHostInvitations] = useState<Invitation[]>([]);
   const currentOrg = useSelector(currentOrgSelector);
+
   const fetchInvitations = async () => {
-    setLoading(true);
-    console.log(currentOrg.id);
     const URL = `/org/${currentOrg.id}/events/invitations`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
-      const invitationData = res.data.invitations;
-      setCoHostInvitations(
-        invitationData.filter((invitation: Invitation) => invitation.organizationID && invitation.organizationID != '')
-      );
+      setCoHostInvitations(res.data.invitations || []);
       setLoading(false);
     } else {
       if (res.data.message) Toaster.error(res.data.message, 'error_toaster');

@@ -111,18 +111,19 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
       else Toaster.stopLoad(toaster, SERVER_ERROR, 0);
     }
   };
-  const addCohosts = async (toaster: Id, eventID: string) => {
+  const addCohosts = async (eventID: string) => {
     if (selectedOrganization.length == 0) {
-      Toaster.stopLoad(toaster, 'Event Added!', 1);
       return;
     }
+
+    const toaster = Toaster.startLoad('Sending Invitations..', 'cohost_invitations');
 
     const URL = `${ORG_URL}/${currentOrg.id}/events/${eventID}/cohost`;
 
     const res = await postHandler(URL, { organizationID: selectedOrganization.map(org => org.id) });
 
     if (res.statusCode === 200) {
-      Toaster.stopLoad(toaster, 'Co-host added!', 1);
+      Toaster.stopLoad(toaster, 'Invitations Sent!', 1);
     } else {
       if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
       else Toaster.stopLoad(toaster, SERVER_ERROR, 0);
@@ -195,7 +196,8 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
       setEvents(prev => [event, ...prev]);
 
       await addCoordinators(toaster, event.id);
-      await addCohosts(toaster, event.id);
+      await addCohosts(event.id);
+
       setShow(false);
     } else if (res.statusCode == 413) {
       Toaster.stopLoad(toaster, 'Image too large', 0);
@@ -484,6 +486,7 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
               {matchedOrgs.length == 0 ? (
                 <div className="h-64 text-xl flex-center">No other Organisation found :(</div>
               ) : (
+                //TODO change to infinite scroll component
                 <div className="w-full flex-1 flex flex-col gap-2 overflow-y-auto">
                   {matchedOrgs.map(org => {
                     return (
