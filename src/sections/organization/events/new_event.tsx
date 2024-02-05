@@ -16,6 +16,7 @@ import getHandler from '@/handlers/get_handler';
 import { Id } from 'react-toastify';
 import Image from 'next/image';
 import { EXPLORE_URL } from '@/config/routes';
+
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   setEvents: React.Dispatch<React.SetStateAction<Event[]>>;
@@ -43,13 +44,14 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
 
   const [mutex, setMutex] = useState(false);
 
-  const [organizations, setOrganizations] = useState<User[]>([]);
-  const [matchedOrgs, setMatchedOrgs] = useState<User[]>([]);
+  const [organizationalUsers, setOrganizationalUsers] = useState<User[]>([]);
+  const [matchedOrgUsers, setMatchedOrgUsers] = useState<User[]>([]);
   const [orgSearch, setOrgSearch] = useState('');
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
-  const [selectedOrganization, setSelectedOrganization] = useState<User[]>([]);
+  const [selectedOrganizationalUsers, setSelectedOrganizationalUsers] = useState<User[]>([]);
+
   const currentOrg = useSelector(currentOrgSelector);
 
   const getMemberships = async () => {
@@ -67,23 +69,25 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
       }
     }
   };
+
   const getOrganizations = async (search: string | null) => {
-    const sub_url = 'orgs';
-    const URL = `${EXPLORE_URL}/${sub_url}/trending?page=${page}&limit=${20}`;
+    const URL = `${EXPLORE_URL}/orgs/trending?page=${page}&limit=${20}`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
+      let orgUsers: User[] = res.data.users || [];
+      orgUsers = orgUsers.filter(u => u.id != currentOrg.userID);
       if (search && search != '') {
-        setOrganizations(res.data.users || []);
-        setMatchedOrgs(res.data.users || []);
+        setOrganizationalUsers(orgUsers);
+        setMatchedOrgUsers(orgUsers);
         setHasMore(false);
       } else {
         if (!search && page == 1) {
-          setOrganizations(res.data.users || []);
-          setMatchedOrgs(res.data.users || []);
+          setOrganizationalUsers(orgUsers);
+          setMatchedOrgUsers(orgUsers);
         } else {
-          const addedUsers = [...users, ...(res.data.users || [])];
+          const addedUsers = [...users, ...orgUsers];
           if (addedUsers.length === users.length) setHasMore(false);
-          setOrganizations(addedUsers);
+          setOrganizationalUsers(addedUsers);
         }
         setPage(prev => prev + 1);
       }
@@ -111,8 +115,9 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
       else Toaster.stopLoad(toaster, SERVER_ERROR, 0);
     }
   };
+
   const addCohosts = async (eventID: string) => {
-    if (selectedOrganization.length == 0) {
+    if (selectedOrganizationalUsers.length == 0) {
       return;
     }
 
@@ -120,7 +125,9 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
 
     const URL = `${ORG_URL}/${currentOrg.id}/events/${eventID}/cohost`;
 
-    const res = await postHandler(URL, { organizationID: selectedOrganization.map(org => org.id) });
+    const res = await postHandler(URL, {
+      organizationIDs: selectedOrganizationalUsers.map(user => user.organization?.id),
+    });
 
     if (res.statusCode === 200) {
       Toaster.stopLoad(toaster, 'Invitations Sent!', 1);
@@ -221,22 +228,24 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
   };
 
   const fetchOrganizations = async (key: string) => {
-    const matchedOrgs: User[] = [];
-    organizations.forEach(organization => {
-      if (organization.name.match(new RegExp(key, 'i'))) matchedOrgs.push(organization);
-      else if (organization.name.match(new RegExp(key, 'i'))) matchedOrgs.push(organization);
+    const matchedOrgUsers: User[] = [];
+    organizationalUsers.forEach(organizationalUser => {
+      if (organizationalUser.name.match(new RegExp(key, 'i'))) matchedOrgUsers.push(organizationalUser);
+      else if (organizationalUser.username.match(new RegExp(key, 'i'))) matchedOrgUsers.push(organizationalUser);
     });
-    setMatchedOrgs(matchedOrgs);
+    setMatchedOrgUsers(matchedOrgUsers);
   };
 
   const handleChange = (el: React.ChangeEvent<HTMLInputElement>) => {
     fetchUsers(el.target.value);
     setSearch(el.target.value);
   };
+
   const handleOrgChange = (el: React.ChangeEvent<HTMLInputElement>) => {
     fetchOrganizations(el.target.value);
     setOrgSearch(el.target.value);
   };
+
   const handleClickUser = (user: User) => {
     if (selectedUsers.includes(user)) {
       setSelectedUsers(prev => prev.filter(u => u.id != user.id));
@@ -244,11 +253,12 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
       setSelectedUsers(prev => [...prev, user]);
     }
   };
-  const handleClickOrganization = (org: User) => {
-    if (selectedOrganization.includes(org)) {
-      setSelectedOrganization(prev => prev.filter(u => u.id != org.id));
+
+  const handleClickOrganization = (orgUser: User) => {
+    if (selectedOrganizationalUsers.includes(orgUser)) {
+      setSelectedOrganizationalUsers(prev => prev.filter(u => u.id != orgUser.id));
     } else {
-      setSelectedOrganization(prev => [...prev, org]);
+      setSelectedOrganizationalUsers(prev => [...prev, orgUser]);
     }
   };
 
@@ -483,18 +493,18 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
                   onChange={handleOrgChange}
                 />
               </div>
-              {matchedOrgs.length == 0 ? (
+              {matchedOrgUsers.length == 0 ? (
                 <div className="h-64 text-xl flex-center">No other Organisation found :(</div>
               ) : (
                 //TODO change to infinite scroll component
                 <div className="w-full flex-1 flex flex-col gap-2 overflow-y-auto">
-                  {matchedOrgs.map(org => {
+                  {matchedOrgUsers.map(org => {
                     return (
                       <div
                         key={org.id}
                         onClick={() => handleClickOrganization(org)}
                         className={`w-full flex gap-2 rounded-lg p-2 ${
-                          selectedOrganization.includes(org)
+                          selectedOrganizationalUsers.includes(org)
                             ? 'bg-primary_comp_hover dark:bg-dark_primary_comp_active'
                             : 'hover:bg-primary_comp dark:bg-dark_primary_comp dark:hover:bg-dark_primary_comp_hover'
                         } cursor-pointer transition-ease-200`}
@@ -522,11 +532,11 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
         ) : (
           <div className="w-full flex flex-col gap-4 ">
             <div className="text-3xl max-md:text-xl font-semibold">Confirm Co-host&apos;s</div>
-            {selectedOrganization.length == 0 ? (
+            {selectedOrganizationalUsers.length == 0 ? (
               <div className="h-64 text-xl flex-center">Selected Co-host&apos;s will be shown here :)</div>
             ) : (
               <div className="w-full  h-[420px] flex flex-col gap-2">
-                {selectedOrganization.map((org, index) => {
+                {selectedOrganizationalUsers.map((org, index) => {
                   return (
                     <div
                       key={org.id}
@@ -550,7 +560,7 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
                       </div>
                       <X
                         onClick={() => {
-                          setSelectedOrganization(prev => prev.filter(u => u.id != org.id));
+                          setSelectedOrganizationalUsers(prev => prev.filter(u => u.id != org.id));
                         }}
                         className="cursor-pointer"
                         size={24}

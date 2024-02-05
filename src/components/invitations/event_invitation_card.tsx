@@ -1,7 +1,7 @@
 import { Invitation } from '@/types';
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { INVITATION_URL, PROJECT_PIC_URL } from '@/config/routes';
+import { EVENT_PIC_URL, INVITATION_URL, PROJECT_PIC_URL } from '@/config/routes';
 import moment from 'moment';
 import Link from 'next/link';
 import Toaster from '@/utils/toaster';
@@ -99,19 +99,13 @@ const EventInvitationCard = ({ invitation, setInvitations }: Props) => {
           width={100}
           height={100}
           alt={'User Pic'}
-          src={`${PROJECT_PIC_URL}/${invitation.project.coverPic}`}
-          className={'rounded-md w-32 h-32'}
-          placeholder="blur"
-          blurDataURL={invitation.project.blurHash}
+          src={`${EVENT_PIC_URL}/${invitation.event?.coverPic}`}
+          className="rounded-md w-32 h-32"
         />
       </Link>
       <div className="grow flex max-md:flex-col max-md:text-center max-md:gap-4 items-center justify-between">
         <div className="grow flex flex-col gap-2">
-          <Link
-            target="_blank"
-            href={`/explore?pid=${invitation.project.slug}`}
-            className="text-3xl font-bold text-gradient"
-          >
+          <Link target="_blank" href={`/events/${invitation.event?.id}`} className="text-3xl font-bold text-gradient">
             {invitation.project.title}
           </Link>
           <div className="font-semibold">{invitation.title}</div>

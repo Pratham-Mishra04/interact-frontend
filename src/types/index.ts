@@ -397,6 +397,8 @@ export interface Invitation {
   organization: Organization;
   chatID: string;
   chat: GroupChat;
+  eventID: string;
+  event: Event | null;
   title: string;
   status: number;
   isRead: boolean;

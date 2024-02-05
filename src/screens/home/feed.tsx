@@ -49,7 +49,6 @@ const Feed = () => {
         }
       })
       .catch(err => {
-        console.log(err);
         Toaster.error(SERVER_ERROR, 'error_toaster');
       });
   };
