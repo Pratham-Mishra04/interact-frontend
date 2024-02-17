@@ -16,7 +16,7 @@ import {
   Ticket,
   Wrench,
   BookOpenText,
-  EnvelopeSimpleOpen
+  EnvelopeSimpleOpen,
 } from '@phosphor-icons/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { navbarOpenSelector, setNavbarOpen } from '@/slices/feedSlice';
@@ -159,7 +159,7 @@ const OrgSidebar = ({ index }: Props) => {
           />
         </div>
 
-        <div className="w-fit py-4 mt-4 border-y-2 border-gray-300 dark:border-dark_primary_btn flex flex-col gap-2">
+        <div className="w-fit py-4 mt-4 border-t-2 border-gray-300 dark:border-dark_primary_btn flex flex-col gap-2">
           {user.isOrganization ? (
             <>
               <SidebarItem
@@ -227,13 +227,13 @@ const OrgSidebar = ({ index }: Props) => {
           )}
         </div>
 
-        <ArrowLineLeft
+        {/* <ArrowLineLeft
           onClick={() => dispatch(setNavbarOpen(!open))}
           className={`cursor-pointer ml-2 mt-2 ${
             open ? 'rotate-0' : '-rotate-180'
           } text-gray-500 dark:text-white transition-ease-500`}
           size={24}
-        />
+        /> */}
       </div>
       <BottomBar index={index} />
     </>

@@ -58,6 +58,7 @@ const config: Config = {
         dark_primary_comp_active: '#c578bf5d',
         primary_danger: '#ea333e',
         primary_black: '#2e2c2c',
+        heart_filled: '#fe251baa',
       },
       backgroundColor: {
         backdrop: '#0000003f',

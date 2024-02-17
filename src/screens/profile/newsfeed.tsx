@@ -6,7 +6,7 @@ import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import PollCard from '@/components/organization/poll_card';
 import { initialOrganization } from '@/types/initials';
-import AnnouncementCard from '@/components/organization/announcement';
+import AnnouncementCard from '@/components/organization/announcement_card';
 import Loader from '@/components/common/loader';
 
 interface Props {

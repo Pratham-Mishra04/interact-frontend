@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Announcement, Poll, Post } from '@/types';
+import { Post } from '@/types';
 import { ORG_URL, POST_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import moment from 'moment';
 import Link from 'next/link';
@@ -192,7 +192,7 @@ const RePost = ({ post, showLowerPost = true, setFeed, org = false }: Props) => 
             {post.user.username}
             {post.user.isOrganization ? <Buildings weight="duotone" /> : <></>}
           </Link>
-          <div className="flex gap-2 font-light text-xs">
+          <div className="flex gap-2 text-xs text-gray-400">
             <div>{moment(post.postedAt).fromNow()}</div>
             {!clickedOnEdit && showLowerPost ? (
               <div

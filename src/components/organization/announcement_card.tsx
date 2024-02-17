@@ -24,7 +24,7 @@ interface Props {
   setAnnouncements?: React.Dispatch<React.SetStateAction<Announcement[]>>;
 }
 
-const Announcement = ({ announcement, setAnnouncements }: Props) => {
+const AnnouncementCard = ({ announcement, setAnnouncements }: Props) => {
   const [clickedOnOptions, setClickedOnOptions] = useState(false);
   const [clickedOnEdit, setClickedOnEdit] = useState(false);
   const [clickedOnDelete, setClickedOnDelete] = useState(false);
@@ -178,8 +178,27 @@ const Announcement = ({ announcement, setAnnouncements }: Props) => {
       ) : (
         <></>
       )}
-      <div className={`w-full flex flex-col gap-4 ${clickedOnEdit ? 'pb-8' : ''}`}>
-        <div className="w-full flex justify-between items-center">
+      <Link
+        href={
+          userID == announcement.organization?.userID
+            ? '/organisation/profile'
+            : `/explore/organisation/${announcement.organization?.user.username}`
+        }
+        target="_blank"
+        className="h-full flex items-center gap-2"
+      >
+        <Image
+          crossOrigin="anonymous"
+          width={100}
+          height={100}
+          alt={'User Pic'}
+          src={`${USER_PROFILE_PIC_URL}/${announcement.organization?.user.profilePic}`}
+          className="rounded-full w-8 h-8"
+        />
+      </Link>
+
+      <div className="grow max-w-[94%] max-md:max-w-[85%] flex flex-col gap-2">
+        <div className="w-full h-fit flex justify-between">
           <Link
             href={
               userID == announcement.organization?.userID
@@ -187,24 +206,13 @@ const Announcement = ({ announcement, setAnnouncements }: Props) => {
                 : `/explore/organisation/${announcement.organization?.user.username}`
             }
             target="_blank"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 font-medium"
           >
-            <Image
-              crossOrigin="anonymous"
-              width={100}
-              height={100}
-              alt={'User Pic'}
-              src={`${USER_PROFILE_PIC_URL}/${announcement.organization?.user.profilePic}`}
-              className="rounded-full w-10 h-10"
-            />
-            <div className="w-fit">
-              <div className="text-xl font-semibold">{announcement.organization?.user.name}</div>
-              <div className="text-xs">@{announcement.organization?.user.username}</div>
-            </div>
+            {announcement.organization?.user.username}
           </Link>
-          <div className="flex-center gap-2 font-medium text-xs">
+          <div className="flex-center gap-2 text-xs text-gray-400">
             {announcement.isEdited ? <div>(edited)</div> : <></>}
-            <div className="text-gray-400">{moment(announcement.createdAt).fromNow()}</div>
+            <div>{moment(announcement.createdAt).fromNow()}</div>
 
             {!clickedOnEdit && (
               <div
@@ -263,7 +271,7 @@ const Announcement = ({ announcement, setAnnouncements }: Props) => {
           </div>
         ) : (
           <div className="w-full flex flex-col gap-2">
-            <div className="text-xl font-medium">{announcement.title}</div>
+            <div className="text-lg font-medium">{announcement.title}</div>
             <div className="text-sm whitespace-pre-wrap">
               {renderContentWithLinks(announcement.content, announcement.taggedUsers)}
             </div>
@@ -275,4 +283,4 @@ const Announcement = ({ announcement, setAnnouncements }: Props) => {
   );
 };
 
-export default Announcement;
+export default AnnouncementCard;

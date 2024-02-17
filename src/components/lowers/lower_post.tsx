@@ -20,6 +20,7 @@ import SignUp from '../common/signup_box';
 interface Props {
   post: Post;
   setFeed?: React.Dispatch<React.SetStateAction<(Post | Announcement | Poll)[]>>;
+  isRepost?: boolean;
 }
 
 interface bookMarkStatus {
@@ -28,7 +29,7 @@ interface bookMarkStatus {
   bookmarkID: string;
 }
 
-const LowerPost = ({ post, setFeed }: Props) => {
+const LowerPost = ({ post, setFeed, isRepost = false }: Props) => {
   const [liked, setLiked] = useState(false);
   const [numLikes, setNumLikes] = useState(post.noLikes);
   const [numComments, setNumComments] = useState(post.noComments);
@@ -162,36 +163,35 @@ const LowerPost = ({ post, setFeed }: Props) => {
       )}
       {clickedOnShare ? <SharePost setShow={setClickedOnShare} post={post} /> : <></>}
       {clickedOnRePost ? <RePost setFeed={setFeed} setShow={setClickedOnRePost} post={post} /> : <></>}
-      <div className="w-full flex justify-between">
-        <div className="flex gap-3 max-md:gap-3">
+      <div className={`w-full flex flex-col gap-1 ${isRepost ? 'justify-start' : ''}`}>
+        <div className={`flex gap-3 max-md:gap-3 ${isRepost ? 'w-fit scale-100' : ''}`}>
           <HeartStraight
             onClick={() => {
               if (userID == '') setNoUserClick(true);
               else likeHandler();
             }}
-            className="cursor-pointer max-md:w-6 max-md:h-6"
+            className={`cursor-pointer max-md:w-6 max-md:h-6 ${
+              liked ? 'text-heart_filled' : 'text-[#000000] opacity-60'
+            }`}
             size={24}
             weight={liked ? 'fill' : 'regular'}
-            fill={liked ? '#fe251b' : '#000000'}
           />
           <ChatCircleText
             onClick={() => {
               if (userID == '') setNoUserClick(true);
               else setClickedOnComment(true);
             }}
-            className="cursor-pointer max-md:w-6 max-md:h-6"
+            className="cursor-pointer max-md:w-6 max-md:h-6 opacity-60"
             size={24}
             weight="regular"
           />
-          {/* <Link className="flex items-center gap-2" href={`/explore/post/comments/${post.id}`}>
-          </Link> */}
           {post.userID != user.id && !post.rePost ? (
             <Repeat
               onClick={() => {
                 if (userID == '') setNoUserClick(true);
                 else setClickedOnRePost(true);
               }}
-              className="cursor-pointer max-md:w-6 max-md:h-6"
+              className="cursor-pointer max-md:w-6 max-md:h-6 opacity-60"
               size={24}
               weight="regular"
             />
@@ -203,12 +203,12 @@ const LowerPost = ({ post, setFeed }: Props) => {
               if (userID == '') setNoUserClick(true);
               else setClickedOnShare(true);
             }}
-            className="cursor-pointer max-md:w-6 max-md:h-6"
+            className="cursor-pointer max-md:w-6 max-md:h-6 opacity-60"
             size={24}
             weight="regular"
           />
           <BookmarkSimple
-            className="cursor-pointer max-md:w-6 max-md:h-6"
+            className="cursor-pointer max-md:w-6 max-md:h-6 opacity-60"
             onClick={() => {
               if (userID == '') setNoUserClick(true);
               else {
@@ -222,29 +222,19 @@ const LowerPost = ({ post, setFeed }: Props) => {
           />
         </div>
 
-        <div className="relative flex gap-2">
-          {/* {userID == post?.userID ? (
-            <Gear
-              className="cursor-pointer max-md:w-6 max-md:h-6"
-              onClick={() => {
-                router.push(`/workspace/post/edit/${post.id}`);
-              }}
-              size={24}
-              weight="light"
-            />
-          ) : (
-            <></>
-          )} */}
-        </div>
-      </div>
-      <div className="w-full flex items-center font-primary text-sm gap-2 text-gray-400 dark:text-[#ffffffb6]">
-        <div onClick={likeHandler} className="cursor-pointer">
-          {numLikes} like{numLikes == 1 ? '' : 's'}
-        </div>
-        <div className="text-xs">•</div>
-        <div onClick={() => setClickedOnComment(true)} className="cursor-pointer">
-          {' '}
-          {numComments} comment{numComments == 1 ? '' : 's'}
+        <div
+          className={`flex items-center font-primary text-sm gap-2 text-gray-400 dark:text-[#ffffffb6] ${
+            isRepost ? 'w-fit scale-100' : 'w-full '
+          }`}
+        >
+          <div onClick={likeHandler} className="cursor-pointer">
+            {numLikes} like{numLikes == 1 ? '' : 's'}
+          </div>
+          <div className="text-xs">•</div>
+          <div onClick={() => setClickedOnComment(true)} className="cursor-pointer">
+            {' '}
+            {numComments} comment{numComments == 1 ? '' : 's'}
+          </div>
         </div>
       </div>
     </>

@@ -8,9 +8,6 @@ import { ORG_URL, POST_URL } from '@/config/routes';
 import Semaphore from '@/utils/semaphore';
 import { configSelector, setUpdatingLikes } from '@/slices/configSlice';
 import { ChatCircleText, HeartStraight, Lock, LockOpen } from '@phosphor-icons/react';
-import SharePost from '@/sections/lowers/share_post';
-import CommentPost from '@/sections/lowers/comment_post';
-import socketService from '@/config/ws';
 import SignUp from '../common/signup_box';
 import CommentAnnouncement from '@/sections/lowers/comment_announcement';
 import ShareAnnouncement from '@/sections/lowers/share_announcement';
@@ -92,7 +89,9 @@ const LowerAnnouncement = ({ announcement, setFeed }: Props) => {
               if (userID == '') setNoUserClick(true);
               else likeHandler();
             }}
-            className="cursor-pointer max-md:w-6 max-md:h-6"
+            className={`cursor-pointer max-md:w-6 max-md:h-6 ${
+              liked ? 'text-heart_filled' : 'text-[#000000] opacity-60'
+            }`}
             size={24}
             weight={liked ? 'fill' : 'regular'}
           />
@@ -101,7 +100,7 @@ const LowerAnnouncement = ({ announcement, setFeed }: Props) => {
               if (userID == '') setNoUserClick(true);
               else setClickedOnComment(true);
             }}
-            className="cursor-pointer max-md:w-6 max-md:h-6"
+            className="cursor-pointer max-md:w-6 max-md:h-6 opacity-60"
             size={24}
             weight="regular"
           />
@@ -110,14 +109,14 @@ const LowerAnnouncement = ({ announcement, setFeed }: Props) => {
               if (userID == '') setNoUserClick(true);
               else setClickedOnShare(true);
             }}
-            className="cursor-pointer max-md:w-6 max-md:h-6"
+            className="cursor-pointer max-md:w-6 max-md:h-6 opacity-60"
             size={24}
             weight="regular"
           />
         </div>
 
-        <div className="w-full flex justify-between items-center">
-          <div className="flex items-center font-primary text-sm gap-2 text-gray-400 dark:text-[#ffffffb6]">
+        <div className="w-full flex justify-between items-center text-gray-400">
+          <div className="flex items-center font-primary text-sm gap-2 dark:text-[#ffffffb6]">
             <div onClick={likeHandler} className="cursor-pointer">
               {numLikes} like{numLikes == 1 ? '' : 's'}
             </div>
@@ -128,7 +127,7 @@ const LowerAnnouncement = ({ announcement, setFeed }: Props) => {
             </div>
           </div>
 
-          <div className="text-sm text-gray-400 font-medium flex-center gap-1">
+          <div className="text-sm font-medium flex-center gap-1">
             {announcement.isOpen ? (
               <>
                 <LockOpen /> <div>Open</div>

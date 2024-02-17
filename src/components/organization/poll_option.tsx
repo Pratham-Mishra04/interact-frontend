@@ -126,7 +126,7 @@ const Option = ({ option, totalVotes, orgID, pollID, setPolls }: Props) => {
   return (
     <div className="w-full flex flex-col gap-1">
       <div className="w-full flex justify-between">
-        <div>{option.content}</div>
+        <div className="text-sm">{option.content}</div>
         <div className="w-32 flex gap-1 relative">
           {option.votedBy
             ?.filter((u, index) => {

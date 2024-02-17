@@ -18,7 +18,7 @@ import { SERVER_ERROR } from '@/config/errors';
 import PostsLoader from '@/components/loaders/posts';
 import PollCard from '@/components/organization/poll_card';
 import { initialOrganization } from '@/types/initials';
-import AnnouncementCard from '@/components/organization/announcement';
+import AnnouncementCard from '@/components/organization/announcement_card';
 
 const Feed = () => {
   const [feed, setFeed] = useState<(Post | Announcement | Poll)[]>([]);

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Announcement, Poll, Post } from '@/types';
+import { Post } from '@/types';
 import { USER_PROFILE_PIC_URL, POST_PIC_URL, POST_URL, ORG_URL } from '@/config/routes';
 import moment from 'moment';
 import { CarouselProvider, Slider, Slide, Dot } from 'pure-react-carousel';
@@ -119,7 +119,7 @@ const Post = ({ post, showLowerPost = true, showImage = true, isRepost = false, 
     <div
       onClick={() => setClickedOnOptions(false)}
       className={`w-full relative overflow-clip bg-white dark:bg-transparent font-primary flex gap-1 rounded-lg dark:rounded-none dark:text-white border-gray-300 border-[1px] dark:border-x-0 dark:border-t-0 dark:border-dark_primary_btn ${
-        !isRepost ? 'dark:border-b-[1px] p-4' : 'dark:border-b-0 p-4 max-md:p-2'
+        !isRepost ? 'dark:border-b-[1px] p-4' : 'dark:border-b-0 p-2'
       }`}
     >
       {noUserClick ? <SignUp setShow={setNoUserClick} /> : <></>}
@@ -211,7 +211,7 @@ const Post = ({ post, showLowerPost = true, showImage = true, isRepost = false, 
             {post.user.username}
             {post.user.isOrganization ? <Buildings weight="duotone" /> : <></>}
           </Link>
-          <div className="flex gap-2 font-light text-xs">
+          <div className="flex-center gap-2 text-xs text-gray-400">
             {post.isEdited ? <div>(edited)</div> : <></>}
             <div>{moment(post.postedAt).fromNow()}</div>
             {clickedOnEdit || (post.userID == loggedInUser.id && isRepost) ? (
@@ -310,11 +310,11 @@ const Post = ({ post, showLowerPost = true, showImage = true, isRepost = false, 
             </div>
           </div>
         ) : (
-          <div className="w-full text-sm whitespace-pre-wrap mb-2">
+          <div className="w-full text-sm  whitespace-pre-wrap mb-2">
             {renderContentWithLinks(post.content, post.taggedUsers)}
           </div>
         )}
-        {showLowerPost ? <LowerPost setFeed={setFeed} post={post} /> : <></>}
+        {showLowerPost ? <LowerPost setFeed={setFeed} post={post} isRepost={isRepost} /> : <></>}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import Loader from '@/components/common/loader';
-import AnnouncementCard from '@/components/organization/announcement';
+import AnnouncementCard from '@/components/organization/announcement_card';
 import { ORG_SENIOR } from '@/config/constants';
 import { SERVER_ERROR } from '@/config/errors';
 import { ORG_URL } from '@/config/routes';
