@@ -7,9 +7,9 @@ import Image from 'next/image';
 import { userSelector } from '@/slices/userSlice';
 import { useSelector } from 'react-redux';
 import { Announcement, Poll, Post, User } from '@/types';
-import getDisplayTime from '@/utils/funcs/get_display_time';
 import getHandler from '@/handlers/get_handler';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
+import moment from 'moment';
 
 interface Props {
   post: Post;
@@ -196,11 +196,11 @@ const RePost = ({ post, setShow, setFeed, org = false }: Props) => {
                 onClick={handleSubmit}
                 className="max-md:hidden w-[120px] h-[48px] bg-primary_comp dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active transition-ease-300 shrink-0 flex-center text-lg font-semibold rounded-lg cursor-pointer"
               >
-                RePost
+                Post
               </div>
             </div>
 
-            <div className="w-1/2 max-lg:w-full font-primary flex gap-1 border-primary_btn dark:border-dark_primary_btn border-[1px] dark:text-white rounded-xl p-4 max-md:px-4 max-md:py-4">
+            <div className="w-4/5 max-lg:w-full font-primary flex gap-1 mt-4 border-primary_btn dark:border-dark_primary_btn border-[1px] dark:text-white rounded-xl p-2 max-md:px-4 max-md:py-4">
               <div className="h-full">
                 <div className="rounded-full">
                   <Image
@@ -213,17 +213,17 @@ const RePost = ({ post, setShow, setFeed, org = false }: Props) => {
                   />
                 </div>
               </div>
-              <div className="w-[calc(100%-32px)] flex flex-col gap-3">
+              <div className="w-[calc(100%-32px)] flex flex-col gap-1">
                 <div className="w-full h-fit flex justify-between items-center">
-                  <div className="font-medium">@{post.user.username}</div>
-                  <div className="flex gap-2 font-light text-xxs">{getDisplayTime(post.postedAt, false)}</div>
+                  <div className="font-medium">{post.user.username}</div>
+                  <div className="flex gap-2 font-light text-xxs">{moment(post.postedAt).fromNow()}</div>
                 </div>
-                <div className="w-full text-sm whitespace-pre-wrap mb-2 line-clamp-4">{post.content}</div>
+                <div className="w-full text-xs whitespace-pre-wrap mb-2 line-clamp-8">{post.content}</div>
               </div>
             </div>
 
             <textarea
-              className="w-full mt-4 bg-transparent focus:outline-none min-h-[154px]"
+              className="w-full mt-4 bg-transparent focus:outline-none min-h-[154px] max-h-[320px]"
               value={content}
               onChange={handleContentChange}
               maxLength={2000}

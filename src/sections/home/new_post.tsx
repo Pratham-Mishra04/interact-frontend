@@ -215,7 +215,7 @@ const NewPost = ({ setShow, setFeed, org = false }: Props) => {
                 <div className="w-full flex flex-col gap-4 relative">
                   <div className="w-full flex gap-4">
                     <NewPostImages setSelectedFiles={setImages} />
-                    <NewPostHelper setShow={setShowTipsModal} show={showTipsModal} />
+                    {images.length == 0 && <NewPostHelper setShow={setShowTipsModal} show={showTipsModal} />}
                   </div>
                   <textarea
                     id="textarea_id"
@@ -236,7 +236,7 @@ const NewPost = ({ setShow, setFeed, org = false }: Props) => {
             <div className="md:hidden w-full flex flex-col gap-4 relative">
               <div className="w-full flex gap-4">
                 <NewPostImages setSelectedFiles={setImages} />
-                <NewPostHelper setShow={setShowTipsModal} show={showTipsModal} smallScreen={true} />
+                {images.length == 0 && <NewPostHelper setShow={setShowTipsModal} show={showTipsModal} />}
               </div>
               <textarea
                 id="textarea_id"

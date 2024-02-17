@@ -14,7 +14,7 @@ interface Props {
 const NewPostImages = ({ setSelectedFiles }: Props) => {
   const [selectedImageUrls, setSelectedImageUrls] = useState<string[]>([]);
   return (
-    <>
+    <div className={`flex-col ${selectedImageUrls.length == 0 ? 'w-fit' : 'w-full'}`}>
       <input
         type="file"
         className="hidden"
@@ -110,7 +110,7 @@ const NewPostImages = ({ setSelectedFiles }: Props) => {
       ) : (
         <></>
       )}
-    </>
+    </div>
   );
 };
 

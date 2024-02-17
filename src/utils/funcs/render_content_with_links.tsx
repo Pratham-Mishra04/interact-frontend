@@ -100,7 +100,7 @@ const renderContentWithLinks = (caption: string, taggedUsers: User[]) => {
                 <Link
                   key={wordIndex}
                   href={`/explore/user/${word.replace('@', '')}`}
-                  className="font-medium hover:text-primary_text transition-ease-200"
+                  className="font-semibold hover:text-primary_text transition-ease-200"
                   target="_blank"
                 >
                   {word}{' '}
