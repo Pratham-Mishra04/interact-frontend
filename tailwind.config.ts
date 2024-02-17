@@ -6,6 +6,7 @@ const config: Config = {
   theme: {
     extend: {
       width: {
+        90: '360px',
         108: '32rem',
         sidebar_open: '280px',
         sidebar_close: '100px',
@@ -18,6 +19,7 @@ const config: Config = {
         bottomBar: '100px',
       },
       height: {
+        90: '360px',
         108: '32rem',
         navbar: '64px',
         base: 'calc(100vh - 64px)',

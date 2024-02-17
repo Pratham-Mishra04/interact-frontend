@@ -439,6 +439,7 @@ export const initialEvent: Event = {
   links: [],
   organizationID: '',
   organization: initialOrganization,
+  coHosts: [],
   startTime: new Date(),
   endTime: new Date(),
   location: '',

@@ -36,7 +36,7 @@ const EventCard = ({
       target="_blank"
       className={`w-${size} rounded-xl hover:shadow-xl transition-ease-out-500`}
     >
-      <div className="relative group">
+      <div className="w-full relative group">
         <div className="flex gap-1 top-2 right-2 absolute bg-white text-gray-500 text-xxs px-2 py-1 rounded-lg">
           <Eye size={12} /> <div>{event.noImpressions}</div>
         </div>
@@ -47,7 +47,7 @@ const EventCard = ({
           alt=""
           className={`w-full ${size == 96 ? 'h-56' : 'h-[218px]'} object-cover rounded-t-xl`}
           placeholder="blur"
-          blurDataURL={event.blurHash}
+          blurDataURL={event.blurHash || 'no-hash'}
         />
         {org && checkOrgAccess(ORG_SENIOR) ? (
           <div className="flex gap-2 absolute opacity-0 group-hover:opacity-100 top-2 left-2 transition-ease-300">

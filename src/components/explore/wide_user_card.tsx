@@ -23,7 +23,7 @@ const UserCard = ({ user }: Props) => {
           : '/profile'
       }`}
       target="_blank"
-      className="w-96 max-md:w-full flex flex-col gap-2 rounded-xl bg-white font-primary hover:shadow-xl transition-ease-300"
+      className="w-90 max-md:w-full flex flex-col gap-2 rounded-xl bg-white font-primary hover:shadow-xl transition-ease-300"
     >
       <div className="w-full relative">
         <Image

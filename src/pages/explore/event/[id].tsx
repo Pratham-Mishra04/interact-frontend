@@ -165,7 +165,7 @@ text-xs rounded-lg cursor-default"
 
   const AboutOrganisation = () => {
     return (
-      <div className="bg-white w-2/5 h-fit max-md:w-full flex flex-col border-[1px] rounded-md">
+      <div className="bg-white w-full h-fit max-md:w-full flex flex-col border-[1px] rounded-md">
         <div className="w-full flex items-center gap-1 p-4 border-b-[1px] font-medium">
           About the Organization <Buildings />
         </div>
@@ -226,6 +226,44 @@ text-xs rounded-lg cursor-default"
     );
   };
 
+  const AboutCoHosts = () => {
+    return (
+      <div className="bg-white w-full h-fit max-md:w-full flex flex-col border-[1px] rounded-md">
+        <div className="w-full flex items-center gap-1 p-4 border-b-[1px] font-medium">
+          About Co Host Organisations <Buildings />
+        </div>
+        <div className="w-full h-fit flex flex-col gap-4 p-4 pt-2">
+          {event.coHosts?.map(org => (
+            <Link
+              key={org.id}
+              href={`/explore/organisation/${org.user.username}`}
+              target="_blank"
+              className="w-full flex flex-col gap-2 p-2 rounded-xl hover:shadow-xl hover:scale-105 transition-ease-300"
+            >
+              <div className="w-full flex gap-2">
+                <Image
+                  width={100}
+                  height={100}
+                  src={`${USER_PROFILE_PIC_URL}/${org.user.profilePic}`}
+                  alt=""
+                  className="w-14 h-14 rounded-full"
+                />
+                <div className="w-[calc(100%-56px)] flex justify-between gap-2 flex-wrap">
+                  <div className="">
+                    <div className="font-semibold text-2xl">{org.title}</div>
+                    <div className="text-sm text-gray-500">@{org.user.username}</div>
+                  </div>
+                  <ArrowUpRight size={24} />
+                </div>
+              </div>
+              <div className="text-sm">{org.user.tagline}</div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <BaseWrapper title={event.title}>
       {user.isOrganization ? <OrgSidebar index={1} /> : <Sidebar index={2} />}
@@ -237,13 +275,13 @@ text-xs rounded-lg cursor-default"
             <div className="w-[70vw] max-md:w-full mx-auto flex flex-col gap-12">
               <div className="w-full h-108 relative flex justify-between max-md:flex-col">
                 <Image
-                  width={10000}
-                  height={10000}
+                  width={500}
+                  height={500}
                   src={`${EVENT_PIC_URL}/${event.coverPic}`}
-                  alt=""
+                  alt="Event Picture"
                   className="w-full h-full object-cover rounded-xl absolute top-0 -z-10"
                   placeholder="blur"
-                  blurDataURL={event.blurHash}
+                  blurDataURL={event.blurHash || 'no-hash'}
                 />
                 <div className="w-full h-full rounded-xl bg-white bg-opacity-25 absolute top-0 -z-[5]"></div>
                 <div className="w-1/2 max-md:w-full h-full p-8 flex flex-col justify-between">
@@ -285,7 +323,10 @@ text-xs rounded-lg cursor-default"
               </div>
               <div className="w-full flex max-md:flex-col gap-8">
                 <AboutEvent />
-                <AboutOrganisation />
+                <div className="w-2/5 flex flex-col gap-2">
+                  <AboutOrganisation />
+                  {event.coHosts && event.coHosts.length > 0 && <AboutCoHosts />}
+                </div>
               </div>
               {similarEvents && similarEvents.length > 0 ? (
                 <div className="w-full flex flex-col gap-4">

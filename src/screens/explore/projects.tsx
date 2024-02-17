@@ -102,7 +102,7 @@ const Projects = () => {
             projects.length < 4
               ? `grid-cols-${projects.length} px-12`
               : navbarOpen
-              ? 'grid-cols-3 px-4 gap-12'
+              ? 'grid-cols-3 px-8 gap-8'
               : 'grid-cols-4 px-8 gap-8'
           } max-lg:grid-cols-3 max-md:grid-cols-1 max-lg:gap-4 max-md:gap-6 max-md:px-4 items-center justify-items-center transition-ease-out-500`}
           // className={`${
@@ -135,7 +135,7 @@ const Projects = () => {
                   key={project.id}
                   index={index}
                   // size={navbarOpen || projects.length < 4 ? '[21vw]' : '80'}
-                  size={navbarOpen || projects.length < 4 ? '[22vw]' : '72'}
+                  size={navbarOpen || projects.length < 4 ? '[24vw]' : '72'}
                   project={project}
                   setClickedOnProject={setClickedOnProject}
                   setClickedProjectIndex={setClickedProjectIndex}

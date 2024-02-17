@@ -179,7 +179,7 @@ const RePost = ({ post, showLowerPost = true, setFeed, org = false }: Props) => 
           />
         </Link>
       </div>
-      <div className="grow max-w-[94%] max-md:max-w-[89%] flex flex-col gap-2">
+      <div className="w-[calc(100%-32px)] flex flex-col gap-1">
         <div className="w-full h-fit flex justify-between">
           <Link
             href={`${

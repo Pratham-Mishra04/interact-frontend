@@ -1,17 +1,13 @@
 import Loader from '@/components/common/loader';
-import PostComponent from '@/components/home/post';
 import { SERVER_ERROR } from '@/config/errors';
 import { MESSAGING_URL, PROJECT_PIC_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import postHandler from '@/handlers/post_handler';
-
-import { Chat, Post, Project } from '@/types';
-import getDisplayTime from '@/utils/funcs/get_display_time';
+import { Chat, Project } from '@/types';
 import getMessagingUser from '@/utils/funcs/get_messaging_user';
 import Toaster from '@/utils/toaster';
 import { ClipboardText } from '@phosphor-icons/react';
 import Cookies from 'js-cookie';
-import moment from 'moment';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 
@@ -86,7 +82,7 @@ const ShareProject = ({ project, setShow, setNoShares }: Props) => {
 
   return (
     <>
-      <div className="w-1/2 max-md:h-5/6 overflow-y-auto max-lg:w-5/6 fixed backdrop-blur-lg bg-white bg-[#1201103c] z-30 translate-x-1/2 -translate-y-1/4 top-64 max-lg:top-1/4 max-md:top-56 right-1/2 flex flex-col px-8 py-6 gap-6 border-2  dark:border-dark_primary_btn rounded-xl animate-fade_third">
+      <div className="w-1/2 max-md:h-5/6 overflow-y-auto max-lg:w-5/6 fixed backdrop-blur-lg bg-white bg-[#1201103c] z-30 translate-x-1/2 -translate-y-1/4 top-64 max-lg:top-1/4 max-md:top-56 right-1/2 flex flex-col px-8 py-6 gap-6 border-2 dark:border-dark_primary_btn rounded-xl animate-fade_third">
         <div className="text-3xl text-center text-gray-900 font-bold">Share this Project</div>
         <div className="w-full flex max-lg:flex-col gap-4 items-center">
           <div className="w-1/2 max-md:w-full font-primary  border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg p-4 flex flex-col items-center justify-center gap-4 max-lg:gap-4 transition-ease-300 cursor-default">

@@ -133,7 +133,7 @@ const UpdateResume = ({ setShow }: Props) => {
 
       <div
         onClick={() => setShow(false)}
-        className=" bg-backdrop w-screen h-screen fixed top-0 right-0 animate-fade_third z-30 max-lg:z-[90]"
+        className=" bg-backdrop w-screen h-screen backdrop-blur-sm fixed top-0 right-0 animate-fade_third z-30 max-lg:z-[90]"
       ></div>
     </>
   );

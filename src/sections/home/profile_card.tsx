@@ -170,7 +170,7 @@ const ProfileCard = () => {
                           .map(tag => {
                             return (
                               <div
-                                className="flex-center text-sm px-4 py-1 border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-full cursor-pointer"
+                                className="flex-center text-xs px-2 py-1 border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-full cursor-pointer"
                                 key={tag}
                               >
                                 {tag}

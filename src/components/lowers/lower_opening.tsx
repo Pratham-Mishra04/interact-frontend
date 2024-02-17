@@ -44,7 +44,7 @@ const LowerOpening = ({ opening, org = false }: Props) => {
                 onClick={() => {
                   //TODO use window.location
                   //TODO handle redirect
-                  router.push(`/organisation?redirect_url=openings?action=edit&oid=${opening.id}`);
+                  router.push(`/organisations?redirect_url=openings?action=edit&oid=${opening.id}`);
                 }}
                 size={32}
                 weight="light"

@@ -194,11 +194,7 @@ const Post = ({ post, showLowerPost = true, showImage = true, isRepost = false, 
           />
         </Link>
       </div>
-      <div
-        className={`grow ${
-          isRepost ? 'max-w-[92%] max-md:max-w-[80%]' : 'max-w-[94%] max-md:max-w-[85%]'
-        } flex flex-col gap-1`}
-      >
+      <div className="w-[calc(100%-32px)] flex flex-col gap-1">
         <div className="w-full h-fit flex justify-between">
           <Link
             href={`${

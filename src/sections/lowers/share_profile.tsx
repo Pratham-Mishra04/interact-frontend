@@ -3,7 +3,6 @@ import { SERVER_ERROR } from '@/config/errors';
 import { MESSAGING_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import postHandler from '@/handlers/post_handler';
-
 import { Chat, User } from '@/types';
 import getMessagingUser from '@/utils/funcs/get_messaging_user';
 import Toaster from '@/utils/toaster';
@@ -93,7 +92,7 @@ const ShareProfile = ({ user, setShow }: Props) => {
 
   return (
     <>
-      <div className="w-1/2 max-md:h-5/6 overflow-y-auto max-lg:w-5/6 fixed backdrop-blur-lg bg-white dark:bg-[#ffe1fc22] dark: dark:text-white z-30 translate-x-1/2 -translate-y-1/4 top-64 max-lg:top-56 right-1/2 flex flex-col px-8 py-8 gap-6 border-2 border-primary_btn  dark:border-dark_primary_btn rounded-xl animate-fade_third">
+      <div className="w-1/2 max-md:h-5/6 overflow-y-auto max-lg:w-5/6 fixed backdrop-blur-lg bg-white dark:bg-[#ffe1fc22] dark:text-white z-30 translate-x-1/2 -translate-y-1/4 top-64 max-lg:top-56 right-1/2 flex flex-col px-8 py-8 gap-6 border-2 border-primary_btn dark:border-dark_primary_btn rounded-xl animate-fade_third">
         <div className="text-3xl text-center text-gray-900 font-bold">Share this Profile</div>
         <div className="w-full flex max-lg:flex-col gap-4 items-center">
           <div className="w-1/2 max-lg:w-full font-primary border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg p-4 flex flex-col items-center justify-center gap-4 max-lg:gap-4 transition-ease-300 cursor-default">

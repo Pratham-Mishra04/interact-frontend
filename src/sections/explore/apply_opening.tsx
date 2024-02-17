@@ -77,10 +77,9 @@ const ApplyOpening = ({ opening, setShow, setOpening, setAddResume, org = false 
 
   return (
     <>
-      <div className="w-2/3 h-[520px] max-lg:h-base_md max-lg:overflow-y-auto max-md:w-screen max-md:h-screen dark:text-white fixed backdrop-blur-lg bg-white dark:bg-[#ffe1fc22] dark:max-lg:bg-[#2a192eea] z-50 max-lg:z-[100] translate-x-1/2 -translate-y-1/4 max-md:translate-y-0 top-64 max-lg:top-1/4 max-md:top-0 right-1/2 flex flex-col font-primary px-8 py-8 gap-6 border-2 border-primary_btn dark:border-dark_primary_btn rounded-xl max-md:rounded-none animate-fade_third">
-        <div className="w-full text-3xl max-md:text-2xl text-primary_black flex justify-between items-center gap-2 font-bold">
-          Apply to Opening
-          <X onClick={() => setShow(false)} className="cursor-pointer" />
+      <div className="w-2/3 h-[560px] max-lg:h-base_md max-lg:overflow-y-auto max-md:w-screen max-md:h-screen dark:text-white fixed backdrop-blur-lg bg-white dark:bg-[#ffe1fc22] dark:max-lg:bg-[#2a192eea] z-50 max-lg:z-[100] translate-x-1/2 -translate-y-1/4 max-md:translate-y-0 top-64 max-lg:top-1/4 max-md:top-0 right-1/2 flex flex-col font-primary p-8 gap-6 border-2 border-primary_btn dark:border-dark_primary_btn rounded-xl max-md:rounded-none animate-fade_third">
+        <div className="w-fit text-gradient mx-auto text-3xl max-md:text-2xl text-primary_black flex justify-between items-center gap-2 font-bold">
+          Your Application
         </div>
         <div className="w-full h-full flex max-lg:flex-col gap-4 items-center">
           <div className="w-1/3 h-full max-lg:h-fit max-lg:w-full font-primary dark:text-white border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg p-4 flex flex-col items-center justify-center gap-4 max-lg:gap-4 transition-ease-300 cursor-default">
@@ -92,7 +91,7 @@ const ApplyOpening = ({ opening, setShow, setOpening, setAddResume, org = false 
                 alt={'User Pic'}
                 src={`${USER_PROFILE_PIC_URL}/${opening.organization?.user.profilePic}`}
                 className={
-                  'w-[180px] h-[180px] max-lg:hidden max-lg:w-[120px] max-lg:h-[120px] rounded-lg object-cover'
+                  'w-[240px] h-[240px] max-lg:hidden max-lg:w-[120px] max-lg:h-[120px] rounded-lg object-cover'
                 }
               />
             ) : (
@@ -103,7 +102,7 @@ const ApplyOpening = ({ opening, setShow, setOpening, setAddResume, org = false 
                 alt={'User Pic'}
                 src={`${PROJECT_PIC_URL}/${opening.project?.coverPic}`}
                 className={
-                  'w-[180px] h-[180px] max-lg:hidden max-lg:w-[120px] max-lg:h-[120px] rounded-lg object-cover'
+                  'w-[240px] h-[240px] max-lg:hidden max-lg:w-[120px] max-lg:h-[120px] rounded-lg object-cover'
                 }
                 placeholder="blur"
                 blurDataURL={opening.project?.blurHash || 'no-hash'}
@@ -112,7 +111,7 @@ const ApplyOpening = ({ opening, setShow, setOpening, setAddResume, org = false 
 
             <div className="w-full flex flex-col gap-4 max-lg:gap-2 px-8">
               <div className="w-full flex flex-col items-center gap-1">
-                <div className="font-bold text-center line-clamp-2 text-2xl text-gradient">{opening.title}</div>
+                <div className="w-fit font-bold text-center line-clamp-2 text-2xl text-gradient">{opening.title}</div>
                 <div className="text-sm text-center">@{org ? opening.organization?.title : opening.project?.title}</div>
                 <div className="text-xs font-thin">{moment(opening.createdAt).fromNow()}</div>
               </div>
@@ -126,7 +125,7 @@ const ApplyOpening = ({ opening, setShow, setOpening, setAddResume, org = false 
                   setContent(el.target.value);
                 }}
                 maxLength={500}
-                className="w-full px-4 py-2 rounded-lg text-black bg-primary_comp dark:bg-dark_primary_comp min-h-[24rem] max-h-96 focus:outline-none"
+                className="w-full px-4 py-2 rounded-lg text-black bg-primary_comp dark:bg-dark_primary_comp min-h-[27rem] max-h-[27rem] focus:outline-none"
                 placeholder="Add a Message of maximum 500 characters"
               />
             </div>
@@ -185,7 +184,7 @@ const ApplyOpening = ({ opening, setShow, setOpening, setAddResume, org = false 
       </div>
       <div
         onClick={() => setShow(false)}
-        className=" bg-backdrop w-screen h-screen fixed top-0 right-0 animate-fade_third z-40 max-lg:z-[90]"
+        className=" bg-backdrop w-screen h-screen backdrop-blur-sm fixed top-0 right-0 animate-fade_third z-40 max-lg:z-[90]"
       ></div>
     </>
   );

@@ -41,7 +41,7 @@ const Openings = () => {
         if (addedOpenings.length === openings.length) setHasMore(false);
         setOpenings(addedOpenings);
 
-        if (clickedOnOpening) {
+        if (clickedOnOpening && page == 1) {
           if (addedOpenings.length > 0) setClickedOpening(addedOpenings[0]);
           else {
             setClickedOnOpening(false);

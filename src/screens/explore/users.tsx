@@ -61,7 +61,7 @@ const Users = () => {
         <>
           {users.length > 0 ? (
             <InfiniteScroll
-              className="w-full px-8 pt-2 pb-12 mx-auto flex flex-wrap gap-8 justify-center"
+              className="w-full px-8 pt-2 pb-12 mx-auto flex flex-wrap gap-6 justify-center"
               dataLength={users.length}
               next={() => fetchUsers(new URLSearchParams(window.location.search).get('search'))}
               hasMore={hasMore}

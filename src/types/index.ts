@@ -477,6 +477,7 @@ export interface Event {
   id: string;
   organizationID: string;
   organization: Organization;
+  coHosts: Organization[];
   title: string;
   tagline: string;
   description: string;
