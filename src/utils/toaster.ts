@@ -1,16 +1,17 @@
-import { Id, ToastOptions, UpdateOptions, toast } from 'react-toastify';
+import { Id, Slide, ToastOptions, UpdateOptions, toast } from 'react-toastify';
 
 class Toaster {
   //TODO add different ids to toasters
   static toastSettings: ToastOptions = {
     position: 'top-center',
-    autoClose: 1000,
-    hideProgressBar: false,
+    autoClose: 1500,
+    hideProgressBar: true,
     closeOnClick: true,
     pauseOnHover: false,
     draggable: true,
     progress: undefined,
     theme: 'light',
+    transition: Slide,
   };
 
   static success(message: string, toastId: string = 'default'): Id {

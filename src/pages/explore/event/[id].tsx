@@ -92,13 +92,15 @@ const Event = ({ id }: Props) => {
             <div className="font-medium">Tags</div>
             <div className="flex flex-wrap gap-2">
               {event.tags.map(tag => (
-                <div
+                <Link
+                  //TODO add onClick setState of explore page to events
                   key={tag}
-                  className="flex-center px-2 py-1 border-[1px] border-dashed border-gray-400
-text-xs rounded-lg cursor-default"
+                  href={'/explore?search=' + tag}
+                  target="_blank"
+                  className="flex-center px-2 py-1 border-[1px] border-dashed border-gray-400 text-xs rounded-lg"
                 >
                   {tag}
-                </div>
+                </Link>
               ))}
             </div>
           </div>
@@ -330,7 +332,7 @@ text-xs rounded-lg cursor-default"
               </div>
               {similarEvents && similarEvents.length > 0 ? (
                 <div className="w-full flex flex-col gap-4">
-                  <div className="font-medium text-gray-600 text-center">Similar Events</div>
+                  <div className="font-semibold text-gray-600 text-center">Similar Events</div>
                   <div className="w-full flex gap-6 flex-wrap justify-around">
                     {similarEvents.map(e => (
                       <EventCard key={e.id} event={e} size={80} />

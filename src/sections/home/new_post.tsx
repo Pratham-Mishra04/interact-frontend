@@ -212,7 +212,7 @@ const NewPost = ({ setShow, setFeed, org = false }: Props) => {
                 </div>
               </div>
               {width > 640 ? (
-                <div className="w-full flex flex-col gap-4 relative">
+                <div className="w-full flex flex-col gap-8 relative">
                   <div className="w-full flex gap-4">
                     <NewPostImages setSelectedFiles={setImages} />
                     {images.length == 0 && <NewPostHelper setShow={setShowTipsModal} show={showTipsModal} />}
@@ -233,7 +233,7 @@ const NewPost = ({ setShow, setFeed, org = false }: Props) => {
             </div>
           </div>
           {width <= 640 ? (
-            <div className="md:hidden w-full flex flex-col gap-4 relative">
+            <div className="md:hidden w-full flex flex-col gap-8 relative">
               <div className="w-full flex gap-4">
                 <NewPostImages setSelectedFiles={setImages} />
                 {images.length == 0 && <NewPostHelper setShow={setShowTipsModal} show={showTipsModal} />}

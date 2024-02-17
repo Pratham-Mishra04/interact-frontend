@@ -1,0 +1,35 @@
+
+.Toastify__toast-container{
+    padding: 12px !important;
+  }
+  
+  .Toastify__toast{
+    width: 280px !important;
+    /* width: fit-content !important; */
+    min-height: min-content !important;
+    height: fit-content !important;
+    margin: auto !important;
+    border-radius: 10px !important;
+    padding: 8px 12px !important;
+    /* font-size: small !important; */
+  }
+  
+  .Toastify__toast-body{
+    width: fit-content !important;
+    margin: auto !important;
+    padding: 6px !important;
+    justify-content: center !important;
+    gap: 8px !important;
+  }
+  
+  .Toastify__toast-body > div:last-child {
+    width: fit-content !important;
+  }
+  
+  .Toastify__toast-icon{
+    margin-inline-end: 0 !important;
+  }
+  
+  .Toastify__close-button{
+    display: none !important;
+  }

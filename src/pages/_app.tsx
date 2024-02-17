@@ -1,5 +1,6 @@
 import '@/styles/globals.css';
 import '@/styles/loader.css';
+import '@/styles/toastify.css';
 import '@/styles/extras.tailwind.css';
 import '@/styles/project_card.css';
 import '@/styles/variables.module.scss';
