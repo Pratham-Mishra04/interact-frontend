@@ -42,6 +42,7 @@ const CommentBox = ({ type, item, setNoComments }: Props) => {
   }, [item]);
 
   const getComments = async () => {
+    //TODO add pagination
     // const URL = `${COMMENT_URL}/${type}/${item.id}?page=${page}&limit=${10}`;
     const URL = `${COMMENT_URL}/${type}/${item.id}`;
     getHandler(URL)

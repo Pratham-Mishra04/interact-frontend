@@ -255,9 +255,11 @@ const Post = ({ post, showLowerPost = true, showImage = true, isRepost = false, 
                       crossOrigin="anonymous"
                       width={500}
                       height={500}
+                      className="w-full"
                       alt={'Post Pic'}
                       src={`${POST_PIC_URL}/${image}`}
-                      className={`w-full`}
+                      placeholder="blur"
+                      blurDataURL={(post.hashes && post.hashes[index]) || 'no-hash'}
                     />
                   </Slide>
                 );

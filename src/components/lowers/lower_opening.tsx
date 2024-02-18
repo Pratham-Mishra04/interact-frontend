@@ -43,7 +43,6 @@ const LowerOpening = ({ opening, org = false }: Props) => {
                 className="cursor-pointer max-md:w-[32px] max-md:h-[32px]"
                 onClick={() => {
                   //TODO use window.location
-                  //TODO handle redirect
                   router.push(`/organisations?redirect_url=openings?action=edit&oid=${opening.id}`);
                 }}
                 size={32}

@@ -53,7 +53,10 @@ const Organizations = () => {
     dispatch(setCurrentOrg(membership.organization));
     dispatch(setCurrentOrgMembership(membership));
 
-    router.push('/organisation/posts');
+    const { redirect_url } = router.query;
+
+    if (redirect_url) router.push('/organisation/' + redirect_url);
+    else router.push('/organisation/posts');
   };
 
   const sendOTP = async () => {

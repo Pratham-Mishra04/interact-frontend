@@ -29,6 +29,7 @@ import { initialResourceBucket, initialResourceFile } from '@/types/initials';
 import ConfirmDelete from '@/components/common/confirm_delete';
 import Link from 'next/link';
 import ResourceFileView from './resource_file_view';
+import PDFViewer from '@/components/utils/pdf_viewer';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -169,6 +170,8 @@ const ResourceView = ({
         ) : (
           <></>
         )}
+
+        {/* {clickedOnFile ? <PDFViewer resourceID={clickedFile.id} setShow={setClickedOnFile} /> : <></>} */}
 
         {loading ? (
           <Loader />

@@ -133,7 +133,7 @@ const ResourceFileView = ({
           <div className="w-[40%] aspect-[500/333] font-primary bg-white rounded-xl fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-[100] shadow-lg p-4 animate-fade_third">
             <Link
               target="_blank"
-              href={resourceFile.isFileUploaded ? `${RESOURCE_URL}/${resourceFile.path}` : resourceFile.path}
+              href={resourceFile.isFileUploaded ? `/organisation/resources/${resourceFile.id}` : resourceFile.path}
               className="flex-center absolute top-3 right-3"
             >
               <ArrowUpRight size={30} />
