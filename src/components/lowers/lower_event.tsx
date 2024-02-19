@@ -10,6 +10,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SignUp from '../common/signup_box';
 import ShareEvent from '@/sections/lowers/share_event';
+import EventBookmarkIcon from './event_bookmark';
 
 interface Props {
   event: Event;
@@ -79,58 +80,51 @@ const LowerEvent = ({ event, numLikes, setNumLikes }: Props) => {
         <></>
       )}
       {clickedOnShare ? <ShareEvent setShow={setClickedOnShare} event={event} /> : <></>}
-      <div className="w-full flex gap-6 items-center justify-center flex-wrap p-6">
-        <div className="flex flex-col items-center gap-2 p-4 cursor-default">
+      <div className="w-full flex items-center justify-between flex-wrap">
+        <div className="flex items-center gap-2 cursor-default">
           <Eye size={24} />
-          <div className="flex flex-col text-center items-center">
-            <div>{event.noImpressions}</div>
-            <div className="text-xs text-gray-500">Impressions</div>
-          </div>
+          <div className="text-sm">{event.noImpressions}</div>
         </div>
-        <div className="flex flex-col items-center gap-2 p-4 cursor-default">
+        {/* <div className="flex flex-col items-center gap-2 p-4 cursor-default">
           <CursorClick size={24} />
           <div className="flex flex-col text-center items-center">
             <div> {event.noViews}</div>
             <div className="text-xs text-gray-500">Views</div>
           </div>
-        </div>
-        <div
-          onClick={() => {
-            if (user.id == '') setNoUserClick(true);
-            else likeHandler();
-          }}
-          className="flex flex-col items-center gap-2 px-4 py-2 rounded-lg hover:shadow-2xl transition-ease-300 cursor-pointer"
-        >
-          <HeartStraight size={24} weight={liked ? 'fill' : 'regular'} />
-          <div className="flex flex-col text-center items-center">
-            <div> {numLikes}</div>
-            <div className="text-xs text-gray-500">Likes</div>
+        </div> */}
+        <div className="flex items-center justify-end gap-1">
+          <div
+            onClick={() => {
+              if (user.id == '') setNoUserClick(true);
+              else likeHandler();
+            }}
+            className="flex items-center gap-2 p-2 rounded-lg hover:shadow-2xl transition-ease-300 cursor-pointer"
+          >
+            <HeartStraight size={24} weight={liked ? 'fill' : 'regular'} />
+            <div className="text-sm"> {numLikes}</div>
           </div>
-        </div>
-        <div
-          onClick={() => {
-            if (user.id == '') setNoUserClick(true);
-            else setClickedOnComment(true);
-          }}
-          className="flex flex-col items-center gap-2 px-4 py-2 rounded-lg hover:shadow-2xl transition-ease-300 cursor-pointer"
-        >
-          <ChatCircleText size={24} />
-          <div className="flex flex-col text-center items-center">
-            <div> {numComments}</div>
-            <div className="text-xs text-gray-500">Comments</div>
+          <div
+            onClick={() => {
+              if (user.id == '') setNoUserClick(true);
+              else setClickedOnComment(true);
+            }}
+            className="flex items-center gap-2 p-2 rounded-lg hover:shadow-2xl transition-ease-300 cursor-pointer"
+          >
+            <ChatCircleText size={24} />
+            <div className="text-sm"> {numComments}</div>
           </div>
-        </div>
-        <div
-          onClick={() => {
-            if (user.id == '') setNoUserClick(true);
-            else setClickedOnShare(true);
-          }}
-          className="flex flex-col items-center gap-2 px-4 py-2 rounded-lg hover:shadow-2xl transition-ease-300 cursor-pointer"
-        >
-          <Export size={24} />
-          <div className="flex flex-col text-center items-center">
-            <div> {event.noShares}</div>
-            <div className="text-xs text-gray-500">Shares</div>
+          <div
+            onClick={() => {
+              if (user.id == '') setNoUserClick(true);
+              else setClickedOnShare(true);
+            }}
+            className="flex items-center gap-2 p-2 rounded-lg hover:shadow-2xl transition-ease-300 cursor-pointer"
+          >
+            <Export size={24} />
+            <div className="text-sm"> {event.noShares}</div>
+          </div>
+          <div className="flex items-center gap-2 p-2 rounded-lg hover:shadow-2xl transition-ease-300 cursor-pointer">
+            <EventBookmarkIcon event={event} size={24} />
           </div>
         </div>
       </div>

@@ -12,6 +12,7 @@ import SignUp from '../common/signup_box';
 
 interface Props {
   event: Event;
+  size?: number;
 }
 
 interface bookMarkStatus {
@@ -20,7 +21,7 @@ interface bookMarkStatus {
   bookmarkID: string;
 }
 
-const EventBookmarkIcon = ({ event }: Props) => {
+const EventBookmarkIcon = ({ event, size = 32 }: Props) => {
   const [bookmarkStatus, setBookmarkStatus] = useState<bookMarkStatus>({
     isBookmarked: false,
     eventItemID: '',
@@ -111,7 +112,7 @@ const EventBookmarkIcon = ({ event }: Props) => {
             else setClickedOnBookmark(prev => !prev);
           }
         }}
-        size={32}
+        size={size}
         weight={bookmarkStatus.isBookmarked ? 'duotone' : 'light'}
       />
     </>

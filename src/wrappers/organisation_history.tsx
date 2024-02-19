@@ -4,12 +4,12 @@ import React, { ReactNode } from 'react';
 import Image from 'next/image';
 import { USER_PROFILE_PIC_URL } from '@/config/routes';
 
-interface WrapperProps {
+interface Props {
   children: ReactNode;
   history: OrganizationHistory;
 }
 
-const OrganisationHistoryWrapper: React.FC<WrapperProps> = ({ children, history }) => {
+const OrganisationHistoryWrapper = ({ children, history }: Props) => {
   return (
     <>
       <div className="w-full flex flex-col gap-1 p-3 dark:text-white hover:bg-primary_comp dark:hover:bg-[#ae8abd39] rounded-xl font-primary transition-ease-200">

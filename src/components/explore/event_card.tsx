@@ -29,7 +29,7 @@ const EventCard = ({
   setClickedOnDeleteEvent,
   setClickedDeleteEvent,
 }: Props) => {
-  const variants = ['w-96', 'w-84', 'w-80', 'w-[22rem]'];
+  const variants = ['w-96', 'w-84', 'w-80', 'w-72', 'w-64', 'w-[22rem]'];
   return (
     <Link
       href={`/explore/event/${event.id}`}
@@ -45,7 +45,7 @@ const EventCard = ({
           height={200}
           src={`${EVENT_PIC_URL}/${event.coverPic}`}
           alt=""
-          className={`w-full ${size == 96 ? 'h-56' : 'h-[218px]'} object-cover rounded-t-xl`}
+          className={`w-full ${size == 96 ? 'h-56' : size == 64 ? 'h-[160px]' : 'h-[180px]'} object-cover rounded-t-xl`}
           placeholder="blur"
           blurDataURL={event.blurHash || 'no-hash'}
         />

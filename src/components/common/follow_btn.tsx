@@ -16,17 +16,14 @@ interface Props {
 }
 
 const FollowBtn = ({ toFollowID, setFollowerCount, smaller = false, profileDesign = false }: Props) => {
-  const [isFollowing, setIsFollowing] = useState<boolean>(false);
-
   const following = useSelector(userSelector).following;
+
+  const [isFollowing, setIsFollowing] = useState<boolean>(following.includes(toFollowID));
+
   const updatingFollowing = useSelector(configSelector).updatingFollowing;
   const dispatch = useDispatch();
 
   const user = useSelector(userSelector);
-
-  useEffect(() => {
-    if (following.includes(toFollowID)) setIsFollowing(true);
-  }, [toFollowID]);
 
   const semaphore = new Semaphore(updatingFollowing, setUpdatingFollowing);
 

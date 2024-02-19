@@ -358,12 +358,12 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
 
                 <div>
                   <div className="text-xs ml-1 font-medium uppercase text-gray-500">
-                    Event Description ({description.trim().length}/1000)
+                    Event Description ({description.trim().length}/2500)
                   </div>
                   <textarea
                     value={description}
                     onChange={el => setDescription(el.target.value)}
-                    maxLength={1000}
+                    maxLength={2500}
                     className="w-full min-h-[80px] max-h-80 bg-transparent focus:outline-none border-[1px] border-gray-400 rounded-lg p-2"
                     placeholder="Explain your event"
                   />
