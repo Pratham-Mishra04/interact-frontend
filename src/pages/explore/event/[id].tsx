@@ -96,7 +96,7 @@ const Event = ({ id }: Props) => {
             alt=""
             className={`${host ? 'w-8 h-8' : 'w-6 h-6'} rounded-full cursor-pointer`}
           />
-          <div className={`w-fit ${host ? 'text-xl' : 'text-lg'} font-medium cursor-pointer`}>{user.name}</div>
+          <div className={`w-fit ${host ? 'text-xl' : 'text-base'} font-medium cursor-pointer`}>{user.name}</div>
         </div>
         <FollowBtn toFollowID={user.id} smaller={true} />
         {/* <div className="w-20 h-8 bg-gray-100 flex-center rounded-2xl text-sm">Follow</div> */}
@@ -163,6 +163,18 @@ const Event = ({ id }: Props) => {
               <AboutUser key={user.id} user={user} />
             ))}
           </div>
+        </div>
+      )}
+      {event.links && event.links.length > 0 && (
+        <div className="w-full flex flex-col gap-4">
+          <div className="text-sm font-medium text-gray-500 border-b-2 border-gray-300 pb-2">MORE ABOUT THE EVENT</div>
+          <div className="w-full flex flex-wrap gap-4">
+            {event.links?.map(link => (
+              <Link key={link} href={link} target="_blank">
+                {getIcon(getDomainName(link), 22, 'regular')}
+              </Link>
+            ))}
+          </div>{' '}
         </div>
       )}
       <div className="w-full flex flex-col gap-1 text-sm">
