@@ -64,8 +64,8 @@ const About = ({ profile, setUser, org = false }: Props) => {
     else if (field == 'phoneNo') formData.append('phoneNo', phoneNo);
     else if (field == 'location') formData.append('location', location);
     else if (field == 'description') formData.append('description', description.replace(/\n{3,}/g, '\n\n'));
-    else if (field == 'hobbies') hobbies.forEach(hobby => formData.append('hobbies[]', hobby));
-    else if (field == 'areas') areas.forEach(area => formData.append('areas[]', area));
+    else if (field == 'hobbies') hobbies.forEach(hobby => formData.append('hobbies', hobby));
+    else if (field == 'areas') areas.forEach(area => formData.append('areas', area));
 
     const URL = org ? `${ORG_URL}/${currentOrgID}/me` : `${USER_URL}/me`;
 

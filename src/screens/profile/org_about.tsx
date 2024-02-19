@@ -146,16 +146,16 @@ const About = ({ profile, organisation }: Props) => {
             </div>
             {(profile.email || profile.phoneNo) && (
               <div className="w-full flex flex-col gap-2">
-                <div>Contact Info</div>
-                <div className="w-full flex items-center gap-4">
+                <div className="font-medium">Contact Info</div>
+                <div className="w-full flex items-center gap-8">
                   {profile.email && (
-                    <div className="flex gap-2 items-center text-xl font-medium">
+                    <div className="flex gap-2 items-center text-sm">
                       <Envelope weight="regular" size={24} />
                       <div>{profile.email}</div>
                     </div>
                   )}
                   {profile.phoneNo && (
-                    <div className="flex gap-2 items-center text-xl font-medium">
+                    <div className="flex gap-2 items-center text-sm">
                       <Phone weight="regular" size={24} />
                       <div>{profile.phoneNo}</div>
                     </div>
@@ -169,13 +169,13 @@ const About = ({ profile, organisation }: Props) => {
           <div className="w-full flex gap-4">
             {profile.areasOfCollaboration && (
               <div className="w-1/2 h-fit flex flex-col gap-2 bg-white border-gray-300 border-[1px] rounded-lg p-4">
-                <div className="font-medium">Areas of Interest</div>
+                <div className="font-medium">Areas of Work</div>
                 <div className="border-t-[1px] border-gray-200"></div>
-                <div className="w-full flex flex-wrap gap-4">
+                <div className="w-full flex flex-wrap gap-2">
                   {profile.areasOfCollaboration?.map((el, i) => (
                     <div
                       key={i}
-                      className="border-gray-500 border-[1px] border-dashed p-2 text-sm rounded-lg flex-center"
+                      className="flex-center bg-gray-50 px-2 py-1 border-[1px] border-dashed border-gray-400 text-xs rounded-lg"
                     >
                       {el}
                     </div>
@@ -191,7 +191,7 @@ const About = ({ profile, organisation }: Props) => {
                   {profile.hobbies?.map((el, i) => (
                     <div
                       key={i}
-                      className="text-sm hover:bg-white p-3 py-2 rounded-lg cursor-default hover:scale-105 transition-ease-500"
+                      className="text-sm hover:bg-gray-200 p-3 py-2 rounded-lg cursor-default hover:scale-105 transition-ease-500"
                     >
                       {el}
                     </div>
