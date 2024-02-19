@@ -20,6 +20,10 @@ const FollowBtn = ({ toFollowID, setFollowerCount, smaller = false, profileDesig
 
   const [isFollowing, setIsFollowing] = useState<boolean>(following.includes(toFollowID));
 
+  useEffect(() => {
+    setIsFollowing(following.includes(toFollowID));
+  }, [following, toFollowID]);
+
   const updatingFollowing = useSelector(configSelector).updatingFollowing;
   const dispatch = useDispatch();
 

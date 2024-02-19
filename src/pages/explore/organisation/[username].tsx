@@ -84,6 +84,7 @@ const User = ({ username }: Props) => {
       .then(res => {
         if (res.statusCode === 200) {
           setUser(res.data.user);
+          setNumFollowers(res.data.user.noFollowers);
           setProfile(res.data.profile);
           const organisationData: Organization = res.data.organization;
           organisationData.user = res.data.user;
