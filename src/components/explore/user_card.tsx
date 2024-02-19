@@ -50,7 +50,7 @@ const UserCard = ({ user, forTrending = false }: Props) => {
             )}
           </div>
 
-          <div className="flex flex-col font-light">
+          <div className={`${!forTrending ? 'w-[calc(100%-56px)]' : 'w-[calc(100%-40px)]'} flex flex-col font-light`}>
             <div className={`text-lg ${!forTrending ? 'text-lg font-semibold' : 'text-base font-medium'}`}>
               {user.name}
             </div>

@@ -11,7 +11,6 @@ import { SERVER_ERROR } from '@/config/errors';
 import PostsLoader from '@/components/loaders/posts';
 import { navbarOpenSelector } from '@/slices/feedSlice';
 import { useSelector } from 'react-redux';
-import TrendingCard from '@/sections/home/trending_card';
 
 const Discover = () => {
   const [feed, setFeed] = useState<Post[]>([]);
@@ -79,7 +78,7 @@ const Discover = () => {
       ) : (
         <></>
       )} */}
-      <div className="w-[50vw] max-lg:w-[80vw] max-md:w-screen flex flex-col px-6 gap-2">
+      <div className="w-full max-lg:w-[80vw] max-md:w-screen flex flex-col gap-2">
         {loading ? (
           <PostsLoader />
         ) : (
@@ -89,7 +88,7 @@ const Discover = () => {
               <></>
             ) : (
               <InfiniteScroll
-                className="flex flex-col gap-4 dark:gap-0"
+                className="w-full flex flex-col gap-4 dark:gap-0"
                 dataLength={feed.length}
                 next={getFeed}
                 hasMore={hasMore}
@@ -104,7 +103,6 @@ const Discover = () => {
           </>
         )}
       </div>
-      <TrendingCard />
     </div>
   );
 };

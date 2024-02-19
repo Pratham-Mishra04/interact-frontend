@@ -19,6 +19,7 @@ import PostsLoader from '@/components/loaders/posts';
 import PollCard from '@/components/organization/poll_card';
 import { initialOrganization } from '@/types/initials';
 import AnnouncementCard from '@/components/organization/announcement_card';
+import moment from 'moment';
 
 const Feed = () => {
   const [feed, setFeed] = useState<(Post | Announcement | Poll)[]>([]);
@@ -27,7 +28,7 @@ const Feed = () => {
   const [clickedOnNewPost, setClickedOnNewPost] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  let profilePic = useSelector(userSelector).profilePic;
+  let user = useSelector(userSelector);
 
   const open = useSelector(navbarOpenSelector);
 
@@ -55,34 +56,53 @@ const Feed = () => {
 
   useEffect(() => {
     getFeed();
-    profilePic = profilePic == '' ? 'default.jpg' : profilePic;
   }, []);
+
+  const getGreetings = () => {
+    const now = moment();
+    let greeting;
+
+    if (now.hour() < 12) {
+      greeting = 'Good Morning';
+    } else if (now.hour() < 18) {
+      greeting = 'Good Afternoon';
+    } else {
+      greeting = 'Good Evening';
+    }
+
+    return greeting;
+  };
 
   return (
     <div className={`w-full max-md:w-[95%] max-md:mx-auto flex ${open ? 'gap-2' : 'gap-12'} transition-ease-out-500`}>
       {clickedOnNewPost ? <NewPost setFeed={setFeed} setShow={setClickedOnNewPost} /> : <></>}
       {/* Create a New Post */}
-      <div className="w-[50vw] px-6 max-lg:w-[80vw] max-md:px-0 max-md:w-screen flex flex-col gap-2">
+      <div className="w-full max-lg:w-[80vw] max-md:px-0 max-md:w-screen flex flex-col gap-2">
         <div
           onClick={() => setClickedOnNewPost(true)}
-          className="w-full h-taskbar mx-auto shadow-md hover:shadow-lg transition-ease-300 text-gray-400 dark:text-gray-200 bg-white dark:bg-gradient-to-l dark:from-dark_primary_gradient_start dark:to-dark_primary_gradient_end px-4 max-md:px-2 py-3 rounded-lg cursor-pointer border-gray-300 border-[1px] dark:border-0 dark:hover:shadow-outer dark:shadow-outer flex justify-between items-center"
+          className="w-full bg-white flex flex-col justify-between gap-2 px-4 max-md:px-2 py-3 rounded-lg shadow-md hover:shadow-xl border-gray-300 border-[1px] cursor-pointer transition-ease-300"
         >
-          <div className="flex gap-2 items-center">
-            <Image
-              crossOrigin="anonymous"
-              className="w-8 h-8 rounded-full"
-              width={50}
-              height={50}
-              alt="user"
-              src={`${USER_PROFILE_PIC_URL}/${profilePic}`}
-            />
-            <div className="font-primary">Create a post</div>
+          <div className="text-xl font-semibold text-gray-700">
+            <span className="">{getGreetings()}</span> , {user.name.split(' ')[0]}!
           </div>
-          <Plus
-            size={36}
-            className="flex-center rounded-full hover:bg-primary_comp_hover dark:hover:bg-[#e9e9e933] p-2 transition-ease-300"
-            weight="regular"
-          />
+          <div className="w-full flex justify-between items-center">
+            <div className="flex gap-2 items-center text-gray-400">
+              <Image
+                crossOrigin="anonymous"
+                className="w-8 h-8 rounded-full"
+                width={50}
+                height={50}
+                alt="user"
+                src={`${USER_PROFILE_PIC_URL}/${user.profilePic}`}
+              />
+              <div className="font-primary">What&apos;s on your mind?</div>
+            </div>
+            <Plus
+              size={36}
+              className="flex-center rounded-full hover:bg-primary_comp_hover dark:hover:bg-[#e9e9e933] p-2 transition-ease-300"
+              weight="regular"
+            />
+          </div>
         </div>
 
         {loading ? (
@@ -93,7 +113,7 @@ const Feed = () => {
               <NoFeed />
             ) : (
               <InfiniteScroll
-                className="flex flex-col gap-4 dark:gap-0"
+                className="w-full flex flex-col gap-4 dark:gap-0"
                 dataLength={feed.length}
                 next={getFeed}
                 hasMore={hasMore}
@@ -110,6 +130,7 @@ const Feed = () => {
                         poll={item}
                         organisation={item.organization || initialOrganization}
                         setPolls={setFeed}
+                        hoverShadow={false}
                       />
                     );
                   } else return <AnnouncementCard key={item.id} announcement={item} />;
@@ -119,7 +140,6 @@ const Feed = () => {
           </>
         )}
       </div>
-      <ProfileCard />
     </div>
   );
 };

@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import patchHandler from '@/handlers/patch_handler';
 import {
   resetReduxLinks,
+  setCoverPic,
   setProfilePic,
   setReduxBio,
   setReduxLinks,
@@ -80,6 +81,7 @@ const ProfileCard = ({ user, setUser, tagline, coverPic }: Props) => {
       const profilePic = res.data.user.profilePic;
       const coverPic = res.data.user.coverPic;
       dispatch(setProfilePic(profilePic));
+      dispatch(setCoverPic(coverPic));
       if (field == 'name') dispatch(setReduxName(name));
       else if (field == 'bio') dispatch(setReduxBio(bio));
       else if (field == 'tagline') dispatch(setReduxTagline(tagline));

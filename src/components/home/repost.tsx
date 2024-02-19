@@ -189,8 +189,9 @@ const RePost = ({ post, showLowerPost = true, setFeed, org = false }: Props) => 
             }`}
             className="font-medium flex items-center gap-1"
           >
-            {post.user.username}
+            {post.user.name}
             {post.user.isOrganization ? <Buildings weight="duotone" /> : <></>}
+            <div className="text-xs font-normal text-gray-500">@{post.user.username}</div>
           </Link>
           <div className="flex gap-2 text-xs text-gray-400">
             <div>{moment(post.postedAt).fromNow()}</div>

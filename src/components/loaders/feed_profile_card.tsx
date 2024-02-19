@@ -2,37 +2,20 @@ import React from 'react';
 
 const ProfileCardLoader = () => {
   return (
-    <div
-      className={`w-[24vw] h-[75vh] pb-4 shadow-md dark:shadow-none gap-4 pt-12 px-4 transition-ease-500 sticky top-[150px] overflow-y-hidden overflow-x-hidden font-primary flex flex-col dark:text-white items-center bg-[#ffffff2d] dark:bg-[#84478023] backdrop-blur-md border-[1px] border-gray-300 dark:border-dark_primary_btn max-lg:hidden rounded-md`}
-    >
-      <div
-        className={
-          'animate-pulse delay-0 rounded-full bg-white dark:bg-dark_primary_comp_hover w-44 h-44 cursor-default'
-        }
-      />
-      <div className="animate-pulse delay-75 w-2/3 text-3xl h-10 rounded-lg bg-white dark:bg-dark_primary_comp_hover text-center font-bold"></div>
+    <div className="w-full h-fit pb-4 shadow-md gap-4 flex flex-col items-center bg-[#ffffff2d] backdrop-blur-md border-[1px] border-gray-300 max-lg:hidden rounded-lg">
+      <div className="w-full relative">
+        <div className="animate-pulse delay-0 w-full h-36 bg-white rounded-t-lg"></div>
+        <div className="w-28 bg-white h-28 rounded-full absolute translate-x-1/2 -translate-y-1/2 right-1/2"></div>
+      </div>
+
+      <div className="w-full flex flex-col items-center gap-2 mt-14">
+        <div className="animate-pulse delay-100 w-2/3 h-10 rounded-lg bg-white"></div>
+        <div className="animate-pulse delay-100 w-1/3 h-5 rounded-lg bg-white"></div>
+      </div>
+
       <div className="animate-pulse delay-150 w-full flex justify-center gap-6">
-        <div className="w-1/3 h-4 bg-white dark:bg-dark_primary_comp_hover rounded-sm"></div>
-        <div className="w-1/3 h-4 bg-white dark:bg-dark_primary_comp_hover rounded-sm"></div>
-      </div>
-      <div className="animate-pulse delay-100 w-3/5 flex flex-col gap-1">
-        <div className="w-full h-4 bg-white dark:bg-dark_primary_comp_hover rounded-sm"></div>
-        <div className="w-full h-4 bg-white dark:bg-dark_primary_comp_hover rounded-sm"></div>
-        <div className="w-full h-4 bg-white dark:bg-dark_primary_comp_hover rounded-sm"></div>
-      </div>
-      <div className="animate-pulse delay-200 w-full flex flex-col gap-8 mt-12">
-        <div className="w-full flex flex-wrap items-center justify-center gap-2">
-          <div className="w-16 h-4 bg-white dark:bg-dark_primary_comp_hover rounded-sm"></div>
-          <div className="w-16 h-4 bg-white dark:bg-dark_primary_comp_hover rounded-sm"></div>
-          <div className="w-16 h-4 bg-white dark:bg-dark_primary_comp_hover rounded-sm"></div>
-        </div>
-        <div className="animate-pulse delay-300 w-full h-fit flex flex-wrap items-center justify-center gap-4">
-          <div className="w-fit h-8 px-2 py-4 flex items-center gap-2">
-            <div className="w-24 h-4 bg-white dark:bg-dark_primary_comp_hover rounded-sm"></div>
-            <div className="w-24 h-4 bg-white dark:bg-dark_primary_comp_hover rounded-sm"></div>
-            <div className="w-24 h-4 bg-white dark:bg-dark_primary_comp_hover rounded-sm"></div>
-          </div>
-        </div>
+        <div className="w-1/3 h-4 bg-white rounded-md"></div>
+        <div className="w-1/3 h-4 bg-white rounded-md"></div>
       </div>
     </div>
   );

@@ -33,6 +33,7 @@ interface UserState {
   chats: string[];
   personalChatSlices: ChatSlice[];
   profilePic: string;
+  coverPic: string;
   isLoggedIn: boolean;
   isVerified: boolean;
   isOnboardingComplete: boolean;
@@ -52,6 +53,7 @@ const initialState: UserState = {
   resume: '',
   isLoggedIn: false,
   profilePic: '',
+  coverPic: '',
   following: [],
   likes: [],
   dislikes: [],
@@ -87,6 +89,7 @@ export const userSlice = createSlice({
       state.email = action.payload.email;
       state.resume = action.payload.resume;
       state.profilePic = action.payload.profilePic;
+      state.coverPic = action.payload.coverPic;
       state.isLoggedIn = true;
       state.phoneNo = action.payload.phoneNo;
       state.isVerified = action.payload.isVerified;
@@ -119,6 +122,7 @@ export const userSlice = createSlice({
       state.email = '';
       state.resume = '';
       state.profilePic = 'default.jpg';
+      state.coverPic = 'default.jpg';
       state.isLoggedIn = false;
       state.phoneNo = '';
       state.isVerified = false;
@@ -146,6 +150,9 @@ export const userSlice = createSlice({
     },
     setProfilePic: (state, action: PayloadAction<string>) => {
       state.profilePic = action.payload;
+    },
+    setCoverPic: (state, action: PayloadAction<string>) => {
+      state.coverPic = action.payload;
     },
     setReduxTagline: (state, action: PayloadAction<string>) => {
       state.tagline = action.payload;
@@ -233,6 +240,7 @@ export const {
   resetUser,
   setReduxName,
   setProfilePic,
+  setCoverPic,
   setReduxTagline,
   setReduxBio,
   setFollowing,

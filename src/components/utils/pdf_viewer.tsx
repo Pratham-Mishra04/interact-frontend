@@ -1,12 +1,10 @@
 import ModalWrapper from '@/wrappers/modal';
 import React, { useEffect, useState } from 'react';
-import { Viewer } from '@react-pdf-viewer/core';
 import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
 import Toaster from '@/utils/toaster';
 import Cookies from 'js-cookie';
-import { first } from 'lodash';
 import { useSelector } from 'react-redux';
 import Loader from '../common/loader';
 

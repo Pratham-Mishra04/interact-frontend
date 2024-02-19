@@ -18,9 +18,10 @@ interface Props {
   poll: Poll;
   organisation: Organization;
   setPolls?: React.Dispatch<React.SetStateAction<any[]>>;
+  hoverShadow?: boolean;
 }
 
-const PollCard = ({ poll, setPolls, organisation }: Props) => {
+const PollCard = ({ poll, setPolls, organisation, hoverShadow = true }: Props) => {
   const [clickedOnDelete, setClickedOnDelete] = useState(false);
   const user = useSelector(userSelector);
 
@@ -44,7 +45,11 @@ const PollCard = ({ poll, setPolls, organisation }: Props) => {
   return (
     <>
       {clickedOnDelete ? <ConfirmDelete handleDelete={handleDelete} setShow={setClickedOnDelete} /> : <></>}
-      <div className="w-full max-w-3xl mx-auto bg-white flex gap-1 p-4 border-[1px] border-gray-300 rounded-xl hover:shadow-xl transition-ease-300 z-[1]">
+      <div
+        className={`w-full max-w-3xl mx-auto bg-white flex gap-1 p-4 border-[1px] border-gray-300 rounded-xl ${
+          hoverShadow ? 'hover:shadow-xl' : ''
+        } transition-ease-300 z-[1]`}
+      >
         <Link
           href={`/explore/organisation/${organisation.user.username}`}
           target="_blank"
@@ -71,7 +76,8 @@ const PollCard = ({ poll, setPolls, organisation }: Props) => {
               target="_blank"
               className="flex items-center gap-2 font-medium"
             >
-              {organisation.user.username}
+              {organisation.user.name}
+              <div className="text-xs font-normal text-gray-500">@{organisation.user.username}</div>
             </Link>
             <div className="text-gray-400 text-xs">{moment(poll.createdAt).fromNow()}</div>
           </div>

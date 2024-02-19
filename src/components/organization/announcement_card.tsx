@@ -208,7 +208,8 @@ const AnnouncementCard = ({ announcement, setAnnouncements }: Props) => {
             target="_blank"
             className="flex items-center gap-2 font-medium"
           >
-            {announcement.organization?.user.username}
+            {announcement.organization?.user.name}
+            <div className="text-xs font-normal text-gray-500">@{announcement.organization?.user.username}</div>{' '}
           </Link>
           <div className="flex-center gap-2 text-xs text-gray-400">
             {announcement.isEdited ? <div>(edited)</div> : <></>}

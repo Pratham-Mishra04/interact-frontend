@@ -1,4 +1,5 @@
 import {
+  setCoverPic,
   setOnboardingStatus,
   setProfilePic,
   setReduxBio,
@@ -99,8 +100,8 @@ const Onboarding = () => {
     const res = await patchHandler(URL, formData, 'multipart/form-data');
 
     if (res.statusCode === 200) {
-      const profilePic = res.data.user.profilePic;
-      dispatch(setProfilePic(profilePic));
+      dispatch(setProfilePic(res.data.user.profilePic));
+      dispatch(setCoverPic(res.data.user.coverPic));
       if (name != user.name) dispatch(setReduxName(name));
       if (bio != user.bio) dispatch(setReduxBio(bio));
       if (tagline != user.tagline) dispatch(setReduxTagline(tagline));

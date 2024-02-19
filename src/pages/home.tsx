@@ -1,17 +1,17 @@
 import Sidebar from '@/components/common/sidebar';
-import TabMenu from '@/components/common/tab_menu';
 import Discover from '@/screens/home/discover';
 import Feed from '@/screens/home/feed';
 import ProfileCompletion from '@/sections/home/profile_completion';
-import { homeTabSelector, onboardingSelector, setHomeTab } from '@/slices/feedSlice';
+import { homeTabSelector, onboardingSelector } from '@/slices/feedSlice';
 import BaseWrapper from '@/wrappers/base';
 import MainWrapper from '@/wrappers/main';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import Onboarding from '@/components/common/onboarding';
 import { userSelector } from '@/slices/userSlice';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
+import ProfileCard from '@/sections/home/profile_card';
+import TrendingCard from '@/sections/home/trending_card';
 
 const Home = () => {
   const active = useSelector(homeTabSelector);
@@ -35,30 +35,28 @@ const Home = () => {
       <Sidebar index={1} />
       <MainWrapper>
         {onboarding && user.id != '' ? <Onboarding /> : <></>}
-        <div className="w-full flex flex-col items-center relative gap-4 px-9 max-md:px-2 pt-20 pb-base_padding">
-          <TabMenu items={['Feed', 'Discover']} active={active} setReduxState={setHomeTab} />
-          <div className={`${active === 0 ? 'block' : 'hidden'}`}>
+        <div className="w-full flex gap-6 px-12 max-md:px-2 py-base_padding">
+          <div className="w-[70%] flex flex-col items-center relative">
             {user.id != '' ? (
-              <Feed />
+              <>
+                {/* <TabMenu items={['Feed', 'Discover']} active={active} setReduxState={setHomeTab} /> */}
+                <div className={`w-full ${active === 0 ? 'block' : 'hidden'}`}>
+                  <Feed />
+                </div>
+                <div className={`w-full ${active === 1 ? 'block' : 'hidden'}`}>
+                  <Discover />
+                </div>
+              </>
             ) : (
-              <Link
-                href={'/signup'}
-                className="w-4/5 mx-auto h-fit px-12 max-md:px-8 py-8 rounded-md dark:text-white font-primary border-gray-300 dark:border-dark_primary_btn border-[1px] bg-white dark:bg-dark_primary_comp hover:shadow-lg dark:hover:shadow-2xl flex-center flex-col gap-2 cursor-pointer transition-ease-500"
-              >
-                <div className="text-xl max-md:text-lg font-medium text-center">
-                  <span className="text-2xl font-semibold max-md:block">Fresh to the scene?</span> Complete your sign up
-                  now!
-                </div>
-                <div className="text-lg max-md:text-base text-center">
-                  Follow users to see their posts, and explore trending posts on the{' '}
-                  <span className="font-bold text-xl max-md:text-lg text-gradient">Discover</span> page! 🚀
-                </div>
-              </Link>
+              <Discover />
             )}
           </div>
-          <div className={`${active === 1 ? 'block' : 'hidden'}`}>
-            <Discover />
+
+          <div className="w-[30%] h-fit flex flex-col gap-4">
+            <ProfileCard />
+            <TrendingCard />
           </div>
+
           {
             //TODO Profile Completion for Organisations
           }
