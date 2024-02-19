@@ -14,6 +14,7 @@ import NewReview from '@/sections/organization/reviews/new_review';
 import { Star, Plus } from '@phosphor-icons/react';
 import StarRating from '@/components/organization/star_rating';
 import { reviewModalOpenSelector, setReviewModalOpen } from '@/slices/feedSlice';
+import Masonry from 'react-masonry-css';
 interface Props {
   orgID: string;
 }
@@ -121,8 +122,33 @@ const Reviews = ({ orgID }: Props) => {
     );
   };
 
+  const ReviewSummary = () => (
+    <div className="w-full bg-white mx-auto flex justify-between items-center rounded-xl p-6 gap-8">
+      <div className="flex flex-col items-center gap-2">
+        <div className="relative flex-center">
+          <div className=" text-dark_primary_btn font-bold text-5xl flex flex-col items-center gap-2">
+            {reviewData.average}
+            <StarRating
+              defaultRating={Math.floor(reviewData.average)}
+              color={'#9275b9ba'}
+              strokeColor={'#633267'}
+              size={15}
+              fixRating={true}
+            />
+          </div>
+        </div>
+        <div className="text-sm font-medium">From {reviewData.total} Reviews</div>
+      </div>
+      <div className="grow flex flex-col gap-2">
+        {[5, 4, 3, 2, 1].map(index => (
+          <ReviewBar key={index} index={index} />
+        ))}
+      </div>
+    </div>
+  );
+
   return (
-    <div className="w-[50vw] max-md:w-full mx-auto max-md:pb-2 z-50">
+    <div className="w-5/6 max-md:w-full mx-auto pb-base_padding z-50">
       {loading ? (
         <Loader />
       ) : (
@@ -138,52 +164,38 @@ const Reviews = ({ orgID }: Props) => {
             <></>
           )}
 
-          {reviewDataLoading ? (
-            //TODO add Review Data Card Loader
-            <></>
-          ) : (
-            <div className="w-5/6 bg-white mx-auto flex justify-between items-center rounded-xl p-6 gap-8">
-              <div className="flex flex-col items-center gap-2">
-                <div className="relative flex-center">
-                  <div className=" text-dark_primary_btn font-bold text-5xl flex flex-col items-center gap-2">
-                    {reviewData.average}
-                    <StarRating
-                      defaultRating={Math.floor(reviewData.average)}
-                      color={'#9275b9ba'}
-                      strokeColor={'#633267'}
-                      size={15}
-                      fixRating={true}
-                    />
-                  </div>
-                </div>
-                <div className="text-sm font-medium">From {reviewData.total} Reviews</div>
-              </div>
-              <div className="grow flex flex-col gap-2">
-                {[5, 4, 3, 2, 1].map(index => (
-                  <ReviewBar key={index} index={index} />
-                ))}
-              </div>
-            </div>
-          )}
-
           {user.organizationMemberships.map(m => m.organizationID).includes(orgID) ? (
             //TODO not show if review is already added
             <NewReview orgID={orgID} setReviews={setReviews} />
           ) : (
             <></>
           )}
+
           <InfiniteScroll
+            className="w-full mx-auto"
             dataLength={reviews.length}
             next={getReviews}
             hasMore={hasMore}
             loader={<Loader />}
-            className="w-full flex flex-wrap justify-center pb-12 gap-4"
           >
-            {reviews.length > 0 ? (
-              reviews.map(review => <ReviewCard key={review.id} review={review} setReviews={setReviews} />)
-            ) : (
-              <NoUserItems />
-            )}
+            <Masonry
+              breakpointCols={{ default: 2, 768: 1 }}
+              className="masonry-grid"
+              columnClassName="masonry-grid_column"
+            >
+              <div className="">
+                <ReviewSummary />
+              </div>
+              {reviews.length > 0 ? (
+                reviews.map((review, index) => (
+                  <div key={review.id} className={`${index != 0 && 'mt-4'}`}>
+                    <ReviewCard key={review.id} review={review} setReviews={setReviews} />
+                  </div>
+                ))
+              ) : (
+                <NoUserItems />
+              )}
+            </Masonry>
           </InfiniteScroll>
         </div>
       )}

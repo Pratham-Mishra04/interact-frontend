@@ -286,14 +286,6 @@ const Profile = () => {
               </div>
             )}
 
-            <TabMenu
-              items={['About', 'Posts', 'Projects', 'Events', 'Reviews','Openings']}
-              active={active}
-              setState={setActive}
-              width={open ? '640px' : '720px'}
-              sticky={true}
-            />
-
             <div className={`${active === 0 ? 'block' : 'hidden'}`}>
               {loading ? (
                 <Loader />
@@ -302,27 +294,6 @@ const Profile = () => {
               ) : (
                 <About profile={user.profile ? user.profile : initialProfile} org={true} />
               )}
-            </div>
-            <div className={`${active === 1 ? 'block' : 'hidden'}`}>
-              {loading ? (
-                <div className="w-[45vw] mx-auto max-lg:w-[85%] max-md:w-screen max-lg:px-4 pb-2">
-                  <PostsLoader />
-                </div>
-              ) : (
-                <Posts userID={user.id} />
-              )}
-            </div>
-            <div className={`${active === 2 ? 'block' : 'hidden'}`}>
-              {loading ? <Loader /> : <Projects userID={user.id} displayOnProfile={true} />}
-            </div>
-            <div className={`${active === 3 ? 'block' : 'hidden'} `}>
-              {loading ? <Loader /> : <Events orgID={currentOrgID} />}
-            </div>
-            <div className={`${active === 4 ? 'block' : 'hidden'} `}>
-              {loading ? <Loader /> : <Reviews orgID={currentOrgID} />}
-            </div>
-            <div className={`${active === 5 ? 'block' : 'hidden'} `}>
-              {loading ? <Loader /> : <Openings orgID={currentOrgID} />}
             </div>
           </div>
         </div>

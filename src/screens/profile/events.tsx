@@ -12,6 +12,7 @@ import NoUserItems from '@/components/empty_fillers/user_items';
 interface Props {
   orgID: string;
   displayOnProfile?: boolean;
+  org?: boolean;
 }
 
 const Events = ({ orgID, displayOnProfile = false }: Props) => {
@@ -48,8 +49,8 @@ const Events = ({ orgID, displayOnProfile = false }: Props) => {
   }, []);
 
   return (
-    <div className="w-[50vw] mx-auto max-md:pb-2 z-50">
-      {/* {displayOnProfile ? (
+    <div className="w-full mx-auto pb-base_padding z-50">
+      {/* {displayOnProfile && (
         <>
           {clickedOnNewProject ? <NewProject setShow={setClickedOnNewProject} setProjects={setProjects} /> : <></>}
           <div
@@ -65,8 +66,6 @@ const Events = ({ orgID, displayOnProfile = false }: Props) => {
             </div>
           </div>
         </>
-      ) : (
-        <></>
       )} */}
       {loading ? (
         <Loader />
@@ -76,7 +75,7 @@ const Events = ({ orgID, displayOnProfile = false }: Props) => {
           next={getEvents}
           hasMore={hasMore}
           loader={<Loader />}
-          className="w-full flex flex-wrap justify-center px-4 pb-12 gap-6"
+          className="w-full flex flex-wrap justify-center px-4 gap-6"
         >
           {events.length > 0 ? (
             events.map(event => <EventCard key={event.id} event={event} size={80} />)

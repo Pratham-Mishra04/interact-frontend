@@ -20,16 +20,15 @@ interface Props {
   userID: string;
   displayOnProfile?: boolean;
   contributing?: boolean;
+  org?: boolean;
 }
 
-const Projects = ({ userID, displayOnProfile = false, contributing = false }: Props) => {
+const Projects = ({ userID, displayOnProfile = false, contributing = false, org = false }: Props) => {
   const [clickedOnProject, setClickedOnProject] = useState(false);
   const [clickedProjectIndex, setClickedProjectIndex] = useState(-1);
   const [clickedOnNewProject, setClickedOnNewProject] = useState(false);
 
   const [fadeInProject, setFadeInProject] = useState(true);
-
-  const loggedInUserID = useSelector(userIDSelector);
 
   const navbarOpen = useSelector(navbarOpenSelector);
 
@@ -69,7 +68,7 @@ const Projects = ({ userID, displayOnProfile = false, contributing = false }: Pr
 
   return (
     <div className="w-full px-2 pb-8 max-md:px-0 max-md:pb-2 z-50">
-      {displayOnProfile ? (
+      {/* {displayOnProfile && (
         <>
           {clickedOnNewProject ? <NewProject setShow={setClickedOnNewProject} setProjects={setProjects} /> : <></>}
           {checkOrgAccess(ORG_MANAGER) || loggedInUserID == userID ? (
@@ -89,18 +88,26 @@ const Projects = ({ userID, displayOnProfile = false, contributing = false }: Pr
             <></>
           )}
         </>
-      ) : (
-        <></>
-      )}
+      )} */}
       <InfiniteScroll
         dataLength={projects.length}
         next={getProjects}
         hasMore={hasMore}
         loader={<Loader />}
         className={`${
-          projects?.length > 0 || displayOnProfile ? 'w-fit grid' : 'w-[45vw] max-lg:w-[85%] max-md:w-screen'
+          projects?.length > 0 || displayOnProfile
+            ? 'w-fit grid'
+            : org
+            ? 'w-full'
+            : 'w-[45vw] max-lg:w-[85%] max-md:w-screen'
         } ${
-          projects.length == 1 ? 'grid-cols-1' : navbarOpen ? 'grid-cols-2 gap-6' : 'grid-cols-3 gap-8'
+          projects.length == 1
+            ? 'grid-cols-1'
+            : navbarOpen
+            ? org
+              ? 'grid-cols-3 gap-6'
+              : 'grid-cols-2 gap-6'
+            : 'grid-cols-3 gap-8'
         } max-md:grid-cols-1 mx-auto max-md:gap-6 max-md:px-4 max-md:justify-items-center transition-ease-out-500`}
       >
         {projects?.length > 0 ? (
@@ -123,7 +130,7 @@ const Projects = ({ userID, displayOnProfile = false, contributing = false }: Pr
                   key={project.id}
                   index={index}
                   project={project}
-                  size={64}
+                  size={org ? 72 : 64}
                   setClickedOnProject={setClickedOnProject}
                   setClickedProjectIndex={setClickedProjectIndex}
                 />

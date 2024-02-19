@@ -150,7 +150,7 @@ const Report = ({ userID, postID, projectID, openingID, chatID, reviewID, announ
       </div>
       <div
         onClick={() => setShow(false)}
-        className="bg-backdrop w-screen h-screen fixed top-0 left-0 animate-fade_third z-30"
+        className="bg-backdrop w-screen h-screen backdrop-blur-sm fixed top-0 left-0 animate-fade_third z-30"
       ></div>
     </>
   );

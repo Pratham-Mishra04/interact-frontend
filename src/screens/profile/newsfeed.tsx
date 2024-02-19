@@ -8,6 +8,8 @@ import PollCard from '@/components/organization/poll_card';
 import { initialOrganization } from '@/types/initials';
 import AnnouncementCard from '@/components/organization/announcement_card';
 import Loader from '@/components/common/loader';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import Masonry from 'react-masonry-css';
 
 interface Props {
   orgID: string;
@@ -15,23 +17,27 @@ interface Props {
 
 const NewsFeed = ({ orgID }: Props) => {
   const [newsFeed, setNewsFeed] = useState<(Poll | Announcement)[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
 
   const [organisation, setOrganisation] = useState(initialOrganization);
-  const [loading, setLoading] = useState(true);
 
-  const getPolls = () => {
-    const URL = `${ORG_URL}/${orgID}/newsFeed`;
+  const getNewsFeed = () => {
+    const URL = `${ORG_URL}/${orgID}/newsFeed?page=${page}&limit=${10}`;
     getHandler(URL)
       .then(res => {
         if (res.statusCode === 200) {
-          const newsFeedData: (Poll | Announcement)[] = res.data.newsFeed || [];
           const organizationData: Organization = res.data.organization || initialOrganization;
+          const addedNewsFeed = [...newsFeed, ...(res.data.newsFeed || [])];
+          if (addedNewsFeed.length === newsFeed.length) setHasMore(false);
           setNewsFeed(
-            newsFeedData.map(n => {
+            addedNewsFeed.map(n => {
               n.organization = organizationData;
               return n;
             })
           );
+          setPage(prev => prev + 1);
           setOrganisation(organizationData);
           setLoading(false);
         } else {
@@ -47,21 +53,39 @@ const NewsFeed = ({ orgID }: Props) => {
   };
 
   useEffect(() => {
-    getPolls();
+    getNewsFeed();
   }, []);
 
   return (
-    <div className="w-4/5 mx-auto pb-base_padding flex flex-col gap-4">
+    <div className="w-full pb-base_padding flex flex-col gap-4">
       {loading ? (
         <Loader />
       ) : (
-        newsFeed.map(news =>
-          'totalVotes' in news ? (
-            <PollCard key={news.id} poll={news} organisation={organisation} setPolls={setNewsFeed} />
-          ) : (
-            <AnnouncementCard key={news.id} announcement={news} />
-          )
-        )
+        <InfiniteScroll
+          className="w-5/6 mx-auto"
+          dataLength={newsFeed.length}
+          next={getNewsFeed}
+          hasMore={hasMore}
+          loader={<Loader />}
+        >
+          <Masonry
+            breakpointCols={{ default: 2, 768: 1 }}
+            className="masonry-grid"
+            columnClassName="masonry-grid_column"
+          >
+            {newsFeed.map((news, index) =>
+              'totalVotes' in news ? (
+                <div key={news.id} className={`${index != 0 && index != 1 && 'mt-4'}`}>
+                  <PollCard poll={news} organisation={organisation} setPolls={setNewsFeed} />
+                </div>
+              ) : (
+                <div key={news.id} className={`${index != 0 && index != 1 && 'mt-4'}`}>
+                  <AnnouncementCard announcement={news} />
+                </div>
+              )
+            )}
+          </Masonry>
+        </InfiniteScroll>
       )}
     </div>
   );

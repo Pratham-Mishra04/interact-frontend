@@ -67,9 +67,9 @@ const About = ({ profile, setUser, org = false }: Props) => {
     else if (field == 'hobbies') hobbies.forEach(hobby => formData.append('hobbies[]', hobby));
     else if (field == 'areas') areas.forEach(area => formData.append('areas[]', area));
 
-    const URL = org ? `${ORG_URL}/${currentOrgID}/profile` : `${USER_URL}/me/profile`;
+    const URL = org ? `${ORG_URL}/${currentOrgID}/me` : `${USER_URL}/me`;
 
-    const res = await patchHandler(URL, formData);
+    const res = await patchHandler(URL, formData, 'multipart/form-data');
 
     if (res.statusCode === 200) {
       const profile = res.data.profile;
@@ -507,7 +507,9 @@ const About = ({ profile, setUser, org = false }: Props) => {
                       key={i}
                       className="border-gray-500 border-[1px] border-dashed p-2 text-sm rounded-lg flex-center"
                     >
-                      <div className="" style={{ userSelect: "none" }}>{el}</div>
+                      <div className="" style={{ userSelect: 'none' }}>
+                        {el}
+                      </div>
                     </div>
                   ))}
                 </div>

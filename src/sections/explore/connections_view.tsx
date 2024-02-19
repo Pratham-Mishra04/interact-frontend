@@ -26,7 +26,7 @@ const Connections = ({ type, user, setShow, orgID = '', org = false }: Props) =>
 
   const fetchUsers = async () => {
     setLoading(true);
-    const BASE_URL = org ? `${ORG_URL}/${orgID}/explore_membership` : `${CONNECTION_URL}/${type}/${user.id}`;
+    const BASE_URL = org ? `${ORG_URL}/${orgID}/explore_memberships` : `${CONNECTION_URL}/${type}/${user.id}`;
     const URL = `${BASE_URL}?page=${page}&limit=${10}`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
