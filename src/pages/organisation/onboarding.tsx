@@ -10,7 +10,6 @@ import {
 } from '@/slices/userSlice';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Spline from '@splinetool/react-spline';
 import Link from 'next/link';
 import Image from 'next/image';
 import { USER_PROFILE_PIC_URL, USER_URL } from '@/config/routes';
@@ -441,8 +440,6 @@ const Onboarding = () => {
             </div>
           </div>
         )}
-
-        <Spline scene="https://prod.spline.design/L8OKRKq5ShawCG78/scene.splinecode" />
       </div>
     </>
   );

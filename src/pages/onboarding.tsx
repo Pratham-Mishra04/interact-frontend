@@ -10,13 +10,12 @@ import {
 } from '@/slices/userSlice';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Spline from '@splinetool/react-spline';
 import Link from 'next/link';
 import Image from 'next/image';
-import { EXPLORE_URL, USER_PROFILE_PIC_URL, USER_URL } from '@/config/routes';
+import { USER_COVER_PIC_URL, USER_PROFILE_PIC_URL, USER_URL } from '@/config/routes';
 import getDomainName from '@/utils/funcs/get_domain_name';
 import getIcon from '@/utils/funcs/get_icon';
-import { ArrowLeft, Buildings, Camera, MapPin, Plus, X } from '@phosphor-icons/react';
+import { Camera, Check, ImageSquare, MapPin, X } from '@phosphor-icons/react';
 import Tags from '@/components/utils/edit_tags';
 import Links from '@/components/utils/edit_links';
 import { SERVER_ERROR } from '@/config/errors';
@@ -29,11 +28,6 @@ import Protect from '@/utils/wrappers/protect';
 import WidthCheck from '@/utils/wrappers/widthCheck';
 import { setOnboarding } from '@/slices/feedSlice';
 import { Id } from 'react-toastify';
-import { College } from '@/types';
-import getHandler from '@/handlers/get_handler';
-import postHandler from '@/handlers/post_handler';
-import fuzzysort from 'fuzzysort';
-import { collegesData } from 'src/utils/colleges';
 
 const Onboarding = () => {
   const [clickedOnBuild, setClickedOnBuild] = useState(false);
@@ -43,15 +37,13 @@ const Onboarding = () => {
   const [bio, setBio] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [links, setLinks] = useState<string[]>([]);
+
   const [userPic, setUserPic] = useState<File | null>();
   const [userPicView, setUserPicView] = useState(USER_PROFILE_PIC_URL + '/' + user.profilePic);
-  const [school, setSchool] = useState('');
-  const [schoolSearch, setSchoolSearch] = useState('');
-  const [location, setLocation] = useState('');
+  const [userCoverPic, setUserCoverPic] = useState<File | null>();
+  const [userCoverPicView, setUserCoverPicView] = useState(USER_COVER_PIC_URL + '/' + user.coverPic);
 
-  const [clickedOnNewCollege, setClickedOnNewCollege] = useState(false);
-
-  const [colleges, setColleges] = useState<College[]>([]);
+  const [location, setLocation] = useState('Vellore');
 
   const [mutex, setMutex] = useState(false);
 
@@ -60,12 +52,6 @@ const Onboarding = () => {
   const router = useRouter();
 
   const dispatch = useDispatch();
-
-  const handleAddCollege = () => {
-    const URL = `${EXPLORE_URL}/colleges`;
-    postHandler(URL, { name: school, city: location }, 'multipart/form-data');
-    setClickedOnNewCollege(false);
-  };
 
   useEffect(() => {
     if (process.env.NODE_ENV != 'development') {
@@ -87,8 +73,10 @@ const Onboarding = () => {
     setMutex(true);
 
     const toaster = Toaster.startLoad('Setting your Profile...');
+
     const formData = new FormData();
     if (userPic) formData.append('profilePic', userPic);
+    if (userCoverPic) formData.append('coverPic', userCoverPic);
     if (name != user.name) formData.append('name', name.trim());
     if (bio != user.bio) formData.append('bio', bio.trim());
     if (tagline != user.tagline) formData.append('tagline', tagline.trim());
@@ -125,7 +113,6 @@ const Onboarding = () => {
   const handleSubmitProfileDetails = async (toaster: Id) => {
     const formData = new FormData();
 
-    if (school != '') formData.append('school', school);
     formData.append('location', location);
 
     const URL = `${USER_URL}/me/profile`;
@@ -170,7 +157,7 @@ const Onboarding = () => {
         setStep(prev => prev + 1);
         break;
       case 7:
-        if (clickedOnNewCollege) handleAddCollege();
+        // if (clickedOnNewCollege) handleAddCollege();
         setStep(prev => prev + 1);
         break;
       case 8:
@@ -181,13 +168,7 @@ const Onboarding = () => {
     }
   };
 
-  useEffect(() => {
-    if (schoolSearch == '') setColleges([]);
-    else {
-      const results = fuzzysort.go(schoolSearch, collegesData, { key: 'fuzzy', limit: 10 });
-      setColleges(results.map(result => result.obj));
-    }
-  }, [schoolSearch]);
+  const steps: string[] = ['name', 'tagline', 'bio', 'skills', 'profilePic', 'socials', 'location'];
 
   return (
     <>
@@ -196,7 +177,7 @@ const Onboarding = () => {
       </Head>
       <div className="w-screen h-screen overflow-y-auto">
         {!clickedOnBuild ? (
-          <div className="glassMorphism animate-fade_1 page w-fit max-md:w-[90%] h-64 max-md:h-72 px-8 py-10 font-primary flex flex-col justify-between rounded-lg shadow-xl hover:shadow-2xl transition-ease-300 absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2">
+          <div className="bg-slate-100 animate-fade_1 page w-fit max-md:w-[90%] h-64 max-md:h-72 px-8 py-10 font-primary flex flex-col justify-between rounded-lg shadow-xl hover:shadow-2xl transition-ease-300 absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2">
             <div className="flex flex-col gap-2">
               <div className="text-5xl font-bold">
                 Welcome to{' '}
@@ -221,7 +202,40 @@ const Onboarding = () => {
           </div>
         ) : (
           <div className="w-full h-full flex justify-between font-primary items-center absolute top-0 left-0 px-24 py-4 max-md:px-4 animate-fade_half">
-            <div className="w-1/2 max-md:w-full max-md:max-h-full flex flex-col gap-4 backdrop-blur-xl rounded-xl shadow-xl p-8  overflow-y-auto animate-fade_half">
+            <div className="w-[90%] max-md:hidden flex flex-col absolute top-12 right-1/2 translate-x-1/2">
+              <div className="w-full h-full relative">
+                <div className="w-full flex justify-between z-[1]">
+                  {steps.map((title, index) => (
+                    <div key={index} className="flex flex-col gap-1 items-center relative">
+                      <div
+                        onClick={() => {
+                          if (step - 1 > index) setStep(index + 1);
+                        }}
+                        className={`w-8 h-8 rounded-full flex-center ${
+                          step - 1 > index
+                            ? ' bg-blue-300 border-blue-200'
+                            : step - 1 == index
+                            ? 'bg-white border-primary_comp_hover'
+                            : 'bg-white border-primary_comp'
+                        } border-4 transition-ease-300 delay-500 ${step - 1 > index && 'cursor-pointer'}`}
+                      >
+                        <Check
+                          className={`${step - 1 > index ? 'opacity-100' : 'opacity-0'} transition-ease-300 delay-300`}
+                          weight="bold"
+                        />
+                      </div>
+                      <div className="w-fit absolute -bottom-4 translate-y-1/2 text-sm font-medium">{title}</div>
+                    </div>
+                  ))}
+                </div>
+                <div
+                  style={{ width: `${((step - 1) * 100) / (steps.length - 1)}%` }}
+                  className="w-full h-2 bg-primary_comp_active absolute top-1/2 -translate-y-1/2 -z-[1] rounded-xl transition-ease-500"
+                ></div>
+                <div className="w-full h-2 bg-primary_comp_active absolute top-1/2 -translate-y-1/2 -z-[1] rounded-xl opacity-25"></div>
+              </div>
+            </div>
+            <div className="w-1/2 max-md:w-full max-md:max-h-full flex flex-col gap-4 backdrop-blur-xl rounded-xl shadow-xl p-8 overflow-y-auto animate-fade_half">
               <div className="w-full flex items-center justify-between flex-wrap">
                 <div className="text-5xl max-md:text-3xl font-bold">
                   {step == 1
@@ -237,8 +251,6 @@ const Onboarding = () => {
                     : step == 6
                     ? 'Attach Your Socials'
                     : step == 7
-                    ? 'Your College?'
-                    : step == 8
                     ? 'Pin Your Spot'
                     : ''}
                 </div>
@@ -256,8 +268,6 @@ const Onboarding = () => {
                     : step == 6
                     ? `(${links.length}/3)`
                     : step == 7
-                    ? ``
-                    : step == 8
                     ? `(${location.length}/25)`
                     : ''}
                 </div>
@@ -332,37 +342,89 @@ const Onboarding = () => {
                       }
                     }}
                   />
-                  <div className="relative flex items-center gap-2 hover:bg-[#ffffff40] transition-ease-300 p-2 rounded-md">
-                    {userPic ? (
-                      <div className="w-full flex flex-col gap-4 p-4">
-                        <Image
-                          crossOrigin="anonymous"
-                          width={500}
-                          height={500}
-                          alt={'User Pic'}
-                          src={userPicView}
-                          className={`rounded-full md:hidden max-md:mx-auto w-32 h-32 cursor-default`}
-                        />
-                        <div className="w-full flex items-center gap-2">
-                          <label className="grow cursor-pointer" htmlFor="userPic">
-                            {userPic.name}
-                          </label>
-                          <X
-                            onClick={() => {
-                              setUserPic(null);
-                              setUserPicView(USER_PROFILE_PIC_URL + '/' + user.profilePic);
-                            }}
-                            className="cursor-pointer"
-                            size={20}
+                  <input
+                    type="file"
+                    className="hidden"
+                    id="userCoverPic"
+                    multiple={false}
+                    onChange={async ({ target }) => {
+                      if (target.files && target.files[0]) {
+                        const file = target.files[0];
+                        if (file.type.split('/')[0] == 'image') {
+                          const resizedPic = await resizeImage(file, 900, 500);
+                          setUserCoverPicView(URL.createObjectURL(resizedPic));
+                          setUserCoverPic(resizedPic);
+                        } else Toaster.error('Only Image Files can be selected');
+                      }
+                    }}
+                  />
+                  <div className="w-full flex flex-col gap-1">
+                    <div className="relative flex items-center gap-2 hover:bg-primary_comp transition-ease-300 p-2 rounded-md">
+                      {userPic ? (
+                        <div className="w-full flex flex-col gap-4 px-2 py-1">
+                          <Image
+                            crossOrigin="anonymous"
+                            width={500}
+                            height={500}
+                            alt={'User Pic'}
+                            src={userPicView}
+                            className={`rounded-full md:hidden max-md:mx-auto w-32 h-32 cursor-default`}
                           />
+                          <div className="w-full flex items-center gap-2">
+                            <label className="grow cursor-pointer flex items-center gap-1" htmlFor="userPic">
+                              <Camera size={24} />
+                              {userPic.name}
+                            </label>
+                            <X
+                              onClick={() => {
+                                setUserPic(null);
+                                setUserPicView(USER_PROFILE_PIC_URL + '/' + user.profilePic);
+                              }}
+                              className="cursor-pointer"
+                              size={20}
+                            />
+                          </div>
                         </div>
-                      </div>
-                    ) : (
-                      <label className="w-full flex items-center gap-2 cursor-pointer" htmlFor="userPic">
-                        <Camera size={24} />
-                        <div> Upload Profile Picture</div>
-                      </label>
-                    )}
+                      ) : (
+                        <label className="w-full flex items-center gap-2 cursor-pointer" htmlFor="userPic">
+                          <Camera size={24} />
+                          <div> Upload Profile Picture</div>
+                        </label>
+                      )}
+                    </div>
+                    <div className="relative flex items-center gap-2 hover:bg-primary_comp transition-ease-300 p-2 rounded-md">
+                      {userCoverPic ? (
+                        <div className="w-full flex flex-col gap-4 px-2 py-1">
+                          <Image
+                            crossOrigin="anonymous"
+                            width={500}
+                            height={500}
+                            alt={'User Pic'}
+                            src={userCoverPicView}
+                            className={`rounded-lg md:hidden max-md:mx-auto w-5/6 h-32 cursor-default`}
+                          />
+                          <div className="w-full flex items-center gap-2">
+                            <label className="grow cursor-pointer flex items-center gap-1" htmlFor="userCoverPic">
+                              <ImageSquare size={24} />
+                              {userCoverPic.name}
+                            </label>
+                            <X
+                              onClick={() => {
+                                setUserPic(null);
+                                setUserPicView(USER_PROFILE_PIC_URL + '/' + user.coverPic);
+                              }}
+                              className="cursor-pointer"
+                              size={20}
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        <label className="w-full flex items-center gap-2 cursor-pointer" htmlFor="userCoverPic">
+                          <ImageSquare size={24} />
+                          <div> Upload Cover Picture</div>
+                        </label>
+                      )}
+                    </div>
                   </div>
                 </>
               ) : step == 6 ? (
@@ -374,104 +436,6 @@ const Onboarding = () => {
                   <Links links={links} setLinks={setLinks} maxLinks={3} blackBorder={true} />
                 </>
               ) : step == 7 ? (
-                <>
-                  {clickedOnNewCollege ? (
-                    <>
-                      <div className="flex items-center gap-1 font-medium text-sm">
-                        <ArrowLeft
-                          onClick={() => {
-                            setSchool('');
-                            setClickedOnNewCollege(false);
-                          }}
-                          className="cursor-pointer"
-                        />{' '}
-                        Tell us about your college and we&apos;ll add it to the list!
-                      </div>
-                      <div className="w-full flex flex-col gap-2">
-                        <div className="w-full flex flex-col gap-1">
-                          <div className="text-xs ml-1 font-semibold uppercase text-black">Name of your College?</div>
-                          <div className="w-full flex items-center gap-2 bg-[#ffffff40] border-[1px] border-black rounded-lg p-2">
-                            <Buildings size={24} weight="duotone" />
-                            <input
-                              className="grow bg-transparent text-lg max-md:text-base focus:outline-none"
-                              type="text"
-                              maxLength={50}
-                              value={school}
-                              onChange={el => setSchool(el.target.value)}
-                            />
-                          </div>
-                        </div>
-
-                        <div className="w-full flex flex-col gap-1">
-                          <div className="text-xs ml-1 font-semibold uppercase text-black">
-                            Which City is the College In?
-                          </div>
-                          <div className="w-full flex items-center gap-2 bg-[#ffffff40] border-[1px] border-black rounded-lg p-2">
-                            <MapPin size={24} weight="duotone" />
-                            <input
-                              className="grow bg-transparent text-lg max-md:text-base focus:outline-none"
-                              type="text"
-                              maxLength={50}
-                              value={location}
-                              onChange={el => setLocation(el.target.value)}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="font-medium text-sm">
-                        Tell us the name of your college to help us find your niche!
-                      </div>
-                      <div className="w-full flex items-center gap-2 bg-[#ffffff40] border-[1px] border-black rounded-lg p-2">
-                        <Buildings size={24} weight="duotone" />
-                        {school != '' ? (
-                          <div className="grow flex justify-between items-center">
-                            <div className="text-lg cursor-default">{school}</div>
-                            <X onClick={() => setSchool('')} className="cursor-pointer" />
-                          </div>
-                        ) : (
-                          <input
-                            className="grow bg-transparent text-lg max-md:text-base focus:outline-none"
-                            type="text"
-                            maxLength={50}
-                            value={schoolSearch}
-                            onChange={el => setSchoolSearch(el.target.value)}
-                          />
-                        )}
-                      </div>
-                      {school == '' && schoolSearch != '' && (
-                        <div className="w-full flex flex-col gap-2">
-                          <div
-                            onClick={() => setClickedOnNewCollege(true)}
-                            className="w-fit h-5 text-sm font-medium hover-underline-animation after:bg-black cursor-pointer"
-                          >
-                            College not present here?
-                          </div>
-
-                          <div className="w-full flex flex-wrap gap-2">
-                            {colleges?.map(college => (
-                              <div
-                                key={college.name}
-                                onClick={() => {
-                                  setSchool(college.name);
-                                  setSchoolSearch(college.name);
-                                  setLocation(college.city);
-                                  setColleges([]);
-                                }}
-                                className="border-[1px] border-primary_black rounded-lg px-2 py-1 text-xs cursor-pointer"
-                              >
-                                {college.name}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </>
-              ) : step == 8 ? (
                 <>
                   <div className="font-medium text-sm">
                     One Last Step!, Tell us where are are situated to help build your recommendations.
@@ -501,59 +465,95 @@ const Onboarding = () => {
                 ) : (
                   <div></div>
                 )}
-                {step != 8 ? (
-                  <div
-                    onClick={handleIncrementStep}
-                    className="w-fit text-lg py-2 font-medium px-4 shadow-md hover:bg-[#ffffff40] hover:shadow-lg transition-ease-500 rounded-xl cursor-pointer"
-                  >
-                    continue
-                  </div>
-                ) : (
-                  <div
-                    onClick={handleSubmit}
-                    className="w-fit text-lg py-2 font-medium px-4 shadow-md hover:bg-[#ffffff40] hover:shadow-lg transition-ease-500 rounded-xl cursor-pointer"
-                  >
-                    complete
-                  </div>
-                )}
+                <div className="w-fit flex items-center gap-2">
+                  {step == 3 || step == 5 || step == 6 ? (
+                    <div
+                      onClick={handleIncrementStep}
+                      className="w-fit text-lg py-2 font-medium px-4 shadow-md hover:bg-[#ffffff40] hover:shadow-lg transition-ease-500 rounded-xl cursor-pointer"
+                    >
+                      skip
+                    </div>
+                  ) : (
+                    <div></div>
+                  )}
+
+                  {step != 7 ? (
+                    <div
+                      onClick={handleIncrementStep}
+                      className="w-fit text-lg py-2 font-medium px-4 shadow-md hover:bg-[#ffffff40] hover:shadow-lg transition-ease-500 rounded-xl cursor-pointer"
+                    >
+                      continue
+                    </div>
+                  ) : (
+                    <div
+                      onClick={handleSubmit}
+                      className="w-fit text-lg py-2 font-medium px-4 shadow-md hover:bg-[#ffffff40] hover:shadow-lg transition-ease-500 rounded-xl cursor-pointer"
+                    >
+                      complete
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-            <div className="w-1/3 h-fit p-10 gap-6 shadow-2xl font-primary flex flex-col items-center animate-fade_half backdrop-blur-xl max-md:hidden rounded-md">
-              <Image
-                crossOrigin="anonymous"
-                width={500}
-                height={500}
-                alt={'User Pic'}
-                src={userPicView}
-                className={`rounded-full max-md:mx-auto w-44 h-44 cursor-default`}
-              />
-              <div className="w-full flex flex-col items-center gap-4">
-                <div className="text-4xl text-center font-bold">{name}</div>
-                <div className="font-medium text-lg text-center break-words">{tagline || 'Here goes your Tagline'}</div>
-                <div className="w-full border-t-[1px] border-dashed border-primary_black"></div>
-                <div className={`w-full ${bio == '' ? 'italic' : ''} text-sm text-center line-clamp-6`}>
-                  {bio || 'Space for you to describe yourself'}
+            <div
+              className={`w-1/3 h-fit ${
+                tagline ? 'pb-8' : 'pb-4'
+              } gap-2 mt-4 shadow-2xl font-primary flex flex-col items-center animate-fade_half backdrop-blur-xl max-md:hidden rounded-md`}
+            >
+              <div className="w-full relative">
+                <Image
+                  crossOrigin="anonymous"
+                  width={500}
+                  height={500}
+                  alt={'User Pic'}
+                  src={userCoverPicView}
+                  className="w-full h-44 rounded-t-md"
+                />
+
+                <div className="w-full flex items-center gap-2 absolute -translate-y-1/3 px-8">
+                  <Image
+                    crossOrigin="anonymous"
+                    className="w-32 h-32 rounded-full border-4 border-white"
+                    width={100}
+                    height={100}
+                    alt="Profile Pic"
+                    src={userPicView}
+                  />
+                  <div className="w-full flex flex-col gap-1 pt-8">
+                    <div className="text-3xl font-semibold line-clamp-1">{name}</div>
+                    <div className="text-sm font-medium text-gray-600">@{user.username}</div>
+                  </div>
                 </div>
-                <div className="w-full border-t-[1px] border-dashed border-primary_black"></div>
-                {tags.length > 0 ? (
-                  <div className="w-full gap-2 flex flex-wrap items-center justify-center">
-                    {tags.map(tag => {
-                      return (
-                        <div
-                          className="flex-center text-xs text-primary_black px-2 py-1 border-[1px] border-primary_black  rounded-md"
-                          key={tag}
-                        >
-                          {tag}
-                        </div>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div className="w-fit flex-center gap-2 text-sm px-2 py-1 border-[1px] border-dashed border-primary_black rounded-md">
-                    <Plus /> <div>Tags</div>
-                  </div>
+              </div>
+
+              <div className="w-full flex flex-col items-center gap-4 pt-20 px-8">
+                {tagline && <div className="font-medium text-lg text-center break-words">{tagline}</div>}
+
+                {bio && (
+                  <>
+                    <div className="w-full border-t-[1px] border-dashed border-primary_black"></div>
+                    <div className="w-full text-sm text-center line-clamp-6">{bio}</div>
+                  </>
                 )}
-                {links.length > 0 ? (
+
+                {tags.length > 0 && (
+                  <>
+                    <div className="w-full border-t-[1px] border-dashed border-primary_black"></div>
+                    <div className="w-full gap-2 flex flex-wrap items-center justify-center">
+                      {tags.map(tag => {
+                        return (
+                          <div
+                            className="flex-center text-xs text-primary_black px-2 py-1 border-[1px] border-primary_black  rounded-md"
+                            key={tag}
+                          >
+                            {tag}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
+                {links.length > 0 && (
                   <div className="w-full gap-2 flex flex-wrap items-center justify-center">
                     {links.map((link, index) => {
                       return (
@@ -569,17 +569,11 @@ const Onboarding = () => {
                       );
                     })}
                   </div>
-                ) : (
-                  <div className="w-fit flex-center gap-2 text-sm px-2 py-1 border-[1px] border-dashed border-black rounded-md">
-                    <Plus /> <div>Links</div>
-                  </div>
                 )}
               </div>
             </div>
           </div>
         )}
-
-        <Spline scene="https://prod.spline.design/L8OKRKq5ShawCG78/scene.splinecode" />
       </div>
     </>
   );
