@@ -8,6 +8,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import Loader from '@/components/common/loader';
 import EventCard from '@/components/explore/event_card';
 import NoUserItems from '@/components/empty_fillers/user_items';
+import Mascot from '@/components/empty_fillers/mascot';
 
 interface Props {
   orgID: string;
@@ -69,7 +70,7 @@ const Events = ({ orgID, displayOnProfile = false }: Props) => {
       )} */}
       {loading ? (
         <Loader />
-      ) : (
+      ) : events.length > 0 ? (
         <InfiniteScroll
           dataLength={events.length}
           next={getEvents}
@@ -83,6 +84,10 @@ const Events = ({ orgID, displayOnProfile = false }: Props) => {
             <>{!displayOnProfile ? <NoUserItems /> : <></>}</>
           )}
         </InfiniteScroll>
+      ) : (
+        <div className="w-5/6 mx-auto">
+          <Mascot message="This organization is as quiet as a library at midnight. Shh, no events yet." />
+        </div>
       )}
     </div>
   );

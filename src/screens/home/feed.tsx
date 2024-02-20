@@ -59,18 +59,12 @@ const Feed = () => {
   }, []);
 
   const getGreetings = () => {
-    const now = moment();
-    let greeting;
+    const now = moment().hour();
 
-    if (now.hour() < 12) {
-      greeting = 'Good Morning';
-    } else if (now.hour() < 18) {
-      greeting = 'Good Afternoon';
-    } else {
-      greeting = 'Good Evening';
-    }
-
-    return greeting;
+    if (now > 5 && now < 12) return 'Good Morning';
+    if (now >= 12 && now < 17) return 'Good Afternoon';
+    if (now >= 17 && now < 20) return 'Good Evening';
+    return 'Hello';
   };
 
   return (

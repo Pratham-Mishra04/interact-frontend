@@ -59,8 +59,8 @@ const ProfileCard = () => {
               <Image
                 crossOrigin="anonymous"
                 className="w-full rounded-t-lg"
-                width={200}
-                height={200}
+                width={100}
+                height={50}
                 alt="Cover Pic"
                 src={`${USER_COVER_PIC_URL}/${user.coverPic}`}
               />

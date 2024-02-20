@@ -10,6 +10,7 @@ import AnnouncementCard from '@/components/organization/announcement_card';
 import Loader from '@/components/common/loader';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Masonry from 'react-masonry-css';
+import Mascot from '@/components/empty_fillers/mascot';
 
 interface Props {
   orgID: string;
@@ -60,7 +61,7 @@ const NewsFeed = ({ orgID }: Props) => {
     <div className="w-full pb-base_padding flex flex-col gap-4">
       {loading ? (
         <Loader />
-      ) : (
+      ) : newsFeed.length > 0 ? (
         <InfiniteScroll
           className="w-5/6 mx-auto"
           dataLength={newsFeed.length}
@@ -86,6 +87,10 @@ const NewsFeed = ({ orgID }: Props) => {
             )}
           </Masonry>
         </InfiniteScroll>
+      ) : (
+        <div className="w-5/6 mx-auto">
+          <Mascot message="This organization is as quiet as a library at midnight. Shh, nothing's on their newsfeed yet." />
+        </div>
       )}
     </div>
   );

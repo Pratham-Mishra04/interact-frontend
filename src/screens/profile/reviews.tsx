@@ -15,6 +15,7 @@ import { Star, Plus } from '@phosphor-icons/react';
 import StarRating from '@/components/organization/star_rating';
 import { reviewModalOpenSelector, setReviewModalOpen } from '@/slices/feedSlice';
 import Masonry from 'react-masonry-css';
+import Mascot from '@/components/empty_fillers/mascot';
 interface Props {
   orgID: string;
 }
@@ -171,32 +172,36 @@ const Reviews = ({ orgID }: Props) => {
             <></>
           )}
 
-          <InfiniteScroll
-            className="w-full mx-auto"
-            dataLength={reviews.length}
-            next={getReviews}
-            hasMore={hasMore}
-            loader={<Loader />}
-          >
-            <Masonry
-              breakpointCols={{ default: 2, 768: 1 }}
-              className="masonry-grid"
-              columnClassName="masonry-grid_column"
+          {reviews.length > 0 ? (
+            <InfiniteScroll
+              className="w-full mx-auto"
+              dataLength={reviews.length}
+              next={getReviews}
+              hasMore={hasMore}
+              loader={<Loader />}
             >
-              <div className="">
-                <ReviewSummary />
-              </div>
-              {reviews.length > 0 ? (
-                reviews.map((review, index) => (
-                  <div key={review.id} className={`${index != 0 && 'mt-4'}`}>
-                    <ReviewCard key={review.id} review={review} setReviews={setReviews} />
-                  </div>
-                ))
-              ) : (
-                <NoUserItems />
-              )}
-            </Masonry>
-          </InfiniteScroll>
+              <Masonry
+                breakpointCols={{ default: 2, 768: 1 }}
+                className="masonry-grid"
+                columnClassName="masonry-grid_column"
+              >
+                <div className="">
+                  <ReviewSummary />
+                </div>
+                {reviews.length > 0 ? (
+                  reviews.map((review, index) => (
+                    <div key={review.id} className={`${index != 0 && 'mt-4'}`}>
+                      <ReviewCard key={review.id} review={review} setReviews={setReviews} />
+                    </div>
+                  ))
+                ) : (
+                  <NoUserItems />
+                )}
+              </Masonry>
+            </InfiniteScroll>
+          ) : (
+            <Mascot message="This organization is as quiet as a library at midnight. Shh, no reviews yet." />
+          )}
         </div>
       )}
     </div>

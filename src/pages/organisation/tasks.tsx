@@ -20,7 +20,7 @@ import MainWrapper from '@/wrappers/main';
 import { Info, Plus } from '@phosphor-icons/react';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import Mascot from '@/components/loaders/mascot';
+import Mascot from '@/components/empty_fillers/mascot';
 const Tasks = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);

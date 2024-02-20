@@ -15,6 +15,7 @@ import Loader from '@/components/common/loader';
 import checkOrgAccess from '@/utils/funcs/check_org_access';
 import { ORG_MANAGER } from '@/config/constants';
 import { userIDSelector } from '@/slices/userSlice';
+import Mascot from '@/components/empty_fillers/mascot';
 
 interface Props {
   userID: string;
@@ -67,7 +68,7 @@ const Projects = ({ userID, displayOnProfile = false, contributing = false, org 
   }, [userID]);
 
   return (
-    <div className="w-full px-2 pb-8 max-md:px-0 max-md:pb-2 z-50">
+    <div className="w-full px-2 pb-base_padding max-md:px-0 max-md:pb-2 z-50">
       {/* {displayOnProfile && (
         <>
           {clickedOnNewProject ? <NewProject setShow={setClickedOnNewProject} setProjects={setProjects} /> : <></>}
@@ -137,6 +138,10 @@ const Projects = ({ userID, displayOnProfile = false, contributing = false, org 
               );
             })}
           </>
+        ) : org ? (
+          <div className="w-5/6 mx-auto">
+            <Mascot message="This organization is as quiet as a library at midnight. Shh, no projects yet." />
+          </div>
         ) : (
           <>{!displayOnProfile ? <NoUserItems /> : <></>}</>
         )}

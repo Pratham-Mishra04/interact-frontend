@@ -168,11 +168,11 @@ const User = ({ username }: Props) => {
                 <div className="flex items-center gap-4">
                   <div
                     onClick={() => setClickedOnFollowers(true)}
-                    className="flex items-center text-sm font-medium text-gray-700"
+                    className="flex items-center text-sm font-medium text-gray-700 cursor-pointer"
                   >
-                    {numFollowers} Followers
+                    {numFollowers} Follower{numFollowers != 1 ? 's' : ''}
                   </div>
-                  <div className="text-gray-400">|</div>
+                  {user.links && <div className="text-gray-400">|</div>}
                   {user.links?.map(link => (
                     <Link key={link} href={link} target="_blank" className="w-fit">
                       {getIcon(getDomainName(link), 22, 'regular')}

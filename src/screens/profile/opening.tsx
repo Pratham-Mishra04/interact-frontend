@@ -11,6 +11,7 @@ import { initialOpening } from '@/types/initials';
 import OpeningView from '@/sections/explore/opening_view';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Loader from '@/components/common/loader';
+import Mascot from '@/components/empty_fillers/mascot';
 
 interface Props {
   orgID: string;
@@ -66,33 +67,41 @@ export default function Openings({ orgID }: Props) {
         <></>
       )}
       <div className="w-full flex justify-evenly gap-4 px-4 pb-base_padding">
-        <InfiniteScroll
-          className={`${clickedOnOpening ? 'w-full' : 'w-[720px]'} max-lg:w-full flex flex-col gap-4`}
-          dataLength={openings.length}
-          next={fetchOpenings}
-          hasMore={hasMore}
-          loader={<Loader />}
-        >
-          {openings.map(opening => {
-            return (
-              <OpeningCard
-                key={opening.id}
-                opening={opening}
-                clickedOpening={clickedOpening}
-                setClickedOnOpening={setClickedOnOpening}
-                setClickedOpening={setClickedOpening}
+        {openings.length > 0 ? (
+          <>
+            <InfiniteScroll
+              className={`${clickedOnOpening ? 'w-full' : 'w-[720px]'} max-lg:w-full flex flex-col gap-4`}
+              dataLength={openings.length}
+              next={fetchOpenings}
+              hasMore={hasMore}
+              loader={<Loader />}
+            >
+              {openings.map(opening => {
+                return (
+                  <OpeningCard
+                    key={opening.id}
+                    opening={opening}
+                    clickedOpening={clickedOpening}
+                    setClickedOnOpening={setClickedOnOpening}
+                    setClickedOpening={setClickedOpening}
+                    org={true}
+                  />
+                );
+              })}
+            </InfiniteScroll>
+            {clickedOnOpening && (
+              <OpeningView
+                opening={clickedOpening}
+                setShow={setClickedOnOpening}
+                setOpening={setClickedOpening}
                 org={true}
               />
-            );
-          })}
-        </InfiniteScroll>
-        {clickedOnOpening && (
-          <OpeningView
-            opening={clickedOpening}
-            setShow={setClickedOnOpening}
-            setOpening={setClickedOpening}
-            org={true}
-          />
+            )}
+          </>
+        ) : (
+          <div className="w-5/6 mx-auto">
+            <Mascot message="This organization is as quiet as a library at midnight. Shh, no openings yet." />
+          </div>
         )}
       </div>
     </>

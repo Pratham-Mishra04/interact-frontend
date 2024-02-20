@@ -1,4 +1,5 @@
 import FollowBtn from '@/components/common/follow_btn';
+import Mascot from '@/components/empty_fillers/mascot';
 import { SERVER_ERROR } from '@/config/errors';
 import { ORG_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
@@ -42,13 +43,14 @@ const About = ({ profile, organisation }: Props) => {
     user: User;
     host?: boolean;
     role?: string;
+    title?: string;
   }
 
-  const AboutUser = ({ user, host = false, role }: UserProps) => (
+  const AboutUser = ({ user, host = false, role, title }: UserProps) => (
     <div className="relative">
       <div className="w-full flex gap-2 items-center justify-between">
         <div className="w-fit flex items-center gap-2 group">
-          <UserHoverCard user={user} />
+          <UserHoverCard user={user} title={title} />
           <Image
             width={50}
             height={50}
@@ -66,7 +68,7 @@ const About = ({ profile, organisation }: Props) => {
     </div>
   );
 
-  const UserHoverCard = ({ user }: UserProps) => (
+  const UserHoverCard = ({ user, title }: UserProps) => (
     //TODO add noFollowers
     <div className="w-2/3 bg-white flex flex-col gap-2 rounded-xl p-4 shadow-xl absolute -translate-y-3/4 -top-2 opacity-0 group-hover:opacity-100 group-hover:-translate-y-full z-[-1] group-hover:z-50 transition-ease-500">
       <Image
@@ -80,7 +82,7 @@ const About = ({ profile, organisation }: Props) => {
         <div className="text-xl font-semibold">{user.name}</div>
         <div className="text-gray-400 text-xs">@{user.username}</div>
       </Link>
-      <div className="text-gray-600 text-sm">{user.tagline}</div>
+      <div className="text-gray-600 text-sm">{title}</div>
       <div className="w-full flex flex-wrap gap-4">
         {user.links?.map(link => (
           <Link key={link} href={link} target="_blank">
@@ -108,16 +110,29 @@ const About = ({ profile, organisation }: Props) => {
         <div className="font-medium">Members of {organisation.title}</div>
         <div className="border-t-[1px] border-gray-200"></div>
         <div className="w-full flex flex-col gap-3">
-          {memberships.map(membership => (
-            <AboutUser key={membership.id} user={membership.user} role={membership.role} />
-          ))}
-          {memberships.length > 10 && (
-            <div
-              onClick={() => setClickedOnViewAllMembers(true)}
-              className="w-fit mx-auto flex-center gap-1 text-sm cursor-pointer"
-            >
-              View all <ArrowRight />
-            </div>
+          {memberships.length > 0 ? (
+            <>
+              {memberships.map(membership => (
+                <AboutUser key={membership.id} user={membership.user} role={membership.role} title={membership.title} />
+              ))}
+              {memberships.length > 10 && (
+                <div
+                  onClick={() => setClickedOnViewAllMembers(true)}
+                  className="w-fit mx-auto flex-center gap-1 text-sm cursor-pointer"
+                >
+                  View all <ArrowRight />
+                </div>
+              )}
+            </>
+          ) : (
+            <Mascot
+              message={
+                <div className="w-full flex flex-col justify-center">
+                  <div className="text-center text-2xl">Starting from scratch!</div>
+                  <div className="text-center text-sm">No members in this organization yet.</div>
+                </div>
+              }
+            />
           )}
         </div>
       </div>
@@ -126,44 +141,44 @@ const About = ({ profile, organisation }: Props) => {
         <div className="w-full h-fit flex flex-col gap-2 bg-white border-gray-300 border-[1px] rounded-lg p-4">
           <div className="font-medium">About {organisation.title}</div>
           <div className="border-t-[1px] border-gray-200"></div>
-          <div className="w-full flex flex-col gap-4">
-            {profile.description ? (
-              <div className="whitespace-pre-wrap text-sm">{profile.description}</div>
-            ) : (
-              <div className="font-medium">Organisation has no description</div>
-            )}
-            <div className="flex flex-wrap gap-2">
-              {organisation.user?.tags.map(tag => (
-                <Link
-                  key={tag}
-                  href={'/explore?search=' + tag}
-                  target="_blank"
-                  className="flex-center bg-gray-100 px-2 py-1 border-[1px] border-dashed border-gray-400 text-xs rounded-lg"
-                >
-                  {tag}
-                </Link>
-              ))}
-            </div>
-            {(profile.email || profile.phoneNo) && (
-              <div className="w-full flex flex-col gap-2">
-                <div className="font-medium">Contact Info</div>
-                <div className="w-full flex items-center gap-8">
-                  {profile.email && (
-                    <div className="flex gap-2 items-center text-sm">
-                      <Envelope weight="regular" size={24} />
-                      <div>{profile.email}</div>
-                    </div>
-                  )}
-                  {profile.phoneNo && (
-                    <div className="flex gap-2 items-center text-sm">
-                      <Phone weight="regular" size={24} />
-                      <div>{profile.phoneNo}</div>
-                    </div>
-                  )}
-                </div>
+          {profile.description || organisation.user?.tags || profile.email || profile.phoneNo ? (
+            <div className="w-full flex flex-col gap-4">
+              {profile.description && <div className="whitespace-pre-wrap text-sm">{profile.description}</div>}
+              <div className="flex flex-wrap gap-2">
+                {organisation.user?.tags?.map(tag => (
+                  <Link
+                    key={tag}
+                    href={'/explore?search=' + tag}
+                    target="_blank"
+                    className="flex-center bg-gray-100 px-2 py-1 border-[1px] border-dashed border-gray-400 text-xs rounded-lg"
+                  >
+                    {tag}
+                  </Link>
+                ))}
               </div>
-            )}
-          </div>
+              {(profile.email || profile.phoneNo) && (
+                <div className="w-full flex flex-col gap-2">
+                  <div className="font-medium">Contact Info</div>
+                  <div className="w-full flex items-center gap-8">
+                    {profile.email && (
+                      <div className="flex gap-2 items-center text-sm">
+                        <Envelope weight="regular" size={24} />
+                        <div>{profile.email}</div>
+                      </div>
+                    )}
+                    {profile.phoneNo && (
+                      <div className="flex gap-2 items-center text-sm">
+                        <Phone weight="regular" size={24} />
+                        <div>{profile.phoneNo}</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Mascot message="This organization has not shared any details." />
+          )}
         </div>
         {(profile.areasOfCollaboration || profile.hobbies) && (
           <div className="w-full flex gap-4">
