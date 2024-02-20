@@ -328,7 +328,7 @@ const About = ({ profile, setUser, org = false }: Props) => {
             <Envelope weight="regular" size={24} />
 
             {clickedOnEmail ? (
-              <div className="w-fit">
+              <div className="w-fit z-10">
                 <div className="text-xs ml-1 font-medium uppercase text-gray-500">Public Email</div>
                 <input
                   value={email}
@@ -361,7 +361,7 @@ const About = ({ profile, setUser, org = false }: Props) => {
 
           <div className="flex gap-2 items-center max-md:flex-row-reverse">
             {clickedOnPhoneNo ? (
-              <div className="w-fit">
+              <div className="w-fit z-10">
                 <div className="text-xs ml-1 font-medium uppercase text-gray-500">Public Phone Number</div>
                 <input
                   value={phoneNo}
@@ -395,42 +395,44 @@ const About = ({ profile, setUser, org = false }: Props) => {
             <Phone weight="regular" size={20} />
           </div>
         </div>
-        <div className="w-full flex gap-2 items-center text-lg">
-          <MapPin weight="regular" size={24} />
+        {!org && (
+          <div className="w-full flex gap-2 items-center text-lg">
+            <MapPin weight="regular" size={24} />
 
-          {clickedOnLocation ? (
-            <div className="w-3/4">
-              <div className="text-xs ml-1 font-medium uppercase text-gray-500">
-                Location ({location.trim().length}/25)
+            {clickedOnLocation ? (
+              <div className="w-3/4 z-10">
+                <div className="text-xs ml-1 font-medium uppercase text-gray-500">
+                  Location ({location.trim().length}/25)
+                </div>
+                <input
+                  maxLength={25}
+                  value={location}
+                  onChange={el => setLocation(el.target.value)}
+                  className="w-full text-primary_black focus:outline-none border-[1px] border-primary_btn dark:border-dark_primary_btn rounded-lg p-2 font-semibold bg-transparent"
+                />
+                <SaveBtn setter={setClickedOnLocation} field="location" />
               </div>
-              <input
-                maxLength={25}
-                value={location}
-                onChange={el => setLocation(el.target.value)}
-                className="w-full text-primary_black focus:outline-none border-[1px] border-primary_btn dark:border-dark_primary_btn rounded-lg p-2 font-semibold bg-transparent"
-              />
-              <SaveBtn setter={setClickedOnLocation} field="location" />
-            </div>
-          ) : (
-            <div
-              onClick={() => setClickedOnLocation(true)}
-              className={`w-fit relative group rounded-lg p-2 pr-10 ${
-                profile.location.trim() == '' ? 'bg-gray-100' : 'hover:bg-gray-100'
-              } cursor-pointer transition-ease-300`}
-            >
-              <PencilSimple
-                className={`absolute ${
-                  profile.location.trim() == '' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                }  -translate-y-1/2 top-1/2 right-2 transition-ease-300`}
-              />
-              {profile.location.trim() == '' ? (
-                <div className="text-sm">Add Location</div>
-              ) : (
-                <div>{profile.location}</div>
-              )}
-            </div>
-          )}
-        </div>
+            ) : (
+              <div
+                onClick={() => setClickedOnLocation(true)}
+                className={`w-fit relative group rounded-lg p-2 pr-10 ${
+                  profile.location.trim() == '' ? 'bg-gray-100' : 'hover:bg-gray-100'
+                } cursor-pointer transition-ease-300`}
+              >
+                <PencilSimple
+                  className={`absolute ${
+                    profile.location.trim() == '' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                  }  -translate-y-1/2 top-1/2 right-2 transition-ease-300`}
+                />
+                {profile.location.trim() == '' ? (
+                  <div className="text-sm">Add Location</div>
+                ) : (
+                  <div>{profile.location}</div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
       <div className="w-full h-[1px] border-t-[1px] border-gray-400 border-dashed"></div>
 

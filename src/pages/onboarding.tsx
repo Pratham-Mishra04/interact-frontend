@@ -10,12 +10,9 @@ import {
 } from '@/slices/userSlice';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Link from 'next/link';
 import Image from 'next/image';
 import { USER_COVER_PIC_URL, USER_PROFILE_PIC_URL, USER_URL } from '@/config/routes';
-import getDomainName from '@/utils/funcs/get_domain_name';
-import getIcon from '@/utils/funcs/get_icon';
-import { ArrowRight, Camera, Check, ImageSquare, MapPin, X } from '@phosphor-icons/react';
+import { ArrowRight, Camera, ImageSquare, MapPin, X } from '@phosphor-icons/react';
 import Tags from '@/components/utils/edit_tags';
 import Links from '@/components/utils/edit_links';
 import { SERVER_ERROR } from '@/config/errors';
@@ -47,6 +44,7 @@ const Onboarding = () => {
   const [userCoverPicView, setUserCoverPicView] = useState(USER_COVER_PIC_URL + '/' + user.coverPic);
 
   const [location, setLocation] = useState('Vellore');
+  const [school, setSchool] = useState('VIT Vellore');
 
   const [mutex, setMutex] = useState(false);
 
@@ -117,6 +115,7 @@ const Onboarding = () => {
     const formData = new FormData();
 
     formData.append('location', location);
+    formData.append('school', school);
 
     const URL = `${USER_URL}/me/profile`;
 

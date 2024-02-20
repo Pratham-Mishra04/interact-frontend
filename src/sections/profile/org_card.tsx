@@ -309,7 +309,7 @@ const OrgCard = ({ user, setUser, tagline, coverPic }: Props) => {
 
         <div className="w-full h-[1px] border-t-[1px] border-gray-500 border-dashed"></div>
 
-        {clickedOnBio && checkOrgAccess(ORG_SENIOR) ? (
+        {/* {clickedOnBio && checkOrgAccess(ORG_SENIOR) ? (
           <div className="w-full">
             <div className="text-xs ml-1 font-medium uppercase text-gray-500">Bio ({bio.trim().length}/500)</div>
             <textarea
@@ -348,7 +348,7 @@ const OrgCard = ({ user, setUser, tagline, coverPic }: Props) => {
               <div className={`text-center max-md:text-sm cursor-pointer`}>{user.bio}</div>
             )}
           </div>
-        )}
+        )} */}
 
         <div className="w-full flex flex-col gap-8 mt-2">
           {clickedOnTags && checkOrgAccess(ORG_SENIOR) ? (
@@ -393,7 +393,7 @@ const OrgCard = ({ user, setUser, tagline, coverPic }: Props) => {
                       user.tags.map(tag => {
                         return (
                           <div
-                            className="flex-center text-sm px-4 py-1 border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-full cursor-pointer"
+                            className="flex-center text-xs px-2 py-1 border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-full cursor-pointer"
                             key={tag}
                           >
                             {tag}
