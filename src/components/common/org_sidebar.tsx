@@ -202,7 +202,7 @@ const OrgSidebar = ({ index }: Props) => {
           ) : (
             <>
               <SidebarItem
-                index={8}
+                index={9}
                 url="profile"
                 org={true}
                 title={currentOrg.title}

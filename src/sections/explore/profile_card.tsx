@@ -138,11 +138,11 @@ const ProfileCard = ({ user, organisation = initialOrganization, org = false }: 
           )}
         </div>
 
-        <div className="w-full h-[1px] border-t-[1px] border-gray-400 border-dashed"></div>
-
-        <div className="max-lg:text-sm text-center">{user.bio}</div>
+        {/* <div className="max-lg:text-sm text-center">{user.bio}</div> */}
 
         <FollowBtn toFollowID={user.id} setFollowerCount={setNumFollowers} profileDesign={true} />
+
+        <div className="w-full h-[1px] border-t-[1px] border-gray-400 border-dashed"></div>
 
         <div className="w-full flex flex-col gap-8 mt-2">
           {user.tags && user.tags.length > 0 ? (
@@ -162,7 +162,7 @@ const ProfileCard = ({ user, organisation = initialOrganization, org = false }: 
                         href={`/explore?search=` + tag}
                         target="_blank"
                         onClick={() => dispatch(setExploreTab(2))}
-                        className="flex-center text-sm px-4 py-1 border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-full cursor-pointer"
+                        className="flex-center text-xs px-2 py-1 border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-full cursor-pointer"
                         key={tag}
                       >
                         {tag}

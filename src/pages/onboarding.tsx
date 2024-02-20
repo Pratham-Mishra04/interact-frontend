@@ -175,13 +175,17 @@ const Onboarding = () => {
       <Head>
         <title>Onboarding | Interact</title>
       </Head>
+      {/* <div className="w-screen h-screen bg-wavy bg-moving-gradient z-50"></div> */}
       <div
-        className={`w-screen h-screen ${!clickedOnBuild && 'bg-moving-gradient'} overflow-y-auto transition-ease-500`}
+        className={`w-screen h-screen ${
+          !clickedOnBuild ? 'bg-moving-gradient overflow-y-hidden' : 'overflow-y-auto'
+        } transition-ease-500`}
       >
+        {!clickedOnBuild && <ReactSVG className="w-screen h-screen fixed opacity-25" src="/pattern.svg" />}
         {!clickedOnBuild ? (
-          <div className="bg-slate-50 animate-fade_1 page w-fit max-md:w-[90%] h-56 max-md:h-72 px-8 py-10 font-primary flex flex-col justify-between rounded-lg shadow-xl hover:shadow-2xl transition-ease-300 absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2">
+          <div className="glassMorphism animate-fade_1 page w-fit max-md:w-[90%] h-56 max-md:h-72 px-8 py-10 font-primary flex flex-col justify-between rounded-lg shadow-xl hover:shadow-2xl transition-ease-300 absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2">
             <div className="flex flex-col gap-2">
-              <div className="text-5xl font-bold">
+              <div className="text-5xl font-bold max-md:leading-tight">
                 Welcome to{' '}
                 <span className="bg-white px-2 rounded-md">
                   <span className="text-gradient">Interact!</span>
@@ -210,12 +214,12 @@ const Onboarding = () => {
           </div>
         ) : (
           <div className="w-full h-full flex justify-between items-center max-md:px-4 font-primary ">
-            <div className="w-3/5 max-lg:w-full h-full p-12 font-primary flex flex-col gap-16 items-center border-r-2 border-primary_comp">
+            <div className="w-3/5 max-lg:w-full h-full p-12 max-md:px-2 font-primary flex flex-col gap-16 items-center border-r-2 max-md:border-r-0 border-primary_comp">
               <div className="w-full flex justify-start items-center gap-1">
                 <ReactSVG src="/onboarding_logo.svg" />
                 {/* <div className="text-gradient text-xl font-semibold">Onboarding</div> */}
               </div>
-              <div className="w-5/6">
+              <div className="w-5/6 max-md:w-full">
                 <ProgressBar step={step} setStep={setStep} />
               </div>
               <div className="w-5/6 max-md:w-full max-md:max-h-full flex flex-col gap-4 backdrop-blur-xl rounded-xl shadow-xl p-8 mt-8 animate-fade_half">
@@ -479,7 +483,7 @@ const Onboarding = () => {
                 </div>
               </div>
             </div>
-            <div className="w-2/5 h-full flex-center flex-col gap-8 relative bg-slate-100">
+            <div className="w-2/5 h-full max-md:hidden flex-center flex-col gap-8 relative bg-slate-100">
               <div className="w-5/6">
                 <UserCard
                   name={name}

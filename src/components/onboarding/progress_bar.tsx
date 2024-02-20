@@ -9,7 +9,7 @@ interface Props {
 const ProgressBar = ({ step, setStep }: Props) => {
   const steps: string[] = ['Name', 'Tagline', 'Bio', 'Skills', 'Pictures', 'Socials', 'Location'];
   return (
-    <div className="w-full max-md:hidden flex flex-col animate-fade_half">
+    <div className="w-full flex flex-col animate-fade_half">
       <div className="w-full h-full relative">
         <div className="w-full flex justify-between z-[1]">
           {steps.map((title, index) => (
@@ -18,7 +18,7 @@ const ProgressBar = ({ step, setStep }: Props) => {
                 onClick={() => {
                   if (step - 1 > index) setStep(index + 1);
                 }}
-                className={`w-10 h-10 rounded-full flex-center ${
+                className={`w-10 h-10 max-md:w-8 max-md:h-8 rounded-full flex-center ${
                   step - 1 > index
                     ? ' bg-blue-300 border-blue-200'
                     : step - 1 == index
@@ -33,7 +33,7 @@ const ProgressBar = ({ step, setStep }: Props) => {
                   weight="bold"
                 />
               </div>
-              <div className="w-fit absolute -bottom-4 translate-y-1/2 text-sm font-medium">{title}</div>
+              <div className="w-fit absolute -bottom-4 translate-y-1/2 text-sm max-md:text-xs font-medium">{title}</div>
             </div>
           ))}
         </div>

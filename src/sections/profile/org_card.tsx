@@ -364,7 +364,9 @@ const OrgCard = ({ user, setUser, tagline, coverPic }: Props) => {
               <div
                 onClick={() => setClickedOnTags(true)}
                 className={`w-full relative rounded-lg flex-center p-4 ${
-                  !user.tags || user.tags?.length == 0 ? 'bg-primary_comp' : 'hover:bg-primary_comp'
+                  !user.tags || user.tags?.length == 0
+                    ? 'bg-primary_comp'
+                    : checkOrgAccess(ORG_SENIOR) && 'hover:bg-primary_comp'
                 } ${
                   checkOrgAccess(ORG_SENIOR)
                     ? 'group hover:bg-primary_comp cursor-pointer transition-ease-300'
@@ -391,9 +393,10 @@ const OrgCard = ({ user, setUser, tagline, coverPic }: Props) => {
                   >
                     {user.tags &&
                       user.tags.map(tag => {
+                        //TODO convert to link
                         return (
                           <div
-                            className="flex-center text-xs px-2 py-1 border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-full cursor-pointer"
+                            className="flex-center text-xs px-2 py-1 border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-full"
                             key={tag}
                           >
                             {tag}
@@ -418,7 +421,9 @@ const OrgCard = ({ user, setUser, tagline, coverPic }: Props) => {
               <div
                 onClick={() => setClickedOnLinks(true)}
                 className={`w-full relative rounded-lg flex-center p-4 ${
-                  !user.links || user.links?.length == 0 ? 'bg-primary_comp' : 'hover:bg-primary_comp'
+                  !user.links || user.links?.length == 0
+                    ? 'bg-primary_comp'
+                    : checkOrgAccess(ORG_SENIOR) && 'hover:bg-primary_comp'
                 } ${
                   checkOrgAccess(ORG_SENIOR)
                     ? 'group hover:bg-primary_comp cursor-pointer transition-ease-300'

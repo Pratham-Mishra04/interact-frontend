@@ -278,7 +278,7 @@ const ProfileCard = ({ user, setUser, tagline, coverPic }: Props) => {
 
         <div className="w-full h-[1px] border-t-[1px] border-gray-500 border-dashed"></div>
 
-        {clickedOnBio ? (
+        {/* {clickedOnBio ? (
           <div className="w-full">
             <div className="text-xs ml-1 font-medium uppercase text-gray-500">Bio ({bio.trim().length}/500)</div>
             <textarea
@@ -308,7 +308,7 @@ const ProfileCard = ({ user, setUser, tagline, coverPic }: Props) => {
               <div className={`text-center max-md:text-sm cursor-pointer`}>{user.bio}</div>
             )}
           </div>
-        )}
+        )} */}
 
         <div className="w-full flex flex-col gap-8 mt-2">
           {clickedOnTags ? (

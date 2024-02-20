@@ -273,3 +273,11 @@ html {
   50%{background-position:100% 78%}
   100%{background-position:0% 23%}
 }
+
+.bg-wavy {
+  --mask:
+    radial-gradient(52.4px at 50% calc(100% + 33.60px),#0000 calc(99% - 12px),#000 calc(101% - 12px) 99%,#0000 101%) calc(50% - 64px) calc(50% - 22px + .5px)/128px 44px ,
+    radial-gradient(52.4px at 50% -33.6px,#0000 calc(99% - 12px),#000 calc(101% - 12px) 99%,#0000 101%) 50% calc(50% + 22px)/128px 44px ;
+  -webkit-mask: var(--mask);
+          mask: var(--mask);
+}

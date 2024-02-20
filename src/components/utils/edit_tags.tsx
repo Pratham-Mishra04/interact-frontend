@@ -102,7 +102,7 @@ const Tags = ({
               borderColor: `${borderColor ? borderColor : onboardingDesign ? 'black' : '#9ca3af'}`,
             }}
             key={tag}
-            className={`flex-center px-3 py-2 border-[1px] text-sm rounded-full cursor-default active:border-2 active:border-[#000000]`}
+            className="flex-center text-sm px-2 py-1 border-[1px] text-sm rounded-full cursor-default active:border-2 active:border-black"
             onDragStart={e => dragStart(e, i)}
             onDragEnter={e => dragEnter(e, i)}
             onDragEnd={drop}
@@ -123,7 +123,7 @@ const Tags = ({
         {tags.length < maxTags ? (
           <input
             type="text"
-            className={`grow border-[1px] bg-transparent border-transparent rounded-md px-3 py-2 outline-none`}
+            className="grow text-sm border-[1px] bg-transparent border-transparent rounded-md px-3 py-2 outline-none"
             maxLength={20}
             value={tagInput}
             onChange={handleTagInputChange}
