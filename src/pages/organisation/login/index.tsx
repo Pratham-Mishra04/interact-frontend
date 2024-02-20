@@ -110,10 +110,10 @@ const Login = () => {
             <ReactSVG src="/onboarding_logo.svg" />
             <Link
               href={`/login`}
-              className="w-12 hover:w-36 h-12 group overflow-clip relative rounded-full border-[1px] border-primary_black hover:shadow-xl transition-ease-300"
+              className="w-12 hover:w-24 h-12 group overflow-clip relative rounded-full border-[1px] border-primary_black hover:shadow-xl transition-ease-300"
             >
               <div className="w-full text-center absolute top-32 group-hover:top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 font-medium transition-ease-300">
-                User Login
+                User?
               </div>
               <Users
                 className="absolute top-1/2 group-hover:-top-8 right-1/2 translate-x-1/2 -translate-y-1/2 transition-ease-300"
@@ -189,9 +189,6 @@ const Login = () => {
                 <div> Continue</div>
                 <ArrowRight size={20} weight="regular" />
               </button>
-              <div onClick={() => router.push('/organisation/signup')} className="text-gray-400 text-sm cursor-pointer">
-                Don&apos;t have an Account? <span className="font-medium underline underline-offset-2">Sign Up</span>
-              </div>
               <div
                 onClick={() => router.push('/forgot_password')}
                 className="text-gray-400 font-medium hover:underline hover:underline-offset-2 text-sm cursor-pointer"

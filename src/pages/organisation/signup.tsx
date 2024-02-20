@@ -301,14 +301,13 @@ const SignUp = () => {
 };
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  const token = nookies.get(context).token;
-  if (token && process.env.NODE_ENV != 'development') {
+  if (process.env.NODE_ENV != 'development') {
     return {
       redirect: {
         permanent: true,
-        destination: '/home',
+        destination: '/signup',
       },
-      props: { token },
+      props: {},
     };
   }
   return {

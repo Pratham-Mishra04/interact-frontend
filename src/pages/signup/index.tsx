@@ -25,8 +25,6 @@ import Info from '@phosphor-icons/react/dist/icons/Info';
 import generateRandomProfilePicture from '@/utils/generate_profile_picture';
 import StrongPassInfo from '@/components/common/strong_pass_info';
 import WidthCheck from '@/utils/wrappers/widthCheck';
-import { Buildings } from '@phosphor-icons/react';
-import Link from 'next/link';
 
 const SignUp = () => {
   const router = useRouter();
@@ -178,20 +176,8 @@ const SignUp = () => {
           <></>
         )}
         <div className="w-[45%] max-lg:w-full h-full min-h-screen font-primary gap-12 py-8 px-8 flex flex-col justify-between items-center">
-          <div className="w-full flex justify-between items-center">
+          <div className="w-full flex justify-start items-center">
             <ReactSVG src="/onboarding_logo.svg" />
-            <Link
-              href={`/organisation/signup`}
-              className="w-12 hover:w-36 h-12 group overflow-clip relative rounded-full border-[1px] border-primary_black hover:shadow-xl transition-ease-300"
-            >
-              <div className="absolute top-32 group-hover:top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 font-medium transition-ease-300">
-                Organisation?
-              </div>
-              <Buildings
-                className="absolute top-1/2 group-hover:-top-8 right-1/2 translate-x-1/2 -translate-y-1/2 transition-ease-300"
-                size={24}
-              />
-            </Link>
           </div>
           <form onSubmit={handleSubmit} className="w-3/5 max-md:w-full flex flex-col items-center gap-6">
             <div className="flex flex-col gap-2 text-center">
