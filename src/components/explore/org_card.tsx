@@ -5,6 +5,8 @@ import { User } from '@/types';
 import Link from 'next/link';
 import FollowBtn from '../common/follow_btn';
 import { Eye, IdentificationBadge, MapPin, Users } from '@phosphor-icons/react';
+import { userSelector } from '@/slices/userSlice';
+import { useSelector } from 'react-redux';
 
 interface Props {
   user: User;
@@ -12,6 +14,7 @@ interface Props {
 
 const OrgCard = ({ user }: Props) => {
   const [noFollowers, setNoFollowers] = useState(user.noFollowers);
+  const loggedInUser = useSelector(userSelector);
   return (
     <Link
       href={`/explore/organisation/${user.username}`}
@@ -89,14 +92,16 @@ const OrgCard = ({ user }: Props) => {
 
           {user.tagline != '' ? <div className="text-sm text-gray-600 text-center">{user.tagline}</div> : <></>}
         </div>
-        <div
-          onClick={el => {
-            el.preventDefault();
-          }}
-          className="w-full flex-center"
-        >
-          <FollowBtn toFollowID={user.id} setFollowerCount={setNoFollowers} />
-        </div>
+        {loggedInUser.id != '' && (
+          <div
+            onClick={el => {
+              el.preventDefault();
+            }}
+            className="w-full flex-center"
+          >
+            <FollowBtn toFollowID={user.id} setFollowerCount={setNoFollowers} />
+          </div>
+        )}
       </div>
     </Link>
   );

@@ -58,36 +58,23 @@ const ProfileCard = ({ user, organisation = initialOrganization, org = false }: 
 
   return (
     <>
-      {clickedOnShare ? (
-        userID != '' ? (
+      {clickedOnShare &&
+        (userID != '' ? (
           <ShareProfile user={user} setShow={setClickedOnShare} />
         ) : (
           <SignUp setShow={setClickedOnShare} />
-        )
-      ) : (
-        <></>
-      )}
-      {clickedOnChat ? (
-        userID != '' ? (
-          <SendMessage user={user} setShow={setClickedOnChat} />
-        ) : (
-          <SignUp setShow={setClickedOnChat} />
-        )
-      ) : (
-        <></>
-      )}
-      {clickedOnReport ? (
-        userID != '' ? (
+        ))}
+      {clickedOnChat &&
+        (userID != '' ? <SendMessage user={user} setShow={setClickedOnChat} /> : <SignUp setShow={setClickedOnChat} />)}
+      {clickedOnReport &&
+        (userID != '' ? (
           <Report userID={user.id} setShow={setClickedOnReport} />
         ) : (
           <SignUp setShow={setClickedOnReport} />
-        )
-      ) : (
-        <></>
-      )}
+        ))}
 
-      {clickedOnFollowers ? <Connections type="followers" user={user} setShow={setClickedOnFollowers} /> : <></>}
-      {clickedOnFollowing ? (
+      {clickedOnFollowers && <Connections type="followers" user={user} setShow={setClickedOnFollowers} />}
+      {clickedOnFollowing && (
         <Connections
           type={org ? 'members' : 'following'}
           user={user}
@@ -95,8 +82,6 @@ const ProfileCard = ({ user, organisation = initialOrganization, org = false }: 
           orgID={organisation.id}
           org={org}
         />
-      ) : (
-        <></>
       )}
 
       <div className="w-[400px] max-lg:w-2/3 max-md:w-[90%] overflow-y-auto overflow-x-hidden pb-4 max-lg:mx-auto font-primary mt-base_padding max-lg:mb-12 ml-base_padding h-fit flex flex-col gap-4 dark:text-white items-center pt-12 max-lg:pb-8 max-lg:pt-4 px-4 max-lg:px-12 max-md:px-4 bg-[#ffffff2d] dark:bg-[#84478023] backdrop-blur-md shadow-md dark:shadow-none border-[1px] border-gray-300 dark:border-dark_primary_btn max-lg:bg-transparent relative rounded-md z-10">
@@ -140,7 +125,7 @@ const ProfileCard = ({ user, organisation = initialOrganization, org = false }: 
 
         {/* <div className="max-lg:text-sm text-center">{user.bio}</div> */}
 
-        <FollowBtn toFollowID={user.id} setFollowerCount={setNumFollowers} profileDesign={true} />
+        {userID != '' && <FollowBtn toFollowID={user.id} setFollowerCount={setNumFollowers} profileDesign={true} />}
 
         <div className="w-full h-[1px] border-t-[1px] border-gray-400 border-dashed"></div>
 

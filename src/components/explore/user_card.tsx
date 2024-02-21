@@ -69,13 +69,15 @@ const UserCard = ({ user, forTrending = false }: Props) => {
             </div>
           </div>
         </div>
-        <div
-          onClick={el => {
-            el.preventDefault();
-          }}
-        >
-          <FollowBtn toFollowID={user.id} setFollowerCount={setNoFollowers} smaller={forTrending} />
-        </div>
+        {loggedInUser.id != '' && (
+          <div
+            onClick={el => {
+              el.preventDefault();
+            }}
+          >
+            <FollowBtn toFollowID={user.id} setFollowerCount={setNoFollowers} smaller={forTrending} />
+          </div>
+        )}
       </div>
       {user.tagline && user.tagline != '' ? (
         <div className={`w-full ${!forTrending ? 'text-sm pl-16' : 'text-xs pl-12'}`}>{user.tagline}</div>

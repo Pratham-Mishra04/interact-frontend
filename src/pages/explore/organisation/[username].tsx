@@ -35,6 +35,7 @@ import { setCurrentChatID } from '@/slices/messagingSlice';
 import Connections from '@/sections/explore/connections_view';
 import FollowBtn from '@/components/common/follow_btn';
 import { Organization } from '@/types';
+import SignUp from '@/components/common/signup_box';
 
 interface Props {
   username: string;
@@ -110,10 +111,26 @@ const User = ({ username }: Props) => {
     <BaseWrapper title={user.name}>
       {loggedInUser.isOrganization ? <OrgSidebar index={1} /> : <Sidebar index={2} />}
       <MainWrapper>
-        {clickedOnShare ? <ShareProfile user={user} setShow={setClickedOnShare} /> : <></>}
-        {clickedOnChat ? <SendMessage user={user} setShow={setClickedOnChat} /> : <></>}
-        {clickedOnReport ? <Report userID={user.id} setShow={setClickedOnReport} /> : <></>}
-        {clickedOnFollowers ? <Connections type="followers" user={user} setShow={setClickedOnFollowers} /> : <></>}
+        {clickedOnShare &&
+          (loggedInUser.id != '' ? (
+            <ShareProfile user={user} setShow={setClickedOnShare} />
+          ) : (
+            <SignUp setShow={setClickedOnShare} />
+          ))}
+        {clickedOnChat &&
+          (loggedInUser.id != '' ? (
+            <SendMessage user={user} setShow={setClickedOnChat} />
+          ) : (
+            <SignUp setShow={setClickedOnChat} />
+          ))}
+        {clickedOnReport &&
+          (loggedInUser.id != '' ? (
+            <Report userID={user.id} setShow={setClickedOnReport} />
+          ) : (
+            <SignUp setShow={setClickedOnReport} />
+          ))}
+
+        {clickedOnFollowers && <Connections type="followers" user={user} setShow={setClickedOnFollowers} />}
         <div className="w-full flex flex-col items-center font-primary">
           <div className="w-full relative">
             <Image
@@ -140,7 +157,7 @@ const User = ({ username }: Props) => {
                     <div className="text-3xl font-semibold">{user.name}</div>
                     <div className="text-sm font-medium text-gray-600">@{user.username}</div>
                   </div>
-                  <FollowBtn toFollowID={user.id} setFollowerCount={setNumFollowers} />
+                  {loggedInUser.id != '' && <FollowBtn toFollowID={user.id} setFollowerCount={setNumFollowers} />}
                 </div>
                 <div className="w-full flex justify-between items-center">
                   <div className="text-lg font-medium text-gray-600">{user.tagline}</div>
@@ -167,8 +184,12 @@ const User = ({ username }: Props) => {
                 </div>
                 <div className="flex items-center gap-4">
                   <div
-                    onClick={() => setClickedOnFollowers(true)}
-                    className="flex items-center text-sm font-medium text-gray-700 cursor-pointer"
+                    onClick={() => {
+                      if (loggedInUser.id != '') setClickedOnFollowers(true);
+                    }}
+                    className={`flex items-center text-sm font-medium text-gray-700 ${
+                      loggedInUser.id != '' ? 'cursor-pointer' : 'cursor-default'
+                    }`}
                   >
                     {numFollowers} Follower{numFollowers != 1 ? 's' : ''}
                   </div>
@@ -185,7 +206,7 @@ const User = ({ username }: Props) => {
           <div className="w-full h-36"></div>
           <div className="w-full flex flex-col gap-6 max-lg:pt-0">
             <TabMenu
-              items={['About', 'Posts', 'Projects', 'Events', 'News', 'Reviews', 'Opening']}
+              items={['About', 'Posts', 'Projects', 'Events', 'News', 'Reviews', 'Openings']}
               active={active}
               setState={setActive}
               width={'840px'}

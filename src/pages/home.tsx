@@ -53,7 +53,7 @@ const Home = () => {
           </div>
 
           <div className="w-[30%] h-fit flex flex-col gap-4">
-            <ProfileCard />
+            {user.id != '' && <ProfileCard />}
             <TrendingCard />
           </div>
 

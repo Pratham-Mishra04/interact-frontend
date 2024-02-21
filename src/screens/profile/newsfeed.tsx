@@ -11,6 +11,8 @@ import Loader from '@/components/common/loader';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Masonry from 'react-masonry-css';
 import Mascot from '@/components/empty_fillers/mascot';
+import { useSelector } from 'react-redux';
+import { userSelector } from '@/slices/userSlice';
 
 interface Props {
   orgID: string;
@@ -23,6 +25,8 @@ const NewsFeed = ({ orgID }: Props) => {
   const [page, setPage] = useState(1);
 
   const [organisation, setOrganisation] = useState(initialOrganization);
+
+  const user = useSelector(userSelector);
 
   const getNewsFeed = () => {
     const URL = `${ORG_URL}/${orgID}/newsFeed?page=${page}&limit=${10}`;
@@ -54,42 +58,48 @@ const NewsFeed = ({ orgID }: Props) => {
   };
 
   useEffect(() => {
-    getNewsFeed();
+    if (user.id != '') getNewsFeed();
   }, []);
 
   return (
     <div className="w-full pb-base_padding flex flex-col gap-4">
-      {loading ? (
-        <Loader />
-      ) : newsFeed.length > 0 ? (
-        <InfiniteScroll
-          className="w-5/6 mx-auto"
-          dataLength={newsFeed.length}
-          next={getNewsFeed}
-          hasMore={hasMore}
-          loader={<Loader />}
-        >
-          <Masonry
-            breakpointCols={{ default: 2, 768: 1 }}
-            className="masonry-grid"
-            columnClassName="masonry-grid_column"
+      {user.id != '' ? (
+        loading ? (
+          <Loader />
+        ) : newsFeed.length > 0 ? (
+          <InfiniteScroll
+            className="w-5/6 mx-auto"
+            dataLength={newsFeed.length}
+            next={getNewsFeed}
+            hasMore={hasMore}
+            loader={<Loader />}
           >
-            {newsFeed.map((news, index) =>
-              'totalVotes' in news ? (
-                <div key={news.id} className={`${index != 0 && index != 1 && 'mt-4'}`}>
-                  <PollCard poll={news} organisation={organisation} setPolls={setNewsFeed} />
-                </div>
-              ) : (
-                <div key={news.id} className={`${index != 0 && index != 1 && 'mt-4'}`}>
-                  <AnnouncementCard announcement={news} />
-                </div>
-              )
-            )}
-          </Masonry>
-        </InfiniteScroll>
+            <Masonry
+              breakpointCols={{ default: 2, 768: 1 }}
+              className="masonry-grid"
+              columnClassName="masonry-grid_column"
+            >
+              {newsFeed.map((news, index) =>
+                'totalVotes' in news ? (
+                  <div key={news.id} className={`${index != 0 && index != 1 && 'mt-4'}`}>
+                    <PollCard poll={news} organisation={organisation} setPolls={setNewsFeed} />
+                  </div>
+                ) : (
+                  <div key={news.id} className={`${index != 0 && index != 1 && 'mt-4'}`}>
+                    <AnnouncementCard announcement={news} />
+                  </div>
+                )
+              )}
+            </Masonry>
+          </InfiniteScroll>
+        ) : (
+          <div className="w-5/6 mx-auto">
+            <Mascot message="This organization is as quiet as a library at midnight. Shh, nothing's on their newsfeed yet." />
+          </div>
+        )
       ) : (
         <div className="w-5/6 mx-auto">
-          <Mascot message="This organization is as quiet as a library at midnight. Shh, nothing's on their newsfeed yet." />
+          <Mascot message="Sign up to view this section." />
         </div>
       )}
     </div>

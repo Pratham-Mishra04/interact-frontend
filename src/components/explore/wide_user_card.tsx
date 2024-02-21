@@ -121,14 +121,16 @@ const UserCard = ({ user }: Props) => {
             <div className="border-t-[1px] border-gray-500 border-dashed"></div>
             {user.tagline != '' ? <div className="text-sm text-gray-600 text-center">{user.tagline}</div> : <></>}
           </div>
-          <div
-            onClick={el => {
-              el.preventDefault();
-            }}
-            className="w-full flex-center"
-          >
-            <FollowBtn toFollowID={user.id} setFollowerCount={setNoFollowers} />
-          </div>
+          {loggedInUser.id != '' && (
+            <div
+              onClick={el => {
+                el.preventDefault();
+              }}
+              className="w-full flex-center"
+            >
+              <FollowBtn toFollowID={user.id} setFollowerCount={setNoFollowers} />
+            </div>
+          )}
         </div>
       </div>
     </Link>

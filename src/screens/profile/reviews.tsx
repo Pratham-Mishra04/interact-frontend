@@ -96,8 +96,10 @@ const Reviews = ({ orgID }: Props) => {
   };
 
   useEffect(() => {
-    getReviews();
-    getReviewData();
+    if (user.id != '') {
+      getReviews();
+      getReviewData();
+    }
   }, []);
 
   const dispatch = useDispatch();
@@ -150,59 +152,63 @@ const Reviews = ({ orgID }: Props) => {
 
   return (
     <div className="w-5/6 max-md:w-full mx-auto pb-base_padding z-50">
-      {loading ? (
-        <Loader />
-      ) : (
-        <div className="w-full flex flex-col gap-6">
-          {user.organizationMemberships.map(m => m.organizationID).includes(orgID) && !reviewModalOpen ? (
-            <div
-              className="fixed z-50 bottom-28 right-0 lg:bottom-12 lg:right-12 flex-center text-sm bg-primary_text text-white px-4 py-3 rounded-full flex gap-2 shadow-lg hover:shadow-2xl font-medium cursor-pointer transition-ease-300 animate-fade_third"
-              onClick={() => dispatch(setReviewModalOpen(!reviewModalOpen))}
-            >
-              <Plus size={20} /> <div className="h-fit">Add Review</div>
-            </div>
-          ) : (
-            <></>
-          )}
-
-          {user.organizationMemberships.map(m => m.organizationID).includes(orgID) ? (
-            //TODO not show if review is already added
-            <NewReview orgID={orgID} setReviews={setReviews} />
-          ) : (
-            <></>
-          )}
-
-          {reviews.length > 0 ? (
-            <InfiniteScroll
-              className="w-full mx-auto"
-              dataLength={reviews.length}
-              next={getReviews}
-              hasMore={hasMore}
-              loader={<Loader />}
-            >
-              <Masonry
-                breakpointCols={{ default: 2, 768: 1 }}
-                className="masonry-grid"
-                columnClassName="masonry-grid_column"
+      {user.id != '' ? (
+        loading ? (
+          <Loader />
+        ) : (
+          <div className="w-full flex flex-col gap-6">
+            {user.organizationMemberships.map(m => m.organizationID).includes(orgID) && !reviewModalOpen ? (
+              <div
+                className="fixed z-50 bottom-28 right-0 lg:bottom-12 lg:right-12 flex-center text-sm bg-primary_text text-white px-4 py-3 rounded-full flex gap-2 shadow-lg hover:shadow-2xl font-medium cursor-pointer transition-ease-300 animate-fade_third"
+                onClick={() => dispatch(setReviewModalOpen(!reviewModalOpen))}
               >
-                <div className="">
-                  <ReviewSummary />
-                </div>
-                {reviews.length > 0 ? (
-                  reviews.map((review, index) => (
-                    <div key={review.id} className={`${index != 0 && 'mt-4'}`}>
-                      <ReviewCard key={review.id} review={review} setReviews={setReviews} />
-                    </div>
-                  ))
-                ) : (
-                  <NoUserItems />
-                )}
-              </Masonry>
-            </InfiniteScroll>
-          ) : (
-            <Mascot message="This organization is as quiet as a library at midnight. Shh, no reviews yet." />
-          )}
-        </div>
+                <Plus size={20} /> <div className="h-fit">Add Review</div>
+              </div>
+            ) : (
+              <></>
+            )}
+
+            {user.organizationMemberships.map(m => m.organizationID).includes(orgID) ? (
+              //TODO not show if review is already added
+              <NewReview orgID={orgID} setReviews={setReviews} />
+            ) : (
+              <></>
+            )}
+
+            {reviews.length > 0 ? (
+              <InfiniteScroll
+                className="w-full mx-auto"
+                dataLength={reviews.length}
+                next={getReviews}
+                hasMore={hasMore}
+                loader={<Loader />}
+              >
+                <Masonry
+                  breakpointCols={{ default: 2, 768: 1 }}
+                  className="masonry-grid"
+                  columnClassName="masonry-grid_column"
+                >
+                  <div className="">
+                    <ReviewSummary />
+                  </div>
+                  {reviews.length > 0 ? (
+                    reviews.map((review, index) => (
+                      <div key={review.id} className={`${index != 0 && 'mt-4'}`}>
+                        <ReviewCard key={review.id} review={review} setReviews={setReviews} />
+                      </div>
+                    ))
+                  ) : (
+                    <NoUserItems />
+                  )}
+                </Masonry>
+              </InfiniteScroll>
+            ) : (
+              <Mascot message="This organization is as quiet as a library at midnight. Shh, no reviews yet." />
+            )}
+          </div>
+        )
+      ) : (
+        <Mascot message="Sign up to view this section." />
       )}
     </div>
   );

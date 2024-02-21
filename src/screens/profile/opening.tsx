@@ -12,6 +12,7 @@ import OpeningView from '@/sections/explore/opening_view';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Loader from '@/components/common/loader';
 import Mascot from '@/components/empty_fillers/mascot';
+import { EXPLORE_URL } from '@/config/routes';
 
 interface Props {
   orgID: string;
@@ -28,7 +29,7 @@ export default function Openings({ orgID }: Props) {
   const [clickedOpening, setClickedOpening] = useState(initialOpening);
 
   const fetchOpenings = async () => {
-    const URL = `/org/${orgID}/org_openings?page=${page}&limit=${10}`;
+    const URL = `${EXPLORE_URL}/openings/org/${orgID}?page=${page}&limit=${10}`;
     const res = await getHandler(URL);
     if (res.statusCode === 200) {
       const addedOpenings = [...openings, ...(res.data.openings || [])];

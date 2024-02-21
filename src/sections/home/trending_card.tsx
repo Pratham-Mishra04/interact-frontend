@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import getHandler from '@/handlers/get_handler';
 import Toaster from '@/utils/toaster';
-import { ArrowRight, ChartLineUp } from '@phosphor-icons/react';
+import { ArrowRight, ChartLineUp, Lock } from '@phosphor-icons/react';
 import { SERVER_ERROR } from '@/config/errors';
 import { User } from '@/types';
 import { userSelector } from '@/slices/userSlice';
@@ -93,7 +93,18 @@ const TrendingCard = () => {
             </div>
           )}
           {users && users.length > 0 && (
-            <div className="w-full h-fit flex flex-col gap-2 bg-white rounded-lg p-4">
+            <div className="w-full h-fit flex flex-col gap-2 bg-white rounded-lg p-4 relative">
+              {user.id == '' && (
+                <div className="w-full h-[calc(100%-48px)] flex-center flex-col gap-1 absolute top-12 right-0 backdrop-blur-sm rounded-lg z-10">
+                  <div className="flex-center gap-1 border-primary_black border-[1px] rounded-lg px-2 py-1">
+                    <Lock /> Locked
+                  </div>
+                  <Link href={'/login'} className="font-medium hover-underline-animation after:bg-black">
+                    Sign up to see who&apos;s here
+                  </Link>
+                </div>
+              )}
+
               <div className="w-fit text-2xl font-bold text-gradient">Profiles to Follow</div>
               <div className="w-full flex flex-col gap-2">
                 {users.map(user => (
@@ -102,24 +113,26 @@ const TrendingCard = () => {
               </div>
             </div>
           )}
-          <div
-            onClick={() => {
-              window.scrollTo({
-                top: 0,
-                behavior: 'smooth',
-              });
-              if (homeTab == 0) dispatch(setHomeTab(1));
-              else dispatch(setHomeTab(0));
-            }}
-            className="w-full h-fit flex-center gap-2 bg-white rounded-lg p-4 hover:shadow-lg cursor-pointer transition-ease-300"
-          >
-            <div className="w-fit text-gradient text-lg font-semibold">
-              {
-                //TODO change the content
-                homeTab == 0 ? "Checkout What's Trending!" : 'Stalk your Following'
-              }
+          {user.id != '' && (
+            <div
+              onClick={() => {
+                window.scrollTo({
+                  top: 0,
+                  behavior: 'smooth',
+                });
+                if (homeTab == 0) dispatch(setHomeTab(1));
+                else dispatch(setHomeTab(0));
+              }}
+              className="w-full h-fit flex-center gap-2 bg-white rounded-lg p-4 hover:shadow-lg cursor-pointer transition-ease-300"
+            >
+              <div className="w-fit text-gradient text-lg font-semibold">
+                {
+                  //TODO change the content
+                  homeTab == 0 ? "Checkout What's Trending!" : 'Stalk your Following'
+                }
+              </div>
             </div>
-          </div>
+          )}
         </>
       )}
     </>
