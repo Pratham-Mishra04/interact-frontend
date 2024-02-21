@@ -123,7 +123,7 @@ const About = ({ profile, organisation }: Props) => {
           <div className={`w-full flex flex-col gap-3 relative ${user.id == '' && 'p-2'}`}>
             {user.id == '' && (
               <div className="w-full h-full flex-center flex-col gap-1 absolute top-0 right-0 backdrop-blur-sm z-10">
-                <div className="flex-center gap-1 border-primary_black border-[1px] rounded-lg px-2 py-1">
+                <div className="bg-white flex-center gap-1 border-primary_black border-[1px] rounded-lg px-2 py-1">
                   <Lock /> Locked
                 </div>
                 <Link href={'/login'} className="font-medium hover-underline-animation after:bg-black">

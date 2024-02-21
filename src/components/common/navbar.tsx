@@ -12,16 +12,18 @@ import Link from 'next/link';
 import Feedback from './feedback';
 
 const Navbar = () => {
-  const notifications = useSelector(unreadNotificationsSelector);
-  const chats = (useSelector(unreadChatsSelector) || []).length;
   const [clickedOnNotifications, setClickedOnNotifications] = useState(false);
   const [clickedOnProfile, setClickedOnProfile] = useState(false);
   const [clickedOnFeedback, setClickedOnFeedback] = useState(false);
+
   const user = useSelector(userSelector);
+  const notifications = useSelector(unreadNotificationsSelector);
+  const chats = (useSelector(unreadChatsSelector) || []).length;
+
   return (
     <>
-      {clickedOnNotifications ? <Notifications setShow={setClickedOnNotifications} /> : <></>}
-      {clickedOnFeedback ? <Feedback setShow={setClickedOnFeedback} /> : <></>}
+      {clickedOnNotifications && <Notifications setShow={setClickedOnNotifications} />}
+      {clickedOnFeedback && <Feedback setShow={setClickedOnFeedback} />}
       <div className={`${clickedOnProfile ? '' : 'hidden'}`}>
         <ProfileDropdown setShow={setClickedOnProfile} />
       </div>
@@ -32,11 +34,7 @@ const Navbar = () => {
         <Link href={'/home'} className="static dark:hidden px-4 max-md:px-0">
           <ReactSVG src="/onboarding_logo.svg" />
         </Link>
-        {/* <div className="w-80 border-2 border-gray-200 bg-gray-100 px-4 py-2 rounded-lg h-10 flex justify-between items-center text-gray-500">
-          <input className="grow bg-gray-100 text-sm focus:outline-none" type="search" placeholder="Search" />
-          <MagnifyingGlass className="text-gray-500" weight="bold" />
-        </div> */}
-        {user.isLoggedIn ? (
+        {user.isLoggedIn && (
           <div className="flex items-center gap-2 max-md:gap-0 z-0">
             <div
               onClick={() => setClickedOnFeedback(true)}
@@ -54,12 +52,10 @@ const Navbar = () => {
               className="w-10 h-10 rounded-full flex-center relative hover:bg-primary_comp_hover dark:hover:bg-dark_primary_comp_hover transition-ease-300"
               href={'/messaging'}
             >
-              {chats > 0 ? (
+              {chats > 0 && (
                 <div className="w-4 h-4 animate-pulse rounded-full absolute top-0 right-0 flex items-center justify-center text-xs bg-black dark:text-white">
                   {chats}
                 </div>
-              ) : (
-                <></>
               )}
               <ChatCircleDots className="max-md:w-6 max-md:h-6" size={24} weight="regular" />
             </Link>
@@ -71,12 +67,10 @@ const Navbar = () => {
               }}
               className="w-10 h-10 rounded-full flex-center relative hover:bg-primary_comp_hover dark:hover:bg-dark_primary_comp_hover transition-ease-300"
             >
-              {notifications > 0 ? (
+              {notifications > 0 && (
                 <div className="w-4 h-4 animate-pulse rounded-full absolute top-0 right-0 flex items-center justify-center text-xs bg-black dark:text-white">
                   {notifications}
                 </div>
-              ) : (
-                <></>
               )}
               <Bell className="cursor-pointer max-md:w-6 max-md:h-6" size={24} weight="regular" />
             </div>
@@ -93,8 +87,6 @@ const Navbar = () => {
               src={`${USER_PROFILE_PIC_URL}/${user.profilePic != '' ? user.profilePic : 'default.jpg'}`}
             />
           </div>
-        ) : (
-          <></>
         )}
       </div>
     </>

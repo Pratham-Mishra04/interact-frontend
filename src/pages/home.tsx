@@ -9,7 +9,6 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import Onboarding from '@/components/common/onboarding';
 import { userSelector } from '@/slices/userSlice';
-import { useRouter } from 'next/router';
 import ProfileCard from '@/sections/home/profile_card';
 import TrendingCard from '@/sections/home/trending_card';
 
@@ -18,15 +17,13 @@ const Home = () => {
   const onboarding = useSelector(onboardingSelector);
   const user = useSelector(userSelector);
 
-  const router = useRouter(); //TODO use window.location instead of router
-
   useEffect(() => {
-    if (user.isOrganization) router.replace('/organisation/home');
+    if (user.isOrganization) window.location.replace('/organisation/home');
     else if (user.isLoggedIn && !user.isVerified) {
-      router.replace('/verification');
+      window.location.replace('/verification');
     } else if (user.isLoggedIn && !user.isOnboardingComplete) {
       sessionStorage.setItem('onboarding-redirect', 'home-callback');
-      router.replace('/onboarding');
+      window.location.replace('/onboarding');
     }
   }, []);
 

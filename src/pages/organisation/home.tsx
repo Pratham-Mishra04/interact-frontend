@@ -11,7 +11,6 @@ import { userSelector } from '@/slices/userSlice';
 import OrgOnlyAndProtect from '@/utils/wrappers/org_only';
 import OrgSidebar from '@/components/common/org_sidebar';
 import WidthCheck from '@/utils/wrappers/widthCheck';
-import { useRouter } from 'next/router';
 import OrgOnboarding from '@/components/common/org_onboarding';
 
 const Home = () => {
@@ -19,12 +18,10 @@ const Home = () => {
   const onboarding = useSelector(onboardingSelector);
   const user = useSelector(userSelector);
 
-  const router = useRouter(); //TODO use window.location instead of router
-
   useEffect(() => {
     if (!user.isOnboardingComplete) {
       sessionStorage.setItem('onboarding-redirect', 'organisation-home-callback');
-      router.replace('/organisation/onboarding');
+      window.location.replace('/organisation/onboarding');
     }
   }, []);
 

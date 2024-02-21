@@ -2,8 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Cookies from 'js-cookie';
 import { useDispatch, useSelector } from 'react-redux';
-import { profilePicSelector, resetUser, userSelector } from '@/slices/userSlice';
-import { useRouter } from 'next/router';
+import { resetUser, userSelector } from '@/slices/userSlice';
 import Image from 'next/image';
 import { USER_PROFILE_PIC_URL } from '@/config/routes';
 import { ArrowRight } from '@phosphor-icons/react';
@@ -16,7 +15,7 @@ interface Props {
 
 const ProfileDropdown = ({ setShow }: Props) => {
   const dispatch = useDispatch();
-  const router = useRouter();
+
   const handleLogout = () => {
     dispatch(resetUser());
     dispatch(resetConfig());
@@ -24,7 +23,7 @@ const ProfileDropdown = ({ setShow }: Props) => {
     Cookies.remove('id');
     Cookies.remove('token');
 
-    router.replace('/login');
+    window.location.replace('/login');
   };
 
   const user = useSelector(userSelector);

@@ -12,7 +12,6 @@ import { userSelector } from '@/slices/userSlice';
 import WidthCheck from '@/utils/wrappers/widthCheck';
 import BaseWrapper from '@/wrappers/base';
 import MainWrapper from '@/wrappers/main';
-import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -22,10 +21,8 @@ const Explore = () => {
 
   const user = useSelector(userSelector);
 
-  const router = useRouter(); //TODO use window.location instead of router
-
   useEffect(() => {
-    if (user.isOrganization) router.replace('/organisation/explore');
+    if (user.isOrganization) window.location.replace('/organisation/explore');
   }, []);
   return (
     <BaseWrapper title="Explore">

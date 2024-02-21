@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Opening } from '@/types';
-import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
-import { userIDSelector, userSelector } from '@/slices/userSlice';
+import { userSelector } from '@/slices/userSlice';
 // import clickedOnSharePost from './clickedOnShare_project';
 import Gear from '@phosphor-icons/react/dist/icons/Gear';
 import Export from '@phosphor-icons/react/dist/icons/Export';
@@ -25,11 +24,6 @@ const LowerOpening = ({ opening, org = false }: Props) => {
   const [noUserClick, setNoUserClick] = useState(false);
 
   const user = useSelector(userSelector);
-
-  const router = useRouter();
-
-  const userID = useSelector(userIDSelector) || '';
-
   return (
     <>
       {noUserClick ? <SignUp setShow={setNoUserClick} /> : <></>}
@@ -42,8 +36,7 @@ const LowerOpening = ({ opening, org = false }: Props) => {
               <Gear
                 className="cursor-pointer max-md:w-[32px] max-md:h-[32px]"
                 onClick={() => {
-                  //TODO use window.location
-                  router.push(`/organisations?redirect_url=openings?action=edit&oid=${opening.id}`);
+                  window.location.replace(`/organisations?redirect_url=openings?action=edit&oid=${opening.id}`);
                 }}
                 size={32}
                 weight="light"
@@ -54,7 +47,7 @@ const LowerOpening = ({ opening, org = false }: Props) => {
               <Gear
                 className="cursor-pointer max-md:w-[32px] max-md:h-[32px]"
                 onClick={() => {
-                  router.push(`/workspace/manage/${opening.project?.slug}?action=edit&oid=${opening.id}`);
+                  window.location.replace(`/workspace/manage/${opening.project?.slug}?action=edit&oid=${opening.id}`);
                 }}
                 size={32}
                 weight="light"
@@ -62,7 +55,7 @@ const LowerOpening = ({ opening, org = false }: Props) => {
             ))}
         <Export
           onClick={() => {
-            if (userID == '') setNoUserClick(true);
+            if (user.id == '') setNoUserClick(true);
             else setClickedOnShare(true);
           }}
           className="cursor-pointer max-md:w-[32px] max-md:h-[32px]"
@@ -72,7 +65,7 @@ const LowerOpening = ({ opening, org = false }: Props) => {
         <OpeningBookmarkIcon opening={opening} />
         <WarningCircle
           onClick={() => {
-            if (userID == '') setNoUserClick(true);
+            if (user.id == '') setNoUserClick(true);
             else setClickedOnReport(true);
           }}
           className="cursor-pointer max-md:w-6 max-md:h-6"

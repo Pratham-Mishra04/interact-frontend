@@ -94,7 +94,7 @@ const NewGroup = ({ setShow }: Props) => {
     userIDs.forEach(userID => formData.append('userIDs', userID));
 
     const res = await postHandler(URL, formData, 'multipart/form-data');
-    if (res.statusCode === 200) {
+    if (res.statusCode === 201) {
       setGroupPic(undefined);
       setShow(false);
       Toaster.stopLoad(toaster, 'New Group Created!', 1);
