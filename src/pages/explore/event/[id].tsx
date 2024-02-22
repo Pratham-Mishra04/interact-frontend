@@ -10,7 +10,7 @@ import { GetServerSidePropsContext } from 'next/types';
 import Loader from '@/components/common/loader';
 import { SERVER_ERROR } from '@/config/errors';
 import Image from 'next/image';
-import { ArrowUpRight, Buildings, CalendarBlank, MapPin, Rocket, Ticket, Users } from '@phosphor-icons/react';
+import { MapPin } from '@phosphor-icons/react';
 import EventCard from '@/components/explore/event_card';
 import { Event, User } from '@/types';
 import Link from 'next/link';
@@ -18,11 +18,15 @@ import moment from 'moment';
 import getIcon from '@/utils/funcs/get_icon';
 import getDomainName from '@/utils/funcs/get_domain_name';
 import { userSelector } from '@/slices/userSlice';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import OrgSidebar from '@/components/common/org_sidebar';
 import LowerEvent from '@/components/lowers/lower_event';
-import EventBookmarkIcon from '@/components/lowers/event_bookmark';
 import FollowBtn from '@/components/common/follow_btn';
+import UserHoverCard from '@/components/common/user_hover_card';
+import Report from '@/components/common/report';
+import SignUp from '@/components/common/signup_box';
+import { setCurrentChatID } from '@/slices/messagingSlice';
+import SendMessage from '@/sections/explore/send_message';
 
 interface Props {
   id: string;
@@ -34,8 +38,13 @@ const Event = ({ id }: Props) => {
   const [loading, setLoading] = useState(true);
 
   const [eventLikes, setEventLikes] = useState(0);
+  const [clickedOnChat, setClickedOnChat] = useState(false);
+  const [clickedOnReport, setClickedOnReport] = useState(false);
 
   const user = useSelector(userSelector);
+
+  const dispatch = useDispatch();
+
   const getEvent = () => {
     const URL = `${EXPLORE_URL}/events/${id}`;
     getHandler(URL)
@@ -79,16 +88,36 @@ const Event = ({ id }: Props) => {
     getSimilarEvents();
   }, [id]);
 
+  const chatSlices = user.personalChatSlices;
+
+  const handleChat = () => {
+    var check = false;
+    var chatID = '';
+    chatSlices.forEach(chat => {
+      if (chat.userID == user.id) {
+        chatID = chat.chatID;
+        check = true;
+        return;
+      }
+    });
+    if (check) {
+      dispatch(setCurrentChatID(chatID));
+      window.location.assign('/messaging');
+    } else setClickedOnChat(true);
+  };
+
   interface UserProps {
     user: User;
     host?: boolean;
+    coordinator?: boolean;
+    title?: string;
   }
 
-  const AboutUser = ({ user, host = false }: UserProps) => (
+  const AboutUser = ({ user, host = false, coordinator = false, title }: UserProps) => (
     <div className="relative">
       <div className="w-full flex gap-2 items-center justify-between">
         <div className="w-fit flex items-center gap-2 group">
-          <UserHoverCard user={user} />
+          <UserHoverCard user={user} title={coordinator ? title : user.tagline} />
           <Image
             width={50}
             height={50}
@@ -99,32 +128,6 @@ const Event = ({ id }: Props) => {
           <div className={`w-fit ${host ? 'text-xl' : 'text-base'} font-medium cursor-pointer`}>{user.name}</div>
         </div>
         <FollowBtn toFollowID={user.id} smaller={true} />
-        {/* <div className="w-20 h-8 bg-gray-100 flex-center rounded-2xl text-sm">Follow</div> */}
-      </div>
-    </div>
-  );
-
-  const UserHoverCard = ({ user }: UserProps) => (
-    //TODO add noFollowers
-    <div className="w-2/3 bg-white flex flex-col gap-2 rounded-xl p-4 shadow-xl absolute -translate-y-3/4 -top-2 opacity-0 group-hover:opacity-100 group-hover:-translate-y-full z-[-1] group-hover:z-0 transition-ease-500">
-      <Image
-        width={50}
-        height={50}
-        src={`${USER_PROFILE_PIC_URL}/${user.profilePic}`}
-        alt=""
-        className="w-12 h-12 rounded-full"
-      />
-      <Link href={'/explore/user/' + user.username} target="_blank" className="w-fit flex flex-wrap items-center gap-2">
-        <div className="text-xl font-semibold">{user.name}</div>
-        <div className="text-gray-400 text-xs">@{user.username}</div>
-      </Link>
-      <div className="text-gray-600 text-sm">{user.tagline}</div>
-      <div className="w-full flex flex-wrap gap-4">
-        {user.links?.map(link => (
-          <Link key={link} href={link} target="_blank">
-            {getIcon(getDomainName(link), 22, 'regular')}
-          </Link>
-        ))}
       </div>
     </div>
   );
@@ -178,10 +181,16 @@ const Event = ({ id }: Props) => {
         </div>
       )}
       <div className="w-full flex flex-col gap-1 text-sm">
-        <div className="w-fit font-medium text-primary_black hover:text-gray-600 transition-ease-300 cursor-pointer">
+        <div
+          onClick={handleChat}
+          className="w-fit font-medium text-primary_black hover:text-gray-600 transition-ease-300 cursor-pointer"
+        >
           Contact the Host
         </div>
-        <div className="w-fit font-medium text-primary_black hover:text-primary_danger transition-ease-300 cursor-pointer">
+        <div
+          onClick={() => setClickedOnReport(true)}
+          className="w-fit font-medium text-primary_black hover:text-primary_danger transition-ease-300 cursor-pointer"
+        >
           Report Event
         </div>
       </div>
@@ -262,6 +271,18 @@ const Event = ({ id }: Props) => {
     <BaseWrapper title={event.title}>
       {user.isOrganization ? <OrgSidebar index={1} /> : <Sidebar index={2} />}
       <MainWrapper>
+        {clickedOnChat &&
+          (user.id != '' ? (
+            <SendMessage user={event.organization.user} setShow={setClickedOnChat} />
+          ) : (
+            <SignUp setShow={setClickedOnChat} />
+          ))}
+        {clickedOnReport &&
+          (user.id != '' ? (
+            <Report eventID={event.id} setShow={setClickedOnReport} />
+          ) : (
+            <SignUp setShow={setClickedOnReport} />
+          ))}
         <div className="w-full py-12 px-20 max-md:p-2 flex flex-col transition-ease-out-500 font-primary">
           {loading ? (
             <Loader />

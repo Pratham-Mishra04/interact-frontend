@@ -30,7 +30,6 @@ import ShareProfile from '@/sections/lowers/share_profile';
 import SendMessage from '@/sections/explore/send_message';
 import Report from '@/components/common/report';
 import { Chat, Share, Warning } from '@phosphor-icons/react';
-import { useRouter } from 'next/router';
 import { setCurrentChatID } from '@/slices/messagingSlice';
 import Connections from '@/sections/explore/connections_view';
 import FollowBtn from '@/components/common/follow_btn';
@@ -61,8 +60,6 @@ const User = ({ username }: Props) => {
 
   const dispatch = useDispatch();
 
-  const router = useRouter();
-
   const handleChat = () => {
     var check = false;
     var chatID = '';
@@ -75,7 +72,7 @@ const User = ({ username }: Props) => {
     });
     if (check) {
       dispatch(setCurrentChatID(chatID));
-      router.push('/messaging');
+      window.location.assign('/messaging');
     } else setClickedOnChat(true);
   };
 

@@ -13,10 +13,21 @@ interface Props {
   chatID?: string;
   reviewID?: string;
   announcementID?: string;
+  eventID?: string;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Report = ({ userID, postID, projectID, openingID, chatID, reviewID, announcementID, setShow }: Props) => {
+const Report = ({
+  userID,
+  postID,
+  projectID,
+  openingID,
+  chatID,
+  reviewID,
+  announcementID,
+  eventID,
+  setShow,
+}: Props) => {
   const [reportType, setReportType] = useState(-1);
   const [content, setContent] = useState('');
   const [mutex, setMutex] = useState(false);
@@ -51,6 +62,7 @@ const Report = ({ userID, postID, projectID, openingID, chatID, reviewID, announ
       chatID: chatID ? chatID : '',
       reviewID: reviewID ? reviewID : '',
       announcementID: announcementID ? announcementID : '',
+      eventID: eventID ? eventID : '',
     });
     if (res.statusCode === 201) {
       Toaster.stopLoad(toaster, 'Reported!', 1);
@@ -94,6 +106,7 @@ const Report = ({ userID, postID, projectID, openingID, chatID, reviewID, announ
     if (chatID) return 'chat';
     if (reviewID) return 'review';
     if (announcementID) return 'announcement';
+    if (eventID) return 'event';
     return '';
   };
 

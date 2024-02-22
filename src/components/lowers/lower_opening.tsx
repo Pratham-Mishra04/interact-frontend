@@ -36,7 +36,7 @@ const LowerOpening = ({ opening, org = false }: Props) => {
               <Gear
                 className="cursor-pointer max-md:w-[32px] max-md:h-[32px]"
                 onClick={() => {
-                  window.location.replace(`/organisations?redirect_url=openings?action=edit&oid=${opening.id}`);
+                  window.location.assign(`/organisations?redirect_url=openings?action=edit&oid=${opening.id}`);
                 }}
                 size={32}
                 weight="light"
@@ -47,7 +47,7 @@ const LowerOpening = ({ opening, org = false }: Props) => {
               <Gear
                 className="cursor-pointer max-md:w-[32px] max-md:h-[32px]"
                 onClick={() => {
-                  window.location.replace(`/workspace/manage/${opening.project?.slug}?action=edit&oid=${opening.id}`);
+                  window.location.assign(`/workspace/manage/${opening.project?.slug}?action=edit&oid=${opening.id}`);
                 }}
                 size={32}
                 weight="light"

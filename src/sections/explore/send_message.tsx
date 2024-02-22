@@ -79,8 +79,8 @@ const SendMessage = ({ user, setShow }: Props) => {
           <div className="w-1/2 max-md:w-full font-primary border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg p-4 flex flex-col items-center justify-center gap-4 max-md:gap-4 transition-ease-300 cursor-default">
             <Image
               crossOrigin="anonymous"
-              width={50}
-              height={50}
+              width={200}
+              height={200}
               alt={'User Pic'}
               src={`${USER_PROFILE_PIC_URL}/${user.profilePic}`}
               className={'rounded-full max-md:mx-auto w-44 h-44 cursor-default'}

@@ -1,5 +1,6 @@
 import FollowBtn from '@/components/common/follow_btn';
 import Loader from '@/components/common/loader';
+import UserHoverCard from '@/components/common/user_hover_card';
 import Mascot from '@/components/empty_fillers/mascot';
 import { SERVER_ERROR } from '@/config/errors';
 import { ORG_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
@@ -72,31 +73,6 @@ const About = ({ profile, organisation }: Props) => {
         <div className="text-xs border-[1px] border-gray-300 rounded-full px-2 py-1">{role}</div>
         {/* <FollowBtn toFollowID={user.id} smaller={true} /> */}
         {/* <div className="w-20 h-8 bg-gray-100 flex-center rounded-2xl text-sm">Follow</div> */}
-      </div>
-    </div>
-  );
-
-  const UserHoverCard = ({ user, title }: UserProps) => (
-    //TODO add noFollowers
-    <div className="w-2/3 bg-white flex flex-col gap-2 rounded-xl p-4 shadow-xl absolute -translate-y-3/4 -top-2 opacity-0 group-hover:opacity-100 group-hover:-translate-y-full z-[-1] group-hover:z-50 transition-ease-500">
-      <Image
-        width={50}
-        height={50}
-        src={`${USER_PROFILE_PIC_URL}/${user.profilePic}`}
-        alt=""
-        className="w-12 h-12 rounded-full"
-      />
-      <Link href={'/explore/user/' + user.username} target="_blank" className="w-fit flex flex-wrap items-center gap-2">
-        <div className="text-xl font-semibold">{user.name}</div>
-        <div className="text-gray-400 text-xs">@{user.username}</div>
-      </Link>
-      <div className="text-gray-600 text-sm">{title}</div>
-      <div className="w-full flex flex-wrap gap-4">
-        {user.links?.map(link => (
-          <Link key={link} href={link} target="_blank">
-            {getIcon(getDomainName(link), 22, 'regular')}
-          </Link>
-        ))}
       </div>
     </div>
   );

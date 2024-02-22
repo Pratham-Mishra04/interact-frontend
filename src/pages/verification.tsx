@@ -31,7 +31,7 @@ const Verification = () => {
       Cookies.remove('token');
       Cookies.remove('id');
       router.replace('/login');
-    } else if (user.isVerified) router.back();
+    } else if (user.isVerified && process.env.NODE_ENV != 'development') router.back();
     else sendOTP();
   }, []);
 
@@ -47,7 +47,7 @@ const Verification = () => {
         } else {
           if (res.data.message) {
             Toaster.stopLoad(toaster, res.data.message, 0);
-            if (res.data.message == ALREADY_VERIFIED_ERROR) {
+            if (res.data.message == ALREADY_VERIFIED_ERROR && process.env.NODE_ENV != 'development') {
               dispatch(setVerificationStatus(true));
               router.back();
             }
@@ -101,14 +101,16 @@ const Verification = () => {
       <div className="h-screen flex">
         <div className="w-[45%] max-lg:w-full h-full font-primary py-8 px-8 flex flex-col justify-between items-center">
           <div className="w-full flex justify-start">
-            <ReactSVG src="/logo.svg" />
+            <ReactSVG src="/onboarding_logo.svg" />
           </div>
           <div className="w-3/5 max-md:w-full flex flex-col items-center gap-6">
             {!sentOTP ? (
-              //TODO add UI
-              <>
-                Sending OTP to <b>{user.email}</b>
-              </>
+              <div className="w-fit flex-center flex-col gap-2">
+                <div className="text-lg">Sending OTP to</div>
+                <div className="font-semibold text-2xl">{user.email}</div>
+                <div className="w-full verification_loader"></div>
+                <div className="italic text-center">Hang on while we verify your email address :)</div>
+              </div>
             ) : (
               <div className="w-full flex flex-col items-center gap-2 px-16 max-lg:px-8 py-24 max-lg:py-16">
                 <div className="text-xl text-center">
@@ -139,7 +141,7 @@ const Verification = () => {
 
                 {!resentOTP ? (
                   <div onClick={sendOTP} className="text-sm">
-                    Didn&apos;t receive email?{' '}
+                    Didn&apos;t get the email?{' '}
                     <span className="underline-offset-2 font-medium cursor-pointer hover:underline">Resend OTP</span>
                   </div>
                 ) : (

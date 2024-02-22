@@ -92,6 +92,26 @@ const TrendingCard = () => {
               </div>
             </div>
           )}
+          {user.id != '' && (
+            <div
+              onClick={() => {
+                window.scrollTo({
+                  top: 0,
+                  behavior: 'smooth',
+                });
+                if (homeTab == 0) dispatch(setHomeTab(1));
+                else dispatch(setHomeTab(0));
+              }}
+              className="w-full h-fit flex-center gap-2 bg-white rounded-lg p-4 hover:shadow-lg cursor-pointer transition-ease-300"
+            >
+              <div className="w-fit text-gradient text-lg font-semibold">
+                {
+                  //TODO change the content
+                  homeTab == 0 ? "Checkout What's Trending!" : 'Stalk your Following'
+                }
+              </div>
+            </div>
+          )}
           {users && users.length > 0 && (
             <div className="w-full h-fit flex flex-col gap-2 bg-white rounded-lg p-4 relative">
               {user.id == '' && (
@@ -110,26 +130,6 @@ const TrendingCard = () => {
                 {users.map(user => (
                   <UserCard key={user.id} user={user} forTrending={true} />
                 ))}
-              </div>
-            </div>
-          )}
-          {user.id != '' && (
-            <div
-              onClick={() => {
-                window.scrollTo({
-                  top: 0,
-                  behavior: 'smooth',
-                });
-                if (homeTab == 0) dispatch(setHomeTab(1));
-                else dispatch(setHomeTab(0));
-              }}
-              className="w-full h-fit flex-center gap-2 bg-white rounded-lg p-4 hover:shadow-lg cursor-pointer transition-ease-300"
-            >
-              <div className="w-fit text-gradient text-lg font-semibold">
-                {
-                  //TODO change the content
-                  homeTab == 0 ? "Checkout What's Trending!" : 'Stalk your Following'
-                }
               </div>
             </div>
           )}

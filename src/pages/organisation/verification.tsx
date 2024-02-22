@@ -98,7 +98,7 @@ const Verification = () => {
         <div className="w-[55%] max-lg:hidden h-full bg-onboarding bg-cover"></div>
         <div className="w-[45%] max-lg:w-full h-full font-primary py-8 px-8 flex flex-col justify-between items-center">
           <div className="w-full flex justify-start">
-            <ReactSVG src="/logo.svg" />
+            <ReactSVG src="/onboarding_logo.svg" />
           </div>
           <div className="w-3/5 max-md:w-full flex flex-col items-center gap-6">
             {!sentOTP ? (
