@@ -79,7 +79,7 @@ const Onboarding = () => {
     if (userPic) formData.append('profilePic', userPic);
     if (userCoverPic) formData.append('coverPic', userCoverPic);
     if (name != user.name) formData.append('name', name.trim());
-    if (bio != user.bio) formData.append('bio', bio.trim());
+    if (bio != user.bio) formData.append('description', bio.trim());
     if (tagline != user.tagline) formData.append('tagline', tagline.trim());
     tags.forEach(tag => formData.append('tags', tag));
     links.forEach(link => formData.append('links', link));
@@ -247,7 +247,7 @@ const Onboarding = () => {
                       : step == 2
                       ? `(${tagline.trim().length}/25)`
                       : step == 3
-                      ? `(${bio.trim().length}/500)`
+                      ? `(${bio.trim().length}/1500)`
                       : step == 4
                       ? `(${tags.length}/10)`
                       : step == 5
@@ -297,8 +297,8 @@ const Onboarding = () => {
                   <>
                     <textarea
                       className="bg-[#ffffff40] h-[96px] min-h-[96px] max-h-64 placeholder:text-[#202020c6] border-[1px] border-black rounded-lg p-2 focus:outline-none"
-                      maxLength={500}
-                      placeholder="Write yourself a short bio"
+                      maxLength={1500}
+                      placeholder="Write yourself a bio"
                       value={bio}
                       onChange={el => setBio(el.target.value)}
                     />

@@ -206,27 +206,19 @@ const ProjectView = ({
           {...swipeHandler}
           className="w-screen h-screen dark:text-white font-primary fixed top-0 left-0 z-50 flex dark:bg-backdrop backdrop-blur-2xl"
         >
-          {clickedOnEdit ? (
+          {clickedOnEdit && (
             <EditProject
               projectToEdit={project}
               setShow={setClickedOnEdit}
               setProjects={setProjects}
               setProjectToEdit={setProject}
             />
-          ) : (
-            <></>
           )}
-          {clickedOnLeave ? (
+          {clickedOnLeave && (
             <ConfirmDelete setShow={setClickedOnLeave} handleDelete={handleLeaveProject} title="Confirm Leave?" />
-          ) : (
-            <></>
           )}
-          {clickedOnDelete ? <ConfirmDelete setShow={setClickedOnDelete} handleDelete={sendOTP} /> : <></>}
-          {clickedOnConfirmDelete ? (
-            <ConfirmOTP setShow={setClickedOnConfirmDelete} handleSubmit={handleDelete} />
-          ) : (
-            <></>
-          )}
+          {clickedOnDelete && <ConfirmDelete setShow={setClickedOnDelete} handleDelete={sendOTP} />}
+          {clickedOnConfirmDelete && <ConfirmOTP setShow={setClickedOnConfirmDelete} handleSubmit={handleDelete} />}
           <div className="max-lg:hidden w-16 h-screen flex flex-col items-center py-3 justify-between max-lg:fixed max-lg:top-0 max-lg:left-0">
             <div className="w-10 h-10 relative">
               <Image
@@ -238,15 +230,13 @@ const ProjectView = ({
                 className={'w-10 h-10 rounded-full cursor-default absolute top-0 left-0 z-10'}
               />
             </div>
-            {clickedProjectIndex != 0 ? (
+            {clickedProjectIndex != 0 && (
               <div
                 onClick={handleClickPrev}
                 className="w-10 h-10 rounded-full flex-center dark:bg-dark_primary_comp_hover cursor-pointer shadow-xl"
               >
                 <CaretLeft size={24} weight="bold" />
               </div>
-            ) : (
-              <></>
             )}
           </div>
           <div className="w-[calc(100vw-128px)] max-lg:w-screen h-screen overflow-hidden pt-3">

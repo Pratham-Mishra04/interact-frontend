@@ -226,7 +226,9 @@ const SignUp = () => {
               </div>
 
               <div className="flex flex-col gap-2">
-                <div className="font-medium">Email</div>
+                <div className="flex items-center gap-2 font-medium">
+                  Email <div className="text-xs font-normal">(use your college email only)</div>
+                </div>
                 <input
                   name="email"
                   value={email}

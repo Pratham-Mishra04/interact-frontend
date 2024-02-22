@@ -109,7 +109,11 @@ const Tasks = ({ project, setShow, setClickedOnNewTask, org = false }: Props) =>
               <>
                 {tasks.slice(0, 4).map(task => {
                   return (
-                    <Link href={`/workspace/tasks/${project.slug}`} key={task.id} className="relative">
+                    <Link
+                      href={`/${org ? 'organisation/projects' : 'workspace'}/tasks/${project.slug}`}
+                      key={task.id}
+                      className="relative"
+                    >
                       {userInTask(user.id, task) ? (
                         <div className="absolute right-2 top-0 -translate-y-1/2 text-xs bg-primary_comp_hover backdrop-blur-sm rounded-lg py-1 px-2">
                           assigned to you

@@ -148,38 +148,24 @@ const LowerWorkspaceProject = ({ project }: Props) => {
 
   return (
     <>
-      {clickedOnTasks ? (
+      {clickedOnTasks && (
         <Tasks setShow={setClickedOnTasks} setClickedOnNewTask={setClickedOnNewTask} project={project} />
-      ) : (
-        <></>
       )}
-      {clickedOnNewTask ? (
-        <NewTask setShow={setClickedOnNewTask} setShowTasks={setClickedOnTasks} project={project} />
-      ) : (
-        <></>
-      )}
+      {clickedOnNewTask && <NewTask setShow={setClickedOnNewTask} setShowTasks={setClickedOnTasks} project={project} />}
 
-      {clickedOnBookmark ? (
+      {clickedOnBookmark && (
         <BookmarkProject setShow={setClickedOnBookmark} project={project} setBookmark={setBookmark} />
-      ) : (
-        <></>
       )}
-      {clickedOnComment ? (
+      {clickedOnComment && (
         <CommentProject
           setShow={setClickedOnComment}
           project={project}
           numComments={numComments}
           setNoComments={setNumComments}
         />
-      ) : (
-        <></>
       )}
-      {clickedOnShare ? (
-        <ShareProject setShow={setClickedOnShare} project={project} setNoShares={setNumShares} />
-      ) : (
-        <></>
-      )}
-      {clickedOnHistory ? <History setShow={setClickedOnHistory} projectID={project.id} /> : <></>}
+      {clickedOnShare && <ShareProject setShow={setClickedOnShare} project={project} setNoShares={setNumShares} />}
+      {clickedOnHistory && <History setShow={setClickedOnHistory} projectID={project.id} />}
 
       <div className="flex flex-col gap-8 max-lg:gap-3 max-lg:p-0 max-lg:flex-row">
         <Kanban
