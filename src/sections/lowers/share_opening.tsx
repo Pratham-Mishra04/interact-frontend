@@ -6,7 +6,7 @@ import postHandler from '@/handlers/post_handler';
 import { Chat, Opening } from '@/types';
 import getMessagingUser from '@/utils/funcs/get_messaging_user';
 import Toaster from '@/utils/toaster';
-import { ClipboardText } from '@phosphor-icons/react';
+import { ClipboardText, X } from '@phosphor-icons/react';
 import Cookies from 'js-cookie';
 import moment from 'moment';
 import Image from 'next/image';
@@ -95,6 +95,9 @@ const ShareOpening = ({ opening, setShow, org = false }: Props) => {
   return (
     <>
       <div className="w-1/2 max-md:h-5/6 overflow-y-auto max-lg:w-5/6 fixed backdrop-blur-lg bg-white bg-[#1201103c] z-30 translate-x-1/2 -translate-y-1/4 top-64 max-lg:top-1/4 max-md:top-56 right-1/2 flex flex-col px-8 py-6 gap-6 border-2 dark:border-dark_primary_btn rounded-xl animate-fade_third">
+        <div onClick={() => setShow(false)} className="md:hidden absolute top-2 right-2">
+          <X size={24} weight="bold" />
+        </div>
         <div className="text-3xl text-center text-gray-900 font-bold">Share this Opening</div>
         <div className="w-full flex max-lg:flex-col gap-4 items-center">
           <div className="w-1/2 max-md:w-full font-primary dark:text-white border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg p-4 flex flex-col items-center justify-center gap-4 max-lg:gap-4 transition-ease-300 cursor-default">

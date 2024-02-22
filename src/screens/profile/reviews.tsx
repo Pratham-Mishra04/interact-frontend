@@ -115,7 +115,7 @@ const Reviews = ({ orgID }: Props) => {
     return (
       <div className="w-full flex gap-2 items-center font-bold">
         {index}
-        <div className="grow h-3 max-md:hidden border-dark_primary_btn border-2 rounded-lg">
+        <div className="grow h-3 border-dark_primary_btn border-2 rounded-lg">
           <div
             style={{ width: `${barWidth}%` }}
             className={`h-full bg-dark_primary_btn rounded-lg ${barWidth != 100 ? 'rounded-r-none' : ''}`}
@@ -151,7 +151,7 @@ const Reviews = ({ orgID }: Props) => {
   );
 
   return (
-    <div className="w-5/6 max-md:w-full mx-auto pb-base_padding z-50">
+    <div className="w-5/6 max-md:w-full mx-auto pb-base_padding max-md:px-2 z-50">
       {user.id != '' ? (
         loading ? (
           <Loader />
@@ -188,7 +188,7 @@ const Reviews = ({ orgID }: Props) => {
                   className="masonry-grid"
                   columnClassName="masonry-grid_column"
                 >
-                  <div className="">
+                  <div className="max-md:mb-4">
                     <ReviewSummary />
                   </div>
                   {reviews.length > 0 ? (

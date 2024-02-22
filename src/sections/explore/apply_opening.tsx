@@ -81,6 +81,9 @@ const ApplyOpening = ({ opening, setShow, setOpening, setAddResume, org = false 
         <div className="w-fit text-gradient mx-auto text-3xl max-md:text-2xl text-primary_black flex justify-between items-center gap-2 font-bold">
           Your Application
         </div>
+        <div onClick={() => setShow(false)} className="md:hidden absolute top-4 right-4">
+          <X size={24} weight="bold" />
+        </div>
         <div className="w-full h-full flex max-lg:flex-col gap-4 items-center">
           <div className="w-1/3 h-full max-lg:h-fit max-lg:w-full font-primary dark:text-white border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg p-4 flex flex-col items-center justify-center gap-4 max-lg:gap-4 transition-ease-300 cursor-default">
             {org ? (

@@ -78,7 +78,7 @@ const About = ({ profile, organisation }: Props) => {
   );
 
   return (
-    <div className="w-5/6 mx-auto flex gap-4 pb-base_padding">
+    <div className="w-5/6 max-md:w-full mx-auto flex max-md:flex-col gap-4 pb-base_padding max-md:px-2">
       {clickedOnViewAllMembers ? (
         <Connections
           type="members"
@@ -90,7 +90,7 @@ const About = ({ profile, organisation }: Props) => {
       ) : (
         <></>
       )}
-      <div className="w-1/3 h-fit flex flex-col gap-2 bg-white border-gray-300 border-[1px] rounded-lg p-4">
+      <div className="w-1/3 max-md:w-full h-fit flex flex-col gap-2 bg-white border-gray-300 border-[1px] rounded-lg p-4">
         <div className="font-medium">Members of {organisation.title}</div>
         <div className="border-t-[1px] border-gray-200"></div>
         {loading ? (
@@ -131,7 +131,7 @@ const About = ({ profile, organisation }: Props) => {
         )}
       </div>
 
-      <div className="w-2/3 flex flex-col gap-4">
+      <div className="w-2/3 max-md:w-full flex flex-col gap-4">
         <div className="w-full h-fit flex flex-col gap-2 bg-white border-gray-300 border-[1px] rounded-lg p-4">
           <div className="font-medium">About {organisation.title}</div>
           <div className="border-t-[1px] border-gray-200"></div>

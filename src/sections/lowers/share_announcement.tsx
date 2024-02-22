@@ -8,6 +8,7 @@ import { Announcement, Chat, Post } from '@/types';
 import getDisplayTime from '@/utils/funcs/get_display_time';
 import getMessagingUser from '@/utils/funcs/get_messaging_user';
 import Toaster from '@/utils/toaster';
+import { X } from '@phosphor-icons/react';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
@@ -94,6 +95,9 @@ const ShareAnnouncement = ({ announcement, setShow }: Props) => {
   return (
     <>
       <div className="w-1/4 max-md:h-5/6 overflow-y-auto max-lg:w-5/6 fixed backdrop-blur-lg bg-[#ffffff] dark:bg-[#ffe1fc22] z-50 translate-x-1/2 -translate-y-1/4 top-64 right-1/2 flex flex-col px-8 py-8 gap-2 border-2 border-primary_btn  dark:border-dark_primary_btn rounded-xl animate-fade_third">
+        <div onClick={() => setShow(false)} className="md:hidden absolute top-2 right-2">
+          <X size={24} weight="bold" />
+        </div>
         <div className="text-3xl text-center text-gray-900 font-bold">Share this Announcement</div>
         <div className="w-full max-h-base_md overflow-auto flex flex-col gap-2">
           <div className="w-full font-primary flex gap-1 dark:text-white py-4 border-[#535353] border-b-[1px] max-lg:px-4 max-lg:py-4">

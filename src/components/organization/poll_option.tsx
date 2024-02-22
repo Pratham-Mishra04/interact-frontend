@@ -158,7 +158,7 @@ const Option = ({ option, totalVotes, orgID, pollID, setPolls }: Props) => {
         onClick={() => {
           isVoted ? handleUnVoteOption(option, setIsVoted) : handleVoteOption(option, setIsVoted);
         }}
-        className="w-full h-[15px] group max-md:hidden border-dark_primary_btn border-2 rounded-lg cursor-pointer"
+        className="w-full h-[15px] max-md:h-3 group border-dark_primary_btn border-2 rounded-lg cursor-pointer"
       >
         <div
           style={{ width: `${barWidth}%` }}

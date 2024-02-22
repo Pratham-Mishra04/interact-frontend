@@ -133,13 +133,13 @@ const Event = ({ id }: Props) => {
   );
 
   const AboutHosts = () => (
-    <div className="w-2/5 flex flex-col gap-6">
+    <div className="w-2/5 max-md:w-full flex flex-col gap-6">
       <Image
         width={500}
         height={500}
         src={`${EVENT_PIC_URL}/${event.coverPic}`}
         alt="Event Picture"
-        className="w-full h-64 object-cover rounded-xl"
+        className="w-full object-cover rounded-xl"
         placeholder="blur"
         blurDataURL={event.blurHash || 'no-hash'}
       />
@@ -198,8 +198,8 @@ const Event = ({ id }: Props) => {
   );
 
   const AboutEvent = () => (
-    <div className="w-3/5 flex flex-col gap-6">
-      <div className="font-semibold text-5xl leading-tight">{event.title}</div>
+    <div className="w-3/5 max-md:w-full flex flex-col gap-6">
+      <div className="font-semibold text-5xl max-md:text-center leading-tight">{event.title}</div>
       <div className="w-full flex justify-between items-center">
         <div className="w-full flex flex-col gap-2">
           <div className="text-sm font-medium text-gray-500">FROM</div>
@@ -288,7 +288,7 @@ const Event = ({ id }: Props) => {
             <Loader />
           ) : (
             <div className="w-[70vw] max-md:w-full mx-auto flex flex-col gap-12">
-              <div className="w-full flex gap-12">
+              <div className="w-full flex max-md:flex-col gap-12 max-md:px-2">
                 <AboutHosts />
                 <AboutEvent />
               </div>

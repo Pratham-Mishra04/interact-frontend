@@ -7,6 +7,7 @@ import postHandler from '@/handlers/post_handler';
 import { Chat, Post } from '@/types';
 import getMessagingUser from '@/utils/funcs/get_messaging_user';
 import Toaster from '@/utils/toaster';
+import { X } from '@phosphor-icons/react';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
@@ -93,6 +94,9 @@ const SharePost = ({ post, setShow }: Props) => {
   return (
     <>
       <div className="w-1/4 h-3/4 max-md:h-4/5 overflow-y-auto max-lg:w-5/6 fixed backdrop-blur-lg bg-[#ffffff] dark:bg-[#ffe1fc22] z-50 translate-x-1/2 -translate-y-1/4 top-64 right-1/2 flex flex-col px-8 py-8 gap-2 border-2 border-primary_btn dark:border-dark_primary_btn rounded-xl animate-fade_third">
+        <div onClick={() => setShow(false)} className="md:hidden absolute top-2 right-2">
+          <X size={24} weight="bold" />
+        </div>
         <div className="text-3xl text-center text-gray-900 font-bold">Share this Post</div>
         <PostComponent post={post} showLowerPost={false} showImage={false} />
         <div className="w-full h-[400px] overflow-y-auto flex flex-col justify-between gap-2">

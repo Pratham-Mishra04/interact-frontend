@@ -168,7 +168,7 @@ const Profile = () => {
               if (target.files && target.files[0]) {
                 const file = target.files[0];
                 if (file.type.split('/')[0] == 'image') {
-                  const resizedPic = await resizeImage(file, 900, 500);
+                  const resizedPic = await resizeImage(file, 900, 300);
                   setCoverPicView(URL.createObjectURL(resizedPic));
                   setCoverPic(resizedPic);
                   setClickedOnCoverPic(true);

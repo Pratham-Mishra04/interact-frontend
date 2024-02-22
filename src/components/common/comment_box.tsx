@@ -209,7 +209,7 @@ const CommentBox = ({ type, item, setNoComments }: Props) => {
                           </div>
                         </div>
                       </div>
-                      {comment.userID == userID ? (
+                      {comment.userID == userID && (
                         <Trash
                           onClick={() => {
                             deleteComment(comment.id);
@@ -218,12 +218,10 @@ const CommentBox = ({ type, item, setNoComments }: Props) => {
                           size={20}
                           weight="regular"
                         />
-                      ) : (
-                        <></>
                       )}
                     </div>
                     <div className="pl-10">
-                      <div className="w-fit bg-primary_comp dark:bg-dark_primary_comp_hover py-2 px-4 text-sm rounded-xl">
+                      <div className="w-fit bg-primary_comp dark:bg-dark_primary_comp_hover px-4 py-2 max-md:px-2 max-md:py-1 text-sm max-md:text-xs rounded-xl max-md:rounded-lg">
                         {comment.content}
                       </div>
                       {/* <LowerComment comment={comment} type={type} /> */}

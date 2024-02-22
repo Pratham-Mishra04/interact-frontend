@@ -33,7 +33,7 @@ const Home = () => {
       <MainWrapper>
         {onboarding && user.id != '' ? <Onboarding /> : <></>}
         <div className="w-full flex gap-6 px-12 max-md:px-2 py-base_padding">
-          <div className="w-[70%] flex flex-col items-center relative">
+          <div className="w-[70%] max-md:w-full flex flex-col items-center relative">
             {user.id != '' ? (
               <>
                 {/* <TabMenu items={['Feed', 'Discover']} active={active} setReduxState={setHomeTab} /> */}
@@ -49,7 +49,7 @@ const Home = () => {
             )}
           </div>
 
-          <div className="w-[30%] h-fit flex flex-col gap-4">
+          <div className="w-[30%] h-fit max-md:hidden flex flex-col gap-4">
             {user.id != '' && <ProfileCard />}
             <TrendingCard />
           </div>

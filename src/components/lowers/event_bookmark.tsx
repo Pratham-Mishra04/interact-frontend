@@ -97,14 +97,10 @@ const EventBookmarkIcon = ({ event, size = 32 }: Props) => {
 
   return (
     <>
-      {noUserClick ? <SignUp setShow={setNoUserClick} /> : <></>}
-      {clickedOnBookmark ? (
-        <BookmarkEvent setShow={setClickedOnBookmark} event={event} setBookmark={setBookmark} />
-      ) : (
-        <></>
-      )}
+      {noUserClick && <SignUp setShow={setNoUserClick} />}
+      {clickedOnBookmark && <BookmarkEvent setShow={setClickedOnBookmark} event={event} setBookmark={setBookmark} />}
       <BookmarkSimple
-        className="cursor-pointer max-md:w-[32px] max-md:h-[32px]"
+        className="cursor-pointer"
         onClick={() => {
           if (userID == '') setNoUserClick(true);
           else {

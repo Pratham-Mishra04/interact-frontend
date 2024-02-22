@@ -68,7 +68,7 @@ const NewsFeed = ({ orgID }: Props) => {
           <Loader />
         ) : newsFeed.length > 0 ? (
           <InfiniteScroll
-            className="w-5/6 mx-auto"
+            className="w-5/6 max-md:w-full mx-auto max-md:px-2"
             dataLength={newsFeed.length}
             next={getNewsFeed}
             hasMore={hasMore}
@@ -81,11 +81,11 @@ const NewsFeed = ({ orgID }: Props) => {
             >
               {newsFeed.map((news, index) =>
                 'totalVotes' in news ? (
-                  <div key={news.id} className={`${index != 0 && index != 1 && 'mt-4'}`}>
+                  <div key={news.id} className={`${index != 0 && index != 1 && 'mt-4'} ${index == 0 && 'max-md:mb-4'}`}>
                     <PollCard poll={news} organisation={organisation} setPolls={setNewsFeed} />
                   </div>
                 ) : (
-                  <div key={news.id} className={`${index != 0 && index != 1 && 'mt-4'}`}>
+                  <div key={news.id} className={`${index != 0 && index != 1 && 'mt-4'} ${index == 0 && 'max-md:mb-4'}`}>
                     <AnnouncementCard announcement={news} />
                   </div>
                 )

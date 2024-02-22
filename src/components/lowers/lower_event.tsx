@@ -24,8 +24,6 @@ const LowerEvent = ({ event, numLikes, setNumLikes }: Props) => {
   const [clickedOnComment, setClickedOnComment] = useState(false);
   const [clickedOnShare, setClickedOnShare] = useState(false);
 
-  const [mutex, setMutex] = useState(false);
-
   const user = useSelector(userSelector);
   const likes = user.likes;
 

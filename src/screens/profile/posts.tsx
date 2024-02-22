@@ -52,13 +52,13 @@ const Posts = ({ userID, org = false }: Props) => {
   }, [userID]);
 
   return page == 1 && loading ? (
-    <div className="w-[45vw] mx-auto max-lg:w-[85%] max-md:w-screen max-lg:px-4 pb-base_padding">
+    <div className="w-[45vw] mx-auto max-lg:w-[85%] max-md:w-full pb-base_padding">
       <PostsLoader />
     </div>
   ) : org ? (
     posts.length > 0 ? (
       <InfiniteScroll
-        className="w-5/6 mx-auto pb-base_padding"
+        className="w-5/6 max-md:w-full mx-auto pb-base_padding max-md:px-2"
         dataLength={posts.length}
         next={getPosts}
         hasMore={hasMore}
@@ -66,7 +66,7 @@ const Posts = ({ userID, org = false }: Props) => {
       >
         <Masonry breakpointCols={{ default: 2, 768: 1 }} className="masonry-grid" columnClassName="masonry-grid_column">
           {posts.map((post, index) => (
-            <div key={post.id} className={`${index != 0 && index != 1 && 'mt-4'}`}>
+            <div key={post.id} className={`${index != 0 && index != 1 && 'mt-4'} ${index == 0 && 'max-md:mb-4'}`}>
               {post.rePost ? (
                 <RePostComponent key={post.id} setFeed={setPosts} post={post} org={true} />
               ) : (
