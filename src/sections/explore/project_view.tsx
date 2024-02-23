@@ -9,7 +9,6 @@ import Image from 'next/image';
 import { Buildings, CaretLeft, CaretRight, X } from '@phosphor-icons/react';
 import LowerProject from '@/components/lowers/lower_project';
 import ProjectViewLoader from '@/components/loaders/explore_project_view';
-import { useRouter } from 'next/router';
 import Collaborators from '@/components/explore/show_collaborator';
 import Openings from '@/components/explore/show_openings';
 import Link from 'next/link';
@@ -38,8 +37,6 @@ const ProjectView = ({
   const [loading, setLoading] = useState(true);
 
   const [clickedOnReadMore, setClickedOnReadMore] = useState(false);
-
-  const router = useRouter();
 
   const fetchProject = async (abortController: AbortController) => {
     setLoading(true);
@@ -149,7 +146,7 @@ const ProjectView = ({
                     className="w-fit flex items-center gap-1 text-xs font-medium"
                   >
                     <div
-                      onClick={() => router.push(`/explore/user/${project.user.username}`)}
+                      onClick={() => window.location.assign(`/explore/user/${project.user.username}`)}
                       className="cursor-pointer hover:underline hover:underline-offset-2"
                     >
                       {project.user.name}

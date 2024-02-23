@@ -1,6 +1,4 @@
-import deleteHandler from '@/handlers/delete_handler';
 import { resetUser } from '@/slices/userSlice';
-import Protect from '@/utils/wrappers/protect';
 import Toaster from '@/utils/toaster';
 import BaseWrapper from '@/wrappers/base';
 import MainWrapper from '@/wrappers/main';
@@ -45,7 +43,7 @@ const Deactivate = () => {
       Cookies.remove('token');
       Cookies.remove('id');
       dispatch(resetUser());
-      router.push('/login');
+      router.replace('/login');
     } else {
       if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
       else {

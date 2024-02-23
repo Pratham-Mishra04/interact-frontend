@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { PROJECT_PIC_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import Cookies from 'js-cookie';
 import moment from 'moment';
-import { useRouter } from 'next/router';
 
 interface Props {
   message: Message | GroupChatMessage;
@@ -12,7 +11,6 @@ interface Props {
 
 const SharedProjectMessage = ({ message }: Props) => {
   const userID = Cookies.get('id');
-  const router = useRouter();
   return (
     <div key={message.id} className={`w-full flex gap-2 ${message.userID === userID ? 'flex-row-reverse' : ''}`}>
       <Image

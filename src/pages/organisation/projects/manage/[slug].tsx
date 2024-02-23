@@ -10,7 +10,6 @@ import Toaster from '@/utils/toaster';
 import { GetServerSidePropsContext } from 'next/types';
 import { useSelector } from 'react-redux';
 import { userSelector } from '@/slices/userSlice';
-import { useRouter } from 'next/router';
 import { ArrowArcLeft } from '@phosphor-icons/react';
 import Openings from '@/screens/workspace/manage_project/openings';
 import Loader from '@/components/common/loader';
@@ -34,15 +33,13 @@ const ManageProject = ({ slug }: Props) => {
 
   const user = useSelector(userSelector);
 
-  const router = useRouter();
-
   const currentOrgID = useSelector(currentOrgIDSelector);
 
   const fetchProject = async () => {
     const URL = `${ORG_URL}/${currentOrgID}/projects/${slug}`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
-      if (!checkOrgAccess(ORG_SENIOR) && !user.managerProjects.includes(project.id)) router.back();
+      if (!checkOrgAccess(ORG_SENIOR) && !user.managerProjects.includes(project.id)) window.history.back();
       setProject(res.data.project);
       setLoading(false);
     } else {
@@ -62,7 +59,7 @@ const ManageProject = ({ slug }: Props) => {
         <div className="w-full flex flex-col items-center gap-4">
           <div className="w-[50vw] max-lg:w-[75vw] max-md:w-[95%] flex items-start gap-3 p-base_padding pl-0 pt-28">
             <ArrowArcLeft
-              onClick={() => router.back()}
+              onClick={() => window.history.back()}
               className="w-10 h-10 p-2 dark:text-white dark:bg-dark_primary_comp_hover rounded-full cursor-pointer"
               size={40}
             />

@@ -7,7 +7,6 @@ import Toaster from '@/utils/toaster';
 import BaseWrapper from '@/wrappers/base';
 import MainWrapper from '@/wrappers/main';
 import { ArrowArcLeft, SlidersHorizontal } from '@phosphor-icons/react';
-import { useRouter } from 'next/router';
 import { GetServerSidePropsContext } from 'next/types';
 import React, { useEffect, useState } from 'react';
 import ApplicationCard from '@/components/workspace/manage_project/application_card';
@@ -30,8 +29,6 @@ const Applications = ({ oid }: Props) => {
   const [clickedOnFilter, setClickedOnFilter] = useState(false);
   const [clickedOnApplication, setClickedOnApplication] = useState(false);
   const [clickedApplicationID, setClickedApplicationID] = useState(-1);
-
-  const router = useRouter();
 
   const currentOrgID = useSelector(currentOrgIDSelector);
 
@@ -86,7 +83,7 @@ const Applications = ({ oid }: Props) => {
           <div className="w-full flex justify-between p-base_padding">
             <div className="flex gap-3">
               <ArrowArcLeft
-                onClick={() => router.back()}
+                onClick={() => window.history.back()}
                 className="w-10 h-10 p-2 dark:bg-dark_primary_comp_hover rounded-full cursor-pointer"
                 size={40}
               />

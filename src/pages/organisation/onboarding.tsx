@@ -22,7 +22,6 @@ import { SERVER_ERROR } from '@/config/errors';
 import patchHandler from '@/handlers/patch_handler';
 import Toaster from '@/utils/toaster';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { resizeImage } from '@/utils/resize_image';
 import WidthCheck from '@/utils/wrappers/widthCheck';
 import { setOnboarding } from '@/slices/feedSlice';
@@ -43,15 +42,13 @@ const Onboarding = () => {
 
   const [step, setStep] = useState(1);
 
-  const router = useRouter();
-
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (process.env.NODE_ENV != 'development') {
       const onboardingRedirect = sessionStorage.getItem('onboarding-redirect') || '';
       if (!onboardingRedirect.startsWith('signup') && !onboardingRedirect.startsWith('organisation-home'))
-        router.replace('/organisation/home');
+        window.location.replace('/organisation/home');
       return () => {
         if (onboardingRedirect) sessionStorage.removeItem('onboarding-redirect');
       };
@@ -110,8 +107,8 @@ const Onboarding = () => {
     if (res.statusCode === 200) {
       Toaster.stopLoad(toaster, 'Profile Ready!', 1);
 
-      if (user.isOrganization) router.replace('/organisation/home');
-      else router.replace('/home');
+      if (user.isOrganization) window.location.replace('/organisation/home');
+      else window.location.replace('/home');
     } else {
       if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
       else {

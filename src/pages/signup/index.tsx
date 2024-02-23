@@ -4,7 +4,6 @@ import ArrowRight from '@phosphor-icons/react/dist/icons/ArrowRight';
 import Eye from '@phosphor-icons/react/dist/icons/Eye';
 import EyeClosed from '@phosphor-icons/react/dist/icons/EyeClosed';
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 import Toaster from '@/utils/toaster';
 import Cookies from 'js-cookie';
 import { BACKEND_URL } from '@/config/routes';
@@ -27,7 +26,6 @@ import StrongPassInfo from '@/components/common/strong_pass_info';
 import WidthCheck from '@/utils/wrappers/widthCheck';
 
 const SignUp = () => {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
@@ -132,7 +130,7 @@ const SignUp = () => {
           socketService.connect(user.id);
 
           sessionStorage.setItem('verification-redirect', 'signup-callback');
-          router.push('/verification');
+          window.location.assign('/verification');
 
           //Early Access -  sessionStorage.setItem('onboarding-redirect', 'signup');
           //Early Access -  router.replace('/onboarding');
@@ -157,7 +155,7 @@ const SignUp = () => {
   }, [window.location.search]);
 
   const handleGoogleLogin = () => {
-    router.push(`${BACKEND_URL}/auth/google`);
+    window.location.assign(`${BACKEND_URL}/auth/google`);
   };
   return (
     <>
@@ -328,7 +326,7 @@ const SignUp = () => {
                 <span className="font-medium underline underline-offset-2">Get It Now</span>
               </div> */}
 
-              <div onClick={() => router.push('/login')} className="text-gray-400 text-sm cursor-pointer">
+              <div onClick={() => window.location.assign('/login')} className="text-gray-400 text-sm cursor-pointer">
                 <span className="font-medium hover:underline underline-offset-2">Already have an Account?</span>
               </div>
             </div>

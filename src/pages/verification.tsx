@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { ReactSVG } from 'react-svg';
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 import Toaster from '@/utils/toaster';
 import Cookies from 'js-cookie';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,8 +18,6 @@ const Verification = () => {
   const [resentOTP, setResentOTP] = useState(false);
   const [OTP, setOTP] = useState('');
 
-  const router = useRouter();
-
   const dispatch = useDispatch();
 
   const user = useSelector(userSelector);
@@ -30,8 +27,8 @@ const Verification = () => {
       Toaster.error('Please Log in again');
       Cookies.remove('token');
       Cookies.remove('id');
-      router.replace('/login');
-    } else if (user.isVerified && process.env.NODE_ENV != 'development') router.back();
+      window.location.replace('/login');
+    } else if (user.isVerified && process.env.NODE_ENV != 'development') window.history.back();
     else sendOTP();
   }, []);
 
@@ -49,7 +46,7 @@ const Verification = () => {
             Toaster.stopLoad(toaster, res.data.message, 0);
             if (res.data.message == ALREADY_VERIFIED_ERROR && process.env.NODE_ENV != 'development') {
               dispatch(setVerificationStatus(true));
-              router.back();
+              window.history.back();
             }
           } else {
             Toaster.stopLoad(toaster, SERVER_ERROR, 0);
@@ -74,8 +71,8 @@ const Verification = () => {
           if (signUpRedirect && signUpRedirect.startsWith('signup')) {
             sessionStorage.removeItem('verification-redirect');
             sessionStorage.setItem('onboarding-redirect', 'signup-callback');
-            router.replace('/onboarding');
-          } else router.back();
+            window.location.replace('/onboarding');
+          } else window.history.back();
         } else {
           if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
           else {

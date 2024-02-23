@@ -35,7 +35,7 @@ const Deactive = () => {
       Cookies.remove('token');
       Cookies.remove('id');
       dispatch(resetUser());
-      router.push('/login');
+      router.replace('/login');
     } else {
       if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
       else {

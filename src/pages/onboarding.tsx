@@ -19,7 +19,6 @@ import { SERVER_ERROR } from '@/config/errors';
 import patchHandler from '@/handlers/patch_handler';
 import Toaster from '@/utils/toaster';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { resizeImage } from '@/utils/resize_image';
 import Protect from '@/utils/wrappers/protect';
 import WidthCheck from '@/utils/wrappers/widthCheck';
@@ -50,14 +49,13 @@ const Onboarding = () => {
 
   const [step, setStep] = useState(1);
 
-  const router = useRouter();
-
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (process.env.NODE_ENV != 'development') {
       const onboardingRedirect = sessionStorage.getItem('onboarding-redirect') || '';
-      if (!onboardingRedirect.startsWith('signup') && !onboardingRedirect.startsWith('home')) router.replace('/home');
+      if (!onboardingRedirect.startsWith('signup') && !onboardingRedirect.startsWith('home'))
+        window.location.replace('/home');
       return () => {
         if (onboardingRedirect) sessionStorage.removeItem('onboarding-redirect');
       };
@@ -123,7 +121,7 @@ const Onboarding = () => {
 
     if (res.statusCode === 200) {
       Toaster.stopLoad(toaster, 'Profile Ready!', 1);
-      router.replace('/home');
+      window.location.replace('/home');
     } else {
       if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
       else {

@@ -13,7 +13,6 @@ import ShareProfile from '../lowers/share_profile';
 import { userIDSelector, userSelector } from '@/slices/userSlice';
 import SendMessage from './send_message';
 import { setCurrentChatID } from '@/slices/messagingSlice';
-import { useRouter } from 'next/router';
 import Connections from './connections_view';
 import Report from '@/components/common/report';
 import SignUp from '@/components/common/signup_box';
@@ -36,8 +35,6 @@ const ProfileCard = ({ user, organisation = initialOrganization, org = false }: 
 
   const chatSlices = useSelector(userSelector).personalChatSlices;
 
-  const router = useRouter();
-
   const handleChat = () => {
     var check = false;
     var chatID = '';
@@ -50,7 +47,7 @@ const ProfileCard = ({ user, organisation = initialOrganization, org = false }: 
     });
     if (check) {
       dispatch(setCurrentChatID(chatID));
-      router.push('/messaging');
+      window.location.assign('/messaging');
     } else setClickedOnChat(true);
   };
 

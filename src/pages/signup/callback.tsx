@@ -2,7 +2,6 @@ import React from 'react';
 import { ReactSVG } from 'react-svg';
 import ArrowRight from '@phosphor-icons/react/dist/icons/ArrowRight';
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 import Toaster from '@/utils/toaster';
 import Cookies from 'js-cookie';
 import { BACKEND_URL } from '@/config/routes';
@@ -24,7 +23,6 @@ interface Props {
 }
 
 const SignUpCallback = ({ token }: Props) => {
-  const router = useRouter();
   const [username, setUsername] = useState('');
   const [mutex, setMutex] = useState(false);
 
@@ -82,14 +80,14 @@ const SignUpCallback = ({ token }: Props) => {
           socketService.connect(user.id);
           Cookies.set('verified', 'true');
           sessionStorage.setItem('onboarding-redirect', 'signup-callback');
-          router.replace('/onboarding');
+          window.location.replace('/onboarding');
         }
         setMutex(false);
       })
       .catch(err => {
         if (err.response?.status == 403) {
           Toaster.stopLoad(toaster, 'Connection Timeout, Login again"', 0);
-          router.replace('/signup');
+          window.location.replace('/signup');
         } else if (err.response?.data?.message) {
           Toaster.stopLoad(toaster, err.response.data.message, 0);
         } else {

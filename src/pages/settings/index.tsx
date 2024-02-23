@@ -98,7 +98,7 @@ const Settings = () => {
             href={'/settings/deactivate_account'}
             className="w-full h-16 text-xl flex-center gap-4 dark:bg-dark_primary_comp hover:bg-primary_comp active:bg-primary_comp_hover dark:hover:bg-dark_primary_comp dark:active:bg-dark_primary_comp_hover px-6 rounded-md text-center cursor-pointer transition-ease-300"
           >
-            <div>Deactive Account</div>
+            <div>Deactivate Account</div>
             <SmileyXEyes size={40} weight="duotone" />
           </Link>
           {clickedOnChangeResume ? <UpdateResume setShow={setClickedOnChangeResume} /> : <></>}

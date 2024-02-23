@@ -20,7 +20,6 @@ import { currentOrgIDSelector } from '@/slices/orgSlice';
 import OrgSidebar from '@/components/common/org_sidebar';
 import checkOrgAccess from '@/utils/funcs/check_org_access';
 import { ORG_SENIOR } from '@/config/constants';
-import { useRouter } from 'next/router';
 import OrgMembersOnlyAndProtect from '@/utils/wrappers/org_members_only';
 
 interface Props {
@@ -97,14 +96,12 @@ const Tasks = ({ slug }: Props) => {
       });
   };
 
-  const router = useRouter();
-
   useEffect(() => {
     getProject();
   }, [slug]);
 
   useEffect(() => {
-    if (!checkOrgAccess(ORG_SENIOR) && !user.managerProjects.includes(project.id)) router.back();
+    if (!checkOrgAccess(ORG_SENIOR) && !user.managerProjects.includes(project.id)) window.history.back();
     getTasks();
   }, [project]);
 

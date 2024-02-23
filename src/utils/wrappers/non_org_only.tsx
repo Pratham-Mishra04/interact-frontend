@@ -1,6 +1,5 @@
 import React, { ComponentType, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
-import { useRouter } from 'next/router';
 import Toaster from '../toaster';
 import Base from '@/screens/base_template';
 import { useSelector } from 'react-redux';
@@ -8,7 +7,6 @@ import { userSelector } from '@/slices/userSlice';
 
 const NonOrgOnlyAndProtect = <Props extends Object>(Component: ComponentType<Props>) => {
   const ProtectedComponent = (props: Props) => {
-    const router = useRouter();
     const [isAuthenticated, setIsAuthenticated] = useState(0);
     const user = useSelector(userSelector);
 
@@ -17,11 +15,11 @@ const NonOrgOnlyAndProtect = <Props extends Object>(Component: ComponentType<Pro
       if (!token || token == '' || user.id == '') {
         Toaster.error('You are not logged in.');
         setIsAuthenticated(0);
-        router.replace('/login');
+        window.location.replace('/login');
       } else if (user.isOrganization) {
         Toaster.error('Page only for non organization accounts.');
         setIsAuthenticated(0);
-        router.replace('/organisation/home');
+        window.location.replace('/organisation/home');
       } else setIsAuthenticated(1);
     }, []);
 

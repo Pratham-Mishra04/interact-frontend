@@ -4,12 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import getDisplayTime from '@/utils/funcs/get_display_time';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  currentChatIDSelector,
-  currentGroupChatIDSelector,
-  setCurrentChatID,
-  setCurrentGroupChatID,
-} from '@/slices/messagingSlice';
+import { currentGroupChatIDSelector, setCurrentChatID, setCurrentGroupChatID } from '@/slices/messagingSlice';
 import { useRouter } from 'next/router';
 import { GROUP_CHAT_PIC_URL } from '@/config/routes';
 

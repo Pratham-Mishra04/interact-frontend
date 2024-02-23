@@ -4,7 +4,6 @@ import ArrowRight from '@phosphor-icons/react/dist/icons/ArrowRight';
 import Eye from '@phosphor-icons/react/dist/icons/Eye';
 import EyeClosed from '@phosphor-icons/react/dist/icons/EyeClosed';
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 import Toaster from '@/utils/toaster';
 import Cookies from 'js-cookie';
 import { ORG_URL } from '@/config/routes';
@@ -12,7 +11,6 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '@/slices/userSlice';
 import Head from 'next/head';
 import { GetServerSidePropsContext } from 'next/types';
-import nookies from 'nookies';
 import configuredAxios from '@/config/axios';
 import { setConfig } from '@/slices/configSlice';
 import { setOnboarding, setUnreadNotifications } from '@/slices/feedSlice';
@@ -26,10 +24,9 @@ import StrongPassInfo from '@/components/common/strong_pass_info';
 import WidthCheck from '@/utils/wrappers/widthCheck';
 import { setCurrentOrg } from '@/slices/orgSlice';
 import Link from 'next/link';
-import { ArrowLeft, Users } from '@phosphor-icons/react';
+import { Users } from '@phosphor-icons/react';
 
 const SignUp = () => {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
@@ -119,7 +116,7 @@ const SignUp = () => {
           socketService.connect(user.id);
 
           sessionStorage.setItem('verification-redirect', 'signup-callback');
-          router.push('/organisation/verification');
+          window.location.assign('/organisation/verification');
 
           //   sessionStorage.setItem('onboarding-redirect', 'signup');
           //   router.replace('/onboarding');
@@ -283,7 +280,10 @@ const SignUp = () => {
                 <ArrowRight size={20} weight="regular" />
               </button>
 
-              <div onClick={() => router.push('/organisation/login')} className="text-gray-400 text-sm cursor-pointer">
+              <div
+                onClick={() => window.location.assign('/organisation/login')}
+                className="text-gray-400 text-sm cursor-pointer"
+              >
                 <span className="font-medium hover:underline underline-offset-2">Already have an Account?</span>
               </div>
             </div>

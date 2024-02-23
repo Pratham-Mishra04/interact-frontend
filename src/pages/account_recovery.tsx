@@ -7,7 +7,6 @@ import nookies from 'nookies';
 import postHandler from '@/handlers/post_handler';
 import { ReactSVG } from 'react-svg';
 import { ArrowRight, Eye, EyeClosed, Info } from '@phosphor-icons/react';
-import { useRouter } from 'next/router';
 import isStrongPassword from 'validator/lib/isStrongPassword';
 import { SERVER_ERROR } from '@/config/errors';
 
@@ -23,8 +22,6 @@ const AccountRecovery = ({ userID, token }: Props) => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  const router = useRouter();
 
   const handleSubmit = async () => {
     if (
@@ -62,7 +59,7 @@ const AccountRecovery = ({ userID, token }: Props) => {
 
     if (res.statusCode === 200) {
       Toaster.stopLoad(toaster, 'Password Updated!', 1);
-      router.push('/login');
+      window.location.replace('/login');
     } else {
       if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
       else {

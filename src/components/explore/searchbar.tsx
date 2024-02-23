@@ -1,6 +1,6 @@
 import { EXPLORE_URL } from '@/config/routes';
 import postHandler from '@/handlers/post_handler';
-import { MagnifyingGlass, SlidersHorizontal } from '@phosphor-icons/react';
+import { MagnifyingGlass } from '@phosphor-icons/react';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import SearchSuggestions from './search_suggestions';
@@ -15,7 +15,9 @@ const SearchBar = ({ initialValue = '' }: Props) => {
   const router = useRouter();
   const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
   const [clickedOnFilters, setClickedOnFilters] = useState(false);
+
   let searchVal = search.value;
+
   const submitSearch = async () => {
     const URL = `${EXPLORE_URL}/search`;
     await postHandler(URL, {

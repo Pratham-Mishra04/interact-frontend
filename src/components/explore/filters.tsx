@@ -1,5 +1,4 @@
 import { Backspace, X } from '@phosphor-icons/react';
-import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
 interface Props {
@@ -17,8 +16,6 @@ const Filters = ({ setShow }: Props) => {
     };
   }, []);
 
-  const router = useRouter();
-
   return (
     <>
       <div className="fixed top-48 max-md:top-20 w-2/5 max-lg:w-5/6 h-fit backdrop-blur-2xl bg-white flex flex-col gap-4 max-lg:gap-2 rounded-lg p-8 font-primary overflow-y-auto border-[1px] border-primary_black right-1/2 shadow-lg translate-x-1/2 animate-fade_third z-50 max-lg:z-[60]">
@@ -28,7 +25,7 @@ const Filters = ({ setShow }: Props) => {
             <Backspace
               className="cursor-pointer"
               onClick={() => {
-                router.push('/');
+                window.location.assign('/');
                 setShow(false);
               }}
               size={32}

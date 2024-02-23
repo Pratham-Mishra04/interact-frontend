@@ -1,6 +1,5 @@
 import { GetServerSidePropsContext } from 'next/types';
 import React, { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import Toaster from '@/utils/toaster';
 import { useDispatch } from 'react-redux';
 import socketService from '@/config/ws';
@@ -20,8 +19,6 @@ interface Props {
 }
 
 const LoginCallback = ({ token }: Props) => {
-  const router = useRouter();
-
   const dispatch = useDispatch();
 
   const userStateFetcher = useUserStateFetcher();
@@ -49,8 +46,8 @@ const LoginCallback = ({ token }: Props) => {
           userStateFetcher();
           if (user.isVerified) {
             Cookies.set('verified', 'true');
-            router.replace('/organisation/home');
-          } else router.push('/verification');
+            window.location.replace('/organisation/home');
+          } else window.location.replace('/verification');
         }
       })
       .catch(err => {
@@ -60,7 +57,7 @@ const LoginCallback = ({ token }: Props) => {
           Toaster.error(SERVER_ERROR, 'error_toaster');
         }
 
-        router.replace('/login');
+        window.location.replace('/login');
       });
   }, []);
 

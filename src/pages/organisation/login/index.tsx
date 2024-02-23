@@ -4,7 +4,6 @@ import ArrowRight from '@phosphor-icons/react/dist/icons/ArrowRight';
 import Eye from '@phosphor-icons/react/dist/icons/Eye';
 import EyeClosed from '@phosphor-icons/react/dist/icons/EyeClosed';
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 import Toaster from '@/utils/toaster';
 import Cookies from 'js-cookie';
 import { BACKEND_URL, ORG_URL } from '@/config/routes';
@@ -25,7 +24,6 @@ import Link from 'next/link';
 import { Users } from '@phosphor-icons/react';
 
 const Login = () => {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [mutex, setMutex] = useState(false);
@@ -70,8 +68,8 @@ const Login = () => {
           userStateFetcher();
           if (user.isVerified) {
             Cookies.set('verified', 'true');
-            router.replace('/organisation/home');
-          } else router.push('/verification');
+            window.location.replace('/organisation/home');
+          } else window.location.assign('/verification');
         }
         setMutex(false);
       })
@@ -85,7 +83,7 @@ const Login = () => {
   };
 
   const handleGoogleLogin = () => {
-    router.push(`${BACKEND_URL}/auth/google`);
+    window.location.assign(`${BACKEND_URL}/auth/google`);
   };
 
   useEffect(() => {
@@ -190,7 +188,7 @@ const Login = () => {
                 <ArrowRight size={20} weight="regular" />
               </button>
               <div
-                onClick={() => router.push('/forgot_password')}
+                onClick={() => window.location.assign('/forgot_password')}
                 className="text-gray-400 font-medium hover:underline hover:underline-offset-2 text-sm cursor-pointer"
               >
                 Forgot Password?

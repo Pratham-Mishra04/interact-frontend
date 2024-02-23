@@ -18,7 +18,6 @@ import Links from '@/components/explore/show_links';
 import deleteHandler from '@/handlers/delete_handler';
 import { useSwipeable } from 'react-swipeable';
 import ConfirmDelete from '@/components/common/confirm_delete';
-import PlaceholderImg from '@/utils/optimised_img';
 import ConfirmOTP from '@/components/common/confirm_otp';
 import Link from 'next/link';
 
