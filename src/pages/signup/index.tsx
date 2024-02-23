@@ -9,7 +9,7 @@ import Toaster from '@/utils/toaster';
 import Cookies from 'js-cookie';
 import { BACKEND_URL } from '@/config/routes';
 import { useDispatch } from 'react-redux';
-import { setUser } from '@/slices/userSlice';
+import { setPasswordSetupStatus, setUser } from '@/slices/userSlice';
 import Head from 'next/head';
 import { GetServerSidePropsContext } from 'next/types';
 import nookies from 'nookies';
@@ -124,12 +124,11 @@ const SignUp = () => {
             expires: Number(process.env.NEXT_PUBLIC_COOKIE_EXPIRATION_TIME),
           });
           dispatch(setUser({ ...user, isVerified: false }));
-
           //Early Access - dispatch(setUser({ ...user, isVerified: true }));
-
           dispatch(setConfig());
           dispatch(setUnreadNotifications(1)); //welcome notification
           dispatch(setOnboarding(true));
+          dispatch(setPasswordSetupStatus(res.data.isPasswordSetupComplete || false));
           socketService.connect(user.id);
 
           sessionStorage.setItem('verification-redirect', 'signup-callback');

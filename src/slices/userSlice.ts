@@ -37,6 +37,7 @@ interface UserState {
   isLoggedIn: boolean;
   isVerified: boolean;
   isOnboardingComplete: boolean;
+  isPasswordSetupComplete: boolean;
   organizationMemberships: OrganizationMembership[];
   votedOptions: string[];
 }
@@ -71,6 +72,7 @@ const initialState: UserState = {
   applications: [],
   isVerified: false,
   isOnboardingComplete: false,
+  isPasswordSetupComplete: true,
   organizationMemberships: [],
   votedOptions: [],
 };
@@ -94,6 +96,7 @@ export const userSlice = createSlice({
       state.phoneNo = action.payload.phoneNo;
       state.isVerified = action.payload.isVerified;
       state.isOnboardingComplete = action.payload.isOnboardingComplete;
+      state.isPasswordSetupComplete = true;
       state.links = action.payload.links;
       state.chats = [];
       state.personalChatSlices = [];
@@ -143,6 +146,7 @@ export const userSlice = createSlice({
       state.eventBookmarks = [];
       state.organizationMemberships = [];
       state.isOnboardingComplete = false;
+      state.isPasswordSetupComplete = true;
       state.votedOptions = [];
     },
     setReduxName: (state, action: PayloadAction<string>) => {
@@ -226,6 +230,9 @@ export const userSlice = createSlice({
     setOnboardingStatus: (state, action: PayloadAction<boolean>) => {
       state.isOnboardingComplete = action.payload;
     },
+    setPasswordSetupStatus: (state, action: PayloadAction<boolean>) => {
+      state.isPasswordSetupComplete = action.payload;
+    },
     setOrganizationMemberships: (state, action: PayloadAction<OrganizationMembership[]>) => {
       state.organizationMemberships = action.payload;
     },
@@ -265,6 +272,7 @@ export const {
   setResume,
   setVerificationStatus,
   setOnboardingStatus,
+  setPasswordSetupStatus,
   setOrganizationMemberships,
   setVotedOptions,
 } = userSlice.actions;

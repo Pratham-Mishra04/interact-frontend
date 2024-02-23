@@ -3,7 +3,6 @@ import MainWrapper from '@/wrappers/main';
 import React, { useState } from 'react';
 import Sidebar from '@/components/common/sidebar';
 import { At, Phone, Password, SmileyXEyes, IdentificationBadge, File, FilePdf } from '@phosphor-icons/react';
-import UpdateEmail from '@/sections/settings/update_email';
 import Protect from '@/utils/wrappers/protect';
 import UpdatePassword from '@/sections/settings/update_password';
 import UpdatePhoneNumber from '@/sections/settings/update_phone_number';
@@ -18,7 +17,6 @@ const Settings = () => {
   const [theme, setTheme] = useState(String(localStorage.getItem('theme')) == 'dark' ? 'dark' : 'light');
 
   const [clickedOnChangeResume, setClickedOnChangeResume] = useState(false);
-  const [clickedOnChangeEmail, setClickedOnChangeEmail] = useState(false);
   const [clickedOnChangePhoneNo, setClickedOnChangePhoneNo] = useState(false);
   const [clickedOnChangePassword, setClickedOnChangePassword] = useState(false);
 
@@ -64,25 +62,25 @@ const Settings = () => {
             <div>{user.resume == '' ? 'Upload Resume' : 'Change Resume'}</div>
             <FilePdf size={40} weight="duotone" />
           </div>
-          <div
+          {/* <div
             onClick={() => setClickedOnChangeEmail(true)}
             className="w-full h-16 text-xl flex-center gap-4 dark:bg-dark_primary_comp hover:bg-primary_comp active:bg-primary_comp_hover dark:hover:bg-dark_primary_comp dark:active:bg-dark_primary_comp_hover px-6 rounded-md text-center cursor-pointer transition-ease-300"
           >
             <div>Change Email Address</div>
             <At size={40} weight="duotone" />
-          </div>
+          </div> */}
           <div
             onClick={() => setClickedOnChangePhoneNo(true)}
             className="w-full h-16 text-xl flex-center gap-4 dark:bg-dark_primary_comp hover:bg-primary_comp active:bg-primary_comp_hover dark:hover:bg-dark_primary_comp dark:active:bg-dark_primary_comp_hover px-6 rounded-md text-center cursor-pointer transition-ease-300"
           >
-            <div>Change Phone Number</div>
+            <div>{user.phoneNo ? 'Change Phone Number' : 'Add Phone Number'}</div>
             <Phone size={40} weight="duotone" />
           </div>
           <div
             onClick={() => setClickedOnChangePassword(true)}
             className="w-full h-16 text-xl flex-center gap-4 dark:bg-dark_primary_comp hover:bg-primary_comp active:bg-primary_comp_hover dark:hover:bg-dark_primary_comp dark:active:bg-dark_primary_comp_hover px-6 rounded-md text-center cursor-pointer transition-ease-300"
           >
-            <div>Update Your Password</div>
+            <div>{user.isPasswordSetupComplete ? 'Update Your Password' : 'Set Up Your Password'}</div>
             <Password size={40} weight="duotone" />
           </div>
           {!user.isVerified ? (
@@ -104,9 +102,13 @@ const Settings = () => {
             <SmileyXEyes size={40} weight="duotone" />
           </Link>
           {clickedOnChangeResume ? <UpdateResume setShow={setClickedOnChangeResume} /> : <></>}
-          {clickedOnChangeEmail ? <UpdateEmail setShow={setClickedOnChangeEmail} /> : <></>}
+          {/* {clickedOnChangeEmail ? <UpdateEmail setShow={setClickedOnChangeEmail} /> : <></>} */}
           {clickedOnChangePhoneNo ? <UpdatePhoneNumber setShow={setClickedOnChangePhoneNo} /> : <></>}
-          {clickedOnChangePassword ? <UpdatePassword setShow={setClickedOnChangePassword} /> : <></>}
+          {clickedOnChangePassword ? (
+            <UpdatePassword setShow={setClickedOnChangePassword} setupPass={!user.isPasswordSetupComplete} />
+          ) : (
+            <></>
+          )}
         </div>
       </MainWrapper>
     </BaseWrapper>

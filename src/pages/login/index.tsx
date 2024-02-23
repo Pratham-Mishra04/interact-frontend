@@ -9,7 +9,7 @@ import Toaster from '@/utils/toaster';
 import Cookies from 'js-cookie';
 import { BACKEND_URL } from '@/config/routes';
 import { useDispatch } from 'react-redux';
-import { setUser } from '@/slices/userSlice';
+import { setPasswordSetupStatus, setUser } from '@/slices/userSlice';
 import Head from 'next/head';
 import { GetServerSidePropsContext } from 'next/types';
 import nookies from 'nookies';
@@ -64,6 +64,7 @@ const Login = () => {
           });
           dispatch(setUser(user));
           dispatch(resetConfig());
+          dispatch(setPasswordSetupStatus(res.data.isPasswordSetupComplete || false));
           socketService.connect(user.id);
           userStateFetcher();
           if (user.isVerified) {
