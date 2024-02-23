@@ -9,6 +9,12 @@ interface Props {
 }
 
 const StrongPassInfo = ({ password, confirmPassword, setShow }: Props) => {
+  const Checker = (condition: boolean, message: string) => (
+    <div className="flex gap-2 items-center">
+      {condition ? <CheckSquare weight="bold" /> : <XSquare className="text-primary_danger" weight="bold" />}
+      {message}
+    </div>
+  );
   return (
     <>
       <div className="fixed top-24 max-md:top-20 w-1/3 max-md:w-5/6 h-fit backdrop-blur-2xl bg-white dark:bg-[#ffe1fc22] flex flex-col gap-2 max-md:gap-0 rounded-lg p-8 dark:text-white font-primary border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 shadow-2xl translate-x-1/2 animate-fade_third z-50">
@@ -21,46 +27,13 @@ const StrongPassInfo = ({ password, confirmPassword, setShow }: Props) => {
               What makes a Password Strong? 💪🏼
             </div>
 
-            {/* <div className="w-full flex flex-col gap-4 text-xl font-medium">
-              <div style={{ color: password.trim().length >= 8 ? '#6ad54d' : '#ff6262' }}>• At Least 8 Characters</div>
-              <div style={{ color: /\d/.test(password) ? '#6ad54d' : '#ff6262' }}>• At Least 1 Number</div>
-              <div style={{ color: /[A-Z]/.test(password) ? '#6ad54d' : '#ff6262' }}>
-                • At Least 1 Upper Case Letter
-              </div>
-              <div style={{ color: /[a-z]/.test(password) ? '#6ad54d' : '#ff6262' }}>
-                • At Least 1 Lower Case Letter
-              </div>
-              <div style={{ color: /[A-Z]/.test(password) ? '#6ad54d' : '#ff6262' }}>
-                • At Least 1 Special Character
-              </div>
-              <div style={{ color: password == confirmPassword ? '#6ad54d' : '#ff6262' }}>• Passwords Should Match</div>
-            </div> */}
-
             <div className="w-full flex flex-col gap-4 text-xl max-md:text-lg font-medium max-md:font-normal">
-              <div className="flex gap-2 items-center">
-                {password.trim().length >= 8 ? <CheckSquare weight="bold" /> : <XSquare weight="bold" />}
-                At Least 8 Characters
-              </div>
-              <div className="flex gap-2 items-center">
-                {/\d/.test(password) ? <CheckSquare weight="bold" /> : <XSquare weight="bold" />}
-                At Least 1 Number
-              </div>
-              <div className="flex gap-2 items-center">
-                {/[A-Z]/.test(password) ? <CheckSquare weight="bold" /> : <XSquare weight="bold" />}
-                At Least 1 Upper Case Letter
-              </div>
-              <div className="flex gap-2 items-center">
-                {/[a-z]/.test(password) ? <CheckSquare weight="bold" /> : <XSquare weight="bold" />}
-                At Least 1 Lower Case Letter
-              </div>
-              <div className="flex gap-2 items-center">
-                {/[!@#$%^&*(),.?":|<>]/.test(password) ? <CheckSquare weight="bold" /> : <XSquare weight="bold" />}
-                At Least 1 Special Character
-              </div>
-              <div className="flex gap-2 items-center">
-                {password == confirmPassword ? <CheckSquare weight="bold" /> : <XSquare weight="bold" />}
-                Passwords Should Match
-              </div>
+              {Checker(password.trim().length >= 8, 'At Least 8 Characters')}
+              {Checker(/\d/.test(password), 'At Least 1 Number')}
+              {Checker(/[A-Z]/.test(password), 'At Least 1 Upper Case Letter')}
+              {Checker(/[a-z]/.test(password), 'At Least 1 Lower Case Letter')}
+              {Checker(/[!@#$%^&*(),.?":|<>]/.test(password), 'At Least 1 Special Character')}
+              {Checker(password === confirmPassword, 'Passwords Should Match')}
             </div>
           </div>
         </div>
