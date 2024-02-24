@@ -136,7 +136,7 @@ const Event = ({ id }: Props) => {
     <div className="w-2/5 max-md:w-full flex flex-col gap-6">
       <Image
         width={500}
-        height={500}
+        height={280}
         src={`${EVENT_PIC_URL}/${event.coverPic}`}
         alt="Event Picture"
         className="w-full object-cover rounded-xl"

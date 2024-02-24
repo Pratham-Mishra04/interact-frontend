@@ -10,7 +10,7 @@ import { CaretLeft, CaretRight, X } from '@phosphor-icons/react';
 import LowerProject from '@/components/organization/lower_project';
 import ProjectViewLoader from '@/components/loaders/workspace_project_view';
 import { useRouter } from 'next/router';
-import Collaborators from '@/components/explore/show_collaborator';
+import Collaborators from '@/components/explore/collaborator';
 import { useDispatch, useSelector } from 'react-redux';
 import { setManagerProjects, setOwnerProjects, userSelector } from '@/slices/userSlice';
 import EditProject from '@/sections/workspace/edit_project';
@@ -340,7 +340,7 @@ const ProjectView = ({
               />
 
               <div className="w-1/4 max-lg:w-full h-full max-lg:h-fit max-lg:min-h-[calc(100vh-65px-384px)] overflow-y-auto border-gray-300 border-t-[1px] border-r-[1px] dark:border-0 p-4 bg-white dark:bg-dark_primary_comp_hover flex flex-col justify-between gap-4">
-                <div className="w-full h-fit flex flex-col gap-4">
+                <div className="w-full h-fit flex flex-col gap-4 -z-10">
                   <div className="flex flex-wrap justify-between items-center gap-2">
                     <div className="font-bold text-3xl text-gradient">{project.title}</div>
                     <div className="lg:hidden w-fit">
@@ -384,6 +384,7 @@ const ProjectView = ({
                         );
                       })}
                   </div>
+
                   <Collaborators memberships={project.memberships} workspace={true} />
                   <Links links={project.links} title="Public Links" />
                   <Links links={project.privateLinks} title="Private Links" />
