@@ -6,7 +6,7 @@ import { initialProject } from '@/types/initials';
 import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { CaretLeft, CaretRight, X } from '@phosphor-icons/react';
+import { Buildings, CaretLeft, CaretRight, X } from '@phosphor-icons/react';
 import LowerWorkspaceProject from '@/components/lowers/lower_workspace_project';
 import ProjectViewLoader from '@/components/loaders/workspace_project_view';
 import { useRouter } from 'next/router';
@@ -255,46 +255,52 @@ const ProjectView = ({
                     className="w-fit flex gap-1 text-xs font-medium"
                   >
                     <div
-                      onClick={() => router.push(`/explore/user/${project.user.username}`)}
-                      className="cursor-pointer hover:underline hover:underline-offset-2"
+                      onClick={() =>
+                        router.push(
+                          `/explore/${project.user.isOrganization ? 'organisation' : 'user'}/${project.user.username}`
+                        )
+                      }
+                      className="cursor-pointer hover-underline-animation after:bg-black"
                     >
                       {project.user.name}
                     </div>
-                    {project.memberships?.length > 0 ? (
-                      <div className="flex gap-1">
-                        <div>+</div>
-                        <div
-                          className={`w-${
-                            4 *
-                            project.memberships.filter((m, index) => {
-                              return index >= 0 && index < 3;
-                            }).length
-                          } h-4 relative mr-1`}
-                        >
-                          {project.memberships
-                            .filter((m, index) => {
-                              return index >= 0 && index < 3;
-                            })
-                            .map((m, index) => {
-                              return (
-                                <Image
-                                  key={index}
-                                  crossOrigin="anonymous"
-                                  width={50}
-                                  height={50}
-                                  alt={'User Pic'}
-                                  src={`${USER_PROFILE_PIC_URL}/${m.user.profilePic}`}
-                                  className={`w-4 h-4 rounded-full cursor-default absolute top-0 left-${index}`}
-                                />
-                              );
-                            })}
-                        </div>
-                        <div>
-                          {project.memberships.length} other{project.memberships.length != 1 ? 's' : ''}
-                        </div>
-                      </div>
+                    {project.user.isOrganization ? (
+                      <Buildings />
                     ) : (
-                      <></>
+                      project.memberships?.length > 0 && (
+                        <div className="flex gap-1">
+                          <div>+</div>
+                          <div
+                            className={`w-${
+                              4 *
+                              project.memberships.filter((m, index) => {
+                                return index >= 0 && index < 3;
+                              }).length
+                            } h-4 relative mr-1`}
+                          >
+                            {project.memberships
+                              .filter((m, index) => {
+                                return index >= 0 && index < 3;
+                              })
+                              .map((m, index) => {
+                                return (
+                                  <Image
+                                    key={index}
+                                    crossOrigin="anonymous"
+                                    width={50}
+                                    height={50}
+                                    alt={'User Pic'}
+                                    src={`${USER_PROFILE_PIC_URL}/${m.user.profilePic}`}
+                                    className={`w-4 h-4 rounded-full cursor-default absolute top-0 left-${index}`}
+                                  />
+                                );
+                              })}
+                          </div>
+                          <div>
+                            {project.memberships.length} other{project.memberships.length != 1 ? 's' : ''}
+                          </div>
+                        </div>
+                      )
                     )}
                   </div>
                 </div>
@@ -320,7 +326,7 @@ const ProjectView = ({
               />
 
               <div className="w-1/4 max-lg:w-full h-full max-lg:h-fit max-lg:min-h-[calc(100vh-65px-384px)] overflow-y-auto border-gray-300 border-t-[1px] border-r-[1px] dark:border-0 p-4 bg-white dark:bg-dark_primary_comp_hover flex flex-col justify-between gap-4">
-                <div className="w-full h-fit flex flex-col gap-4">
+                <div className="w-full h-fit flex flex-col gap-6">
                   <div className="flex flex-wrap justify-between items-center gap-2">
                     <div className="font-bold text-3xl text-gradient">{project.title}</div>
                     <div className="lg:hidden w-fit">
