@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import { Project } from '@/types';
 import Image from 'next/image';
 import { PROJECT_PIC_URL, PROJECT_URL } from '@/config/routes';
-import { CircleDashed, EyeSlash, HeartStraight } from '@phosphor-icons/react';
+import { Eye, EyeSlash, HeartStraight } from '@phosphor-icons/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setOwnerProjects, userSelector } from '@/slices/userSlice';
 import EditProject from '@/sections/workspace/edit_project';
 import Link from 'next/link';
-import patchHandler from '@/handlers/patch_handler';
 import Toaster from '@/utils/toaster';
 import deleteHandler from '@/handlers/delete_handler';
 import ConfirmDelete from '../common/confirm_delete';
@@ -178,8 +177,8 @@ const ProjectCard = ({
                 <div>{project.noLikes}</div>
               </div>
               <div className="flex items-center gap-1 text-xs">
-                <CircleDashed size={16} />
-                <div>{project.totalNoViews}</div>{' '}
+                <Eye size={16} />
+                <div>{project.noImpressions}</div>{' '}
               </div>
             </div>
           </div>

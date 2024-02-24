@@ -122,12 +122,14 @@ const OpeningView = ({ opening, setShow, setOpening, org = false, showBack = fal
               {opening.tags &&
                 opening.tags.map(tag => {
                   return (
-                    <div
+                    <Link
+                      href={'/explore?search=' + tag}
+                      target="_blank"
                       key={tag}
                       className="flex-center p-2 font-primary text-xs dark:text-white border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-xl"
                     >
                       {tag}
-                    </div>
+                    </Link>
                   );
                 })}
             </div>

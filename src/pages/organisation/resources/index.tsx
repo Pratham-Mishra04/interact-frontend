@@ -21,6 +21,7 @@ import { Info, Plus } from '@phosphor-icons/react';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Mascot from '@/components/empty_fillers/mascot';
+
 const Resources = () => {
   const [resources, setResources] = useState<ResourceBucket[]>([]);
   const [loading, setLoading] = useState(true);

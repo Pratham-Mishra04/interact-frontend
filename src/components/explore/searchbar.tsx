@@ -5,44 +5,44 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import SearchSuggestions from './search_suggestions';
 import Filters from './filters';
-import { signal } from '@preact/signals-react';
+
 interface Props {
   initialValue?: string;
 }
 
 const SearchBar = ({ initialValue = '' }: Props) => {
-  const search = signal(initialValue);
-  const router = useRouter();
+  const [search, setSearch] = useState(initialValue);
   const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
   const [clickedOnFilters, setClickedOnFilters] = useState(false);
 
-  let searchVal = search.value;
+  const router = useRouter();
 
   const submitSearch = async () => {
     const URL = `${EXPLORE_URL}/search`;
     await postHandler(URL, {
-      searchVal,
+      search,
     });
   };
 
   const handleChange = (el: React.ChangeEvent<HTMLInputElement>) => {
     setShowSearchSuggestions(true);
-    search.value = el.target.value;
+    setSearch(el.target.value);
   };
 
   const handleSubmit = (el?: React.FormEvent<HTMLFormElement>) => {
     el?.preventDefault();
-    if (search.value === '') router.push('/explore');
+    if (search === '') router.push('/explore');
     else {
       submitSearch();
       setShowSearchSuggestions(false);
-      router.push(`/explore?search=${search.value}`);
+      router.push(`/explore?search=${search}`);
     }
   };
 
   useEffect(() => {
-    if (search.value == '' && new URLSearchParams(window.location.search).get('pid') != null)
-      search.value = new URLSearchParams(window.location.search).get('pid') || '';
+    if (search == '' && new URLSearchParams(window.location.search).get('pid') != null)
+      setSearch(new URLSearchParams(window.location.search).get('pid') || '');
+    else setSearch(new URLSearchParams(window.location.search).get('search') || '');
   }, [window.location.search]);
 
   return (
@@ -53,7 +53,7 @@ const SearchBar = ({ initialValue = '' }: Props) => {
         <form
           onSubmit={handleSubmit}
           className={`w-full h-taskbar px-4 text-gray-500 ${
-            search.value.trim().length > 0 ? 'bg-white' : 'bg-gray-100'
+            search.trim().length > 0 ? 'bg-white' : 'bg-gray-100'
           } dark:text-white flex items-center justify-between gap-8 mx-auto rounded-md border-white border-2 dark:border-0 shadow-lg dark:shadow-outer dark:bg-gradient-to-b dark:from-dark_primary_gradient_start dark:to-dark_primary_gradient_end transition-ease-200`}
         >
           <input
@@ -61,7 +61,7 @@ const SearchBar = ({ initialValue = '' }: Props) => {
             type="text"
             onClick={() => setShowSearchSuggestions(true)}
             placeholder="Search"
-            // value={search.value}
+            value={search}
             onChange={handleChange}
           />
           <MagnifyingGlass size={32} className="opacity-75" />
@@ -79,7 +79,7 @@ const SearchBar = ({ initialValue = '' }: Props) => {
             onClick={() => setShowSearchSuggestions(true)}
             placeholder="Search"
             onChange={handleChange}
-            // value={search.value}
+            value={search}
           />
           <MagnifyingGlass
             onClick={() => handleSubmit()}
