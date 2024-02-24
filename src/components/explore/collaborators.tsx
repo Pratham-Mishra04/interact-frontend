@@ -41,7 +41,7 @@ const Collaborators = ({ memberships, workspace = false }: Props) => {
         {workspace ? (
           <div className="text-xs border-[1px] border-gray-300 rounded-full px-2 py-1">{role}</div>
         ) : (
-          <FollowBtn toFollowID={user.id} />
+          <FollowBtn toFollowID={user.id} smaller={true} />
         )}
       </div>
     </div>

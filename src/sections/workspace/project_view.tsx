@@ -10,7 +10,7 @@ import { Buildings, CaretLeft, CaretRight, X } from '@phosphor-icons/react';
 import LowerWorkspaceProject from '@/components/lowers/lower_workspace_project';
 import ProjectViewLoader from '@/components/loaders/workspace_project_view';
 import { useRouter } from 'next/router';
-import Collaborators from '@/components/explore/collaborator';
+import Collaborators from '@/components/explore/collaborators';
 import { useDispatch, useSelector } from 'react-redux';
 import { setOwnerProjects, userSelector } from '@/slices/userSlice';
 import EditProject from './edit_project';

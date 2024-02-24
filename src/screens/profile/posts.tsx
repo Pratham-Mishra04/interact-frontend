@@ -64,7 +64,11 @@ const Posts = ({ userID, org = false }: Props) => {
         hasMore={hasMore}
         loader={<Loader />}
       >
-        <Masonry breakpointCols={{ default: 2, 768: 1 }} className="masonry-grid" columnClassName="masonry-grid_column">
+        <Masonry
+          breakpointCols={{ default: posts.length == 1 ? 1 : 2, 768: 1 }}
+          className="masonry-grid"
+          columnClassName="masonry-grid_column"
+        >
           {posts.map((post, index) => (
             <div key={post.id} className={`${index != 0 && index != 1 && 'mt-4'} ${index == 0 && 'max-md:mb-4'}`}>
               {post.rePost ? (

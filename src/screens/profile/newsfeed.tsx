@@ -75,7 +75,7 @@ const NewsFeed = ({ orgID }: Props) => {
             loader={<Loader />}
           >
             <Masonry
-              breakpointCols={{ default: 2, 768: 1 }}
+              breakpointCols={{ default: newsFeed.length == 1 ? 1 : 2, 768: 1 }}
               className="masonry-grid"
               columnClassName="masonry-grid_column"
             >

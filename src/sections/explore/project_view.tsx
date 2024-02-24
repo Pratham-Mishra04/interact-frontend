@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { Buildings, CaretLeft, CaretRight, X } from '@phosphor-icons/react';
 import LowerProject from '@/components/lowers/lower_project';
 import ProjectViewLoader from '@/components/loaders/explore_project_view';
-import Collaborators from '@/components/explore/collaborator';
+import Collaborators from '@/components/explore/collaborators';
 import Openings from '@/components/explore/show_openings';
 import Link from 'next/link';
 import Links from '@/components/explore/show_links';
