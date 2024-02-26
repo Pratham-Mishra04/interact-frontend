@@ -1,37 +1,26 @@
-import React from 'react';
-import Link from 'next/link';
+import { PROJECT_PIC_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import { Notification } from '@/types';
 import NotificationWrapper from '@/wrappers/notification';
+import Link from 'next/link';
+import React from 'react';
 
 interface Props {
   notification: Notification;
 }
 
-const Liked = ({ notification }: Props) => {
-  const getType = () => {
+const Task = ({ notification }: Props) => {
+  const getType = (): string => {
     switch (notification.notificationType) {
-      case 1:
-        return 'post';
-      case 3:
+      case 11:
         return 'project';
-      case 12:
-        return 'event';
-      case 18:
-        return 'announcement';
       default:
         return '';
     }
   };
   const getRedirectURL = () => {
     switch (notification.notificationType) {
-      case 1:
-        return '/explore/post/' + notification.postID;
-      case 3:
+      case 11:
         return '/explore?pid=' + notification.project.slug;
-      case 12:
-        return '/explore/event/' + notification.eventID;
-      case 18:
-        return '/explore/announcement/' + notification.announcementID;
       default:
         return '';
     }
@@ -41,12 +30,12 @@ const Liked = ({ notification }: Props) => {
       <Link className="font-bold" href={`/explore/user/${notification.sender.username}`}>
         {notification.sender.name}
       </Link>{' '}
-      liked your
+      assigned you a task in a
       <Link className="font-bold capitalize" href={getRedirectURL()}>
-        {getType()}.
+        {getType()}
       </Link>{' '}
     </NotificationWrapper>
   );
 };
 
-export default Liked;
+export default Task;

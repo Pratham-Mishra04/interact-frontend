@@ -7,16 +7,16 @@ interface Props {
   notification: Notification;
 }
 
-const Liked = ({ notification }: Props) => {
+const Impressions = ({ notification }: Props) => {
   const getType = () => {
     switch (notification.notificationType) {
-      case 1:
+      case 14:
         return 'post';
-      case 3:
+      case 15:
         return 'project';
-      case 12:
+      case 16:
         return 'event';
-      case 18:
+      case 17:
         return 'announcement';
       default:
         return '';
@@ -24,29 +24,27 @@ const Liked = ({ notification }: Props) => {
   };
   const getRedirectURL = () => {
     switch (notification.notificationType) {
-      case 1:
+      case 14:
         return '/explore/post/' + notification.postID;
-      case 3:
+      case 15:
         return '/explore?pid=' + notification.project.slug;
-      case 12:
+      case 16:
         return '/explore/event/' + notification.eventID;
-      case 18:
+      case 17:
         return '/explore/announcement/' + notification.announcementID;
       default:
         return '';
     }
   };
   return (
-    <NotificationWrapper notification={notification}>
-      <Link className="font-bold" href={`/explore/user/${notification.sender.username}`}>
-        {notification.sender.name}
-      </Link>{' '}
-      liked your
+    <NotificationWrapper notification={notification} image={false}>
+      Your
       <Link className="font-bold capitalize" href={getRedirectURL()}>
-        {getType()}.
+        {getType()}
       </Link>{' '}
+      got {notification.impressionCount} impressions!
     </NotificationWrapper>
   );
 };
 
-export default Liked;
+export default Impressions;

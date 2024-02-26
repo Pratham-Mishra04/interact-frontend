@@ -286,6 +286,11 @@ export interface Notification {
   opening: Opening;
   applicationID: string;
   application: Application;
+  eventID: string;
+  event: Event;
+  announcementID: string;
+  announcement: Announcement;
+  impressionCount: number;
   isRead: boolean;
   createdAt: Date;
 }

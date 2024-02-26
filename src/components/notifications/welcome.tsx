@@ -8,7 +8,7 @@ interface Props {
 
 const Welcome = ({ notification }: Props) => {
   return (
-    <NotificationWrapper notification={notification}>
+    <NotificationWrapper notification={notification} image={false}>
       <div className="w-fit text-center flex-center gap-4">
         <div className="">
           Woohoo! You made it to <b>Interact</b> 🎉🥳

@@ -4,7 +4,7 @@ import ApplicationUpdate from '@/components/notifications/applicationUpdate';
 import ChatRequest from '@/components/notifications/chatRequest';
 import Follow from '@/components/notifications/follow';
 import Liked from '@/components/notifications/liked';
-import UserAppliedToOpening from '@/components/notifications/userAppliedToOpening';
+import UserAppliedToOpening from '@/components/notifications/application';
 import Welcome from '@/components/notifications/welcome';
 import { NOTIFICATION_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';

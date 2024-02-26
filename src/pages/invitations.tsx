@@ -11,7 +11,6 @@ import { INVITATION_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import { invitationsTabSelector, setInvitationsTab } from '@/slices/feedSlice';
 import { Invitation } from '@/types';
-import Protect from '@/utils/wrappers/protect';
 import Toaster from '@/utils/toaster';
 import WidthCheck from '@/utils/wrappers/widthCheck';
 import BaseWrapper from '@/wrappers/base';

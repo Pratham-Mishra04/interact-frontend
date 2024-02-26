@@ -1,35 +1,50 @@
 import React from 'react';
-import Image from 'next/image';
-import { USER_PROFILE_PIC_URL } from '@/config/routes';
-import moment from 'moment';
 import Link from 'next/link';
 import { Notification } from '@/types';
-import CircleDashed from '@phosphor-icons/react/dist/icons/CircleDashed';
 import NotificationWrapper from '@/wrappers/notification';
 
 interface Props {
   notification: Notification;
-  type: string;
 }
 
-const Comment = ({ notification, type }: Props) => {
+const Comment = ({ notification }: Props) => {
+  const getType = () => {
+    switch (notification.notificationType) {
+      case 2:
+        return 'post';
+      case 4:
+        return 'project';
+      case 13:
+        return 'event';
+      case 19:
+        return 'announcement';
+      default:
+        return '';
+    }
+  };
+  const getRedirectURL = () => {
+    switch (notification.notificationType) {
+      case 2:
+        return '/explore/post/' + notification.postID;
+      case 4:
+        return '/explore?pid=' + notification.project.slug;
+      case 13:
+        return '/explore/event/' + notification.eventID;
+      case 19:
+        return '/explore/announcement/' + notification.announcementID;
+      default:
+        return '';
+    }
+  };
   return (
     <NotificationWrapper notification={notification}>
-      <Image
-        crossOrigin="anonymous"
-        width={50}
-        height={50}
-        alt={'User Pic'}
-        src={`${USER_PROFILE_PIC_URL}/${notification.sender.profilePic}`}
-        className={'rounded-full w-12 h-12 border-[1px] border-black'}
-      />
-      <div className="gap-2">
-        <Link className="font-bold" href={`/explore/user/${notification.sender.username}`}>
-          {notification.sender.name}
-        </Link>{' '}
-        commented on your {type}
-        {type === 'project' ? <> {notification.project.title}.</> : '.'}
-      </div>
+      <Link className="font-bold" href={`/explore/user/${notification.sender.username}`}>
+        {notification.sender.name}
+      </Link>{' '}
+      commented on your
+      <Link className="font-bold capitalize" href={getRedirectURL()}>
+        {getType()}.
+      </Link>{' '}
     </NotificationWrapper>
   );
 };

@@ -3,7 +3,7 @@ import Loader from '@/components/common/loader';
 import ApplicationUpdate from '@/components/notifications/applicationUpdate';
 import Follow from '@/components/notifications/follow';
 import Liked from '@/components/notifications/liked';
-import UserAppliedToOpening from '@/components/notifications/userAppliedToOpening';
+import UserAppliedToOpening from '@/components/notifications/application';
 import getHandler from '@/handlers/get_handler';
 import Toaster from '@/utils/toaster';
 import { Notification } from '@/types';

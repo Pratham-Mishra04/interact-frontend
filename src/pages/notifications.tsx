@@ -4,11 +4,10 @@ import ApplicationUpdate from '@/components/notifications/applicationUpdate';
 import ChatRequest from '@/components/notifications/chatRequest';
 import Follow from '@/components/notifications/follow';
 import Liked from '@/components/notifications/liked';
-import UserAppliedToOpening from '@/components/notifications/userAppliedToOpening';
+import UserAppliedToOpening from '@/components/notifications/application';
 import Welcome from '@/components/notifications/welcome';
 import { NOTIFICATION_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
-import Protect from '@/utils/wrappers/protect';
 import Toaster from '@/utils/toaster';
 import BaseWrapper from '@/wrappers/base';
 import MainWrapper from '@/wrappers/main';
@@ -19,6 +18,9 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { SERVER_ERROR } from '@/config/errors';
 import WidthCheck from '@/utils/wrappers/widthCheck';
 import NonOrgOnlyAndProtect from '@/utils/wrappers/non_org_only';
+import Impressions from '@/components/notifications/impressions';
+import Invitation from '@/components/notifications/invitation';
+import Task from '@/components/notifications/task';
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -32,7 +34,7 @@ const Notifications = () => {
   }, []);
 
   const getNotifications = () => {
-    const URL = `${NOTIFICATION_URL}?page=${page}&limit=${10}`;
+    const URL = `${NOTIFICATION_URL}?page=${page}&limit=${20}`;
     getHandler(URL)
       .then(res => {
         if (res.statusCode === 200) {
@@ -44,9 +46,7 @@ const Notifications = () => {
           setPage(prev => prev + 1);
         } else {
           if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
-          else {
-            Toaster.error(SERVER_ERROR, 'error_toaster');
-          }
+          else Toaster.error(SERVER_ERROR, 'error_toaster');
         }
       })
       .catch(err => {
@@ -58,7 +58,7 @@ const Notifications = () => {
       <Sidebar index={8} />
       <MainWrapper>
         <div className="w-full max-lg:w-full mx-auto flex flex-col gap-4 px-8 max-md:px-4 py-6 font-primary relative transition-ease-out-500">
-          <div className="text-3xl font-extrabold text-gradient pl-2">Notifications</div>
+          <div className="w-fit text-4xl max-md:text-3xl font-extrabold text-gradient pl-2">Notifications</div>
           {loading ? (
             <Loader />
           ) : (
@@ -82,14 +82,17 @@ const Notifications = () => {
                       case 0:
                         return <Follow notification={notification} />;
                       case 1:
-                        return <Liked notification={notification} type={'post'} />;
-                      case 2:
-                        return <Comment notification={notification} type={'post'} />;
                       case 3:
-                        return <Liked notification={notification} type={'project'} />;
+                      case 12:
+                      case 18:
+                        return <Liked notification={notification} />;
+                      case 2:
                       case 4:
-                        return <Comment notification={notification} type={'project'} />;
+                      case 13:
+                      case 19:
+                        return <Comment notification={notification} />;
                       case 5:
+                      case 20:
                         return <UserAppliedToOpening notification={notification} />;
                       case 6:
                         return <ApplicationUpdate notification={notification} status={1} />;
@@ -97,6 +100,15 @@ const Notifications = () => {
                         return <ApplicationUpdate notification={notification} status={0} />;
                       case 9:
                         return <ChatRequest notification={notification} />;
+                      case 10:
+                        return <Invitation notification={notification} />;
+                      case 11:
+                        return <Task notification={notification} />;
+                      case 14:
+                      case 15:
+                      case 16:
+                      case 17:
+                        return <Impressions notification={notification} />;
                       default:
                         return <></>;
                     }
