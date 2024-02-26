@@ -11,7 +11,7 @@ const Invitation = ({ notification }: Props) => {
   const getType = () => {
     switch (notification.notificationType) {
       case 10:
-        return 'project';
+        return notification.project.title;
       default:
         return '';
     }
@@ -25,8 +25,11 @@ const Invitation = ({ notification }: Props) => {
     }
   };
   return (
-    <NotificationWrapper notification={notification} image={false}>
-      You have been Invited to join
+    <NotificationWrapper notification={notification}>
+      <Link className="font-bold" href={`/explore/user/${notification.sender.username}`}>
+        {notification.sender.name}
+      </Link>{' '}
+      accepted your Invitation to join
       <Link className="font-bold capitalize" href={getRedirectURL()}>
         {getType()}.
       </Link>

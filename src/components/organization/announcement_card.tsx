@@ -120,17 +120,15 @@ const AnnouncementCard = ({ announcement, setAnnouncements }: Props) => {
             <></>
           ) : (
             <div className="w-1/4 h-fit flex flex-col bg-gray-100 bg-opacity-75 dark:bg-transparent absolute top-12 right-2 rounded-xl glassMorphism text-sm p-2 z-10 animate-fade_third">
-              {checkParticularOrgAccess(ORG_SENIOR, announcement.organization) ? (
+              {checkParticularOrgAccess(ORG_SENIOR, announcement.organization) && (
                 <div
                   onClick={() => setClickedOnEdit(true)}
                   className="w-full px-4 py-2 max-md:p-1 max-md:text-center hover:bg-[#ffffff] dark:hover:bg-[#ffffff19] transition-ease-100 rounded-lg cursor-pointer"
                 >
                   Edit
                 </div>
-              ) : (
-                <></>
               )}
-              {checkParticularOrgAccess(ORG_SENIOR, announcement.organization) ? (
+              {checkParticularOrgAccess(ORG_SENIOR, announcement.organization) && (
                 <div
                   onClick={el => {
                     el.stopPropagation();
@@ -140,10 +138,8 @@ const AnnouncementCard = ({ announcement, setAnnouncements }: Props) => {
                 >
                   Delete
                 </div>
-              ) : (
-                <></>
               )}
-              {!checkParticularOrgAccess(ORG_SENIOR, announcement.organization) ? (
+              {!checkParticularOrgAccess(ORG_SENIOR, announcement.organization) && (
                 <div
                   onClick={el => {
                     el.stopPropagation();
@@ -154,11 +150,9 @@ const AnnouncementCard = ({ announcement, setAnnouncements }: Props) => {
                 >
                   Report
                 </div>
-              ) : (
-                <></>
               )}
 
-              {!checkParticularOrgAccess(ORG_MEMBER, announcement.organization) ? (
+              {!checkParticularOrgAccess(ORG_MEMBER, announcement.organization) && (
                 <div
                   onClick={el => {
                     el.stopPropagation();
@@ -169,8 +163,6 @@ const AnnouncementCard = ({ announcement, setAnnouncements }: Props) => {
                 >
                   Report
                 </div>
-              ) : (
-                <></>
               )}
             </div>
           )}
@@ -185,7 +177,7 @@ const AnnouncementCard = ({ announcement, setAnnouncements }: Props) => {
             : `/explore/organisation/${announcement.organization?.user.username}`
         }
         target="_blank"
-        className="h-full flex items-center gap-2"
+        className="h-fit flex items-center gap-2"
       >
         <Image
           crossOrigin="anonymous"
