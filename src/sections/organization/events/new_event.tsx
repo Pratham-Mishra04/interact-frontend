@@ -47,9 +47,7 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
   const [mutex, setMutex] = useState(false);
 
   const [organizationalUsers, setOrganizationalUsers] = useState<User[]>([]);
-  const [matchedOrgUsers, setMatchedOrgUsers] = useState<User[]>([]);
   const [orgSearch, setOrgSearch] = useState('');
-  const [page, setPage] = useState(1);
   const [selectedOrganizationalUsers, setSelectedOrganizationalUsers] = useState<User[]>([]);
 
   const currentOrg = useSelector(currentOrgSelector);
@@ -70,25 +68,15 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
     }
   };
 
-  const getOrganizations = async (search: string | null) => {
-    const URL = `${EXPLORE_URL}/orgs/trending?page=${page}&limit=${10}`;
+  const getOrganizations = async () => {
+    var URL = `${EXPLORE_URL}/orgs/trending?page=1&limit=${10}`;
+    if (orgSearch != '') URL += `&search=${orgSearch}`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
       let orgUsers: User[] = res.data.users || [];
       orgUsers = orgUsers.filter(u => u.id != currentOrg.userID);
-      if (search && search != '') {
-        setOrganizationalUsers(orgUsers);
-        setMatchedOrgUsers(orgUsers);
-      } else {
-        if (!search && page == 1) {
-          setOrganizationalUsers(orgUsers);
-          setMatchedOrgUsers(orgUsers);
-        } else {
-          const addedUsers = [...users, ...orgUsers];
-          setOrganizationalUsers(addedUsers);
-        }
-        setPage(prev => prev + 1);
-      }
+
+      setOrganizationalUsers(orgUsers);
     } else {
       if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
       else Toaster.error(SERVER_ERROR, 'error_toaster');
@@ -113,7 +101,7 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
     }
   };
 
-  const addCohosts = async (eventID: string) => {
+  const addCoHosts = async (eventID: string) => {
     if (selectedOrganizationalUsers.length == 0) {
       return;
     }
@@ -123,7 +111,7 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
     const URL = `${ORG_URL}/${currentOrg.id}/events/${eventID}/cohost`;
 
     const res = await postHandler(URL, {
-      organizationIDs: selectedOrganizationalUsers.map(user => user.organization?.id),
+      userIDs: selectedOrganizationalUsers.map(user => user.id),
     });
 
     if (res.statusCode === 200) {
@@ -204,7 +192,7 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
       setEvents(prev => [event, ...prev]);
 
       await addCoordinators(toaster, event.id);
-      await addCohosts(event.id);
+      await addCoHosts(event.id);
 
       setShow(false);
     } else if (res.statusCode == 413) {
@@ -228,22 +216,12 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
     setUsers(matchedUsers);
   };
 
-  const fetchOrganizations = async (key: string) => {
-    const matchedOrgUsers: User[] = [];
-    organizationalUsers.forEach(organizationalUser => {
-      if (organizationalUser.name.match(new RegExp(key, 'i'))) matchedOrgUsers.push(organizationalUser);
-      else if (organizationalUser.username.match(new RegExp(key, 'i'))) matchedOrgUsers.push(organizationalUser);
-    });
-    setMatchedOrgUsers(matchedOrgUsers);
-  };
-
   const handleChange = (el: React.ChangeEvent<HTMLInputElement>) => {
     fetchUsers(el.target.value);
     setSearch(el.target.value);
   };
 
   const handleOrgChange = (el: React.ChangeEvent<HTMLInputElement>) => {
-    fetchOrganizations(el.target.value);
     setOrgSearch(el.target.value);
   };
 
@@ -264,9 +242,8 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
   };
 
   useEffect(() => {
-    setPage(1);
     getMemberships();
-    getOrganizations('');
+
     document.documentElement.style.overflowY = 'hidden';
     document.documentElement.style.height = '100vh';
 
@@ -275,6 +252,10 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
       document.documentElement.style.height = 'auto';
     };
   }, []);
+
+  useEffect(() => {
+    getOrganizations();
+  }, [orgSearch]);
 
   return (
     <>
@@ -494,11 +475,11 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
                   onChange={handleOrgChange}
                 />
               </div>
-              {matchedOrgUsers.length == 0 ? (
+              {organizationalUsers.length == 0 ? (
                 <div className="h-64 text-xl flex-center">No other Organisation found :(</div>
               ) : (
                 <div className="w-full flex-1 flex flex-col gap-2 overflow-y-auto">
-                  {matchedOrgUsers.map(org => {
+                  {organizationalUsers.map(org => {
                     return (
                       <div
                         key={org.id}
@@ -531,9 +512,9 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
           </div>
         ) : (
           <div className="w-full flex flex-col gap-4 ">
-            <div className="text-3xl max-md:text-xl font-semibold">Confirm Co-host&apos;s</div>
+            <div className="text-3xl max-md:text-xl font-semibold">Confirm Co-hosts</div>
             {selectedOrganizationalUsers.length == 0 ? (
-              <div className="h-64 text-xl flex-center">Selected Co-host&apos;s will be shown here :)</div>
+              <div className="h-64 text-xl flex-center">Selected Co-hosts will be shown here :)</div>
             ) : (
               <div className="w-full  h-[420px] flex flex-col gap-2">
                 {selectedOrganizationalUsers.map((org, index) => {

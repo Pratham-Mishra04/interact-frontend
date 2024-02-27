@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { Event } from '@/types';
 import Link from 'next/link';
 import { EVENT_PIC_URL } from '@/config/routes';
-import { Eye, PencilSimple, Trash, Users } from '@phosphor-icons/react';
+import { Buildings, Eye, PencilSimple, Trash, Users } from '@phosphor-icons/react';
 import moment from 'moment';
 import checkOrgAccess from '@/utils/funcs/check_org_access';
 import { ORG_SENIOR } from '@/config/constants';
@@ -14,6 +14,7 @@ interface Props {
   org?: boolean;
   setClickedOnEditEvent?: React.Dispatch<React.SetStateAction<boolean>>;
   setClickedOnEditCollaborators?: React.Dispatch<React.SetStateAction<boolean>>;
+  setClickedOnEditCoHosts?: React.Dispatch<React.SetStateAction<boolean>>;
   setClickedEditEvent?: React.Dispatch<React.SetStateAction<Event>>;
   setClickedOnDeleteEvent?: React.Dispatch<React.SetStateAction<boolean>>;
   setClickedDeleteEvent?: React.Dispatch<React.SetStateAction<Event>>;
@@ -25,6 +26,7 @@ const EventCard = ({
   org = false,
   setClickedOnEditEvent,
   setClickedOnEditCollaborators,
+  setClickedOnEditCoHosts,
   setClickedEditEvent,
   setClickedOnDeleteEvent,
   setClickedDeleteEvent,
@@ -83,6 +85,17 @@ const EventCard = ({
               className="bg-white text-gray-500 text-xxs px-2 py-1 rounded-lg"
             >
               <Users size={18} />
+            </div>
+            <div
+              onClick={el => {
+                el.stopPropagation();
+                el.preventDefault();
+                if (setClickedEditEvent) setClickedEditEvent(event);
+                if (setClickedOnEditCoHosts) setClickedOnEditCoHosts(true);
+              }}
+              className="bg-white text-gray-500 text-xxs px-2 py-1 rounded-lg"
+            >
+              <Buildings size={18} />
             </div>
           </div>
         ) : (

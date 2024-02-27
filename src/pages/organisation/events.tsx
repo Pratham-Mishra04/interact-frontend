@@ -27,6 +27,7 @@ import { navbarOpenSelector } from '@/slices/feedSlice';
 import EditCoordinators from '@/sections/organization/events/edit_coordinators';
 import AccessTree from '@/components/organization/access_tree';
 import ViewInvitations from '@/sections/organization/events/view_invitations';
+import EditCoHosts from '@/sections/organization/events/edit_cohosts';
 
 const Events = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -34,6 +35,7 @@ const Events = () => {
   const [clickedOnViewInvitation, setClickedOnViewInvitation] = useState(false);
   const [clickedOnEditEvent, setClickedOnEditEvent] = useState(false);
   const [clickedOnEditCollaborators, setClickedOnEditCollaborators] = useState(false);
+  const [clickedOnEditCoHosts, setClickedOnEditCoHosts] = useState(false);
   const [clickedEditEvent, setClickedEditEvent] = useState(initialEvent);
   const [clickedOnDeleteEvent, setClickedOnDeleteEvent] = useState(false);
   const [clickedDeleteEvent, setClickedDeleteEvent] = useState(initialEvent);
@@ -165,6 +167,9 @@ const Events = () => {
                 setShow={setClickedOnEditCollaborators}
               />
             )}
+            {clickedOnEditCoHosts && (
+              <EditCoHosts event={clickedEditEvent} setEvents={setEvents} setShow={setClickedOnEditCoHosts} />
+            )}
             {clickedOnDeleteEvent && (
               <ConfirmDelete handleDelete={handleDeleteEvent} setShow={setClickedOnDeleteEvent} />
             )}
@@ -194,6 +199,7 @@ const Events = () => {
                         setClickedEditEvent={setClickedEditEvent}
                         setClickedOnDeleteEvent={setClickedOnDeleteEvent}
                         setClickedDeleteEvent={setClickedDeleteEvent}
+                        setClickedOnEditCoHosts={setClickedOnEditCoHosts}
                         size={open ? '[22rem]' : 96}
                       />
                     ))}
