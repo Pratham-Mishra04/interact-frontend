@@ -40,6 +40,8 @@ const Events = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
+  const [unreadInvitations, setUnreadInvitations] = useState(0);
+
   const [loading, setLoading] = useState(true);
 
   const [clickedOnInfo, setClickedOnInfo] = useState(false);
@@ -47,8 +49,10 @@ const Events = () => {
   const currentOrg = useSelector(currentOrgSelector);
 
   const getEvents = () => {
-    const URL = `${EXPLORE_URL}/events/org/${currentOrg.id}?page=${page}&limit=${10}`;
-    getHandler(URL)
+    const URL = checkOrgAccess(ORG_SENIOR)
+      ? `${ORG_URL}/${currentOrg.id}/events`
+      : `${EXPLORE_URL}/events/org/${currentOrg.id}`;
+    getHandler(URL + `?page=${page}&limit=${10}`)
       .then(res => {
         if (res.statusCode === 200) {
           const addEvents = [...events, ...(res.data.events || [])];
@@ -68,10 +72,6 @@ const Events = () => {
       });
   };
 
-  useEffect(() => {
-    getEvents();
-  }, []);
-
   const handleDeleteEvent = async () => {
     const toaster = Toaster.startLoad('Deleting the event...');
 
@@ -88,6 +88,24 @@ const Events = () => {
       else Toaster.stopLoad(toaster, SERVER_ERROR, 0);
     }
   };
+
+  const fetchUnreadInvitations = () => {
+    const URL = `${ORG_URL}/${currentOrg.id}/events/invitations/count`;
+    getHandler(URL)
+      .then(res => {
+        if (res.statusCode === 200) {
+          setUnreadInvitations(res.data.count || 0);
+        } else Toaster.error(res.data.message, 'error_toaster');
+      })
+      .catch(err => {
+        Toaster.error(SERVER_ERROR, 'error_toaster');
+      });
+  };
+
+  useEffect(() => {
+    getEvents();
+    if (checkOrgAccess(ORG_SENIOR)) fetchUnreadInvitations();
+  }, []);
 
   const open = useSelector(navbarOpenSelector);
 
@@ -107,12 +125,19 @@ const Events = () => {
                     className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
                     weight="regular"
                   />
-                  <Envelope
-                    onClick={() => setClickedOnViewInvitation(true)}
-                    size={42}
-                    className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
-                    weight="regular"
-                  />
+                  <div className="w-fit h-fit relative">
+                    {unreadInvitations > 0 && (
+                      <div className="absolute top-1 right-1 translate-x-1/4 -translate-y-1/4 w-4 h-4 flex-center text-xxs border-[1px] border-gray-500 rounded-full">
+                        {unreadInvitations}
+                      </div>
+                    )}
+                    <Envelope
+                      onClick={() => setClickedOnViewInvitation(true)}
+                      size={42}
+                      className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
+                      weight="regular"
+                    />{' '}
+                  </div>
                 </>
               ) : (
                 <></>
@@ -127,27 +152,21 @@ const Events = () => {
           </div>
 
           <div className="w-full max-md:w-full mx-auto flex flex-col items-center gap-4">
-            {clickedOnInfo ? <AccessTree type="event" setShow={setClickedOnInfo} /> : <></>}
-            {clickedOnNewEvent ? <NewEvent setEvents={setEvents} setShow={setClickedOnNewEvent} /> : <></>}
+            {clickedOnInfo && <AccessTree type="event" setShow={setClickedOnInfo} />}
+            {clickedOnNewEvent && <NewEvent setEvents={setEvents} setShow={setClickedOnNewEvent} />}
             {clickedOnViewInvitation && <ViewInvitations setShow={setClickedOnViewInvitation} />}
-            {clickedOnEditEvent ? (
+            {clickedOnEditEvent && (
               <EditEvent event={clickedEditEvent} setEvents={setEvents} setShow={setClickedOnEditEvent} />
-            ) : (
-              <></>
             )}
-            {clickedOnEditCollaborators ? (
+            {clickedOnEditCollaborators && (
               <EditCoordinators
                 event={clickedEditEvent}
                 setEvents={setEvents}
                 setShow={setClickedOnEditCollaborators}
               />
-            ) : (
-              <></>
             )}
-            {clickedOnDeleteEvent ? (
+            {clickedOnDeleteEvent && (
               <ConfirmDelete handleDelete={handleDeleteEvent} setShow={setClickedOnDeleteEvent} />
-            ) : (
-              <></>
             )}
 
             {loading ? (

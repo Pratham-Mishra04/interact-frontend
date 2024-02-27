@@ -16,6 +16,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import Image from 'next/image';
 import { PROJECT_EDITOR, PROJECT_MANAGER, PROJECT_MEMBER } from '@/config/constants';
 import { Id } from 'react-toastify';
+import PrimaryButton from '@/components/buttons/primary_btn';
+import BuildButton from '@/components/buttons/build_btn';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -93,28 +95,31 @@ const NewProject = ({ setShow, setProjects }: Props) => {
 
   const [randomImage, setRandomImage] = useState(`default_${Math.floor(Math.random() * 9) + 1}.jpg`);
 
-  const handleSubmit = async () => {
+  const projectDetailsValidator = () => {
     if (title.trim() == '') {
       Toaster.error('Title cannot be empty');
-      return;
+      return false;
     }
     if (category.trim() == '' || category == 'Select Category') {
       Toaster.error('Select Category');
-      return;
+      return false;
     }
     if (tagline.trim() == '') {
       Toaster.error('Tagline cannot be empty');
-      return;
+      return false;
     }
     if (description.trim() == '') {
       Toaster.error('Description cannot be empty');
-      return;
+      return false;
     }
     if (tags.length < 3) {
       Toaster.error('Enter at least 3 tags');
-      return;
+      return false;
     }
+    return true;
+  };
 
+  const handleSubmit = async () => {
     if (mutex) return;
     setMutex(true);
 
@@ -446,71 +451,24 @@ const NewProject = ({ setShow, setProjects }: Props) => {
           )}
 
           <div className="w-full flex items-end justify-between">
-            {step != 0 ? (
-              <div
-                onClick={() => setStep(prev => prev - 1)}
-                className="w-fit text-lg py-2 font-medium px-4 shadow-md hover:bg-[#ffffff40] hover:shadow-lg transition-ease-500 rounded-xl cursor-pointer"
-              >
-                prev
-              </div>
-            ) : (
-              <div></div>
-            )}
+            {step != 0 ? <PrimaryButton label="Back" onClick={() => setStep(prev => prev - 1)} /> : <div></div>}
             {step != 2 ? (
-              <div
-                onClick={() => setStep(prev => prev + 1)}
-                className="w-fit text-lg py-2 font-medium px-4 shadow-md hover:bg-[#ffffff40] hover:shadow-lg transition-ease-500 rounded-xl cursor-pointer"
-              >
-                Next
-              </div>
+              <PrimaryButton
+                label="Next"
+                onClick={() => {
+                  if (step == 0) {
+                    const checker = projectDetailsValidator();
+                    if (checker) setStep(prev => prev + 1);
+                  } else setStep(prev => prev + 1);
+                }}
+              />
             ) : (
-              <button
+              <BuildButton
+                label="Build Project"
+                loadingLabel="Building your project!"
+                loading={mutex}
                 onClick={handleSubmit}
-                className={`duration-300 relative group cursor-pointer text-white overflow-hidden h-14 max-lg:h-12 ${
-                  mutex ? 'w-64 max-lg:w-56 scale-90' : 'w-44 max-lg:w-36 hover:scale-90'
-                } rounded-xl p-2 flex-center`}
-              >
-                <div
-                  className={`absolute right-32 -top-4 ${
-                    mutex
-                      ? 'top-0 right-2 scale-150'
-                      : 'scale-125 group-hover:top-1 group-hover:right-2 group-hover:scale-150'
-                  } z-10 w-36 h-36 rounded-full duration-500 bg-[#6661c7]`}
-                ></div>
-                <div
-                  className={`absolute right-2 -top-4 ${
-                    mutex
-                      ? 'top-1 right-2 scale-150'
-                      : 'scale-125 right-3 group-hover:top-1 group-hover:right-2 group-hover:scale-150'
-                  } z-10 w-24 h-24 rounded-full duration-500 bg-[#ada9ff]`}
-                ></div>
-                <div
-                  className={`absolute -right-10 top-0 ${
-                    mutex ? 'top-1 right-2 scale-150' : 'group-hover:top-1 group-hover:right-2 group-hover:scale-150'
-                  } z-10 w-20 h-20 rounded-full duration-500 bg-[#cea9ff]`}
-                ></div>
-                <div
-                  className={`absolute right-20 -top-4 ${
-                    mutex ? 'top-1 right-2 scale-125' : 'group-hover:top-1 group-hover:right-2 group-hover:scale-125'
-                  } z-10 w-16 h-16 rounded-full duration-500 bg-[#df96ff]`}
-                ></div>
-                <div
-                  className={`w-[96%] h-[90%] bg-gray-50 ${
-                    mutex ? 'opacity-100' : 'opacity-0'
-                  } absolute rounded-xl z-10 transition-ease-500`}
-                ></div>
-                <p className={`z-10 font-bold text-xl max-lg:text-lg transition-ease-500`}>
-                  {mutex ? (
-                    <>
-                      <div className="w-fit text-gradient transition-ease-out-300 animate-fade_half">
-                        Building your project!
-                      </div>
-                    </>
-                  ) : (
-                    <div className="">Build Project</div>
-                  )}
-                </p>
-              </button>
+              />
             )}
           </div>
         </div>

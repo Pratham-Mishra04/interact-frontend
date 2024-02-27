@@ -5,11 +5,12 @@ import postHandler from '@/handlers/post_handler';
 import { currentOrgSelector } from '@/slices/orgSlice';
 import { User, OrganizationMembership, Event } from '@/types';
 import Toaster from '@/utils/toaster';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Image from 'next/image';
 import { MagnifyingGlass, X } from '@phosphor-icons/react';
 import deleteHandler from '@/handlers/delete_handler';
+import PrimaryButton from '@/components/buttons/primary_btn';
 
 interface Props {
   event: Event;
@@ -29,6 +30,8 @@ const EditCoordinators = ({ event, setShow, setEvents }: Props) => {
   const [mutex, setMutex] = useState(false);
 
   const currentOrg = useSelector(currentOrgSelector);
+
+  const memberUserIDs = useMemo(() => memberships.map(m => m.userID), [memberships]);
 
   const getMemberships = async () => {
     const URL = `${ORG_URL}/${currentOrg.id}/membership`;
@@ -99,6 +102,11 @@ const EditCoordinators = ({ event, setShow, setEvents }: Props) => {
   };
 
   const handleSubmit = async () => {
+    if (selectedUsers.map(u => u.id) == event.coordinators.map(u => u.id)) {
+      //TODO not working
+      setShow(false);
+      return;
+    }
     if (mutex) return;
     setMutex(true);
 
@@ -226,14 +234,18 @@ const EditCoordinators = ({ event, setShow, setEvents }: Props) => {
                           </div>
                         </div>
                       </div>
-                      <X
-                        onClick={() => {
-                          setSelectedUsers(prev => prev.filter(u => u.id != user.id));
-                        }}
-                        className="cursor-pointer"
-                        size={24}
-                        weight="bold"
-                      />
+                      {memberUserIDs.includes(user.id) ? (
+                        <X
+                          onClick={() => {
+                            setSelectedUsers(prev => prev.filter(u => u.id != user.id));
+                          }}
+                          className="cursor-pointer"
+                          size={24}
+                          weight="bold"
+                        />
+                      ) : (
+                        <X className="cursor-not-allowed opacity-25" size={24} weight="bold" />
+                      )}
                     </div>
                   );
                 })}
@@ -243,30 +255,11 @@ const EditCoordinators = ({ event, setShow, setEvents }: Props) => {
         )}
 
         <div className="w-full flex items-end justify-between">
-          {step != 0 ? (
-            <div
-              onClick={() => setStep(prev => prev - 1)}
-              className="w-fit text-lg py-2 font-medium px-4 shadow-md hover:bg-[#ffffff40] hover:shadow-lg transition-ease-500 rounded-xl cursor-pointer"
-            >
-              prev
-            </div>
-          ) : (
-            <div></div>
-          )}
+          {step != 0 ? <PrimaryButton label="Prev" onClick={() => setStep(prev => prev - 1)} /> : <div></div>}
           {step != 1 ? (
-            <div
-              onClick={() => setStep(prev => prev + 1)}
-              className="w-fit text-lg py-2 font-medium px-4 shadow-md hover:bg-[#ffffff40] hover:shadow-lg transition-ease-500 rounded-xl cursor-pointer"
-            >
-              Next
-            </div>
+            <PrimaryButton label="Next" onClick={() => setStep(prev => prev + 1)} />
           ) : (
-            <div
-              onClick={handleSubmit}
-              className="w-fit text-lg py-2 font-medium px-4 shadow-md hover:bg-[#ffffff40] hover:shadow-lg transition-ease-500 rounded-xl cursor-pointer"
-            >
-              Submit
-            </div>
+            <PrimaryButton label="Submit" onClick={handleSubmit} />
           )}
         </div>
       </div>

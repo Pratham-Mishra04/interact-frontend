@@ -34,7 +34,7 @@ const ViewInvitations = ({ setShow }: Props) => {
   }, []);
   return (
     <>
-      <div className="fixed top-10 max-lg:top-0 w-1/2 max-lg:w-screen h-[90%] max-lg:h-screen backdrop-blur-2xl bg-white dark:bg-[#ffe1fc22] flex flex-col justify-between rounded-lg px-12 py-8 gap-8 max-lg:gap-4 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 shadow-2xl animate-fade_third z-50">
+      <div className="fixed top-10 max-lg:top-0 w-1/2 max-lg:w-screen h-[90%] max-lg:h-screen backdrop-blur-2xl bg-white dark:bg-[#ffe1fc22] flex flex-col justify-between rounded-lg px-8 py-4 gap-8 max-lg:gap-4 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 shadow-2xl animate-fade_third z-50">
         <div className="font-semibold text-5xl text-gray-800 mt-8">Co-host Invitations</div>
         {loading ? (
           <Loader />
@@ -42,7 +42,7 @@ const ViewInvitations = ({ setShow }: Props) => {
           <>
             <div className="w-full h-full flex flex-col gap-6 p-2">
               {coHostInvitations.length > 0 ? (
-                <div className="w-[720px] max-md:w-full max-md:px-4 mx-auto flex flex-col gap-4">
+                <div className="w-full flex justify-center flex-wrap gap-8">
                   {coHostInvitations.map(invitation => {
                     return (
                       <EventInvitationCard

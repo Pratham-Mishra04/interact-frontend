@@ -43,8 +43,6 @@ const EventInvitationCard = ({ invitation, setInvitations }: Props) => {
             return i;
           })
         );
-      // dispatch(setMemberProjects([...user.memberProjects, invitation.projectID]));
-      dispatch(setUnreadInvitations(unreadInvitations - 1));
       Toaster.stopLoad(toaster, 'Invitation Accepted', 1);
     } else {
       if (res.data.message) {
@@ -73,7 +71,6 @@ const EventInvitationCard = ({ invitation, setInvitations }: Props) => {
             return i;
           })
         );
-      dispatch(setUnreadInvitations(unreadInvitations - 1));
       setClickedOnReject(false);
       Toaster.stopLoad(toaster, 'Invitation Rejected', 1);
     } else {
@@ -87,53 +84,59 @@ const EventInvitationCard = ({ invitation, setInvitations }: Props) => {
   };
 
   return (
-    <div className="w-full font-primary bg-white dark:bg-transparent dark:text-white border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-md flex max-md:flex-col items-center justify-start gap-6 p-6 transition-ease-300">
-      {clickedOnReject ? (
+    <>
+      {/* {clickedOnReject && (
         <ConfirmDelete setShow={setClickedOnReject} handleDelete={handleReject} title="Confirm Reject?" />
-      ) : (
-        <></>
-      )}
-      <Link target="_blank" href={`/explore?pid=${invitation.project.slug}`}>
-        <Image
-          crossOrigin="anonymous"
-          width={100}
-          height={100}
-          alt={'User Pic'}
-          src={`${EVENT_PIC_URL}/${invitation.event?.coverPic}`}
-          className="rounded-md w-32 h-32"
-        />
-      </Link>
-      <div className="grow flex max-md:flex-col max-md:text-center max-md:gap-4 items-center justify-between">
-        <div className="grow flex flex-col gap-2">
+      )} */}
+      <div className="w-[45%] font-primary bg-white border-[1px] border-primary_btn rounded-md flex-col items-center justify-start gap-6 p-4 hover:shadow-lg transition-ease-300">
+        <Link target="_blank" href={`/explore/event/${invitation.eventID}`}>
+          <Image
+            crossOrigin="anonymous"
+            width={100}
+            height={40}
+            alt="Event Pic"
+            src={`${EVENT_PIC_URL}/${invitation.event?.coverPic}`}
+            className="rounded-md w-full"
+          />
+        </Link>
+        <div className="w-full flex flex-col text-center gap-4 items-center justify-between">
           <Link target="_blank" href={`/events/${invitation.event?.id}`} className="text-3xl font-bold text-gradient">
             {invitation.project.title}
           </Link>
-          <div className="font-semibold">{invitation.title}</div>
-          <div className="font-medium">{'Member'}</div>
+          <Link target="_blank" href={`/explore/event/${invitation.eventID}`} className="text-2xl font-semibold">
+            {invitation.title}
+          </Link>
+          <Link
+            target="_blank"
+            href={`/explore/organisation/${invitation.event?.organization.user.username}`}
+            className="font-medium hover-underline-animation after:bg-black"
+          >
+            Hosted by {invitation.event?.organization.title}
+          </Link>
           <div className="text-xs">Invited {moment(invitation.createdAt).format('DD MMM YYYY')}</div>
+          {invitation.status == 0 ? (
+            <div className="flex gap-4">
+              <div
+                onClick={handleAccept}
+                className="w-24 h-10 font-semibold border-[1px] border-primary_btn  dark:border-dark_primary_btn dark:shadow-xl dark:text-white dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active flex-center rounded-lg transition-ease-300 cursor-pointer"
+              >
+                Accept
+              </div>
+              <div
+                onClick={handleReject}
+                className="w-24 h-10 font-semibold border-[1px] border-primary_btn  dark:border-dark_primary_btn dark:shadow-xl dark:text-white dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active flex-center rounded-lg transition-ease-300 cursor-pointer"
+              >
+                Reject
+              </div>
+            </div>
+          ) : (
+            <div className="w-24 h-10 font-semibold border-[1px] border-primary_btn  dark:border-dark_primary_btn dark:shadow-xl dark:text-white dark:bg-dark_primary_comp_hover flex-center rounded-lg cursor-default">
+              {invitation.status == 1 ? 'Accepted' : 'Rejected'}
+            </div>
+          )}
         </div>
-        {invitation.status == 0 ? (
-          <div className="flex gap-4">
-            <div
-              onClick={handleAccept}
-              className="w-24 h-10 font-semibold border-[1px] border-primary_btn  dark:border-dark_primary_btn dark:shadow-xl dark:text-white dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active flex-center rounded-lg transition-ease-300 cursor-pointer"
-            >
-              Accept
-            </div>
-            <div
-              onClick={() => setClickedOnReject(true)}
-              className="w-24 h-10 font-semibold border-[1px] border-primary_btn  dark:border-dark_primary_btn dark:shadow-xl dark:text-white dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active flex-center rounded-lg transition-ease-300 cursor-pointer"
-            >
-              Reject
-            </div>
-          </div>
-        ) : (
-          <div className="w-24 h-10 font-semibold border-[1px] border-primary_btn  dark:border-dark_primary_btn dark:shadow-xl dark:text-white dark:bg-dark_primary_comp_hover flex-center rounded-lg cursor-default">
-            {invitation.status == 1 ? 'Accepted' : 'Rejected'}
-          </div>
-        )}
       </div>
-    </div>
+    </>
   );
 };
 

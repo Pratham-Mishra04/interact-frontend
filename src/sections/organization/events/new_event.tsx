@@ -16,6 +16,8 @@ import getHandler from '@/handlers/get_handler';
 import { Id } from 'react-toastify';
 import Image from 'next/image';
 import { EXPLORE_URL } from '@/config/routes';
+import PrimaryButton from '@/components/buttons/primary_btn';
+import BuildButton from '@/components/buttons/build_btn';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -48,8 +50,6 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
   const [matchedOrgUsers, setMatchedOrgUsers] = useState<User[]>([]);
   const [orgSearch, setOrgSearch] = useState('');
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [hasMore, setHasMore] = useState(true);
   const [selectedOrganizationalUsers, setSelectedOrganizationalUsers] = useState<User[]>([]);
 
   const currentOrg = useSelector(currentOrgSelector);
@@ -71,7 +71,7 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
   };
 
   const getOrganizations = async (search: string | null) => {
-    const URL = `${EXPLORE_URL}/orgs/trending?page=${page}&limit=${20}`;
+    const URL = `${EXPLORE_URL}/orgs/trending?page=${page}&limit=${10}`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
       let orgUsers: User[] = res.data.users || [];
@@ -79,19 +79,16 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
       if (search && search != '') {
         setOrganizationalUsers(orgUsers);
         setMatchedOrgUsers(orgUsers);
-        setHasMore(false);
       } else {
         if (!search && page == 1) {
           setOrganizationalUsers(orgUsers);
           setMatchedOrgUsers(orgUsers);
         } else {
           const addedUsers = [...users, ...orgUsers];
-          if (addedUsers.length === users.length) setHasMore(false);
           setOrganizationalUsers(addedUsers);
         }
         setPage(prev => prev + 1);
       }
-      setLoading(false);
     } else {
       if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
       else Toaster.error(SERVER_ERROR, 'error_toaster');
@@ -137,30 +134,30 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
     }
   };
 
-  const handleSubmit = async () => {
+  const eventDetailsValidator = () => {
     if (title.trim() == '') {
       Toaster.error('Enter Title');
-      return;
+      return false;
     }
     if (tagline.trim() == '') {
       Toaster.error('Enter Tagline');
-      return;
+      return false;
     }
     if (description.trim() == '') {
       Toaster.error('Enter Description');
-      return;
+      return false;
     }
     if (category.trim() == '' || category == 'Select Category') {
       Toaster.error('Select Category');
-      return;
+      return false;
     }
     if (tags.length < 3) {
       Toaster.error('Add at least 3 tags');
-      return;
+      return false;
     }
     if (!image) {
       Toaster.error('Add a Cover Picture');
-      return;
+      return false;
     }
 
     const start = moment(startTime);
@@ -168,13 +165,17 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
 
     if (start.isBefore(moment())) {
       Toaster.error('Enter A Valid Start Time');
-      return;
+      return false;
     }
     if (end.isBefore(start)) {
       Toaster.error('Enter A Valid End Time');
-      return;
+      return false;
     }
 
+    return true;
+  };
+
+  const handleSubmit = async () => {
     if (mutex) return;
     setMutex(true);
 
@@ -189,8 +190,8 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
     links.forEach(link => formData.append('links', link));
     formData.append('category', category);
     formData.append('location', location == '' ? 'Online' : location);
-    formData.append('startTime', start.format('YYYY-MM-DDTHH:mm:ss[Z]'));
-    formData.append('endTime', end.format('YYYY-MM-DDTHH:mm:ss[Z]'));
+    formData.append('startTime', moment(startTime).format('YYYY-MM-DDTHH:mm:ss[Z]'));
+    formData.append('endTime', moment(endTime).format('YYYY-MM-DDTHH:mm:ss[Z]'));
     if (image) formData.append('coverPic', image);
 
     const URL = `${ORG_URL}/${currentOrg.id}/events`;
@@ -496,7 +497,6 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
               {matchedOrgUsers.length == 0 ? (
                 <div className="h-64 text-xl flex-center">No other Organisation found :(</div>
               ) : (
-                //TODO change to infinite scroll component
                 <div className="w-full flex-1 flex flex-col gap-2 overflow-y-auto">
                   {matchedOrgUsers.map(org => {
                     return (
@@ -575,71 +575,24 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
         )}
 
         <div className="w-full flex items-end justify-between">
-          {step != 0 ? (
-            <div
-              onClick={() => setStep(prev => prev - 1)}
-              className="w-fit text-lg py-2 font-medium px-4 shadow-md hover:bg-[#ffffff40] hover:shadow-lg transition-ease-500 rounded-xl cursor-pointer"
-            >
-              prev
-            </div>
-          ) : (
-            <div></div>
-          )}
+          {step != 0 ? <PrimaryButton label="Back" onClick={() => setStep(prev => prev - 1)} /> : <div></div>}
           {step != 4 ? (
-            <div
-              onClick={() => setStep(prev => prev + 1)}
-              className="w-fit text-lg py-2 font-medium px-4 shadow-md hover:bg-[#ffffff40] hover:shadow-lg transition-ease-500 rounded-xl cursor-pointer"
-            >
-              Next
-            </div>
+            <PrimaryButton
+              label="Next"
+              onClick={() => {
+                if (step == 0) {
+                  const checker = eventDetailsValidator();
+                  if (checker) setStep(prev => prev + 1);
+                } else setStep(prev => prev + 1);
+              }}
+            />
           ) : (
-            <button
+            <BuildButton
+              label="Build Event"
+              loadingLabel="Building your event!"
+              loading={mutex}
               onClick={handleSubmit}
-              className={`duration-300 relative group cursor-pointer text-white overflow-hidden h-14 max-lg:h-12 ${
-                mutex ? 'w-64 max-lg:w-56 scale-90' : 'w-44 max-lg:w-36 hover:scale-90'
-              } rounded-xl p-2 flex-center`}
-            >
-              <div
-                className={`absolute right-32 -top-4 ${
-                  mutex
-                    ? 'top-0 right-2 scale-150'
-                    : 'scale-125 group-hover:top-1 group-hover:right-2 group-hover:scale-150'
-                } z-10 w-36 h-36 rounded-full duration-500 bg-[#6661c7]`}
-              ></div>
-              <div
-                className={`absolute right-2 -top-4 ${
-                  mutex
-                    ? 'top-1 right-2 scale-150'
-                    : 'scale-125 right-3 group-hover:top-1 group-hover:right-2 group-hover:scale-150'
-                } z-10 w-24 h-24 rounded-full duration-500 bg-[#ada9ff]`}
-              ></div>
-              <div
-                className={`absolute -right-10 top-0 ${
-                  mutex ? 'top-1 right-2 scale-150' : 'group-hover:top-1 group-hover:right-2 group-hover:scale-150'
-                } z-10 w-20 h-20 rounded-full duration-500 bg-[#cea9ff]`}
-              ></div>
-              <div
-                className={`absolute right-20 -top-4 ${
-                  mutex ? 'top-1 right-2 scale-125' : 'group-hover:top-1 group-hover:right-2 group-hover:scale-125'
-                } z-10 w-16 h-16 rounded-full duration-500 bg-[#df96ff]`}
-              ></div>
-              <div
-                className={`w-[96%] h-[90%] bg-gray-50 ${
-                  mutex ? 'opacity-100' : 'opacity-0'
-                } absolute rounded-xl z-10 transition-ease-500`}
-              ></div>
-              <p className={`z-10 font-bold text-xl max-lg:text-lg transition-ease-500`}>
-                {mutex ? (
-                  <>
-                    <div className="w-fit text-gradient transition-ease-out-300 animate-fade_half">
-                      Building your event!
-                    </div>
-                  </>
-                ) : (
-                  <div className="">Build Event</div>
-                )}
-              </p>
-            </button>
+            />
           )}
         </div>
       </div>
