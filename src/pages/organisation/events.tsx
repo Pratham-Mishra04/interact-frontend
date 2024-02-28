@@ -28,11 +28,13 @@ import EditCoordinators from '@/sections/organization/events/edit_coordinators';
 import AccessTree from '@/components/organization/access_tree';
 import ViewInvitations from '@/sections/organization/events/view_invitations';
 import EditCoHosts from '@/sections/organization/events/edit_cohosts';
+import EventHistory from '@/sections/organization/events/history';
 
 const Events = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [clickedOnNewEvent, setClickedOnNewEvent] = useState(false);
-  const [clickedOnViewInvitation, setClickedOnViewInvitation] = useState(false);
+  const [clickedOnViewInvitations, setClickedOnViewInvitations] = useState(false);
+  const [clickedOnViewHistory, setClickedOnViewHistory] = useState(false);
   const [clickedOnEditEvent, setClickedOnEditEvent] = useState(false);
   const [clickedOnEditCollaborators, setClickedOnEditCollaborators] = useState(false);
   const [clickedOnEditCoHosts, setClickedOnEditCoHosts] = useState(false);
@@ -134,7 +136,7 @@ const Events = () => {
                       </div>
                     )}
                     <Envelope
-                      onClick={() => setClickedOnViewInvitation(true)}
+                      onClick={() => setClickedOnViewInvitations(true)}
                       size={42}
                       className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
                       weight="regular"
@@ -156,7 +158,8 @@ const Events = () => {
           <div className="w-full max-md:w-full mx-auto flex flex-col items-center gap-4">
             {clickedOnInfo && <AccessTree type="event" setShow={setClickedOnInfo} />}
             {clickedOnNewEvent && <NewEvent setEvents={setEvents} setShow={setClickedOnNewEvent} />}
-            {clickedOnViewInvitation && <ViewInvitations setShow={setClickedOnViewInvitation} />}
+            {clickedOnViewInvitations && <ViewInvitations setShow={setClickedOnViewInvitations} />}
+            {clickedOnViewHistory && <EventHistory eventID={clickedEditEvent.id} setShow={setClickedOnViewHistory} />}
             {clickedOnEditEvent && (
               <EditEvent event={clickedEditEvent} setEvents={setEvents} setShow={setClickedOnEditEvent} />
             )}
@@ -194,6 +197,7 @@ const Events = () => {
                         key={event.id}
                         event={event}
                         org={true}
+                        setClickedOnViewHistory={setClickedOnViewHistory}
                         setClickedOnEditEvent={setClickedOnEditEvent}
                         setClickedOnEditCollaborators={setClickedOnEditCollaborators}
                         setClickedEditEvent={setClickedEditEvent}

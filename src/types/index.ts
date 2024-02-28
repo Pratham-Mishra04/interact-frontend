@@ -504,6 +504,24 @@ export interface Event {
   userID: string; //Dummy for type fixes in comment_box
 }
 
+export interface EventHistory {
+  id: string;
+  eventID: string;
+  userID: string;
+  user: User;
+  title: boolean;
+  tagline: boolean;
+  description: boolean;
+  tags: boolean;
+  links: boolean;
+  startTime: boolean;
+  endTime: boolean;
+  location: boolean;
+  category: boolean;
+  coverPic: boolean;
+  createdAt: Date;
+}
+
 export interface OrganizationHistory {
   id: string;
   organizationID: string;

@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { Event } from '@/types';
 import Link from 'next/link';
 import { EVENT_PIC_URL } from '@/config/routes';
-import { Buildings, Eye, PencilSimple, Trash, Users } from '@phosphor-icons/react';
+import { Buildings, ClockCounterClockwise, Eye, PencilSimple, Trash, Users } from '@phosphor-icons/react';
 import moment from 'moment';
 import checkOrgAccess, { checkParticularOrgAccess } from '@/utils/funcs/check_org_access';
 import { ORG_SENIOR } from '@/config/constants';
@@ -12,6 +12,7 @@ interface Props {
   event: Event;
   size?: number | string;
   org?: boolean;
+  setClickedOnViewHistory?: React.Dispatch<React.SetStateAction<boolean>>;
   setClickedOnEditEvent?: React.Dispatch<React.SetStateAction<boolean>>;
   setClickedOnEditCollaborators?: React.Dispatch<React.SetStateAction<boolean>>;
   setClickedOnEditCoHosts?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -24,6 +25,7 @@ const EventCard = ({
   event,
   size = 96,
   org = false,
+  setClickedOnViewHistory,
   setClickedOnEditEvent,
   setClickedOnEditCollaborators,
   setClickedOnEditCoHosts,
@@ -51,7 +53,7 @@ const EventCard = ({
           placeholder="blur"
           blurDataURL={event.blurHash || 'no-hash'}
         />
-        {org && checkOrgAccess(ORG_SENIOR) ? (
+        {org && checkOrgAccess(ORG_SENIOR) && (
           <div className="flex gap-2 absolute opacity-0 group-hover:opacity-100 top-2 left-2 transition-ease-300">
             {checkParticularOrgAccess(ORG_SENIOR, event.organization) && (
               <div
@@ -101,9 +103,18 @@ const EventCard = ({
                 <Buildings size={18} />
               </div>
             )}
+            <div
+              onClick={el => {
+                el.stopPropagation();
+                el.preventDefault();
+                if (setClickedEditEvent) setClickedEditEvent(event);
+                if (setClickedOnViewHistory) setClickedOnViewHistory(true);
+              }}
+              className="bg-white text-gray-500 text-xxs px-2 py-1 rounded-lg"
+            >
+              <ClockCounterClockwise size={18} />
+            </div>
           </div>
-        ) : (
-          <></>
         )}
 
         <div className="absolute bottom-2 right-2 bg-white text-gray-500 text-xxs px-2 py-1 rounded-lg">
