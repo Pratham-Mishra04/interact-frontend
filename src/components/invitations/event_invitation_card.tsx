@@ -81,7 +81,7 @@ const EventInvitationCard = ({ invitation, setInvitations }: Props) => {
           <Image
             crossOrigin="anonymous"
             width={100}
-            height={80}
+            height={60}
             alt="Event Pic"
             src={`${EVENT_PIC_URL}/${invitation.event?.coverPic}`}
             className="rounded-md w-full"

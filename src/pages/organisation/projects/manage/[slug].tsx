@@ -65,7 +65,7 @@ const ManageProject = ({ slug }: Props) => {
             />
             <div className="text-4xl font-semibold dark:text-white font-primary">Manage Project</div>
           </div>
-          <TabMenu items={['Openings', 'Collaborators', 'Chats']} active={active} setState={setActive} />
+          <TabMenu items={['Openings', 'Collaborators']} active={active} setState={setActive} />
           {loading ? (
             <Loader />
           ) : (
@@ -76,9 +76,9 @@ const ManageProject = ({ slug }: Props) => {
               <div className={`${active === 1 ? 'block' : 'hidden'}`}>
                 <Collaborators project={project} setProject={setProject} />
               </div>
-              <div className={`${active === 2 ? 'block' : 'hidden'}`}>
+              {/* <div className={`${active === 2 ? 'block' : 'hidden'}`}>
                 <Chats project={project} />
-              </div>
+              </div> */}
             </>
           )}
         </div>

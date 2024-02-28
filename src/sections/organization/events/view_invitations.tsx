@@ -40,7 +40,7 @@ const ViewInvitations = ({ setShow }: Props) => {
           <Loader />
         ) : (
           <>
-            <div className="w-full h-full flex flex-col gap-6 p-2">
+            <div className="w-full flex flex-col gap-6 p-2">
               {coHostInvitations.length > 0 ? (
                 <div className="w-full flex justify-center flex-wrap gap-8">
                   {coHostInvitations.map(invitation => {

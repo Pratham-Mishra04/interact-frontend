@@ -16,11 +16,7 @@ const Openings = ({ project, setProject }: Props) => {
   const user = useSelector(userSelector);
   return (
     <div className="w-[50vw] max-lg:w-[75vw] max-md:w-[95%] mx-auto flex flex-col gap-8">
-      {clickedOnNewOpening ? (
-        <NewOpening setShow={setClickedOnNewOpening} project={project} setProject={setProject} />
-      ) : (
-        <></>
-      )}
+      {clickedOnNewOpening && <NewOpening setShow={setClickedOnNewOpening} project={project} setProject={setProject} />}
 
       {project.userID == user.id || user.managerProjects.includes(project.id) ? (
         <div

@@ -59,12 +59,10 @@ const OpeningCard = ({ opening, project, setProject }: Props) => {
 
   return (
     <>
-      {clickedOnEdit ? (
+      {clickedOnEdit && (
         <EditOpening setShow={setClickedOnEdit} opening={opening} project={project} setProject={setProject} />
-      ) : (
-        <></>
       )}
-      {clickedOnDelete ? <ConfirmDelete setShow={setClickedOnDelete} handleDelete={handleDelete} /> : <></>}
+      {clickedOnDelete && <ConfirmDelete setShow={setClickedOnDelete} handleDelete={handleDelete} />}
       <div className="w-full bg-gray-100 hover:bg-white dark:hover:bg-transparent dark:bg-transparent font-primary dark:text-white border-[1px] border-primary_btn dark:border-dark_primary_btn rounded-lg p-8 max-md:p-4 flex items-center gap-12 max-md:gap-4 transition-ease-300">
         <Image
           crossOrigin="anonymous"
@@ -106,8 +104,10 @@ const OpeningCard = ({ opening, project, setProject }: Props) => {
               )}
             </div>
             <div className="flex gap-3">
-              <Pen onClick={() => setClickedOnEdit(true)} className="cursor-pointer" size={24} />
-              {project.userID == user.id || user.managerProjects.includes(project.id) ? (
+              {(project.userID == user.id || user.editorProjects.includes(project.id)) && (
+                <Pen onClick={() => setClickedOnEdit(true)} className="cursor-pointer" size={24} />
+              )}
+              {(project.userID == user.id || user.managerProjects.includes(project.id)) && (
                 <TrashSimple
                   onClick={() => setClickedOnDelete(true)}
                   className="cursor-pointer"
@@ -115,8 +115,6 @@ const OpeningCard = ({ opening, project, setProject }: Props) => {
                   color="#ea333e"
                   weight="fill"
                 />
-              ) : (
-                <></>
               )}
             </div>
           </div>
