@@ -1,7 +1,7 @@
 import { EventBookmark } from '@/types';
 import React from 'react';
 import { ArrowArcLeft } from '@phosphor-icons/react';
-import EventCard from '@/components/explore/event_card';
+import EventCard from '@/components/organization/event_card';
 import { navbarOpenSelector } from '@/slices/feedSlice';
 import { useSelector } from 'react-redux';
 

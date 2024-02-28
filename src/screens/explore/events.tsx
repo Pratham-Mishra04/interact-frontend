@@ -5,7 +5,7 @@ import { Event } from '@/types';
 import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import Loader from '@/components/common/loader';
-import EventCard from '@/components/explore/event_card';
+import EventCard from '@/components/organization/event_card';
 import NoSearch from '@/components/empty_fillers/search';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useSelector } from 'react-redux';

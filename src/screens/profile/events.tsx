@@ -6,7 +6,7 @@ import getHandler from '@/handlers/get_handler';
 import Toaster from '@/utils/toaster';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Loader from '@/components/common/loader';
-import EventCard from '@/components/explore/event_card';
+import EventCard from '@/components/organization/event_card';
 import NoUserItems from '@/components/empty_fillers/user_items';
 import Mascot from '@/components/empty_fillers/mascot';
 

@@ -3,15 +3,14 @@ import { EXPLORE_URL, ORG_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import postHandler from '@/handlers/post_handler';
 import { currentOrgSelector } from '@/slices/orgSlice';
-import { User, OrganizationMembership, Event, Organization, Invitation } from '@/types';
+import { User, Event, Organization, Invitation } from '@/types';
 import Toaster from '@/utils/toaster';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Image from 'next/image';
-import { EnvelopeOpen, EnvelopeSimple, MagnifyingGlass, X } from '@phosphor-icons/react';
+import { EnvelopeSimple, MagnifyingGlass, X } from '@phosphor-icons/react';
 import deleteHandler from '@/handlers/delete_handler';
 import PrimaryButton from '@/components/buttons/primary_btn';
-import patchHandler from '@/handlers/patch_handler';
 
 interface Props {
   event: Event;
@@ -28,13 +27,10 @@ const EditCoHosts = ({ event, setShow, setEvents }: Props) => {
   const [organizationalUsers, setOrganizationalUsers] = useState<User[]>([]);
   const [orgSearch, setOrgSearch] = useState('');
 
+  const [clickedOnInvitations, setClickedOnInvitations] = useState(false);
   const [mutex, setMutex] = useState(false);
 
-  const currentOrg = useSelector(currentOrgSelector);
-
-  const [clickedOnInvitations, setClickedOnInvitations] = useState(false);
-
-  const coHostUserIDs = useMemo(() => event.coHosts.map(coHost => coHost.userID), [event]);
+  const [coHostUserIDs, setCoHostUserIDs] = useState(event.coHosts.map(coHost => coHost.userID));
 
   const usersToAdd = useMemo(
     () => selectedOrganizationalUsers.filter(user => !coHostUserIDs.includes(user.id)),
@@ -51,12 +47,15 @@ const EditCoHosts = ({ event, setShow, setEvents }: Props) => {
     return event.coHosts.filter(coHost => !selectedOrganizationalUserIDs.includes(coHost.user.id)).map(org => org.user);
   }, [selectedOrganizationalUsers]);
 
+  const currentOrg = useSelector(currentOrgSelector);
+
   const fetchCoHosts = async () => {
     const URL = `${ORG_URL}/${currentOrg.id}/events/${event.id}/cohost`;
     const res = await getHandler(URL);
     if (res.statusCode === 200) {
       const coHosts: Organization[] = res.data.coHosts || [];
       setSelectedOrganizationalUsers(coHosts.map(o => o.user));
+      setCoHostUserIDs(coHosts.map(o => o.userID));
 
       const invitations: Invitation[] = res.data.invitations || [];
       setInvitations(invitations.filter(i => i.status == 0));
@@ -388,8 +387,35 @@ const EditCoHosts = ({ event, setShow, setEvents }: Props) => {
                 </div>
               </>
             )}
-            {usersToAdd.length == 0 && usersToRemove.length == 0 && (
-              <div className="h-64 text-xl flex-center">Selected Co-hosts will be shown here :)</div>
+            {unchangedUsers.length > 0 && (
+              <>
+                <div className="text-2xl font-medium">Unchanged Co Hosts</div>
+                <div className="w-full  h-[420px] flex flex-col gap-2">
+                  {unchangedUsers.map(user => {
+                    return (
+                      <div
+                        key={user.id}
+                        className="w-full flex justify-between items-center rounded-lg p-2 dark:bg-dark_primary_comp_hover cursor-default transition-ease-200"
+                      >
+                        <div className="w-fit flex gap-2 items-center">
+                          <Image
+                            crossOrigin="anonymous"
+                            width={50}
+                            height={50}
+                            alt={'User Pic'}
+                            src={`${USER_PROFILE_PIC_URL}/${user.profilePic}`}
+                            className={'rounded-full w-12 h-12 cursor-pointer border-[1px] border-black'}
+                          />
+                          <div className="flex flex-col">
+                            <div className="text-lg font-bold">{user.name}</div>
+                            <div className="text-sm dark:text-gray-200">@{user.username}</div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
             )}
           </div>
         )}
@@ -397,7 +423,9 @@ const EditCoHosts = ({ event, setShow, setEvents }: Props) => {
         {!clickedOnInvitations && (
           <div className="w-full flex items-end justify-between">
             {step != 0 ? <PrimaryButton label="Prev" onClick={() => setStep(prev => prev - 1)} /> : <div></div>}
-            {step != 1 ? (
+            {usersToAdd.length == 0 && usersToRemove.length == 0 ? (
+              <div></div>
+            ) : step != 1 ? (
               <PrimaryButton label="Next" onClick={() => setStep(prev => prev + 1)} />
             ) : (
               <PrimaryButton label="Submit" onClick={handleSubmit} />

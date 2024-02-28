@@ -1,16 +1,12 @@
 import { Invitation } from '@/types';
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { EVENT_PIC_URL, INVITATION_URL, PROJECT_PIC_URL } from '@/config/routes';
+import { EVENT_PIC_URL, INVITATION_URL } from '@/config/routes';
 import moment from 'moment';
 import Link from 'next/link';
 import Toaster from '@/utils/toaster';
 import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
-import { useDispatch, useSelector } from 'react-redux';
-import { setMemberProjects, userSelector } from '@/slices/userSlice';
-import ConfirmDelete from '../common/confirm_delete';
-import { setUnreadInvitations, unreadInvitationsSelector } from '@/slices/feedSlice';
 
 interface Props {
   invitation: Invitation;
@@ -19,13 +15,6 @@ interface Props {
 
 const EventInvitationCard = ({ invitation, setInvitations }: Props) => {
   const [mutex, setMutex] = useState(false);
-  const [clickedOnReject, setClickedOnReject] = useState(false);
-
-  // const user = useSelector(userSelector);
-
-  const unreadInvitations = useSelector(unreadInvitationsSelector);
-
-  const dispatch = useDispatch();
 
   const handleAccept = async () => {
     if (mutex) return;
@@ -71,7 +60,6 @@ const EventInvitationCard = ({ invitation, setInvitations }: Props) => {
             return i;
           })
         );
-      setClickedOnReject(false);
       Toaster.stopLoad(toaster, 'Invitation Rejected', 1);
     } else {
       if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
@@ -93,7 +81,7 @@ const EventInvitationCard = ({ invitation, setInvitations }: Props) => {
           <Image
             crossOrigin="anonymous"
             width={100}
-            height={40}
+            height={80}
             alt="Event Pic"
             src={`${EVENT_PIC_URL}/${invitation.event?.coverPic}`}
             className="rounded-md w-full"

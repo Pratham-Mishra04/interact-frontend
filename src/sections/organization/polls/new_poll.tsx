@@ -73,7 +73,7 @@ const NewPoll = ({ orgID, setPolls, setShow, organisation }: Props) => {
             width={50}
             height={50}
             alt="user"
-            src={`${USER_PROFILE_PIC_URL}/${organisation.user.coverPic}`}
+            src={`${USER_PROFILE_PIC_URL}/${organisation.user.profilePic}`}
           />
           <div className="w-[calc(100%-32px)] flex flex-col gap-2">
             <input

@@ -11,7 +11,7 @@ import Loader from '@/components/common/loader';
 import { SERVER_ERROR } from '@/config/errors';
 import Image from 'next/image';
 import { MapPin } from '@phosphor-icons/react';
-import EventCard from '@/components/explore/event_card';
+import EventCard from '@/components/organization/event_card';
 import { Event, User } from '@/types';
 import Link from 'next/link';
 import moment from 'moment';

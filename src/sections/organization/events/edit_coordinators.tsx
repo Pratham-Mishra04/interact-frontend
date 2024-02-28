@@ -11,6 +11,7 @@ import Image from 'next/image';
 import { MagnifyingGlass, X } from '@phosphor-icons/react';
 import deleteHandler from '@/handlers/delete_handler';
 import PrimaryButton from '@/components/buttons/primary_btn';
+import isArrEdited from '@/utils/funcs/check_array_edited';
 
 interface Props {
   event: Event;
@@ -102,11 +103,16 @@ const EditCoordinators = ({ event, setShow, setEvents }: Props) => {
   };
 
   const handleSubmit = async () => {
-    if (selectedUsers.map(u => u.id) == event.coordinators.map(u => u.id)) {
-      //TODO not working
+    if (
+      !isArrEdited(
+        selectedUsers.map(u => u.id),
+        event.coordinators.map(u => u.id)
+      )
+    ) {
       setShow(false);
       return;
     }
+
     if (mutex) return;
     setMutex(true);
 

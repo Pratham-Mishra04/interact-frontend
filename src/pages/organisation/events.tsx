@@ -16,7 +16,7 @@ import { ORG_SENIOR } from '@/config/constants';
 import Loader from '@/components/common/loader';
 import { Event } from '@/types';
 import NewEvent from '@/sections/organization/events/new_event';
-import EventCard from '@/components/explore/event_card';
+import EventCard from '@/components/organization/event_card';
 import { initialEvent } from '@/types/initials';
 import EditEvent from '@/sections/organization/events/edit_event';
 import ConfirmDelete from '@/components/common/confirm_delete';
