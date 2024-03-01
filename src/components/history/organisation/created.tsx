@@ -12,15 +12,15 @@ const Created = ({ history }: Props) => {
     case -1:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit text-center ">Organisation was created! 🎉</div>
+          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">Organisation was created! 🎉</div>
         </OrganizationHistoryWrapper>
       );
     case 0:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit text-center ">
+          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
             Created an Event:{' '}
-            <Link target="_blank" href={'/explore/event/' + history.event?.id}>
+            <Link target="_blank" href={'/explore/event/' + history.event?.id} className="font-semibold">
               {history.event?.title}
             </Link>{' '}
             🎉
@@ -30,9 +30,13 @@ const Created = ({ history }: Props) => {
     case 3:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit text-center ">
+          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
             Invited a User :
-            <Link target="_blank" href={'/explore/user/' + history.user?.username}>
+            <Link
+              target="_blank"
+              href={'/explore/user/' + history.invitation?.user?.username}
+              className="font-semibold"
+            >
               {history.invitation?.user.username}
             </Link>{' '}
             🎉
@@ -42,9 +46,9 @@ const Created = ({ history }: Props) => {
     case 6:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit text-center  line-clamp-1">
+          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
             Created a Post:{' '}
-            <Link target="_blank" href={'/explore/post/' + history.post?.id} className="line-clamp-1">
+            <Link target="_blank" href={'/explore/post/' + history.post?.id} className="line-clamp-1 font-semibold">
               {history.post?.content}
             </Link>{' '}
             🎉
@@ -54,9 +58,9 @@ const Created = ({ history }: Props) => {
     case 9:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit text-center ">
+          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
             Created a Project:{' '}
-            <Link target="_blank" href={'/explore/project/' + history.project?.slug}>
+            <Link target="_blank" href={'/explore/project/' + history.project?.slug} className="font-semibold">
               {history.project?.title}
             </Link>{' '}
             🎉
@@ -66,9 +70,9 @@ const Created = ({ history }: Props) => {
     case 12:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit text-center ">
+          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
             Added a Task:{' '}
-            <Link target="_blank" href={'/organisation/tasks/'}>
+            <Link target="_blank" href={'/organisation/tasks/'} className="font-semibold">
               {history.task?.title}
             </Link>{' '}
             🎉
@@ -78,9 +82,9 @@ const Created = ({ history }: Props) => {
     case 18:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit text-center ">
+          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
             Added a Poll:{' '}
-            <Link target="_blank" href={'/organisation/news/'}>
+            <Link target="_blank" href={'/organisation/news/'} className="font-semibold">
               {history.poll?.title}
             </Link>{' '}
             🎉
@@ -90,9 +94,9 @@ const Created = ({ history }: Props) => {
     case 21:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit text-center ">
+          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
             Added an Announcement:{' '}
-            <Link target="_blank" href={'/explore/announcement/' + history.announcementID}>
+            <Link target="_blank" href={'/explore/announcement/' + history.announcementID} className="font-semibold">
               {history.announcement?.title}
             </Link>{' '}
             🎉
@@ -102,9 +106,9 @@ const Created = ({ history }: Props) => {
     case 24:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit text-center ">
+          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
             Added an Opening:{' '}
-            <Link target="_blank" href={'/explore?oid=' + history.openingID}>
+            <Link target="_blank" href={'/explore?oid=' + history.openingID} className="font-semibold">
               {history.opening?.title}
             </Link>{' '}
             🎉
@@ -114,9 +118,13 @@ const Created = ({ history }: Props) => {
     case 27:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit text-center ">
+          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
             Accepted the Application of :{' '}
-            <Link target="_blank" href={'/explore/user/' + history.application?.user.username}>
+            <Link
+              target="_blank"
+              href={'/explore/user/' + history.application?.user.username}
+              className="font-semibold"
+            >
               {history.application?.user.name}
             </Link>{' '}
             🎉

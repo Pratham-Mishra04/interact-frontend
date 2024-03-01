@@ -61,6 +61,9 @@ const config: Config = {
         primary_danger: '#ea333e',
         primary_black: '#2e2c2c',
         heart_filled: '#fe251baa',
+        priority_high: '#fbbebe',
+        priority_mid: '#fbf9be',
+        priority_low: '#bffbbe',
       },
       backgroundColor: {
         backdrop: '#0000003f',
