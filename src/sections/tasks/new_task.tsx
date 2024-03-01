@@ -1,23 +1,36 @@
-import { TASK_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
+import { ORG_URL, TASK_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import postHandler from '@/handlers/post_handler';
-import { PRIORITY, Project, Task, User } from '@/types';
+import { Organization, PRIORITY, Project, Task, User } from '@/types';
 import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { MagnifyingGlass, Pen } from '@phosphor-icons/react';
+import { MagnifyingGlass } from '@phosphor-icons/react';
 import { SERVER_ERROR } from '@/config/errors';
 import Tags from '@/components/utils/edit_tags';
 import moment from 'moment';
+import { currentOrgIDSelector } from '@/slices/orgSlice';
+import { useSelector } from 'react-redux';
+import { initialOrganization, initialProject } from '@/types/initials';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
-  project: Project;
+  organization?: Organization;
+  project?: Project;
+  org: boolean;
   setShowTasks?: React.Dispatch<React.SetStateAction<boolean>>;
   setTasks?: React.Dispatch<React.SetStateAction<Task[]>>;
   setFilteredTasks?: React.Dispatch<React.SetStateAction<Task[]>>;
 }
 
-const NewTask = ({ setShow, project, setShowTasks, setTasks, setFilteredTasks }: Props) => {
+const NewTask = ({
+  setShow,
+  org,
+  organization = initialOrganization,
+  project = initialProject,
+  setShowTasks,
+  setTasks,
+  setFilteredTasks,
+}: Props) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState<string[]>([]);
@@ -39,12 +52,20 @@ const NewTask = ({ setShow, project, setShowTasks, setTasks, setFilteredTasks }:
 
   const fetchUsers = async (key: string) => {
     const matchedUsers: User[] = [];
-    if (project.user.username.match(new RegExp(key, 'i'))) matchedUsers.push(project.user);
-    else if (project.user.name.match(new RegExp(key, 'i'))) matchedUsers.push(project.user);
-    project.memberships.forEach(membership => {
-      if (membership.user.username.match(new RegExp(key, 'i'))) matchedUsers.push(membership.user);
-      else if (membership.user.name.match(new RegExp(key, 'i'))) matchedUsers.push(membership.user);
-    });
+    if (org)
+      organization?.memberships.forEach(membership => {
+        if (membership.user.username.match(new RegExp(key, 'i'))) matchedUsers.push(membership.user);
+        else if (membership.user.name.match(new RegExp(key, 'i'))) matchedUsers.push(membership.user);
+      });
+    else {
+      if (project?.user.username.match(new RegExp(key, 'i'))) matchedUsers.push(project.user);
+      else if (project?.user.name.match(new RegExp(key, 'i'))) matchedUsers.push(project.user);
+      project?.memberships.forEach(membership => {
+        if (membership.user.username.match(new RegExp(key, 'i'))) matchedUsers.push(membership.user);
+        else if (membership.user.name.match(new RegExp(key, 'i'))) matchedUsers.push(membership.user);
+      });
+    }
+
     setUsers(matchedUsers);
   };
 
@@ -61,6 +82,8 @@ const NewTask = ({ setShow, project, setShowTasks, setTasks, setFilteredTasks }:
     }
   };
 
+  const currentOrgID = useSelector(currentOrgIDSelector);
+
   const handleSubmit = async () => {
     if (title.trim().length == 0) {
       Toaster.error('Title cannot be empty');
@@ -72,7 +95,7 @@ const NewTask = ({ setShow, project, setShowTasks, setTasks, setFilteredTasks }:
 
     const toaster = Toaster.startLoad('Creating a new task');
 
-    const URL = `${TASK_URL}/${project.id}`;
+    const URL = org ? `${ORG_URL}/${currentOrgID}/tasks` : `${TASK_URL}/${project.id}`;
 
     const userIDs = selectedUsers.map(user => user.id);
 

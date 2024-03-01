@@ -4,7 +4,6 @@ import TaskCard from '@/components/workspace/task_card';
 import { SERVER_ERROR } from '@/config/errors';
 import { PROJECT_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
-import NewTask from '@/sections/workspace/new_task';
 import TaskView from '@/sections/workspace/task_view';
 import { userSelector } from '@/slices/userSlice';
 import { Project, Task } from '@/types';
@@ -18,6 +17,7 @@ import { GetServerSidePropsContext } from 'next';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import NonOrgOnlyAndProtect from '@/utils/wrappers/non_org_only';
+import NewTask from '@/sections/tasks/new_task';
 
 interface Props {
   slug: string;
@@ -99,15 +99,14 @@ const Tasks = ({ slug }: Props) => {
       <Sidebar index={3} />
 
       <MainWrapper>
-        {clickedOnNewTask ? (
+        {clickedOnNewTask && (
           <NewTask
+            org={false}
             setShow={setClickedOnNewTask}
             project={project}
             setTasks={setTasks}
             setFilteredTasks={setFilteredTasks}
           />
-        ) : (
-          <></>
         )}
         <div className="w-full flex flex-col">
           <div className="w-full flex justify-between p-base_padding">
@@ -120,15 +119,13 @@ const Tasks = ({ slug }: Props) => {
               <div className="text-6xl font-semibold dark:text-white font-primary">Tasks</div>
             </div>
             <div className="flex gap-8 items-center">
-              {project.userID == user.id || user.managerProjects.includes(project.id) ? (
+              {(project.userID == user.id || user.managerProjects.includes(project.id)) && (
                 <div
                   onClick={() => setClickedOnNewTask(true)}
                   className="text-xl text-gradient font-semibold hover-underline-animation after:bg-dark_primary_btn cursor-pointer"
                 >
                   <span className="max-md:hidden">Create a</span> New Task
                 </div>
-              ) : (
-                <></>
               )}
               {/* <div onClick={() => filterAssigned(!filterStatus)} className="">
                 Show Assigned To Me
@@ -138,43 +135,37 @@ const Tasks = ({ slug }: Props) => {
           <div className="w-full flex flex-col gap-6 px-2 py-2">
             {loading ? (
               <Loader />
-            ) : (
-              <>
-                {filteredTasks.length > 0 ? (
-                  <div className="flex justify-evenly px-4">
-                    <div className={`${clickedOnTask ? 'w-[40%]' : 'w-[720px]'} max-lg:w-[720px] flex flex-col gap-4`}>
-                      {filteredTasks.map((task, i) => {
-                        return (
-                          <TaskCard
-                            key={task.id}
-                            task={task}
-                            index={i}
-                            clickedTaskID={clickedTaskID}
-                            clickedOnTask={clickedOnTask}
-                            setClickedOnTask={setClickedOnTask}
-                            setClickedTaskID={setClickedTaskID}
-                          />
-                        );
-                      })}
-                    </div>
-                    {clickedOnTask ? (
-                      <TaskView
-                        taskID={clickedTaskID}
-                        tasks={filteredTasks}
-                        project={project}
-                        setShow={setClickedOnTask}
-                        setTasks={setTasks}
-                        setFilteredTasks={setFilteredTasks}
+            ) : filteredTasks.length > 0 ? (
+              <div className="flex justify-evenly px-4">
+                <div className={`${clickedOnTask ? 'w-[40%]' : 'w-[720px]'} max-lg:w-[720px] flex flex-col gap-4`}>
+                  {filteredTasks.map((task, i) => {
+                    return (
+                      <TaskCard
+                        key={task.id}
+                        task={task}
+                        index={i}
+                        clickedTaskID={clickedTaskID}
+                        clickedOnTask={clickedOnTask}
+                        setClickedOnTask={setClickedOnTask}
                         setClickedTaskID={setClickedTaskID}
                       />
-                    ) : (
-                      <></>
-                    )}
-                  </div>
-                ) : (
-                  <div className="mx-auto font-medium text-xl mt-8">No Tasks found :)</div>
+                    );
+                  })}
+                </div>
+                {clickedOnTask && (
+                  <TaskView
+                    taskID={clickedTaskID}
+                    tasks={filteredTasks}
+                    project={project}
+                    setShow={setClickedOnTask}
+                    setTasks={setTasks}
+                    setFilteredTasks={setFilteredTasks}
+                    setClickedTaskID={setClickedTaskID}
+                  />
                 )}
-              </>
+              </div>
+            ) : (
+              <div className="mx-auto font-medium text-xl mt-8">No Tasks found :)</div>
             )}
           </div>
         </div>

@@ -6,7 +6,6 @@ import { ORG_SENIOR } from '@/config/constants';
 import { SERVER_ERROR } from '@/config/errors';
 import { ORG_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
-import NewTask from '@/sections/organization/tasks/new_task';
 import TaskView from '@/sections/organization/tasks/task_view';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
 import { Task } from '@/types';
@@ -21,6 +20,8 @@ import { Info, Plus } from '@phosphor-icons/react';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Mascot from '@/components/empty_fillers/mascot';
+import NewTask from '@/sections/tasks/new_task';
+
 const Tasks = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
@@ -97,31 +98,28 @@ const Tasks = () => {
     <BaseWrapper title="Tasks">
       <OrgSidebar index={4} />
       <MainWrapper>
-        {clickedOnNewTask ? (
+        {clickedOnNewTask && (
           <NewTask
             setShow={setClickedOnNewTask}
             organization={organization}
             setTasks={setTasks}
             setFilteredTasks={setFilteredTasks}
+            org={true}
           />
-        ) : (
-          <></>
         )}
-        {clickedOnInfo ? <AccessTree type="task" setShow={setClickedOnInfo} /> : <></>}
+        {clickedOnInfo && <AccessTree type="task" setShow={setClickedOnInfo} />}
         <div className="w-full flex flex-col">
           <div className="w-full flex justify-between items-center p-base_padding">
             <div className="text-6xl font-semibold dark:text-white font-primary">Tasks</div>
 
             <div className="flex items-center gap-2">
-              {checkOrgAccess(ORG_SENIOR) ? (
+              {checkOrgAccess(ORG_SENIOR) && (
                 <Plus
                   onClick={() => setClickedOnNewTask(true)}
                   size={42}
                   className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
                   weight="regular"
                 />
-              ) : (
-                <></>
               )}
               <Info
                 onClick={() => setClickedOnInfo(true)}
@@ -134,43 +132,37 @@ const Tasks = () => {
           <div className="w-full flex flex-col gap-6 px-2 pb-2">
             {loading ? (
               <Loader />
-            ) : (
-              <>
-                {filteredTasks.length > 0 ? (
-                  <div className="flex justify-evenly px-4">
-                    <div className={`${clickedOnTask ? 'w-[40%]' : 'w-[720px]'} max-lg:w-[720px] flex flex-col gap-4`}>
-                      {filteredTasks.map((task, i) => {
-                        return (
-                          <TaskCard
-                            key={task.id}
-                            task={task}
-                            index={i}
-                            clickedTaskID={clickedTaskID}
-                            clickedOnTask={clickedOnTask}
-                            setClickedOnTask={setClickedOnTask}
-                            setClickedTaskID={setClickedTaskID}
-                          />
-                        );
-                      })}
-                    </div>
-                    {clickedOnTask ? (
-                      <TaskView
-                        taskID={clickedTaskID}
-                        tasks={filteredTasks}
-                        organization={organization}
-                        setShow={setClickedOnTask}
-                        setTasks={setTasks}
-                        setFilteredTasks={setFilteredTasks}
+            ) : filteredTasks.length > 0 ? (
+              <div className="flex justify-evenly px-4">
+                <div className={`${clickedOnTask ? 'w-[40%]' : 'w-[720px]'} max-lg:w-[720px] flex flex-col gap-4`}>
+                  {filteredTasks.map((task, i) => {
+                    return (
+                      <TaskCard
+                        key={task.id}
+                        task={task}
+                        index={i}
+                        clickedTaskID={clickedTaskID}
+                        clickedOnTask={clickedOnTask}
+                        setClickedOnTask={setClickedOnTask}
                         setClickedTaskID={setClickedTaskID}
                       />
-                    ) : (
-                      <></>
-                    )}
-                  </div>
-                ) : (
-                  <Mascot message={'There are no tasks available at this time'} />
+                    );
+                  })}
+                </div>
+                {clickedOnTask && (
+                  <TaskView
+                    taskID={clickedTaskID}
+                    tasks={filteredTasks}
+                    organization={organization}
+                    setShow={setClickedOnTask}
+                    setTasks={setTasks}
+                    setFilteredTasks={setFilteredTasks}
+                    setClickedTaskID={setClickedTaskID}
+                  />
                 )}
-              </>
+              </div>
+            ) : (
+              <Mascot message="There are no tasks available at this time" />
             )}
           </div>
         </div>

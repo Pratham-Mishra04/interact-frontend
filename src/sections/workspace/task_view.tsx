@@ -1,22 +1,8 @@
 import { Project, Task } from '@/types';
 import React, { useState } from 'react';
-import { TASK_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
-import Image from 'next/image';
-import {
-  ArrowArcLeft,
-  CalendarX,
-  CheckCircle,
-  CheckSquare,
-  Circle,
-  Gear,
-  PlusCircle,
-  Trash,
-  XCircle,
-} from '@phosphor-icons/react';
+import { TASK_URL } from '@/config/routes';
 import Toaster from '@/utils/toaster';
 import { SERVER_ERROR } from '@/config/errors';
-import moment from 'moment';
-import EditTask from './edit_task';
 import deleteHandler from '@/handlers/delete_handler';
 import ConfirmDelete from '@/components/common/confirm_delete';
 import { useSelector } from 'react-redux';
@@ -26,6 +12,8 @@ import NewSubTask from './new_sub_task';
 import { initialSubTask, initialTask } from '@/types/initials';
 import SubTaskView from './sub_task_view';
 import EditSubTask from './edit_sub_task';
+import TaskComponent from '@/sections/tasks/task_view';
+import EditTask from '@/sections/tasks/edit_task';
 
 interface Props {
   taskID: number;
@@ -47,16 +35,6 @@ const TaskView = ({ taskID, tasks, setShow, setTasks, setFilteredTasks, project,
   const [clickedOnDeleteSubTask, setClickedOnDeleteSubTask] = useState(false);
 
   const task = tasks[taskID] || initialTask;
-
-  const getUserRole = (userID: string) => {
-    var role = '';
-    if (project.userID == userID) role = 'Owner';
-    else
-      project.memberships.forEach(m => {
-        if (m.userID == userID) role = m.role;
-      });
-    return role;
-  };
 
   const user = useSelector(userSelector);
 
@@ -159,18 +137,17 @@ const TaskView = ({ taskID, tasks, setShow, setTasks, setFilteredTasks, project,
 
   return (
     <>
-      {clickedOnEditTask ? (
+      {clickedOnEditTask && (
         <EditTask
+          org={false}
           project={project}
           task={task}
           setShow={setClickedOnEditTask}
           setTasks={setTasks}
           setFilteredTasks={setFilteredTasks}
         />
-      ) : (
-        <></>
       )}
-      {clickedOnEditSubTask ? (
+      {clickedOnEditSubTask && (
         <EditSubTask
           subTask={clickedSubTask}
           task={task}
@@ -178,26 +155,20 @@ const TaskView = ({ taskID, tasks, setShow, setTasks, setFilteredTasks, project,
           setTasks={setTasks}
           setFilteredTasks={setFilteredTasks}
         />
-      ) : (
-        <></>
       )}
-      {clickedOnDeleteTask ? <ConfirmDelete setShow={setClickedOnDeleteTask} handleDelete={handleDelete} /> : <></>}
-      {clickedOnDeleteSubTask ? (
+      {clickedOnDeleteTask && <ConfirmDelete setShow={setClickedOnDeleteTask} handleDelete={handleDelete} />}
+      {clickedOnDeleteSubTask && (
         <ConfirmDelete setShow={setClickedOnDeleteSubTask} handleDelete={handleDeleteSubTask} />
-      ) : (
-        <></>
       )}
-      {clickedOnNewSubTask ? (
+      {clickedOnNewSubTask && (
         <NewSubTask
           setShow={setClickedOnNewSubTask}
           task={task}
           setTasks={setTasks}
           setFilteredTasks={setFilteredTasks}
         />
-      ) : (
-        <></>
       )}
-      {clickedOnViewSubTask ? (
+      {clickedOnViewSubTask && (
         <SubTaskView
           setShow={setClickedOnViewSubTask}
           subTask={clickedSubTask}
@@ -207,202 +178,19 @@ const TaskView = ({ taskID, tasks, setShow, setTasks, setFilteredTasks, project,
           setTasks={setTasks}
           setFilteredTasks={setFilteredTasks}
         />
-      ) : (
-        <></>
       )}
-      {task.isCompleted ? (
-        <div className="absolute flex gap-1 items-center px-2 py-1 rounded-xl text-xs bg-[#bffbbe] max-lg:fixed top-[168px] max-lg:top-navbar right-14 max-lg:right-0 z-[11]">
-          Task Completed
-          <CheckSquare weight="bold" size={16} />
-        </div>
-      ) : moment(task.deadline).isBefore(moment()) ? (
-        <div className="absolute flex gap-1 items-center px-2 py-1 rounded-xl text-xs bg-[#fbbebe] max-lg:fixed top-[168px] max-lg:top-navbar right-14 max-lg:right-0 z-[11]">
-          Deadline Passed
-          <CalendarX weight="bold" size={16} />
-        </div>
-      ) : (
-        <></>
-      )}
-
-      <div className="sticky bg-white max-lg:fixed top-[158px] max-lg:top-navbar max-lg:right-0 w-[640px] max-lg:w-full max-h-[75vh] max-lg:max-h-screen max-lg:h-base max-lg:z-50 max-lg:backdrop-blur-2xl max-lg:backdrop-brightness-90 overflow-y-auto flex flex-col gap-8 p-8 pt-4 font-primary dark:text-white border-[1px] max-lg:border-0 border-primary_btn  dark:border-dark_primary_btn rounded-lg max-lg:rounded-none max-lg:animate-fade_third z-10">
-        <div className="w-full flex flex-col gap-2">
-          <ArrowArcLeft
-            className="cursor-pointer"
-            size={24}
-            onClick={() => {
-              if (setClickedTaskID) setClickedTaskID(-1);
-              setShow(false);
-            }}
-          />
-          <div className="w-full flex justify-between items-center">
-            <div className="text-4xl font-semibold">{task.title}</div>
-            {project.userID == user.id || user.managerProjects.includes(project.id) ? (
-              <div className="flex gap-2">
-                <Gear onClick={() => setClickedOnEditTask(true)} className="cursor-pointer" size={32} />
-                <Trash onClick={() => setClickedOnDeleteTask(true)} className="cursor-pointer" size={32} />
-              </div>
-            ) : (
-              <></>
-            )}
-          </div>
-        </div>
-        <div className="w-full flex flex-col gap-4">
-          <div className="text-lg">{task.description}</div>
-          <div className="w-full flex flex-wrap gap-2">
-            {task.tags.map(tag => {
-              return (
-                <div key={tag} className="text-xs border-black border-[1px] px-2 py-1 rounded-lg">
-                  {tag}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <div className="flex gap-2 items-center">
-          <div>Deadline:</div>
-          <div className="font-semibold">{moment(task.deadline).format('DD-MMM-YY')}</div>
-          <div className="text-xs">({moment(task.deadline).fromNow()})</div>
-        </div>
-        <div className="flex gap-2 items-center">
-          <div> Priority:</div>
-          <div
-            style={{
-              backgroundColor: task.priority == 'high' ? '#fbbebe' : task.priority == 'medium' ? '#fbf9be' : '#bffbbe',
-            }}
-            className="uppercase px-3 py-1 rounded-lg text-sm font-medium"
-          >
-            {task.priority}
-          </div>
-        </div>
-        {task.users.length > 0 ? (
-          <div className="w-full flex flex-col gap-2">
-            <div className="text-xl font-medium">Assigned To</div>
-            <div className="w-full flex flex-wrap justify-around gap-2">
-              {task.users.map(user => {
-                return (
-                  <div
-                    key={user.id}
-                    className="w-[45%] max-lg:w-[48%] max-md:w-full flex gap-4 border-[1px] border-gray-900 rounded-lg p-2"
-                  >
-                    <Image
-                      crossOrigin="anonymous"
-                      width={100}
-                      height={100}
-                      alt={'User Pic'}
-                      src={`${USER_PROFILE_PIC_URL}/${user.profilePic}`}
-                      className={'rounded-full w-16 h-16'}
-                    />
-                    <div className="grow">
-                      <div className="text-xl font-medium">{user.name}</div>
-                      <div className="flex flex-col gap-1">
-                        <div className="text-xs text-gray-600">@{user.username}</div>
-                        <div className="text-sm font-medium">{getUserRole(user.id)}</div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        ) : (
-          <>
-            {project.userID == user.id || user.managerProjects.includes(project.id) ? (
-              <div
-                onClick={() => setClickedOnEditTask(true)}
-                className="w-full text-base bg-gray-100 rounded-xl p-4 hover:scale-105 cursor-pointer transition-ease-300"
-              >
-                <span className="text-xl max-lg:text-lg text-gradient font-semibold">Your task is lonely! </span> and
-                looking for a buddy. Don&apos;t leave it hanging, assign it to a team member and let the magic begin! 🚀
-              </div>
-            ) : (
-              <></>
-            )}
-          </>
-        )}
-
-        {task.subTasks?.length > 0 ? (
-          <div className="w-full flex flex-col gap-2">
-            <div className="flex gap-2 items-center">
-              <div className="text-xl font-medium">Subtasks</div>
-              {isAssignedUser(user.id) && !task.isCompleted ? (
-                <PlusCircle
-                  onClick={() => setClickedOnNewSubTask(true)}
-                  className="bg-gray-50 rounded-full cursor-pointer"
-                  size={24}
-                  weight="bold"
-                />
-              ) : (
-                <></>
-              )}
-            </div>
-            <div className="w-full flex flex-col gap-1">
-              {task.subTasks.map(subtask => {
-                return (
-                  <div
-                    key={subtask.id}
-                    onClick={() => {
-                      setClickedSubTask(subtask);
-                      setClickedOnViewSubTask(true);
-                    }}
-                    className="w-full flex flex-col gap-1 p-2 rounded-xl border-dashed border-[1px] border-gray-600 cursor-pointer"
-                  >
-                    <div className="w-full flex justify-between items-center">
-                      <div className="font-semibold text-xl">{subtask.title}</div>
-                      {subtask.isCompleted ? (
-                        <CheckCircle className="bg-[#bffbbe] rounded-full" size={24} weight="bold" />
-                      ) : moment(subtask.deadline).isAfter(moment()) ? (
-                        <Circle className="bg-[#f4f8af] rounded-full" size={24} weight="bold" />
-                      ) : (
-                        <XCircle className="bg-[#fbbebe] rounded-full" size={24} weight="bold" />
-                      )}
-                    </div>
-                    <div className="text-sm text-gray-600">{subtask.description}</div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        ) : (
-          <>
-            {isAssignedUser(user.id) && !task.isCompleted ? (
-              <div
-                onClick={() => setClickedOnNewSubTask(true)}
-                className="w-full text-base bg-gray-100 rounded-xl p-4 hover:scale-105 cursor-pointer transition-ease-300"
-              >
-                <span className="text-xl max-lg:text-lg text-gradient font-semibold">Divide and conquer! </span> Big
-                tasks can be daunting! Break them down into bite-sized subtasks for smoother sailing. 📋
-              </div>
-            ) : (
-              <></>
-            )}
-          </>
-        )}
-
-        {isAssignedUser(user.id) ? (
-          task.isCompleted ? (
-            <div className="w-full flex justify-center gap-2 border-t-[1px] pt-4 border-[#34343479]">
-              <div className="w-fit text-xl font-semibold text-gradient">Not Completed?</div>
-              <span
-                onClick={toggleComplete}
-                className="text-lg cursor-pointer hover-underline-animation after:bg-dark_primary_btn"
-              >
-                Mark incomplete
-              </span>
-            </div>
-          ) : (
-            <div className="w-full text-center flex flex-col gap-2 border-t-[1px] pt-4 border-[#34343479]">
-              <div
-                onClick={toggleComplete}
-                className="w-fit mx-auto text-xl text-gradient font-semibold hover-underline-animation after:bg-dark_primary_btn cursor-pointer"
-              >
-                Mark Completed
-              </div>
-            </div>
-          )
-        ) : (
-          <></>
-        )}
-      </div>
+      <TaskComponent
+        task={task}
+        accessChecker={user.id == project.userID || user.managerProjects.includes(project.id)}
+        setClickedTaskID={setClickedTaskID}
+        setClickedOnEditTask={setClickedOnEditTask}
+        setClickedOnDeleteTask={setClickedOnDeleteTask}
+        setClickedOnNewSubTask={setClickedOnNewSubTask}
+        setClickedSubTask={setClickedSubTask}
+        setClickedOnViewSubTask={setClickedOnViewSubTask}
+        toggleComplete={toggleComplete}
+        setShow={setShow}
+      />
     </>
   );
 };
