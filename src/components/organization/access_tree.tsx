@@ -237,7 +237,7 @@ const AccessTree = ({ type, setShow }: Props) => {
       canManager: true,
     },
     {
-      task: 'Add Opening Details of Projects',
+      task: 'Edit Opening Details of Projects',
       canMember: false,
       canSenior: true,
       canManager: true,

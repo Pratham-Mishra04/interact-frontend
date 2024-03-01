@@ -215,7 +215,7 @@ const ProjectView = ({
           {...swipeHandler}
           className="w-screen h-screen dark:text-white font-primary fixed top-0 left-0 z-50 flex dark:bg-backdrop backdrop-blur-2xl"
         >
-          {clickedOnEdit ? (
+          {clickedOnEdit && (
             <EditProject
               projectToEdit={project}
               setShow={setClickedOnEdit}
@@ -223,20 +223,12 @@ const ProjectView = ({
               setProjectToEdit={setProject}
               org={checkOrgAccess(ORG_SENIOR)}
             />
-          ) : (
-            <></>
           )}
-          {clickedOnLeave ? (
+          {clickedOnLeave && (
             <ConfirmDelete setShow={setClickedOnLeave} handleDelete={handleLeaveProject} title="Confirm Leave?" />
-          ) : (
-            <></>
           )}
-          {clickedOnDelete ? <ConfirmDelete setShow={setClickedOnDelete} handleDelete={sendOTP} /> : <></>}
-          {clickedOnConfirmDelete ? (
-            <ConfirmOTP setShow={setClickedOnConfirmDelete} handleSubmit={handleDelete} />
-          ) : (
-            <></>
-          )}
+          {clickedOnDelete && <ConfirmDelete setShow={setClickedOnDelete} handleDelete={sendOTP} />}
+          {clickedOnConfirmDelete && <ConfirmOTP setShow={setClickedOnConfirmDelete} handleSubmit={handleDelete} />}
           <div className="max-lg:hidden w-16 h-screen flex flex-col items-center py-3 justify-between max-lg:fixed max-lg:top-0 max-lg:left-0">
             <div className="w-10 h-10 relative">
               <Image
@@ -248,15 +240,13 @@ const ProjectView = ({
                 className={'w-10 h-10 rounded-full cursor-default absolute top-0 left-0 z-10'}
               />
             </div>
-            {clickedProjectIndex != 0 ? (
+            {clickedProjectIndex != 0 && (
               <div
                 onClick={handleClickPrev}
                 className="w-10 h-10 rounded-full flex-center dark:bg-dark_primary_comp_hover cursor-pointer shadow-xl"
               >
                 <CaretLeft size={24} weight="bold" />
               </div>
-            ) : (
-              <></>
             )}
           </div>
           <div className="w-[calc(100vw-128px)] max-lg:w-screen h-screen overflow-hidden pt-3">
@@ -281,7 +271,7 @@ const ProjectView = ({
                     >
                       {project.user.name}
                     </div>
-                    {project.memberships?.length > 0 ? (
+                    {project.memberships?.length > 0 && (
                       <div className="flex gap-1">
                         <div>+</div>
                         <div
@@ -314,8 +304,6 @@ const ProjectView = ({
                           {project.memberships.length} other{project.memberships.length != 1 ? 's' : ''}
                         </div>
                       </div>
-                    ) : (
-                      <></>
                     )}
                   </div>
                 </div>
@@ -338,9 +326,8 @@ const ProjectView = ({
                 placeholder="blur"
                 blurDataURL={project.blurHash}
               />
-
               <div className="w-1/4 max-lg:w-full h-full max-lg:h-fit max-lg:min-h-[calc(100vh-65px-384px)] overflow-y-auto border-gray-300 border-t-[1px] border-r-[1px] dark:border-0 p-4 bg-white dark:bg-dark_primary_comp_hover flex flex-col justify-between gap-4">
-                <div className="w-full h-fit flex flex-col gap-4 -z-10">
+                <div className="w-full h-fit flex flex-col gap-4 z-10">
                   <div className="flex flex-wrap justify-between items-center gap-2">
                     <div className="font-bold text-3xl text-gradient">{project.title}</div>
                     <div className="lg:hidden w-fit">
@@ -391,15 +378,13 @@ const ProjectView = ({
                 </div>
 
                 <div className="w-full mx-auto flex flex-col gap-2 pb-4">
-                  {checkOrgAccess(ORG_SENIOR) || user.editorProjects.includes(project.id) ? (
+                  {(checkOrgAccess(ORG_SENIOR) || user.editorProjects.includes(project.id)) && (
                     <div
                       onClick={() => setClickedOnEdit(true)}
                       className="w-full text-lg font-medium border-[1px] border-gray-400 hover:bg-primary_comp_hover active:bg-primary_comp_active  dark:border-dark_primary_btn dark:active:bg-dark_primary_gradient_end py-2 flex-center hover:bg-gradient-to-r dark:hover:from-dark_secondary_gradient_start dark:hover:to-dark_secondary_gradient_end rounded-lg cursor-pointer transition-ease-300"
                     >
                       Edit Project
                     </div>
-                  ) : (
-                    <></>
                   )}
                   {user.managerProjects.includes(project.id) ? (
                     <Link
@@ -409,36 +394,32 @@ const ProjectView = ({
                     >
                       Manage Project
                     </Link>
-                  ) : checkOrgAccess(ORG_SENIOR) ? (
-                    <Link
-                      href={`/organisation/projects/manage/${projectSlugs[clickedProjectIndex]}`}
-                      target="_blank"
-                      className="w-full text-lg font-medium border-[1px] border-gray-400 hover:bg-primary_comp_hover active:bg-primary_comp_active dark:active:bg-dark_primary_gradient_end dark:border-dark_primary_btn py-2 flex-center hover:bg-gradient-to-r dark:hover:from-dark_secondary_gradient_start dark:hover:to-dark_secondary_gradient_end rounded-lg cursor-pointer transition-ease-300"
-                    >
-                      Manage Project
-                    </Link>
                   ) : (
-                    <></>
+                    checkOrgAccess(ORG_SENIOR) && (
+                      <Link
+                        href={`/organisation/projects/manage/${projectSlugs[clickedProjectIndex]}`}
+                        target="_blank"
+                        className="w-full text-lg font-medium border-[1px] border-gray-400 hover:bg-primary_comp_hover active:bg-primary_comp_active dark:active:bg-dark_primary_gradient_end dark:border-dark_primary_btn py-2 flex-center hover:bg-gradient-to-r dark:hover:from-dark_secondary_gradient_start dark:hover:to-dark_secondary_gradient_end rounded-lg cursor-pointer transition-ease-300"
+                      >
+                        Manage Project
+                      </Link>
+                    )
                   )}
-                  {checkOrgAccess(ORG_MANAGER) ? (
+                  {checkOrgAccess(ORG_MANAGER) && (
                     <div
                       onClick={() => setClickedOnDelete(true)}
                       className="w-full text-lg font-medium py-2 flex-center border-[1px] border-primary_danger hover:text-white hover:bg-primary_danger rounded-lg cursor-pointer transition-ease-300"
                     >
                       Delete Project
                     </div>
-                  ) : (
-                    <></>
                   )}
-                  {user.memberProjects.includes(project.id) ? (
+                  {user.memberProjects.includes(project.id) && (
                     <div
                       onClick={() => setClickedOnLeave(true)}
                       className="w-full text-lg font-medium py-2 flex-center border-[1px] border-primary_danger hover:text-white hover:bg-primary_danger rounded-lg cursor-pointer transition-ease-300"
                     >
                       Leave Project
                     </div>
-                  ) : (
-                    <></>
                   )}
                 </div>
               </div>
@@ -467,7 +448,7 @@ const ProjectView = ({
               <div className="w-10 h-10 rounded-full"></div>
             )}
           </div>
-          {clickedProjectIndex != 0 ? (
+          {clickedProjectIndex != 0 && (
             <div
               onClick={() => {
                 setClickedProjectIndex(prev => prev - 1);
@@ -477,10 +458,8 @@ const ProjectView = ({
             >
               <CaretLeft size={24} weight="bold" />
             </div>
-          ) : (
-            <></>
           )}
-          {clickedProjectIndex != projectSlugs.length - 1 ? (
+          {clickedProjectIndex != projectSlugs.length - 1 && (
             <div
               onClick={() => {
                 setClickedProjectIndex(prev => prev + 1);
@@ -490,8 +469,6 @@ const ProjectView = ({
             >
               <CaretRight size={24} weight="bold" />
             </div>
-          ) : (
-            <></>
           )}
         </div>
       )}

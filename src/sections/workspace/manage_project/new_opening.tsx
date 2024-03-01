@@ -1,4 +1,4 @@
-import { OPENING_URL, PROJECT_PIC_URL } from '@/config/routes';
+import { OPENING_URL, ORG_URL, PROJECT_PIC_URL } from '@/config/routes';
 import postHandler from '@/handlers/post_handler';
 import { Project } from '@/types';
 import Toaster from '@/utils/toaster';
@@ -6,19 +6,24 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Tags from '@/components/utils/edit_tags';
 import { SERVER_ERROR } from '@/config/errors';
+import { useSelector } from 'react-redux';
+import { currentOrgSelector } from '@/slices/orgSlice';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   project: Project;
   setProject?: React.Dispatch<React.SetStateAction<Project>>;
+  org?: boolean;
 }
 
-const NewOpening = ({ setShow, project, setProject }: Props) => {
+const NewOpening = ({ setShow, project, setProject, org = false }: Props) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState<string[]>([]);
 
   const [mutex, setMutex] = useState(false);
+
+  const currentOrgID = useSelector(currentOrgSelector).id;
 
   const handleSubmit = async () => {
     if (title.trim() == '') {
@@ -45,7 +50,7 @@ const NewOpening = ({ setShow, project, setProject }: Props) => {
       tags,
     };
 
-    const URL = `${OPENING_URL}/${project.id}`;
+    const URL = org ? `${ORG_URL}/${currentOrgID}/openings/${project.id}` : `${OPENING_URL}/${project.id}`;
 
     const res = await postHandler(URL, formData);
 

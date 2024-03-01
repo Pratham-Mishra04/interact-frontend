@@ -4,24 +4,28 @@ import Image from 'next/image';
 import { INVITATION_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import { useSelector } from 'react-redux';
 import { userSelector } from '@/slices/userSlice';
-import { Pen } from '@phosphor-icons/react';
 import moment from 'moment';
 import getInvitationStatus from '@/utils/funcs/get_invitation_status';
 import { SERVER_ERROR } from '@/config/errors';
 import deleteHandler from '@/handlers/delete_handler';
 import Toaster from '@/utils/toaster';
 import ConfirmDelete from '@/components/common/confirm_delete';
+import { currentOrgSelector } from '@/slices/orgSlice';
 
 interface Props {
   invitation: Invitation;
   project: Project;
   setProject?: React.Dispatch<React.SetStateAction<Project>>;
+  org?: boolean;
 }
 
-const InvitationCard = ({ invitation, project, setProject }: Props) => {
+const InvitationCard = ({ invitation, project, setProject, org = false }: Props) => {
   const [clickedOnWithdraw, setClickedOnWithdraw] = useState(false);
   const user = useSelector(userSelector);
 
+  const currentOrgID = useSelector(currentOrgSelector).id;
+
+  //TODO make org managers be able to do this
   const handleWithdraw = async () => {
     const toaster = Toaster.startLoad('Withdrawing Invitation...');
 
@@ -47,10 +51,8 @@ const InvitationCard = ({ invitation, project, setProject }: Props) => {
 
   return (
     <div className="w-full font-primary bg-white dark:bg-transparent dark:text-white border-[1px] border-primary_btn dark:border-dark_primary_btn rounded-md flex justify-start gap-6 p-6 transition-ease-300">
-      {clickedOnWithdraw ? (
+      {clickedOnWithdraw && (
         <ConfirmDelete setShow={setClickedOnWithdraw} handleDelete={handleWithdraw} title="Confirm Withdraw?" />
-      ) : (
-        <></>
       )}
       <Image
         crossOrigin="anonymous"
@@ -72,18 +74,10 @@ const InvitationCard = ({ invitation, project, setProject }: Props) => {
 
         <div className="w-full flex items-center justify-between text-sm">
           <div className="text-gray-400">Sent {moment(invitation.createdAt).format('DD MMM YYYY')}</div>
-          {invitation.status == 0 ? (
-            <>
-              {project.userID == user.id || user.managerProjects.includes(project.id) ? (
-                <div onClick={() => setClickedOnWithdraw(true)} className="text-primary_danger cursor-pointer">
-                  Withdraw Invitation
-                </div>
-              ) : (
-                <></>
-              )}
-            </>
-          ) : (
-            <></>
+          {invitation.status == 0 && (project.userID == user.id || user.managerProjects.includes(project.id)) && (
+            <div onClick={() => setClickedOnWithdraw(true)} className="text-primary_danger cursor-pointer">
+              Withdraw Invitation
+            </div>
           )}
         </div>
       </div>

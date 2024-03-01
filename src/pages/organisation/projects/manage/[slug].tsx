@@ -71,10 +71,10 @@ const ManageProject = ({ slug }: Props) => {
           ) : (
             <>
               <div className={`${active === 0 ? 'block' : 'hidden'}`}>
-                <Openings project={project} setProject={setProject} />
+                <Openings project={project} setProject={setProject} org={true} />
               </div>
               <div className={`${active === 1 ? 'block' : 'hidden'}`}>
-                <Collaborators project={project} setProject={setProject} />
+                <Collaborators project={project} setProject={setProject} org={true} />
               </div>
               {/* <div className={`${active === 2 ? 'block' : 'hidden'}`}>
                 <Chats project={project} />

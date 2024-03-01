@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setManagerProjects, setOwnerProjects, userSelector } from '@/slices/userSlice';
 import EditProject from '@/sections/workspace/edit_project';
 import Link from 'next/link';
-import patchHandler from '@/handlers/patch_handler';
 import Toaster from '@/utils/toaster';
 import deleteHandler from '@/handlers/delete_handler';
 import ConfirmDelete from '../common/confirm_delete';
@@ -90,13 +89,9 @@ const ProjectCard = ({
   const variants = ['w-80', 'w-72', 'w-64', 'w-56', 'h-80', 'h-72', 'h-64', 'h-56'];
   return (
     <>
-      {clickedOnEdit ? (
-        <EditProject projectToEdit={project} setShow={setClickedOnEdit} setProjects={setProjects} />
-      ) : (
-        <></>
-      )}
-      {clickedOnDelete ? <ConfirmDelete setShow={setClickedOnDelete} handleDelete={sendOTP} /> : <></>}
-      {clickedOnConfirmDelete ? <ConfirmOTP setShow={setClickedOnConfirmDelete} handleSubmit={handleDelete} /> : <></>}
+      {clickedOnEdit && <EditProject projectToEdit={project} setShow={setClickedOnEdit} setProjects={setProjects} />}
+      {clickedOnDelete && <ConfirmDelete setShow={setClickedOnDelete} handleDelete={sendOTP} />}
+      {clickedOnConfirmDelete && <ConfirmOTP setShow={setClickedOnConfirmDelete} handleSubmit={handleDelete} />}
       <div
         onClick={() => {
           setClickedOnProject(true);
@@ -106,7 +101,7 @@ const ProjectCard = ({
         className={`w-${size} h-${size} max-lg:w-56 max-lg:h-56 max-md:w-72 max-md:h-72 rounded-lg relative group cursor-pointer transition-ease-out-500`}
       >
         <div className="w-full h-full absolute top-0 hidden group-hover:flex justify-between gap-4 text-white animate-fade_third z-[6] rounded-lg p-2">
-          {checkOrgAccess(ORG_SENIOR) ? (
+          {(checkOrgAccess(ORG_SENIOR) || user.editorProjects.includes(project.id)) && (
             <div
               onClick={el => {
                 el.stopPropagation();
@@ -116,24 +111,20 @@ const ProjectCard = ({
             >
               •••
             </div>
-          ) : (
-            <></>
           )}
 
-          {clickedOnSettings ? (
+          {clickedOnSettings && (
             <div
               onClick={el => el.stopPropagation()}
               className="w-1/2 h-fit flex flex-col absolute top-2 left-12 rounded-2xl glassMorphism p-2"
             >
-              {checkOrgAccess(ORG_SENIOR) || user.editorProjects.includes(project.id) ? (
+              {(checkOrgAccess(ORG_SENIOR) || user.editorProjects.includes(project.id)) && (
                 <div
                   onClick={() => setClickedOnEdit(true)}
                   className="w-full px-4 py-3 hover:bg-[#ffffff78] dark:hover:bg-[#ffffff19] transition-ease-100 rounded-lg"
                 >
                   Edit
                 </div>
-              ) : (
-                <></>
               )}
 
               {user.managerProjects.includes(project.id) ? (
@@ -144,33 +135,29 @@ const ProjectCard = ({
                 >
                   Manage
                 </Link>
-              ) : checkOrgAccess(ORG_SENIOR) ? (
-                <Link
-                  href={`/organisation/projects/manage/${project.slug}`}
-                  target="_blank"
-                  className="w-full px-4 py-3 hover:bg-[#ffffff78] dark:hover:bg-[#ffffff19] transition-ease-100 rounded-lg"
-                >
-                  Manage
-                </Link>
               ) : (
-                <></>
+                checkOrgAccess(ORG_SENIOR) && (
+                  <Link
+                    href={`/organisation/projects/manage/${project.slug}`}
+                    target="_blank"
+                    className="w-full px-4 py-3 hover:bg-[#ffffff78] dark:hover:bg-[#ffffff19] transition-ease-100 rounded-lg"
+                  >
+                    Manage
+                  </Link>
+                )
               )}
 
-              {checkOrgAccess(ORG_MANAGER) || user.managerProjects.includes(project.id) ? (
+              {(checkOrgAccess(ORG_MANAGER) || user.managerProjects.includes(project.id)) && (
                 <div
                   onClick={() => setClickedOnDelete(true)}
                   className="w-full px-4 py-3 hover:bg-[#ffffff78] dark:hover:bg-[#ffffff19] hover:text-primary_danger transition-ease-100 rounded-lg"
                 >
                   Delete
                 </div>
-              ) : (
-                <></>
               )}
             </div>
-          ) : (
-            <></>
           )}
-          {project.isPrivate ? <EyeSlash size={24} /> : <></>}
+          {project.isPrivate && <EyeSlash size={24} />}
         </div>
         <div className="w-full h-full rounded-lg absolute top-0 left-0 bg-gradient-to-b from-[#00000084] z-[5] to-transparent opacity-0 group-hover:opacity-100 transition-ease-300"></div>
         <Image

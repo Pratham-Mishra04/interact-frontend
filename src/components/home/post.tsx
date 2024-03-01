@@ -122,59 +122,48 @@ const Post = ({ post, showLowerPost = true, showImage = true, isRepost = false, 
         !isRepost ? 'dark:border-b-[1px] p-4' : 'dark:border-b-0 p-2'
       }`}
     >
-      {noUserClick ? <SignUp setShow={setNoUserClick} /> : <></>}
-      {clickedOnDelete ? <ConfirmDelete setShow={setClickedOnDelete} handleDelete={handleDelete} /> : <></>}
-      {clickedOnReport ? <Report postID={post.id} setShow={setClickedOnReport} /> : <></>}
-      {clickedOnOptions ? (
-        <>
-          {clickedOnEdit || (post.userID == loggedInUser.id && isRepost) ? (
-            <></>
-          ) : (
-            <div className="w-1/4 h-fit flex flex-col bg-gray-100 bg-opacity-75 dark:bg-transparent absolute top-2 right-12 rounded-xl glassMorphism text-sm p-2 z-10 animate-fade_third">
-              {post.userID == loggedInUser.id || checkOrgAccess(ORG_SENIOR) ? (
-                <div
-                  onClick={() => setClickedOnEdit(true)}
-                  className="w-full px-4 py-2 max-md:p-1 max-md:text-center hover:bg-[#ffffff] dark:hover:bg-[#ffffff19] transition-ease-100 rounded-lg cursor-pointer"
-                >
-                  Edit
-                </div>
-              ) : (
-                <></>
-              )}
-              {post.userID == loggedInUser.id || checkOrgAccess(ORG_SENIOR) ? (
-                <div
-                  onClick={el => {
-                    el.stopPropagation();
-                    setClickedOnDelete(true);
-                  }}
-                  className="w-full px-4 py-2 max-md:p-1 max-md:text-center hover:bg-[#ffffff] dark:hover:bg-[#ffffff19] hover:text-primary_danger transition-ease-100 rounded-lg cursor-pointer"
-                >
-                  Delete
-                </div>
-              ) : (
-                <></>
-              )}
+      {noUserClick && <SignUp setShow={setNoUserClick} />}
+      {clickedOnDelete && <ConfirmDelete setShow={setClickedOnDelete} handleDelete={handleDelete} />}
+      {clickedOnReport && <Report postID={post.id} setShow={setClickedOnReport} />}
+      {clickedOnOptions &&
+        (clickedOnEdit || (post.userID == loggedInUser.id && isRepost) ? (
+          <></>
+        ) : (
+          <div className="w-1/4 h-fit flex flex-col bg-gray-100 bg-opacity-75 dark:bg-transparent absolute top-2 right-12 rounded-xl glassMorphism text-sm p-2 z-10 animate-fade_third">
+            {(post.userID == loggedInUser.id || checkOrgAccess(ORG_SENIOR)) && (
+              <div
+                onClick={() => setClickedOnEdit(true)}
+                className="w-full px-4 py-2 max-md:p-1 max-md:text-center hover:bg-[#ffffff] dark:hover:bg-[#ffffff19] transition-ease-100 rounded-lg cursor-pointer"
+              >
+                Edit
+              </div>
+            )}
+            {(post.userID == loggedInUser.id || checkOrgAccess(ORG_SENIOR)) && (
+              <div
+                onClick={el => {
+                  el.stopPropagation();
+                  setClickedOnDelete(true);
+                }}
+                className="w-full px-4 py-2 max-md:p-1 max-md:text-center hover:bg-[#ffffff] dark:hover:bg-[#ffffff19] hover:text-primary_danger transition-ease-100 rounded-lg cursor-pointer"
+              >
+                Delete
+              </div>
+            )}
 
-              {post.userID != loggedInUser.id ? (
-                <div
-                  onClick={el => {
-                    el.stopPropagation();
-                    if (userID == '') setNoUserClick(true);
-                    else setClickedOnReport(true);
-                  }}
-                  className="w-full px-4 py-2 max-md:p-1 max-md:text-center hover:bg-[#ffffff] dark:hover:bg-[#ffffff19] hover:text-primary_danger transition-ease-100 rounded-lg cursor-pointer"
-                >
-                  Report
-                </div>
-              ) : (
-                <></>
-              )}
-            </div>
-          )}
-        </>
-      ) : (
-        <></>
-      )}
+            {post.userID != loggedInUser.id && (
+              <div
+                onClick={el => {
+                  el.stopPropagation();
+                  if (userID == '') setNoUserClick(true);
+                  else setClickedOnReport(true);
+                }}
+                className="w-full px-4 py-2 max-md:p-1 max-md:text-center hover:bg-[#ffffff] dark:hover:bg-[#ffffff19] hover:text-primary_danger transition-ease-100 rounded-lg cursor-pointer"
+              >
+                Report
+              </div>
+            )}
+          </div>
+        ))}
       <div className="h-full">
         <Link
           href={`${
@@ -214,25 +203,21 @@ const Post = ({ post, showLowerPost = true, showImage = true, isRepost = false, 
             {clickedOnEdit || (post.userID == loggedInUser.id && isRepost) ? (
               <></>
             ) : (
-              <>
-                {showLowerPost ? (
-                  <div
-                    onClick={el => {
-                      el.stopPropagation();
-                      setClickedOnOptions(prev => !prev);
-                    }}
-                    className="text-xxs cursor-pointer"
-                  >
-                    •••
-                  </div>
-                ) : (
-                  <></>
-                )}
-              </>
+              showLowerPost && (
+                <div
+                  onClick={el => {
+                    el.stopPropagation();
+                    setClickedOnOptions(prev => !prev);
+                  }}
+                  className="text-xxs cursor-pointer"
+                >
+                  •••
+                </div>
+              )
             )}
           </div>
         </div>
-        {post.images && post.images.length > 0 && showImage ? (
+        {post.images && post.images.length > 0 && showImage && (
           <CarouselProvider
             naturalSlideHeight={580}
             naturalSlideWidth={1000}
@@ -242,7 +227,7 @@ const Post = ({ post, showLowerPost = true, showImage = true, isRepost = false, 
             dragEnabled={post.images.length != 1}
             touchEnabled={post.images.length != 1}
             isPlaying={false}
-            className={`w-full rounded-lg flex flex-col items-center justify-center relative`}
+            className="w-full rounded-lg flex flex-col items-center justify-center relative"
           >
             <Slider className={`w-full rounded-lg`}>
               {post.images.map((image, index) => {
@@ -272,8 +257,6 @@ const Post = ({ post, showLowerPost = true, showImage = true, isRepost = false, 
               })}
             </div>
           </CarouselProvider>
-        ) : (
-          <></>
         )}
         {clickedOnEdit ? (
           <div className="relative">
@@ -313,7 +296,7 @@ const Post = ({ post, showLowerPost = true, showImage = true, isRepost = false, 
             {renderContentWithLinks(post.content, post.taggedUsers)}
           </div>
         )}
-        {showLowerPost ? <LowerPost setFeed={setFeed} post={post} isRepost={isRepost} /> : <></>}
+        {showLowerPost && <LowerPost setFeed={setFeed} post={post} isRepost={isRepost} />}
       </div>
     </div>
   );

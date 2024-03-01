@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { Opening, Project } from '@/types';
-import { OPENING_URL, PROJECT_PIC_URL } from '@/config/routes';
+import { OPENING_URL, ORG_URL, PROJECT_PIC_URL } from '@/config/routes';
 import { Pen, TrashSimple } from '@phosphor-icons/react';
 import EditOpening from '@/sections/workspace/manage_project/edit_opening';
 import { userSelector } from '@/slices/userSlice';
@@ -12,17 +12,23 @@ import { SERVER_ERROR } from '@/config/errors';
 import deleteHandler from '@/handlers/delete_handler';
 import Toaster from '@/utils/toaster';
 import moment from 'moment';
+import checkOrgAccess from '@/utils/funcs/check_org_access';
+import { ORG_SENIOR } from '@/config/constants';
+import { currentOrgSelector } from '@/slices/orgSlice';
 
 interface Props {
   opening: Opening;
   project: Project;
   setProject?: React.Dispatch<React.SetStateAction<Project>>;
+  org?: boolean;
 }
 
-const OpeningCard = ({ opening, project, setProject }: Props) => {
+const OpeningCard = ({ opening, project, setProject, org = false }: Props) => {
   const [clickedOnEdit, setClickedOnEdit] = useState(false);
   const [clickedOnDelete, setClickedOnDelete] = useState(false);
   const user = useSelector(userSelector);
+
+  const currentOrgID = useSelector(currentOrgSelector).id;
 
   useEffect(() => {
     const oid = new URLSearchParams(window.location.search).get('oid');
@@ -37,7 +43,7 @@ const OpeningCard = ({ opening, project, setProject }: Props) => {
   const handleDelete = async () => {
     const toaster = Toaster.startLoad('Deleting Opening...');
 
-    const URL = `${OPENING_URL}/${opening.id}`;
+    const URL = org ? `${ORG_URL}/${currentOrgID}/openings/${opening.id}` : `${OPENING_URL}/${opening.id}`;
 
     const res = await deleteHandler(URL);
 
@@ -57,10 +63,15 @@ const OpeningCard = ({ opening, project, setProject }: Props) => {
     }
   };
 
+  const hasAccess = useMemo(
+    () => project.userID == user.id || user.managerProjects.includes(project.id) || (org && checkOrgAccess(ORG_SENIOR)),
+    [project, user]
+  );
+
   return (
     <>
       {clickedOnEdit && (
-        <EditOpening setShow={setClickedOnEdit} opening={opening} project={project} setProject={setProject} />
+        <EditOpening setShow={setClickedOnEdit} opening={opening} project={project} setProject={setProject} org={org} />
       )}
       {clickedOnDelete && <ConfirmDelete setShow={setClickedOnDelete} handleDelete={handleDelete} />}
       <div className="w-full bg-gray-100 hover:bg-white dark:hover:bg-transparent dark:bg-transparent font-primary dark:text-white border-[1px] border-primary_btn dark:border-dark_primary_btn rounded-lg p-8 max-md:p-4 flex items-center gap-12 max-md:gap-4 transition-ease-300">
@@ -84,30 +95,23 @@ const OpeningCard = ({ opening, project, setProject }: Props) => {
               <div className="text-sm mt-2">
                 {opening.noApplications} Application{opening.noApplications == 1 ? '' : 's'}
               </div>
-              {project.userID == user.id || user.managerProjects.includes(project.id) ? (
-                <>
-                  {opening.noApplications > 0 ? (
-                    <Link
-                      href={`/workspace/manage/applications/${opening.id}`}
-                      className="w-fit text-[#15bffd] text-sm max-md:text-sm underline underline-offset-4"
-                    >
-                      View
-                    </Link>
-                  ) : (
-                    <div className="w-fit dark:text-white text-sm max-md:text-sm underline underline-offset-4 cursor-default">
-                      No applications
-                    </div>
-                  )}
-                </>
-              ) : (
-                <></>
-              )}
+              {hasAccess &&
+                (opening.noApplications > 0 ? (
+                  <Link
+                    href={`/workspace/manage/applications/${opening.id}`}
+                    className="w-fit text-[#15bffd] text-sm max-md:text-sm underline underline-offset-4"
+                  >
+                    View
+                  </Link>
+                ) : (
+                  <div className="w-fit dark:text-white text-sm max-md:text-sm underline underline-offset-4 cursor-default">
+                    No applications
+                  </div>
+                ))}
             </div>
             <div className="flex gap-3">
-              {(project.userID == user.id || user.editorProjects.includes(project.id)) && (
-                <Pen onClick={() => setClickedOnEdit(true)} className="cursor-pointer" size={24} />
-              )}
-              {(project.userID == user.id || user.managerProjects.includes(project.id)) && (
+              {hasAccess && <Pen onClick={() => setClickedOnEdit(true)} className="cursor-pointer" size={24} />}
+              {hasAccess && (
                 <TrashSimple
                   onClick={() => setClickedOnDelete(true)}
                   className="cursor-pointer"

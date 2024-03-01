@@ -1,4 +1,4 @@
-import { MEMBERSHIP_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
+import { MEMBERSHIP_URL, ORG_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import postHandler from '@/handlers/post_handler';
 import { Invitation, Project, User } from '@/types';
 import Toaster from '@/utils/toaster';
@@ -8,11 +8,16 @@ import { MagnifyingGlass } from '@phosphor-icons/react';
 import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
 import Loader from '@/components/common/loader';
+import { useSelector } from 'react-redux';
+import { currentOrgSelector } from '@/slices/orgSlice';
+import PrimaryButton from '@/components/buttons/primary_btn';
+import { userIDSelector } from '@/slices/userSlice';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   project: Project;
   setProject?: React.Dispatch<React.SetStateAction<Project>>;
+  org?: boolean;
 }
 
 interface InvitationSlice {
@@ -20,7 +25,7 @@ interface InvitationSlice {
   title: string;
 }
 
-const AddCollaborators = ({ setShow, project, setProject }: Props) => {
+const AddCollaborators = ({ setShow, project, setProject, org = false }: Props) => {
   const [users, setUsers] = useState<User[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
@@ -31,6 +36,9 @@ const AddCollaborators = ({ setShow, project, setProject }: Props) => {
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [invitationSlices, setInvitationSlices] = useState<InvitationSlice[]>([]);
   const [clickedInvitationSliceIndex, setClickedInvitationSliceIndex] = useState(-1);
+
+  const currentOrgID = useSelector(currentOrgSelector).id;
+  const loggedInUserID = useSelector(userIDSelector);
 
   let oldAbortController: AbortController | null = null;
 
@@ -47,7 +55,8 @@ const AddCollaborators = ({ setShow, project, setProject }: Props) => {
     const URL = `${MEMBERSHIP_URL}/non_members/${project.id}?search=${key}`;
     const res = await getHandler(URL, abortController.signal);
     if (res.statusCode == 200) {
-      setUsers(res.data.users || []);
+      const userData: User[] = res.data.users || [];
+      setUsers(userData.filter(u => u.id != loggedInUserID));
       setLoading(false);
     } else {
       if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
@@ -92,7 +101,9 @@ const AddCollaborators = ({ setShow, project, setProject }: Props) => {
 
     const toaster = Toaster.startLoad('Sending Invitations');
 
-    const URL = `${MEMBERSHIP_URL}/project/${project.id}`;
+    const URL = org
+      ? `${ORG_URL}/${currentOrgID}/project/membership/${project.id}`
+      : `${MEMBERSHIP_URL}/project/${project.id}`;
 
     let completeCount = 0;
     let attemptedCount = 0;
@@ -145,39 +156,33 @@ const AddCollaborators = ({ setShow, project, setProject }: Props) => {
                 {loading ? (
                   <Loader />
                 ) : (
-                  <>
-                    {users.map(user => {
-                      return (
-                        <div
-                          key={user.id}
-                          onClick={() => handleClickUser(user)}
-                          className={`w-full flex gap-2 rounded-lg p-2 ${
-                            selectedUsers.includes(user)
-                              ? 'bg-primary_comp_hover dark:bg-dark_primary_comp_active'
-                              : 'hover:bg-primary_comp dark:bg-dark_primary_comp dark:hover:bg-dark_primary_comp_hover'
-                          } cursor-pointer transition-ease-200`}
-                        >
-                          <Image
-                            crossOrigin="anonymous"
-                            width={50}
-                            height={50}
-                            alt={'User Pic'}
-                            src={`${USER_PROFILE_PIC_URL}/${user.profilePic}`}
-                            className={'rounded-full w-12 h-12 cursor-pointer border-[1px] border-black'}
-                          />
-                          <div className="w-5/6 flex flex-col">
-                            <div className="text-lg font-bold">{user.name}</div>
-                            <div className="text-sm dark:text-gray-200">@{user.username}</div>
-                            {user.tagline && user.tagline != '' ? (
-                              <div className="text-sm mt-2">{user.tagline}</div>
-                            ) : (
-                              <></>
-                            )}
-                          </div>
+                  users.map(user => {
+                    return (
+                      <div
+                        key={user.id}
+                        onClick={() => handleClickUser(user)}
+                        className={`w-full flex gap-2 rounded-lg p-2 ${
+                          selectedUsers.includes(user)
+                            ? 'bg-primary_comp_hover dark:bg-dark_primary_comp_active'
+                            : 'hover:bg-primary_comp dark:bg-dark_primary_comp dark:hover:bg-dark_primary_comp_hover'
+                        } cursor-pointer transition-ease-200`}
+                      >
+                        <Image
+                          crossOrigin="anonymous"
+                          width={50}
+                          height={50}
+                          alt={'User Pic'}
+                          src={`${USER_PROFILE_PIC_URL}/${user.profilePic}`}
+                          className={'rounded-full w-12 h-12 cursor-pointer border-[1px] border-black'}
+                        />
+                        <div className="w-5/6 flex flex-col">
+                          <div className="text-lg font-bold">{user.name}</div>
+                          <div className="text-sm dark:text-gray-200">@{user.username}</div>
+                          {user.tagline && <div className="text-sm mt-2">{user.tagline}</div>}
                         </div>
-                      );
-                    })}
-                  </>
+                      </div>
+                    );
+                  })
                 )}
               </div>
             </>
@@ -242,26 +247,11 @@ const AddCollaborators = ({ setShow, project, setProject }: Props) => {
         </div>
         <div className={`w-full flex ${status == 0 ? 'justify-end' : 'justify-between'}`}>
           {status == 0 ? (
-            <div
-              onClick={() => setStatus(1)}
-              className="w-32 p-2 flex-center dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active transition-ease-300 cursor-pointer rounded-lg font-medium text-lg"
-            >
-              Next
-            </div>
+            <PrimaryButton onClick={() => setStatus(1)} label="Next" />
           ) : (
             <>
-              <div
-                onClick={() => setStatus(0)}
-                className="w-32 p-2 flex-center dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active transition-ease-300 cursor-pointer rounded-lg font-medium text-lg"
-              >
-                Prev
-              </div>
-              <div
-                onClick={handleSubmit}
-                className="w-32 p-2 flex-center dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active transition-ease-300 cursor-pointer rounded-lg font-medium text-lg"
-              >
-                Submit
-              </div>
+              <PrimaryButton onClick={() => setStatus(0)} label="Prev" />
+              <PrimaryButton onClick={handleSubmit} label="Submit" />
             </>
           )}
         </div>

@@ -113,22 +113,20 @@ const RePost = ({ post, showLowerPost = true, setFeed, org = false }: Props) => 
       onClick={() => setClickedOnOptions(false)}
       className="w-full relative overflow-clip bg-white dark:bg-transparent font-primary flex gap-1 rounded-lg dark:rounded-none dark:text-white p-4 border-gray-300 border-[1px] dark:border-x-0 dark:border-t-0 dark:border-dark_primary_btn dark:border-b-[1px] max-md:p-4"
     >
-      {noUserClick ? <SignUp setShow={setNoUserClick} /> : <></>}
-      {clickedOnDelete ? <ConfirmDelete setShow={setClickedOnDelete} handleDelete={handleDelete} /> : <></>}
-      {clickedOnReport ? <Report postID={post.id} setShow={setClickedOnReport} /> : <></>}
-      {!clickedOnEdit && clickedOnOptions ? (
+      {noUserClick && <SignUp setShow={setNoUserClick} />}
+      {clickedOnDelete && <ConfirmDelete setShow={setClickedOnDelete} handleDelete={handleDelete} />}
+      {clickedOnReport && <Report postID={post.id} setShow={setClickedOnReport} />}
+      {!clickedOnEdit && clickedOnOptions && (
         <div className="w-1/4 h-fit flex flex-col bg-gray-100 bg-opacity-75 dark:bg-transparent absolute top-2 right-12 rounded-xl glassMorphism text-sm p-2 z-10 animate-fade_third">
-          {post.userID == loggedInUser.id || checkOrgAccess(ORG_SENIOR) ? (
+          {(post.userID == loggedInUser.id || checkOrgAccess(ORG_SENIOR)) && (
             <div
               onClick={() => setClickedOnEdit(true)}
               className="w-full px-4 py-2 max-md:p-1 max-md:text-center hover:bg-[#ffffff] dark:hover:bg-[#ffffff19] transition-ease-100 rounded-lg cursor-pointer"
             >
               Edit
             </div>
-          ) : (
-            <></>
           )}
-          {post.userID == loggedInUser.id || checkOrgAccess(ORG_SENIOR) ? (
+          {(post.userID == loggedInUser.id || checkOrgAccess(ORG_SENIOR)) && (
             <div
               onClick={el => {
                 el.stopPropagation();
@@ -138,11 +136,9 @@ const RePost = ({ post, showLowerPost = true, setFeed, org = false }: Props) => 
             >
               Delete
             </div>
-          ) : (
-            <></>
           )}
 
-          {post.userID != loggedInUser.id ? (
+          {post.userID != loggedInUser.id && (
             <div
               onClick={el => {
                 el.stopPropagation();
@@ -153,12 +149,8 @@ const RePost = ({ post, showLowerPost = true, setFeed, org = false }: Props) => 
             >
               Report
             </div>
-          ) : (
-            <></>
           )}
         </div>
-      ) : (
-        <></>
       )}
       <div className="h-full">
         <Link
@@ -195,7 +187,7 @@ const RePost = ({ post, showLowerPost = true, setFeed, org = false }: Props) => 
           </Link>
           <div className="flex gap-2 text-xs text-gray-400">
             <div>{moment(post.postedAt).fromNow()}</div>
-            {!clickedOnEdit && showLowerPost ? (
+            {!clickedOnEdit && showLowerPost && (
               <div
                 onClick={el => {
                   el.stopPropagation();
@@ -205,8 +197,6 @@ const RePost = ({ post, showLowerPost = true, setFeed, org = false }: Props) => 
               >
                 •••
               </div>
-            ) : (
-              <></>
             )}
           </div>
         </div>

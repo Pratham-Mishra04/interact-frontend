@@ -1,23 +1,25 @@
-import { MEMBERSHIP_URL, OPENING_URL, PROJECT_PIC_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
-import postHandler from '@/handlers/post_handler';
-import { Membership, Opening, Project } from '@/types';
+import { MEMBERSHIP_URL, ORG_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
+import { Membership, Project } from '@/types';
 import Toaster from '@/utils/toaster';
 import React, { useState } from 'react';
 import Image from 'next/image';
-import Tags from '@/components/utils/edit_tags';
 import patchHandler from '@/handlers/patch_handler';
-import { PROJECT_EDITOR, PROJECT_MANAGER, PROJECT_MEMBER } from '@/config/constants';
-import Cookies from 'js-cookie';
+import { ORG_MANAGER, PROJECT_EDITOR, PROJECT_MANAGER, PROJECT_MEMBER } from '@/config/constants';
 import { SERVER_ERROR } from '@/config/errors';
+import { currentOrgSelector } from '@/slices/orgSlice';
+import { useSelector } from 'react-redux';
+import { userIDSelector } from '@/slices/userSlice';
+import checkOrgAccess from '@/utils/funcs/check_org_access';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   membership: Membership;
   project: Project;
   setProject?: React.Dispatch<React.SetStateAction<Project>>;
+  org?: boolean;
 }
 
-const EditCollaborator = ({ setShow, membership, project, setProject }: Props) => {
+const EditCollaborator = ({ setShow, membership, project, setProject, org = false }: Props) => {
   const [title, setTitle] = useState(membership.title);
   const [role, setRole] = useState(membership.role);
 
@@ -25,7 +27,9 @@ const EditCollaborator = ({ setShow, membership, project, setProject }: Props) =
 
   const [mutex, setMutex] = useState(false);
 
-  const userID = Cookies.get('id');
+  const userID = useSelector(userIDSelector);
+
+  const currentOrgID = useSelector(currentOrgSelector).id;
 
   const handleSubmit = async () => {
     if (mutex) return;
@@ -38,7 +42,9 @@ const EditCollaborator = ({ setShow, membership, project, setProject }: Props) =
       role,
     };
 
-    const URL = `${MEMBERSHIP_URL}/${membership.id}`;
+    const URL = org
+      ? `${ORG_URL}/${currentOrgID}/project/membership/${membership.id}`
+      : `${MEMBERSHIP_URL}/${membership.id}`;
 
     const res = await patchHandler(URL, formData);
 
@@ -67,7 +73,9 @@ const EditCollaborator = ({ setShow, membership, project, setProject }: Props) =
   };
 
   const canEditRoles =
-    project.userID == userID ? [PROJECT_MEMBER, PROJECT_EDITOR, PROJECT_MANAGER] : [PROJECT_MEMBER, PROJECT_EDITOR];
+    project.userID == userID || (org && checkOrgAccess(ORG_MANAGER))
+      ? [PROJECT_MEMBER, PROJECT_EDITOR, PROJECT_MANAGER]
+      : [PROJECT_MEMBER, PROJECT_EDITOR];
 
   return (
     <>

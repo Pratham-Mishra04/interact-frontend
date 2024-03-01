@@ -1,4 +1,4 @@
-import { OPENING_URL, PROJECT_PIC_URL } from '@/config/routes';
+import { OPENING_URL, ORG_URL, PROJECT_PIC_URL } from '@/config/routes';
 import { Opening, Project } from '@/types';
 import Toaster from '@/utils/toaster';
 import React, { useState } from 'react';
@@ -6,20 +6,25 @@ import Image from 'next/image';
 import Tags from '@/components/utils/edit_tags';
 import patchHandler from '@/handlers/patch_handler';
 import { SERVER_ERROR } from '@/config/errors';
+import { useSelector } from 'react-redux';
+import { currentOrgSelector } from '@/slices/orgSlice';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   opening: Opening;
   project: Project;
   setProject?: React.Dispatch<React.SetStateAction<Project>>;
+  org?: boolean;
 }
 
-const EditOpening = ({ setShow, opening, project, setProject }: Props) => {
+const EditOpening = ({ setShow, opening, project, setProject, org = false }: Props) => {
   const [description, setDescription] = useState(opening.description);
   const [tags, setTags] = useState<string[]>(opening.tags || []);
-  const [active, setActive] = useState(opening.active); //TODO have different manager route for this
+  const [active, setActive] = useState(opening.active);
 
   const [mutex, setMutex] = useState(false);
+
+  const currentOrgID = useSelector(currentOrgSelector).id;
 
   const handleSubmit = async () => {
     if (tags.length == 0) {
@@ -38,7 +43,7 @@ const EditOpening = ({ setShow, opening, project, setProject }: Props) => {
       active,
     };
 
-    const URL = `${OPENING_URL}/${opening.id}`;
+    const URL = org ? `${ORG_URL}/${currentOrgID}/openings/${opening.id}` : `${OPENING_URL}/${opening.id}`;
 
     const res = await patchHandler(URL, formData);
 
