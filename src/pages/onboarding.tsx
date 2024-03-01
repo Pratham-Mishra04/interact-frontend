@@ -27,6 +27,7 @@ import { Id } from 'react-toastify';
 import { ReactSVG } from 'react-svg';
 import ProgressBar from '@/components/onboarding/progress_bar';
 import UserCard from '@/components/onboarding/user_card';
+import DummyUserCard from '@/components/onboarding/dummy_user_card';
 
 const Onboarding = () => {
   const [clickedOnBuild, setClickedOnBuild] = useState(false);
@@ -481,8 +482,29 @@ const Onboarding = () => {
                 </div>
               </div>
             </div>
-            <div className="w-2/5 h-full max-md:hidden flex-center flex-col gap-8 relative bg-slate-100">
-              <div className="w-5/6">
+            <div className="w-2/5 h-full max-md:hidden overflow-clip flex-center flex-col gap-8 relative bg-slate-100">
+              <div className="w-full h-full absolute -top-32 flex flex-col items-center gap-4 rotate-12 animate-fade_1">
+                <div className="w-[250%] flex gap-4 animate-onboarding_dummy_user_card">
+                  <DummyUserCard />
+                  <DummyUserCard />
+                  <DummyUserCard />
+                  <DummyUserCard />
+                </div>
+                <div className="w-[250%] flex gap-4 animate-onboarding_dummy_user_card_backwards">
+                  <DummyUserCard />
+                  <DummyUserCard />
+                  <DummyUserCard />
+                  <DummyUserCard />
+                </div>
+                <div className="w-[250%] flex gap-4 animate-onboarding_dummy_user_card">
+                  <DummyUserCard />
+                  <DummyUserCard />
+                  <DummyUserCard />
+                  <DummyUserCard />
+                </div>
+              </div>
+
+              <div className="w-5/6 z-10">
                 <UserCard
                   name={name}
                   username={user.username}

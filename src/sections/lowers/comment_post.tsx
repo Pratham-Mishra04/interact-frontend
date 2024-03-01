@@ -31,7 +31,7 @@ const CommentPost = ({ post, setShow, numComments, setNoComments }: Props) => {
           <X size={24} weight="bold" />
         </div>
         <div className="font-bold text-4xl text-gray-800 dark:text-white">Comments ({numComments})</div>
-        <PostComponent post={post} showLowerPost={false} showImage={false} />
+        <PostComponent post={post} showLowerPost={false} showImage={false} clamp={true} />
         <CommentBox item={post} type="post" setNoComments={setNoComments} />
       </div>
       <div

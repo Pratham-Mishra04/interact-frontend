@@ -86,6 +86,8 @@ const config: Config = {
         shrink: 'shrink 0.1s ease-in-out 0.4s forwards',
         reveal: 'reveal 0.3s ease-in-out',
         reveal_reverse: 'reveal_reverse 0.3s ease-in-out',
+        onboarding_dummy_user_card: 'onboarding_dummy_user_card 3s ease-in-out 0.4s infinite',
+        onboarding_dummy_user_card_backwards: 'onboarding_dummy_user_card_backwards 3s ease-in-out 0.4s infinite',
       },
       keyframes: {
         shrink: {
@@ -103,6 +105,14 @@ const config: Config = {
         reveal_reverse: {
           '0%': { transform: 'translateY(0px)', opacity: '1' },
           '100%': { transform: 'translateY(20px)', opacity: '0' },
+        },
+        onboarding_dummy_user_card: {
+          '0%': { transform: 'translateX(316px)' },
+          '100%': { transform: 'translateX(0px)' },
+        },
+        onboarding_dummy_user_card_backwards: {
+          '0%': { transform: 'translateX(0px)' },
+          '100%': { transform: 'translateX(316px)' },
         },
       },
       lineClamp: {

@@ -98,7 +98,7 @@ const SharePost = ({ post, setShow }: Props) => {
           <X size={24} weight="bold" />
         </div>
         <div className="text-3xl text-center text-gray-900 font-bold">Share this Post</div>
-        <PostComponent post={post} showLowerPost={false} showImage={false} />
+        <PostComponent post={post} showLowerPost={false} showImage={false} clamp={true} />
         <div className="w-full h-[400px] overflow-y-auto flex flex-col justify-between gap-2">
           {loading ? (
             <Loader />

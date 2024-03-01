@@ -30,9 +30,18 @@ interface Props {
   isRepost?: boolean;
   setFeed?: React.Dispatch<React.SetStateAction<any[]>>;
   org?: boolean;
+  clamp?: boolean;
 }
 
-const Post = ({ post, showLowerPost = true, showImage = true, isRepost = false, setFeed, org = false }: Props) => {
+const Post = ({
+  post,
+  showLowerPost = true,
+  showImage = true,
+  isRepost = false,
+  setFeed,
+  org = false,
+  clamp = false,
+}: Props) => {
   const loggedInUser = useSelector(userSelector);
   const [clickedOnOptions, setClickedOnOptions] = useState(false);
   const [clickedOnEdit, setClickedOnEdit] = useState(false);
@@ -118,7 +127,7 @@ const Post = ({ post, showLowerPost = true, showImage = true, isRepost = false, 
   return (
     <div
       onClick={() => setClickedOnOptions(false)}
-      className={`w-full relative overflow-clip bg-white dark:bg-transparent font-primary flex gap-1 rounded-lg dark:rounded-none dark:text-white border-gray-300 border-[1px] dark:border-x-0 dark:border-t-0 dark:border-dark_primary_btn ${
+      className={`w-full relative bg-white dark:bg-transparent font-primary flex gap-1 rounded-lg dark:rounded-none dark:text-white border-gray-300 border-[1px] dark:border-x-0 dark:border-t-0 dark:border-dark_primary_btn ${
         !isRepost ? 'dark:border-b-[1px] p-4' : 'dark:border-b-0 p-2'
       }`}
     >
@@ -292,7 +301,7 @@ const Post = ({ post, showLowerPost = true, showImage = true, isRepost = false, 
             </div>
           </div>
         ) : (
-          <div className="w-full text-sm  whitespace-pre-wrap mb-2">
+          <div className={`w-full text-sm  whitespace-pre-wrap mb-2 ${clamp && 'line-clamp-6'}`}>
             {renderContentWithLinks(post.content, post.taggedUsers)}
           </div>
         )}
