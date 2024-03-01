@@ -17,7 +17,7 @@ import ConfirmOTP from '../common/confirm_otp';
 interface Props {
   index: number;
   project: Project;
-  size?: number;
+  size?: number | string;
   setProjects?: React.Dispatch<React.SetStateAction<Project[]>>;
   setClickedOnProject: React.Dispatch<React.SetStateAction<boolean>>;
   setClickedProjectIndex: React.Dispatch<React.SetStateAction<number>>;
@@ -76,16 +76,27 @@ const ProjectCard = ({
     }
   };
 
-  const variants = ['w-80', 'w-72', 'w-64', 'w-56', 'h-80', 'h-72', 'h-64', 'h-56'];
+  const variants = [
+    'w-80',
+    'w-80',
+    'w-72',
+    'w-64',
+    'w-[22vw]',
+    'w-[24vw]',
+    'w-56',
+    'w-80',
+    'h-80',
+    'h-72',
+    'h-64',
+    'h-56',
+    'h-[22vw]',
+    'h-[24vw]',
+  ];
   return (
     <>
-      {clickedOnEdit ? (
-        <EditProject projectToEdit={project} setShow={setClickedOnEdit} setProjects={setProjects} />
-      ) : (
-        <></>
-      )}
-      {clickedOnDelete ? <ConfirmDelete setShow={setClickedOnDelete} handleDelete={sendOTP} /> : <></>}
-      {clickedOnConfirmDelete ? <ConfirmOTP setShow={setClickedOnConfirmDelete} handleSubmit={handleDelete} /> : <></>}
+      {clickedOnEdit && <EditProject projectToEdit={project} setShow={setClickedOnEdit} setProjects={setProjects} />}
+      {clickedOnDelete && <ConfirmDelete setShow={setClickedOnDelete} handleDelete={sendOTP} />}
+      {clickedOnConfirmDelete && <ConfirmOTP setShow={setClickedOnConfirmDelete} handleSubmit={handleDelete} />}
 
       <div
         onClick={() => {
@@ -96,7 +107,7 @@ const ProjectCard = ({
         className={`w-${size} h-${size} max-lg:w-56 max-lg:h-56 max-md:w-72 max-md:h-72 rounded-lg relative group cursor-pointer transition-ease-out-500`}
       >
         <div className="w-full h-full absolute top-0 hidden group-hover:flex justify-between gap-4 text-white animate-fade_third z-[6] rounded-lg p-2">
-          {project.userID == user.id || user.editorProjects.includes(project.id) ? (
+          {(project.userID == user.id || user.editorProjects.includes(project.id)) && (
             <div
               onClick={el => {
                 el.stopPropagation();
@@ -106,26 +117,22 @@ const ProjectCard = ({
             >
               •••
             </div>
-          ) : (
-            <></>
           )}
 
-          {clickedOnSettings ? (
+          {clickedOnSettings && (
             <div
               onClick={el => el.stopPropagation()}
               className="w-1/2 h-fit flex flex-col absolute top-2 left-12 rounded-2xl glassMorphism p-2"
             >
-              {project.userID == user.id || user.editorProjects.includes(project.id) ? (
+              {(project.userID == user.id || user.editorProjects.includes(project.id)) && (
                 <div
                   onClick={() => setClickedOnEdit(true)}
                   className="w-full px-4 py-3 hover:bg-[#ffffff78] dark:hover:bg-[#ffffff19] transition-ease-100 rounded-lg"
                 >
                   Edit
                 </div>
-              ) : (
-                <></>
               )}
-              {project.userID == user.id || user.managerProjects.includes(project.id) ? (
+              {(project.userID == user.id || user.managerProjects.includes(project.id)) && (
                 <Link
                   href={`/workspace/manage/${project.slug}`}
                   target="_blank"
@@ -133,24 +140,18 @@ const ProjectCard = ({
                 >
                   Manage
                 </Link>
-              ) : (
-                <></>
               )}
-              {project.userID == user.id ? (
+              {project.userID == user.id && (
                 <div
                   onClick={() => setClickedOnDelete(true)}
                   className="w-full px-4 py-3 hover:bg-[#ffffff78] dark:hover:bg-[#ffffff19] hover:text-primary_danger transition-ease-100 rounded-lg"
                 >
                   Delete
                 </div>
-              ) : (
-                <></>
               )}
             </div>
-          ) : (
-            <></>
           )}
-          {project.isPrivate ? <EyeSlash size={24} /> : <></>}
+          {project.isPrivate && <EyeSlash size={24} />}
         </div>
         <div className="w-full h-full rounded-lg absolute top-0 left-0 bg-gradient-to-b from-[#00000084] z-[5] to-transparent opacity-0 group-hover:opacity-100 transition-ease-300"></div>
         <Image

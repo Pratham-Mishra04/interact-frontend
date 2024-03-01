@@ -68,7 +68,7 @@ const YourProjects = () => {
   }, []);
   return (
     <div className="w-full px-2">
-      {clickedOnNewProject ? <NewProject setShow={setClickedOnNewProject} setProjects={setProjects} /> : <></>}
+      {clickedOnNewProject && <NewProject setShow={setClickedOnNewProject} setProjects={setProjects} />}
 
       <div
         onClick={() => setClickedOnNewProject(true)}
@@ -91,7 +91,7 @@ const YourProjects = () => {
                 navbarOpen ? 'grid-cols-3 px-12 gap-12' : 'grid-cols-4 px-12 gap-8'
               } max-lg:grid-cols-3 max-md:grid-cols-1 max-lg:gap-4 max-md:gap-6 max-md:px-4 max-md:justify-items-center py-8 transition-ease-out-500`}
             >
-              {clickedOnProject ? (
+              {clickedOnProject && (
                 <ProjectView
                   projectSlugs={projects.map(project => project.slug)}
                   clickedProjectIndex={clickedProjectIndex}
@@ -101,15 +101,13 @@ const YourProjects = () => {
                   setFadeIn={setFadeIn}
                   setProjects={setProjects}
                 />
-              ) : (
-                <></>
               )}
               {projects.map((project, index) => {
                 return (
                   <ProjectCard
                     key={project.id}
                     index={index}
-                    size={80}
+                    size="[24vw]"
                     project={project}
                     setProjects={setProjects}
                     setClickedOnProject={setClickedOnProject}

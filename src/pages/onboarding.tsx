@@ -152,7 +152,6 @@ const Onboarding = () => {
         setStep(prev => prev + 1);
         break;
       case 6:
-        //TODO fix enter UX issue
         // if (links.length < 1) Toaster.error('Add at least 1 Link');
         // else
         setStep(prev => prev + 1);

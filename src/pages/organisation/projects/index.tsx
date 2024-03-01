@@ -137,7 +137,7 @@ const Projects = () => {
                       <ProjectCard
                         key={project.id}
                         index={index}
-                        size={navbarOpen || projects.length < 4 ? 80 : 72}
+                        size="[24vw]"
                         project={project}
                         setProjects={setProjects}
                         setClickedOnProject={setClickedOnProject}

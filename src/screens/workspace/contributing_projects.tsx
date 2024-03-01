@@ -74,7 +74,7 @@ const ContributingProjects = () => {
                   <ProjectCard
                     key={project.id}
                     index={index}
-                    size={80}
+                    size="[24vw]"
                     project={project}
                     setProjects={setProjects}
                     setClickedOnProject={setClickedOnProject}

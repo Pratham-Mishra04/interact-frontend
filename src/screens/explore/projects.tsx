@@ -113,7 +113,7 @@ const Projects = () => {
           hasMore={hasMore}
           loader={<Loader />}
         >
-          {clickedOnProject ? (
+          {clickedOnProject && (
             <ProjectView
               projectSlugs={projects.map(project => project.slug)}
               clickedProjectIndex={clickedProjectIndex}
@@ -122,8 +122,6 @@ const Projects = () => {
               fadeIn={fadeInProjectView}
               setFadeIn={setFadeInProjectView}
             />
-          ) : (
-            <></>
           )}
           {projects.map((project, index) => {
             if (checkSet.has(project.id)) {

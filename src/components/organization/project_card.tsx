@@ -20,7 +20,7 @@ import { currentOrgIDSelector } from '@/slices/orgSlice';
 interface Props {
   index: number;
   project: Project;
-  size?: number;
+  size?: number | string;
   setProjects?: React.Dispatch<React.SetStateAction<Project[]>>;
   setClickedOnProject: React.Dispatch<React.SetStateAction<boolean>>;
   setClickedProjectIndex: React.Dispatch<React.SetStateAction<number>>;
@@ -86,7 +86,22 @@ const ProjectCard = ({
     }
   };
 
-  const variants = ['w-80', 'w-72', 'w-64', 'w-56', 'h-80', 'h-72', 'h-64', 'h-56'];
+  const variants = [
+    'w-96',
+    'w-80',
+    'w-72',
+    'w-64',
+    'w-[22vw]',
+    'w-[24vw]',
+    'w-56',
+    'h-96',
+    'h-80',
+    'h-72',
+    'h-64',
+    'h-56',
+    'h-[22vw]',
+    'h-[24vw]',
+  ];
   return (
     <>
       {clickedOnEdit && <EditProject projectToEdit={project} setShow={setClickedOnEdit} setProjects={setProjects} />}
