@@ -71,7 +71,7 @@ const EditOpening = ({ setShow, opening, setOpenings }: Props) => {
               width={100}
               height={100}
               alt={'User Pic'}
-              src={`${USER_PROFILE_PIC_URL}/${opening.organization?.user.profile}`}
+              src={`${USER_PROFILE_PIC_URL}/${opening.organization?.user.profilePic}`}
               className={'w-[140px] h-[140px] max-lg:w-[90px] max-lg:h-[90px] rounded-lg object-cover'}
             />
             <div className="grow flex flex-col gap-2 max-md:text-center">

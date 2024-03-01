@@ -56,25 +56,21 @@ const Chats = () => {
       <OrgSidebar index={5} />
       <MainWrapper>
         <div className="w-full flex flex-col items-center gap-4">
-          {clickedOnNewChat ? (
+          {clickedOnNewChat && (
             <NewChat setShow={setClickedOnNewChat} organization={organization} setChats={setChats} />
-          ) : (
-            <></>
           )}
-          {clickedOnInfo ? <AccessTree type="chat" setShow={setClickedOnInfo} /> : <></>}
+          {clickedOnInfo && <AccessTree type="chat" setShow={setClickedOnInfo} />}
 
           <div className="w-full flex justify-between items-center p-base_padding">
             <div className="text-6xl font-semibold dark:text-white font-primary">Chats</div>
             <div className="flex items-center gap-2">
-              {checkOrgAccess(ORG_MANAGER) ? (
+              {checkOrgAccess(ORG_MANAGER) && (
                 <Plus
                   onClick={() => setClickedOnNewChat(true)}
                   size={42}
                   className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
                   weight="regular"
                 />
-              ) : (
-                <></>
               )}
               <Info
                 onClick={() => setClickedOnInfo(true)}
@@ -88,41 +84,35 @@ const Chats = () => {
             {loading ? (
               <Loader />
             ) : (
-              <>
-                {chats ? (
-                  <div className="flex justify-between px-6 pb-4">
-                    <div
-                      className={`${
-                        clickedOnEditChat ? 'w-[50%]' : 'w-[720px] mx-auto'
-                      } max-md:w-full flex flex-col gap-2`}
-                    >
-                      {chats.map(chat => {
-                        return (
-                          <ChatCard
-                            key={chat.id}
-                            chat={chat}
-                            setClickedOnEditChat={setClickedOnEditChat}
-                            clickedEditChat={clickedEditChat}
-                            setClickedEditChat={setClickedEditChat}
-                          />
-                        );
-                      })}
-                    </div>
-                    {clickedOnEditChat ? (
-                      <EditChat
-                        chat={clickedEditChat}
-                        organization={organization}
-                        setStateChats={setChats}
-                        setShow={setClickedOnEditChat}
-                      />
-                    ) : (
-                      <></>
-                    )}
+              chats && (
+                <div className="flex justify-between px-6 pb-4">
+                  <div
+                    className={`${
+                      clickedOnEditChat ? 'w-[50%]' : 'w-[720px] mx-auto'
+                    } max-md:w-full flex flex-col gap-2`}
+                  >
+                    {chats.map(chat => {
+                      return (
+                        <ChatCard
+                          key={chat.id}
+                          chat={chat}
+                          setClickedOnEditChat={setClickedOnEditChat}
+                          clickedEditChat={clickedEditChat}
+                          setClickedEditChat={setClickedEditChat}
+                        />
+                      );
+                    })}
                   </div>
-                ) : (
-                  <></>
-                )}
-              </>
+                  {clickedOnEditChat && (
+                    <EditChat
+                      chat={clickedEditChat}
+                      organization={organization}
+                      setStateChats={setChats}
+                      setShow={setClickedOnEditChat}
+                    />
+                  )}
+                </div>
+              )
             )}
           </div>
         </div>
@@ -130,5 +120,20 @@ const Chats = () => {
     </BaseWrapper>
   );
 };
+
+export async function getServerSideProps() {
+  if (process.env.NODE_ENV != 'development') {
+    return {
+      redirect: {
+        permanent: true,
+        destination: '/organisation/posts',
+      },
+      props: {},
+    };
+  } else
+    return {
+      props: {},
+    };
+}
 
 export default WidthCheck(OrgMembersOnlyAndProtect(Chats));

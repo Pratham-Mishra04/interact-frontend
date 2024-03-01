@@ -15,19 +15,25 @@ import { Opening } from '@/types';
 import Toaster from '@/utils/toaster';
 import Loader from '@/components/common/loader';
 import { SERVER_ERROR } from '@/config/errors';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const Openings = () => {
   const [loading, setLoading] = useState(true);
   const [clickedOnNewOpening, setClickedOnNewOpening] = useState(false);
   const [openings, setOpenings] = useState<Opening[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
+
   const currentOrg = useSelector(currentOrgSelector);
 
-  //TODO add pagination
   const getOpenings = async () => {
-    const URL = `/org/${currentOrg.id}/org_openings`;
+    const URL = `/org/${currentOrg.id}/org_openings?page=${page}&limit=${10}`;
     const res = await getHandler(URL);
     if (res.statusCode === 200) {
-      setOpenings(res.data.openings || []);
+      const addedOpenings = [...openings, ...(res.data.openings || [])];
+      if (addedOpenings.length === openings.length) setHasMore(false);
+      setOpenings(addedOpenings);
+      setPage(prev => prev + 1);
       setLoading(false);
     } else {
       if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
@@ -48,7 +54,7 @@ const Openings = () => {
         {clickedOnNewOpening && (
           <NewOpening setShow={setClickedOnNewOpening} openings={openings} setOpenings={setOpenings} />
         )}
-        <div className="w-full flex justify-between items-center p-base_padding f ">
+        <div className="w-full flex justify-between items-center p-base_padding">
           <div className="w-fit text-6xl font-semibold dark:text-white font-primary ">Openings</div>
           {checkOrgAccess(ORG_MANAGER) && (
             <Plus
@@ -63,11 +69,17 @@ const Openings = () => {
         {loading ? (
           <Loader />
         ) : openings.length > 0 ? (
-          <div className="w-3/5 mx-auto max-lg:w-full flex flex-col gap-4">
+          <InfiniteScroll
+            dataLength={openings.length}
+            next={getOpenings}
+            hasMore={hasMore}
+            loader={<Loader />}
+            className="w-3/5 mx-auto max-lg:w-full flex flex-col gap-4"
+          >
             {openings.map(opening => {
               return <OpeningCard key={opening.id} opening={opening} setOpenings={setOpenings} />;
             })}
-          </div>
+          </InfiniteScroll>
         ) : (
           <NoOpenings />
         )}

@@ -34,6 +34,7 @@ const Resources = () => {
   const [clickedOnInfo, setClickedOnInfo] = useState(false);
 
   const currentOrgID = useSelector(currentOrgIDSelector);
+
   const getResourceBuckets = () => {
     const URL = `${ORG_URL}/${currentOrgID}/resource`;
     getHandler(URL)

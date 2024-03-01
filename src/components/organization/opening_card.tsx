@@ -45,16 +45,16 @@ const OpeningCard = ({ opening, setOpenings }: Props) => {
 
   return (
     <>
-      {clickedOnEdit ? <EditOpening setShow={setClickedOnEdit} opening={opening} setOpenings={setOpenings} /> : <></>}
-      {clickedOnDelete ? <ConfirmDelete setShow={setClickedOnDelete} handleDelete={handleDelete} /> : <></>}
+      {clickedOnEdit && <EditOpening setShow={setClickedOnEdit} opening={opening} setOpenings={setOpenings} />}
+      {clickedOnDelete && <ConfirmDelete setShow={setClickedOnDelete} handleDelete={handleDelete} />}
 
       <div className="w-full bg-gray-100 hover:bg-white dark:hover:bg-transparent dark:bg-transparent font-primary dark:text-white border-[1px] border-primary_btn dark:border-dark_primary_btn rounded-lg p-8 max-md:p-4 flex items-center gap-12 max-md:gap-4 transition-ease-300">
         <Image
           crossOrigin="anonymous"
           width={100}
           height={100}
-          alt={'User Pic'}
-          src={`${USER_PROFILE_PIC_URL}/${opening.organization?.user.profile}`}
+          alt={'Org Pic'}
+          src={`${USER_PROFILE_PIC_URL}/${opening.organization?.user.profilePic}`}
           className={'w-[140px] h-[140px] max-lg:w-[90px] max-lg:h-[90px] rounded-lg object-cover'}
         />
 

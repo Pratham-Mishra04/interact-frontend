@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import SidebarItem from './sidebar_item';
 import {
-  ArrowLineLeft,
-  Bell,
   BookmarkSimple,
   Buildings,
   ChatTeardrop,
@@ -19,7 +17,7 @@ import {
   EnvelopeSimpleOpen,
 } from '@phosphor-icons/react';
 import { useDispatch, useSelector } from 'react-redux';
-import { navbarOpenSelector, setNavbarOpen } from '@/slices/feedSlice';
+import { navbarOpenSelector } from '@/slices/feedSlice';
 import useUserStateFetcher from '@/hooks/user_fetcher';
 import BottomBar from './bottombar';
 import { userSelector } from '@/slices/userSlice';
@@ -52,7 +50,7 @@ const OrgSidebar = ({ index }: Props) => {
         } h-base bg-sidebar border-gray-300 border-r-[1px] dark:border-0 dark:bg-dark_sidebar backdrop-blur-sm pt-[40px] fixed mt-navbar py-6 flex flex-col justify-between pl-[30px] transition-ease-out-500 max-lg:hidden`}
       >
         <div className="w-full flex flex-col gap-2">
-          {user.isOrganization ? (
+          {user.isOrganization && (
             <SidebarItem
               index={1}
               org={true}
@@ -62,8 +60,6 @@ const OrgSidebar = ({ index }: Props) => {
               setActive={setActive}
               open={open}
             />
-          ) : (
-            <></>
           )}
 
           <SidebarItem
@@ -102,15 +98,17 @@ const OrgSidebar = ({ index }: Props) => {
             setActive={setActive}
             open={open}
           />
-          <SidebarItem
-            index={5}
-            org={true}
-            title="Chats"
-            icon={<ChatTeardrop size={24} />}
-            active={active}
-            setActive={setActive}
-            open={open}
-          />
+          {process.env.NODE_ENV == 'development' && (
+            <SidebarItem
+              index={5}
+              org={true}
+              title="Chats"
+              icon={<ChatTeardrop size={24} />}
+              active={active}
+              setActive={setActive}
+              open={open}
+            />
+          )}
           <SidebarItem
             index={6}
             org={true}
