@@ -3,7 +3,7 @@ import TaskCard from '@/components/workspace/task_card';
 import { SERVER_ERROR } from '@/config/errors';
 import { ORG_URL, PROJECT_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
-import NewTask from '@/sections/workspace/new_task';
+import NewTask from '@/sections/tasks/new_task';
 import TaskView from '@/sections/workspace/task_view';
 import { userSelector } from '@/slices/userSlice';
 import { Project, Task } from '@/types';

@@ -19,7 +19,7 @@ import ShareProject from '@/sections/lowers/share_project';
 import CommentProject from '@/sections/lowers/comment_project';
 import socketService from '@/config/ws';
 import Tasks from '@/sections/workspace/tasks';
-import NewTask from '@/sections/workspace/new_task';
+import NewTask from '@/sections/tasks/new_task';
 import History from '@/sections/workspace/history';
 
 interface Props {

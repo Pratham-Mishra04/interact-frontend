@@ -16,7 +16,7 @@ interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   organization?: Organization;
   project?: Project;
-  org: boolean;
+  org?: boolean;
   setShowTasks?: React.Dispatch<React.SetStateAction<boolean>>;
   setTasks?: React.Dispatch<React.SetStateAction<Task[]>>;
   setFilteredTasks?: React.Dispatch<React.SetStateAction<Task[]>>;
@@ -24,7 +24,7 @@ interface Props {
 
 const NewTask = ({
   setShow,
-  org,
+  org = false,
   organization = initialOrganization,
   project = initialProject,
   setShowTasks,

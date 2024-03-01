@@ -81,13 +81,13 @@ const Notifications = () => {
                       case 0:
                         return <Follow notification={notification} />;
                       case 1:
-                        return <Liked notification={notification} type={'post'} />;
+                        return <Liked notification={notification} />;
                       case 2:
-                        return <Comment notification={notification} type={'post'} />;
+                        return <Comment notification={notification} />;
                       case 3:
-                        return <Liked notification={notification} type={'project'} />;
+                        return <Liked notification={notification} />;
                       case 4:
-                        return <Comment notification={notification} type={'project'} />;
+                        return <Comment notification={notification} />;
                       case 5:
                         return <UserAppliedToOpening notification={notification} />;
                       case 6:

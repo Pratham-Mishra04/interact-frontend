@@ -94,17 +94,6 @@ const TaskView = ({ taskID, tasks, setShow, setTasks, setFilteredTasks, project,
     }
   };
 
-  const isAssignedUser = (userID: string) => {
-    var check = false;
-    task.users.forEach(user => {
-      if (user.id == userID) {
-        check = true;
-        return;
-      }
-    });
-    return check;
-  };
-
   const toggleComplete = async () => {
     const toaster = Toaster.startLoad(task.isCompleted ? 'Marking Incomplete' : 'Marking Completed');
 
@@ -133,6 +122,26 @@ const TaskView = ({ taskID, tasks, setShow, setTasks, setFilteredTasks, project,
       if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
       else Toaster.stopLoad(toaster, SERVER_ERROR, 0);
     }
+  };
+
+  const getUserTitle = (userID: string) => {
+    var title = '';
+    if (userID == project.userID) title = 'Owner';
+    else
+      project.memberships.forEach(m => {
+        if (m.userID == userID) title = m.title;
+      });
+    return title;
+  };
+
+  const getUserRole = (userID: string) => {
+    var role = '';
+    if (userID == project.userID) role = 'Owner';
+    else
+      project.memberships.forEach(m => {
+        if (m.userID == userID) role = m.role;
+      });
+    return role;
   };
 
   return (
@@ -177,6 +186,8 @@ const TaskView = ({ taskID, tasks, setShow, setTasks, setFilteredTasks, project,
           setClickedOnDeleteSubTask={setClickedOnDeleteSubTask}
           setTasks={setTasks}
           setFilteredTasks={setFilteredTasks}
+          getUserTitle={getUserTitle}
+          getUserRole={getUserRole}
         />
       )}
       <TaskComponent
@@ -190,6 +201,8 @@ const TaskView = ({ taskID, tasks, setShow, setTasks, setFilteredTasks, project,
         setClickedOnViewSubTask={setClickedOnViewSubTask}
         toggleComplete={toggleComplete}
         setShow={setShow}
+        getUserTitle={getUserTitle}
+        getUserRole={getUserRole}
       />
     </>
   );

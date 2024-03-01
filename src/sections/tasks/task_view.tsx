@@ -16,6 +16,7 @@ import React from 'react';
 import Image from 'next/image';
 import { useSelector } from 'react-redux';
 import { userSelector } from '@/slices/userSlice';
+import UserHoverCard from '@/components/common/user_hover_card';
 
 interface Props {
   task: Task;
@@ -30,6 +31,8 @@ interface Props {
   setClickedOnViewSubTask: React.Dispatch<React.SetStateAction<boolean>>;
   toggleComplete: () => void;
   accessChecker: boolean;
+  getUserTitle: (userID: string) => string;
+  getUserRole: (userID: string) => string;
 }
 
 const Task = ({
@@ -43,6 +46,8 @@ const Task = ({
   setClickedOnViewSubTask,
   toggleComplete,
   accessChecker,
+  getUserTitle,
+  getUserRole,
 }: Props) => {
   const isAssignedUser = (userID: string) => {
     var check = false;
@@ -128,19 +133,25 @@ const Task = ({
                 return (
                   <div
                     key={user.id}
-                    className="w-[45%] max-lg:w-[48%] max-md:w-full flex gap-4 border-[1px] border-gray-900 rounded-lg p-2"
+                    className="w-full relative group flex gap-2 cursor-pointer p-1 rounded-lg hover:bg-slate-100 transition-ease-500"
                   >
+                    <UserHoverCard user={user} scaleTransition={true} title={getUserTitle(user.id)} />
                     <Image
                       crossOrigin="anonymous"
                       width={50}
                       height={50}
                       alt={'User Pic'}
                       src={`${USER_PROFILE_PIC_URL}/${user.profilePic}`}
-                      className={'rounded-full w-12 h-12'}
+                      className={'rounded-full w-10 h-10'}
                     />
-                    <div className="grow">
-                      <div className="text-xl font-medium">{user.name}</div>
-                      <div className="text-xs text-gray-600">@{user.username}</div>
+                    <div className="w-[calc(100%-40px)] flex items-center justify-between flex-wrap">
+                      <div className="flex-center gap-2">
+                        <div className="text-lg font-medium">{user.name}</div>
+                        <div className="text-xs text-gray-600">@{user.username}</div>
+                      </div>
+                      <div className="border-[1px] border-primary_black text-xs p-1 rounded-lg">
+                        {getUserRole(user.id)}
+                      </div>
                     </div>
                   </div>
                 );

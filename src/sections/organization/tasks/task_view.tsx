@@ -126,6 +126,22 @@ const TaskView = ({ taskID, tasks, setShow, setTasks, setFilteredTasks, organiza
     }
   };
 
+  const getUserTitle = (userID: string) => {
+    var title = '';
+    organization.memberships.forEach(m => {
+      if (m.userID == userID) title = m.title;
+    });
+    return title;
+  };
+
+  const getUserRole = (userID: string) => {
+    var role = '';
+    organization.memberships.forEach(m => {
+      if (m.userID == userID) role = m.role;
+    });
+    return role;
+  };
+
   return (
     <>
       {clickedOnEditTask && (
@@ -168,6 +184,8 @@ const TaskView = ({ taskID, tasks, setShow, setTasks, setFilteredTasks, organiza
           setClickedOnDeleteSubTask={setClickedOnDeleteSubTask}
           setTasks={setTasks}
           setFilteredTasks={setFilteredTasks}
+          getUserTitle={getUserTitle}
+          getUserRole={getUserRole}
         />
       )}
       <TaskComponent
@@ -181,6 +199,8 @@ const TaskView = ({ taskID, tasks, setShow, setTasks, setFilteredTasks, organiza
         setClickedOnViewSubTask={setClickedOnViewSubTask}
         toggleComplete={toggleComplete}
         setShow={setShow}
+        getUserTitle={getUserTitle}
+        getUserRole={getUserRole}
       />
     </>
   );

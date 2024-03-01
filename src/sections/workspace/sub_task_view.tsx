@@ -9,6 +9,7 @@ import { TASK_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import Toaster from '@/utils/toaster';
 import patchHandler from '@/handlers/patch_handler';
 import { SERVER_ERROR } from '@/config/errors';
+import UserHoverCard from '@/components/common/user_hover_card';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -18,6 +19,8 @@ interface Props {
   setClickedOnDeleteSubTask: React.Dispatch<React.SetStateAction<boolean>>;
   setTasks?: React.Dispatch<React.SetStateAction<Task[]>>;
   setFilteredTasks?: React.Dispatch<React.SetStateAction<Task[]>>;
+  getUserTitle: (userID: string) => string;
+  getUserRole: (userID: string) => string;
 }
 
 const SubTaskView = ({
@@ -28,6 +31,8 @@ const SubTaskView = ({
   setClickedOnDeleteSubTask,
   setTasks,
   setFilteredTasks,
+  getUserTitle,
+  getUserRole,
 }: Props) => {
   const userID = useSelector(userIDSelector);
 
@@ -101,7 +106,7 @@ const SubTaskView = ({
           />
           <div className="w-full flex justify-between items-center">
             <div className="text-4xl font-semibold">{subTask.title}</div>
-            {isAssignedUser(userID) ? (
+            {isAssignedUser(userID) && (
               <div className="flex gap-2">
                 <Gear
                   onClick={() => {
@@ -120,8 +125,6 @@ const SubTaskView = ({
                   size={32}
                 />
               </div>
-            ) : (
-              <></>
             )}
           </div>
         </div>
@@ -162,20 +165,24 @@ const SubTaskView = ({
                 return (
                   <div
                     key={user.id}
-                    className="w-[45%] max-lg:w-full flex gap-4 border-[1px] border-gray-900 rounded-lg p-2"
+                    className="w-full relative group flex gap-2 cursor-pointer p-1 rounded-lg hover:bg-slate-100 transition-ease-500"
                   >
+                    <UserHoverCard user={user} scaleTransition={true} title={getUserTitle(user.id)} />
                     <Image
                       crossOrigin="anonymous"
-                      width={100}
-                      height={100}
+                      width={50}
+                      height={50}
                       alt={'User Pic'}
                       src={`${USER_PROFILE_PIC_URL}/${user.profilePic}`}
-                      className={'rounded-full w-16 h-16'}
+                      className={'rounded-full w-10 h-10'}
                     />
-                    <div className="grow">
-                      <div className="text-xl font-medium">{user.name}</div>
-                      <div className="flex flex-col gap-1">
+                    <div className="w-[calc(100%-40px)] flex items-center justify-between flex-wrap">
+                      <div className="flex-center gap-2">
+                        <div className="text-lg font-medium">{user.name}</div>
                         <div className="text-xs text-gray-600">@{user.username}</div>
+                      </div>
+                      <div className="border-[1px] border-primary_black text-xs p-1 rounded-lg">
+                        {getUserRole(user.id)}
                       </div>
                     </div>
                   </div>
@@ -184,28 +191,24 @@ const SubTaskView = ({
             </div>
           </div>
         ) : (
-          <>
-            {isAssignedUser(userID) ? (
-              <div
-                onClick={() => {
-                  setShow(false);
-                  setClickedOnEditSubTask(true);
-                }}
-                className="w-full text-base bg-gray-100 rounded-xl p-4 hover:scale-105 cursor-pointer transition-ease-300"
-              >
-                <span className="text-xl max-lg:text-lg text-gradient font-semibold">
-                  Don&apos;t leave subtasks hanging!
-                </span>{' '}
-                Assign this subtask and keep the workflow smooth. 📢
-              </div>
-            ) : (
-              <></>
-            )}
-          </>
+          isAssignedUser(userID) && (
+            <div
+              onClick={() => {
+                setShow(false);
+                setClickedOnEditSubTask(true);
+              }}
+              className="w-full text-base bg-gray-100 rounded-xl p-4 hover:scale-105 cursor-pointer transition-ease-300"
+            >
+              <span className="text-xl max-lg:text-lg text-gradient font-semibold">
+                Don&apos;t leave subtasks hanging!
+              </span>{' '}
+              Assign this subtask and keep the workflow smooth. 📢
+            </div>
+          )
         )}
 
-        {isAssignedUser(userID) ? (
-          subTask.isCompleted ? (
+        {isAssignedUser(userID) &&
+          (subTask.isCompleted ? (
             <div className="w-full flex justify-center gap-2 border-t-[1px] pt-4 border-[#34343479]">
               <div className="w-fit text-xl font-semibold text-gradient">Not Completed?</div>
               <span
@@ -224,10 +227,7 @@ const SubTaskView = ({
                 Mark Completed
               </div>
             </div>
-          )
-        ) : (
-          <></>
-        )}
+          ))}
       </div>
       <div
         onClick={() => setShow(false)}
