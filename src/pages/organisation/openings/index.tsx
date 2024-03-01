@@ -7,7 +7,7 @@ import { currentOrgSelector } from '@/slices/orgSlice';
 import { useState, useEffect } from 'react';
 import NewOpening from '@/sections/organization/openings/new_opening';
 import checkOrgAccess from '@/utils/funcs/check_org_access';
-import { Plus } from '@phosphor-icons/react';
+import { Info, Plus } from '@phosphor-icons/react';
 import { ORG_MANAGER } from '@/config/constants';
 import NoOpenings from '@/components/empty_fillers/no_openings';
 import OpeningCard from '@/components/organization/opening_card';
@@ -16,6 +16,7 @@ import Toaster from '@/utils/toaster';
 import Loader from '@/components/common/loader';
 import { SERVER_ERROR } from '@/config/errors';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import AccessTree from '@/components/organization/access_tree';
 
 const Openings = () => {
   const [loading, setLoading] = useState(true);
@@ -23,6 +24,8 @@ const Openings = () => {
   const [openings, setOpenings] = useState<Opening[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
+
+  const [clickedOnInfo, setClickedOnInfo] = useState(false);
 
   const currentOrg = useSelector(currentOrgSelector);
 
@@ -54,16 +57,25 @@ const Openings = () => {
         {clickedOnNewOpening && (
           <NewOpening setShow={setClickedOnNewOpening} openings={openings} setOpenings={setOpenings} />
         )}
+        {clickedOnInfo && <AccessTree type="opening" setShow={setClickedOnInfo} />}
         <div className="w-full flex justify-between items-center p-base_padding">
           <div className="w-fit text-6xl font-semibold dark:text-white font-primary ">Openings</div>
-          {checkOrgAccess(ORG_MANAGER) && (
-            <Plus
-              onClick={() => setClickedOnNewOpening(prev => !prev)}
+          <div className="flex items-center gap-2">
+            {checkOrgAccess(ORG_MANAGER) && (
+              <Plus
+                onClick={() => setClickedOnNewOpening(prev => !prev)}
+                size={42}
+                className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
+                weight="regular"
+              />
+            )}
+            <Info
+              onClick={() => setClickedOnInfo(true)}
               size={42}
               className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
               weight="regular"
             />
-          )}
+          </div>
         </div>
 
         {loading ? (

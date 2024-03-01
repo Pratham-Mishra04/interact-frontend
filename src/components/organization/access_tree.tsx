@@ -1,7 +1,7 @@
 import { CheckSquare, X } from '@phosphor-icons/react';
 import React, { useEffect } from 'react';
 
-type ACCESS_TYPE = 'post' | 'project' | 'event' | 'task' | 'chat' | 'membership' | 'profile' | 'resource';
+type ACCESS_TYPE = 'post' | 'project' | 'event' | 'task' | 'chat' | 'membership' | 'profile' | 'resource' | 'opening';
 
 interface Props {
   type: ACCESS_TYPE;
@@ -306,6 +306,7 @@ const AccessTree = ({ type, setShow }: Props) => {
       canManager: true,
     },
   ];
+
   const resourceAccess: Access[] = [
     {
       task: 'Create Resource Buckets',
@@ -326,6 +327,34 @@ const AccessTree = ({ type, setShow }: Props) => {
       canManager: true,
     },
   ];
+
+  const openingAccess: Access[] = [
+    {
+      task: 'Create Openings',
+      canMember: false,
+      canSenior: false,
+      canManager: true,
+    },
+    {
+      task: 'Edit Openings',
+      canMember: false,
+      canSenior: false,
+      canManager: true,
+    },
+    {
+      task: 'Delete Openings',
+      canMember: false,
+      canSenior: false,
+      canManager: true,
+    },
+    {
+      task: 'Handle Applications',
+      canMember: false,
+      canSenior: false,
+      canManager: true,
+    },
+  ];
+
   const accessArr: Access[] = ((): Access[] => {
     switch (type) {
       case 'post':
@@ -344,6 +373,8 @@ const AccessTree = ({ type, setShow }: Props) => {
         return taskAccess;
       case 'resource':
         return resourceAccess;
+      case 'opening':
+        return openingAccess;
       default:
         return [];
     }

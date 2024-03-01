@@ -48,9 +48,9 @@ const OpeningCard = ({ opening, setOpenings }: Props) => {
       {clickedOnEdit && <EditOpening setShow={setClickedOnEdit} opening={opening} setOpenings={setOpenings} />}
       {clickedOnDelete && <ConfirmDelete setShow={setClickedOnDelete} handleDelete={handleDelete} />}
 
-      <div className="w-[49%] relative bg-white font-primary border-[1px] border-primary_btn rounded-lg p-8 max-md:p-4 flex items-center gap-8 max-md:gap-4 transition-ease-300">
+      <div className="w-[49%] relative bg-white group font-primary border-[1px] border-primary_btn rounded-lg p-4 flex items-center gap-8 max-md:gap-4 transition-ease-300">
         {checkOrgAccess(ORG_MANAGER) && (
-          <div className="absolute flex gap-3 top-4 right-4">
+          <div className="absolute flex gap-3 top-4 right-4 opacity-0 group-hover:opacity-100 transition-ease-300">
             <Pen onClick={() => setClickedOnEdit(true)} className="cursor-pointer" size={24} />
             <TrashSimple
               onClick={() => setClickedOnDelete(true)}

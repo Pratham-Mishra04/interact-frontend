@@ -121,7 +121,7 @@ const Events = () => {
           <div className="w-full flex justify-between items-center">
             <div className="w-fit text-6xl font-semibold dark:text-white font-primary pl-6">Events</div>
             <div className="flex items-center gap-2">
-              {checkOrgAccess(ORG_SENIOR) ? (
+              {checkOrgAccess(ORG_SENIOR) && (
                 <>
                   <Plus
                     onClick={() => setClickedOnNewEvent(true)}
@@ -143,8 +143,6 @@ const Events = () => {
                     />{' '}
                   </div>
                 </>
-              ) : (
-                <></>
               )}
               <Info
                 onClick={() => setClickedOnInfo(true)}
