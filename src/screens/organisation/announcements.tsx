@@ -57,20 +57,16 @@ const Announcements = () => {
 
   return (
     <div className="w-full">
-      {clickedOnNewAnnouncement ? (
+      {clickedOnNewAnnouncement && (
         <NewAnnouncement setAnnouncements={setAnnouncements} setShow={setClickedOnNewAnnouncement} />
-      ) : (
-        <></>
       )}
-      {checkOrgAccess(ORG_SENIOR) && !clickedOnNewAnnouncement ? (
+      {checkOrgAccess(ORG_SENIOR) && !clickedOnNewAnnouncement && (
         <div
           className="fixed z-50 bottom-28 right-0 lg:bottom-12 lg:right-12 flex-center text-sm bg-primary_text text-white px-4 py-3 rounded-full flex gap-2 shadow-lg hover:shadow-2xl font-medium cursor-pointer animate-fade_third transition-ease-300"
           onClick={() => setClickedOnNewAnnouncement(true)}
         >
           <Plus size={20} /> <div className="h-fit">Add Announcement</div>
         </div>
-      ) : (
-        <></>
       )}
       {loading ? (
         <Loader />

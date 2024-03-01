@@ -47,7 +47,7 @@ export const orgSlice = createSlice({
       state.currentOrg.id = action.payload.id;
       state.currentOrg.userID = action.payload.userID;
       state.currentOrg.title = action.payload.title;
-      // state.currentOrg.coverPic = action.payload.user?.profilePic;
+      state.currentOrg.coverPic = action.payload.user?.profilePic;
     },
     setCurrentOrgMembership: (state, action: PayloadAction<OrganizationMembership>) => {
       state.currentOrgMembership.id = action.payload.id;

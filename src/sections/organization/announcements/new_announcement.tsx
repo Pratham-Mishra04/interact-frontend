@@ -147,6 +147,10 @@ const NewAnnouncement = ({ setShow, setAnnouncements }: Props) => {
   const currentOrgID = useSelector(currentOrgIDSelector);
 
   const handleSubmit = async () => {
+    if (title.trim() == '') {
+      Toaster.error('Title cannot be empty!');
+      return;
+    }
     if (content.trim() == '' || content.replace(/\n/g, '').length == 0) {
       Toaster.error('Caption cannot be empty!');
       return;
@@ -218,7 +222,7 @@ const NewAnnouncement = ({ setShow, setAnnouncements }: Props) => {
                 maxLength={50}
                 onChange={el => setTitle(el.target.value)}
                 className="w-full text-lg font-medium border-[2px] border-dashed p-2 rounded-lg focus:outline-none"
-                placeholder="Announcement Title (Optional)"
+                placeholder="Announcement Title"
               />
               <textarea
                 id="textarea_id"

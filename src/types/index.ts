@@ -538,6 +538,14 @@ export interface OrganizationHistory {
   task?: Task;
   invitationID?: string;
   invitation?: Invitation;
+  pollID?: string;
+  poll?: Poll;
+  announcementID?: string;
+  announcement?: Announcement;
+  openingID?: string;
+  opening?: Opening;
+  applicationID?: string;
+  application?: Application;
   createdAt: Date;
   deletedText: String;
 }

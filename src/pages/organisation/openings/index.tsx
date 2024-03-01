@@ -74,7 +74,7 @@ const Openings = () => {
             next={getOpenings}
             hasMore={hasMore}
             loader={<Loader />}
-            className="w-3/5 mx-auto max-lg:w-full flex flex-col gap-4"
+            className="w-full flex flex-wrap gap-4 justify-between px-base_padding"
           >
             {openings.map(opening => {
               return <OpeningCard key={opening.id} opening={opening} setOpenings={setOpenings} />;
