@@ -39,9 +39,11 @@ const Impressions = ({ notification }: Props) => {
   return (
     <NotificationWrapper notification={notification} image={false}>
       Your
-      <Link className="font-bold capitalize" href={getRedirectURL()}>
-        {getType()}
-      </Link>{' '}
+      <span>
+        <Link className="font-bold capitalize" href={getRedirectURL()}>
+          {getType()}
+        </Link>{' '}
+      </span>
       got {notification.impressionCount} impressions!
     </NotificationWrapper>
   );

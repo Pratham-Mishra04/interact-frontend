@@ -22,15 +22,17 @@ const ApplicationUpdate = ({ notification, status, org = false }: Props) => {
     >
       <div className="gap-2 cursor-default">
         Your Application for {notification.opening.title} at{' '}
-        {org ? (
-          <Link href={`/explore/organisations/${notification.opening.organizationID}`} className="font-bold">
-            {notification.opening.organization?.title}
-          </Link>
-        ) : (
-          <Link href={`/explore/project/${notification.opening.projectID}`} className="font-bold">
-            {notification.opening.project?.title}
-          </Link>
-        )}{' '}
+        <span>
+          {org ? (
+            <Link href={`/explore/organisations/${notification.opening.organizationID}`} className="font-bold">
+              {notification.opening.organization?.title}
+            </Link>
+          ) : (
+            <Link href={`/explore/project/${notification.opening.projectID}`} className="font-bold">
+              {notification.opening.project?.title}
+            </Link>
+          )}{' '}
+        </span>
         was {status === 0 ? 'Rejected' : 'Accepted'}
       </div>
     </NotificationWrapper>

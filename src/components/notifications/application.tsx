@@ -10,15 +10,20 @@ interface Props {
 const Application = ({ notification }: Props) => {
   return (
     <NotificationWrapper notification={notification}>
-      <Link className="font-bold z-50" href={`/explore/user/${notification.sender.username}`}>
-        {notification.sender.name}
-      </Link>{' '}
+      <span>
+        <Link className="font-bold z-50" href={`/explore/user/${notification.sender.username}`}>
+          {notification.sender.name}
+        </Link>{' '}
+      </span>
       applied for the opening of {notification.opening.title} at
-      <Link className="font-bold" href={`/workspace/opening/${notification.opening.id}`}>
-        {notification.notificationType == 20
-          ? notification.opening.organization?.title
-          : notification.opening.project?.title}
-      </Link>
+      <span>
+        {' '}
+        <Link className="font-bold" href={`/workspace/opening/${notification.opening.id}`}>
+          {notification.notificationType == 20
+            ? notification.opening.organization?.title
+            : notification.opening.project?.title}
+        </Link>
+      </span>
     </NotificationWrapper>
   );
 };

@@ -13,9 +13,11 @@ const ChatRequest = ({ notification }: Props) => {
   const loggedInUser = useSelector(userSelector);
   return (
     <NotificationWrapper notification={notification}>
-      <Link className="font-bold" href={`/explore/user/${notification.sender.username}`}>
-        {notification.sender.name}
-      </Link>{' '}
+      <span>
+        <Link className="font-bold" href={`/explore/user/${notification.sender.username}`}>
+          {notification.sender.name}
+        </Link>{' '}
+      </span>
       has initiated a chat.
     </NotificationWrapper>
   );

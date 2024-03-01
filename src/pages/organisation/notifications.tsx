@@ -18,6 +18,9 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { SERVER_ERROR } from '@/config/errors';
 import WidthCheck from '@/utils/wrappers/widthCheck';
 import OrgOnlyAndProtect from '@/utils/wrappers/org_only';
+import Invitation from '@/components/notifications/invitation';
+import Task from '@/components/notifications/task';
+import Impressions from '@/components/notifications/impressions';
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -81,14 +84,17 @@ const Notifications = () => {
                       case 0:
                         return <Follow notification={notification} />;
                       case 1:
+                      case 3:
+                      case 12:
+                      case 18:
                         return <Liked notification={notification} />;
                       case 2:
-                        return <Comment notification={notification} />;
-                      case 3:
-                        return <Liked notification={notification} />;
                       case 4:
+                      case 13:
+                      case 19:
                         return <Comment notification={notification} />;
                       case 5:
+                      case 20:
                         return <UserAppliedToOpening notification={notification} />;
                       case 6:
                         return <ApplicationUpdate notification={notification} status={1} />;
@@ -96,6 +102,15 @@ const Notifications = () => {
                         return <ApplicationUpdate notification={notification} status={0} />;
                       case 9:
                         return <ChatRequest notification={notification} />;
+                      case 10:
+                        return <Invitation notification={notification} />;
+                      case 11:
+                        return <Task notification={notification} />;
+                      case 14:
+                      case 15:
+                      case 16:
+                      case 17:
+                        return <Impressions notification={notification} />;
                       default:
                         return <></>;
                     }

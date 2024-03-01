@@ -38,13 +38,18 @@ const Liked = ({ notification }: Props) => {
   };
   return (
     <NotificationWrapper notification={notification}>
-      <Link className="font-bold" href={`/explore/user/${notification.sender.username}`}>
-        {notification.sender.name}
-      </Link>{' '}
+      <span>
+        <Link className="font-bold" href={`/explore/user/${notification.sender.username}`}>
+          {notification.sender.name}
+        </Link>{' '}
+      </span>
       liked your
-      <Link className="font-bold capitalize" href={getRedirectURL()}>
-        {getType()}.
-      </Link>{' '}
+      <span>
+        {' '}
+        <Link className="font-bold capitalize" href={getRedirectURL()}>
+          {getType()}.
+        </Link>{' '}
+      </span>
     </NotificationWrapper>
   );
 };

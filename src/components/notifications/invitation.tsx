@@ -26,13 +26,19 @@ const Invitation = ({ notification }: Props) => {
   };
   return (
     <NotificationWrapper notification={notification}>
-      <Link className="font-bold" href={`/explore/user/${notification.sender.username}`}>
-        {notification.sender.name}
-      </Link>{' '}
+      <span>
+        {' '}
+        <Link className="font-bold" href={`/explore/user/${notification.sender.username}`}>
+          {notification.sender.name}
+        </Link>{' '}
+      </span>
       accepted your Invitation to join
-      <Link className="font-bold capitalize" href={getRedirectURL()}>
-        {getType()}.
-      </Link>
+      <span>
+        {' '}
+        <Link className="font-bold capitalize" href={getRedirectURL()}>
+          {getType()}.
+        </Link>
+      </span>
     </NotificationWrapper>
   );
 };
