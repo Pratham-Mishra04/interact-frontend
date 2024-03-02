@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import getHandler from '@/handlers/get_handler';
 import Toaster from '@/utils/toaster';
-import { ArrowRight, ChartLineUp, Lock } from '@phosphor-icons/react';
+import { ArrowLeft, ArrowRight, ChartLineUp, Lock } from '@phosphor-icons/react';
 import { SERVER_ERROR } from '@/config/errors';
 import { User } from '@/types';
 import { userSelector } from '@/slices/userSlice';
@@ -93,23 +93,46 @@ const TrendingCard = () => {
             </div>
           )}
           {user.id != '' && (
-            <div
-              onClick={() => {
-                window.scrollTo({
-                  top: 0,
-                  behavior: 'smooth',
-                });
-                if (homeTab == 0) dispatch(setHomeTab(1));
-                else dispatch(setHomeTab(0));
-              }}
-              className="w-full h-fit flex-center gap-2 bg-white rounded-lg p-4 hover:shadow-lg cursor-pointer transition-ease-300"
-            >
-              <div className="w-fit text-gradient text-lg font-semibold">
-                {
-                  //TODO change the content
-                  homeTab == 0 ? "Checkout What's Trending!" : 'Stalk your Following'
-                }
+            <div className="relative">
+              <div
+                onClick={() => {
+                  window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth',
+                  });
+                  if (homeTab == 0) dispatch(setHomeTab(1));
+                  else dispatch(setHomeTab(0));
+                }}
+                className="w-full h-16 relative overflow-clip flex-center gap-2 bg-white rounded-md p-4 hover:shadow-lg cursor-pointer transition-ease-300"
+              >
+                <div
+                  className={`w-fit flex group absolute top-1/2 ${
+                    homeTab == 0 ? '-translate-y-1/2' : '-translate-y-20'
+                  } hover:-translate-x-1 text-lg font-semibold transition-ease-out-300`}
+                >
+                  <div className="text-gradient">Checkout What&apos;s Trending!</div>
+                  <ArrowRight
+                    className="text-dark_secondary_gradient_end absolute z-10 opacity-0 group-hover:opacity-100 top-1/2 right-0 group-hover:-right-5 -translate-y-1/2 transition-ease-out-300"
+                    weight="bold"
+                  />
+                </div>
+                <div
+                  className={`w-fit flex group absolute top-1/2 ${
+                    homeTab == 0 ? 'translate-y-20' : '-translate-y-1/2'
+                  } hover:translate-x-1 text-lg font-semibold transition-ease-out-300`}
+                >
+                  <div className="text-gradient">Back to your Following</div>
+                  <ArrowLeft
+                    className="text-dark_secondary_gradient_start absolute z-10 opacity-0 group-hover:opacity-100 top-1/2 left-0 group-hover:-left-5 -translate-y-1/2 transition-ease-out-300"
+                    weight="bold"
+                  />
+                </div>
               </div>
+              <div
+                className={`w-[calc(100%+4px)] h-[calc(100%+4px)] bg-transparent absolute rotating-border-mask opacity-10 ${
+                  homeTab == 0 && 'animate-pulse'
+                } top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 rounded-lg -z-10 transition-ease-300`}
+              ></div>
             </div>
           )}
           {users && users.length > 0 && (

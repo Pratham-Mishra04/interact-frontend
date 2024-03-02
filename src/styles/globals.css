@@ -281,3 +281,48 @@ html {
   -webkit-mask: var(--mask);
           mask: var(--mask);
 }
+
+.glow {
+  box-shadow: rgba(232, 186, 253, 0.8) 0 0 40px 10px;
+}
+
+.rotating-border-mask {
+  display: block;
+  cursor: pointer;
+  color: white;
+  margin: 0 auto;
+  position: relative;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 6px;
+  overflow: hidden;
+  padding: 3px;
+  isolation: isolate;
+}
+
+.rotating-border-mask::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 400%;
+  height: 100%;
+  background: linear-gradient(115deg,#4fcf70,#fad648,#a767e5,#12bcfe,#44ce7b);
+  background-size: 25% 100%;
+  animation: rotating-border-mask-animation 1s linear infinite;
+  animation-play-state: paused;
+  translate: -5% 0%;
+  transition: translate 0.25s ease-out;
+}
+
+.rotating-border-mask::before {
+  animation-play-state: running;
+  transition-duration: 0.75s;
+  translate: 0% 0%;
+}
+
+@keyframes rotating-border-mask-animation {
+  to {
+    transform: translateX(-25%);
+  }
+}
