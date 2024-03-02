@@ -49,7 +49,7 @@ const Home = () => {
           {
             //TODO Profile Completion for Organisations
           }
-          <ProfileCompletion />
+          {/* <ProfileCompletion /> */}
         </div>
       </MainWrapper>
     </BaseWrapper>

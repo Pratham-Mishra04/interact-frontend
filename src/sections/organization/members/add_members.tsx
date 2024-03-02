@@ -11,6 +11,7 @@ import Loader from '@/components/common/loader';
 import project from '@/screens/messaging/project';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
 import { useSelector } from 'react-redux';
+import PrimaryButton from '@/components/buttons/primary_btn';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -265,26 +266,11 @@ const AddMembers = ({ setShow, organization, setOrganization }: Props) => {
         </div>
         <div className={`w-full flex ${status == 0 ? 'justify-end' : 'justify-between'}`}>
           {status == 0 ? (
-            <div
-              onClick={() => setStatus(1)}
-              className="w-32 p-2 flex-center dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active transition-ease-300 cursor-pointer rounded-lg font-medium text-lg"
-            >
-              Next
-            </div>
+            <PrimaryButton onClick={() => setStatus(1)} label="Next" />
           ) : (
             <>
-              <div
-                onClick={() => setStatus(0)}
-                className="w-32 p-2 flex-center dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active transition-ease-300 cursor-pointer rounded-lg font-medium text-lg"
-              >
-                Prev
-              </div>
-              <div
-                onClick={handleSubmit}
-                className="w-32 p-2 flex-center dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active transition-ease-300 cursor-pointer rounded-lg font-medium text-lg"
-              >
-                Submit
-              </div>
+              <PrimaryButton onClick={() => setStatus(0)} label="Prev" />
+              <PrimaryButton onClick={handleSubmit} label="Submit" />
             </>
           )}
         </div>

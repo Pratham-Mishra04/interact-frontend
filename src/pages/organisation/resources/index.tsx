@@ -70,26 +70,22 @@ const Resources = () => {
     <BaseWrapper title="Resources">
       <OrgSidebar index={14} />
       <MainWrapper>
-        {clickedOnNewResource ? (
+        {clickedOnNewResource && (
           <NewResource setShow={setClickedOnNewResource} organization={organization} setResources={setResources} />
-        ) : (
-          <></>
         )}
-        {clickedOnInfo ? <AccessTree type="resource" setShow={setClickedOnInfo} /> : <></>}
+        {clickedOnInfo && <AccessTree type="resource" setShow={setClickedOnInfo} />}
         <div className="w-full flex flex-col relative">
           <div className="w-full flex justify-between items-center p-base_padding">
             <div className="text-6xl font-semibold dark:text-white font-primary">Resources</div>
 
             <div className="flex items-center gap-2">
-              {checkOrgAccess(ORG_SENIOR) ? (
+              {checkOrgAccess(ORG_SENIOR) && (
                 <Plus
                   onClick={() => setClickedOnNewResource(true)}
                   size={42}
                   className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
                   weight="regular"
                 />
-              ) : (
-                <></>
               )}
               <Info
                 onClick={() => setClickedOnInfo(true)}
@@ -102,38 +98,32 @@ const Resources = () => {
           <div className="w-full flex flex-col gap-6 px-2 pb-2">
             {loading ? (
               <Loader />
-            ) : (
-              <>
-                {resources.length > 0 ? (
-                  <div className="flex justify-evenly px-4">
-                    <div className={`w-full flex-wrap max-lg:w-[720px] flex flex-row gap-4`}>
-                      {resources.map(resource => {
-                        return (
-                          <ResourceCard
-                            key={resource.id}
-                            resource={resource}
-                            setClickedOnResource={setClickedOnResource}
-                            setClickedResource={setClickedResource}
-                          />
-                        );
-                      })}
-                    </div>
-                    {clickedOnResource && checkOrgAccess(clickedResource.viewAccess) ? (
-                      <ResourceView
-                        setShow={setClickedOnResource}
-                        resourceBucket={clickedResource}
-                        setResources={setResources}
-                        setClickedResourceBucket={setClickedResource}
-                        setClickedOnResourceBucket={setClickedOnResource}
+            ) : resources.length > 0 ? (
+              <div className="flex justify-evenly px-4">
+                <div className={`w-full flex-wrap max-lg:w-[720px] flex flex-row gap-4`}>
+                  {resources.map(resource => {
+                    return (
+                      <ResourceCard
+                        key={resource.id}
+                        resource={resource}
+                        setClickedOnResource={setClickedOnResource}
+                        setClickedResource={setClickedResource}
                       />
-                    ) : (
-                      <></>
-                    )}
-                  </div>
-                ) : (
-                  <Mascot message={`We couldn't find any resources at the moment`} />
+                    );
+                  })}
+                </div>
+                {clickedOnResource && checkOrgAccess(clickedResource.viewAccess) && (
+                  <ResourceView
+                    setShow={setClickedOnResource}
+                    resourceBucket={clickedResource}
+                    setResources={setResources}
+                    setClickedResourceBucket={setClickedResource}
+                    setClickedOnResourceBucket={setClickedOnResource}
+                  />
                 )}
-              </>
+              </div>
+            ) : (
+              <Mascot message="We couldn't find any resources at the moment" />
             )}
           </div>
         </div>

@@ -162,7 +162,7 @@ const EditCoordinators = ({ event, setShow, setEvents }: Props) => {
         {step == 0 ? (
           <div className="w-full flex flex-col items-center gap-4 ">
             <div className="w-full text-3xl max-md:text-xl font-semibold">Select Coordinators</div>
-            <div className="w-full h-[420px] flex flex-col gap-4">
+            <div className="w-full h-full flex flex-col gap-4">
               <div className="w-full h-12 flex items-center px-4 gap-4 dark:bg-dark_primary_comp_hover rounded-md">
                 <MagnifyingGlass size={24} />
                 <input
@@ -198,11 +198,7 @@ const EditCoordinators = ({ event, setShow, setEvents }: Props) => {
                         <div className="w-[calc(100%-48px)] flex flex-col">
                           <div className="text-lg font-bold">{user.name}</div>
                           <div className="text-sm dark:text-gray-200">@{user.username}</div>
-                          {user.tagline && user.tagline != '' ? (
-                            <div className="text-sm mt-2">{user.tagline}</div>
-                          ) : (
-                            <></>
-                          )}
+                          {user.tagline && user.tagline != '' && <div className="text-sm mt-2">{user.tagline}</div>}
                         </div>
                       </div>
                     );

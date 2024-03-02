@@ -99,21 +99,19 @@ const PollCard = ({ poll, setPolls, organisation, hoverShadow = true }: Props) =
           </div>
 
           <div className="w-full flex justify-between items-center">
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-4">
               <div className="text-sm text-gray-400 font-medium">
                 {poll.totalVotes} Vote{poll.totalVotes != 1 ? 's' : ''}
               </div>
 
-              {(user.isOrganization && user.id == organisation.userID) ||
-              user.organizationMemberships
-                .filter(m => m.role == ORG_SENIOR)
-                .map(m => m.organizationID)
-                .includes(organisation.id) ? (
+              {((user.isOrganization && user.id == organisation.userID) ||
+                user.organizationMemberships
+                  .filter(m => m.role == ORG_SENIOR)
+                  .map(m => m.organizationID)
+                  .includes(organisation.id)) && (
                 <div onClick={() => setClickedOnDelete(true)} className="text-sm text-primary_danger cursor-pointer">
                   Delete
                 </div>
-              ) : (
-                <></>
               )}
             </div>
             <div className="flex justify-end items-center gap-4 text-sm text-gray-400 font-medium">

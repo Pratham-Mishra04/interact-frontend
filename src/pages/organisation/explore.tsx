@@ -44,7 +44,7 @@ const Explore = () => {
             <Events />
           </div>
         </div>
-        <ProfileCompletion />
+        {/* <ProfileCompletion /> */}
       </MainWrapper>
     </BaseWrapper>
   );

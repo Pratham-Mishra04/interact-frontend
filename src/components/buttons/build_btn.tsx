@@ -44,9 +44,7 @@ const BuildButton = ({ label, loadingLabel, loading, onClick }: Props) => {
       ></div>
       <p className={`z-10 font-bold text-xl max-lg:text-lg transition-ease-500`}>
         {loading ? (
-          <>
-            <div className="w-fit text-gradient transition-ease-out-300 animate-fade_half">{loadingLabel}</div>
-          </>
+          <div className="w-fit text-gradient transition-ease-out-300 animate-fade_half">{loadingLabel}</div>
         ) : (
           <div className="">{label}</div>
         )}

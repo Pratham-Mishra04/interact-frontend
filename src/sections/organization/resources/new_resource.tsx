@@ -7,6 +7,7 @@ import { SERVER_ERROR } from '@/config/errors';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
 import { useSelector } from 'react-redux';
 import { ORG_MANAGER, ORG_MEMBER, ORG_SENIOR } from '@/config/constants';
+import PrimaryButton from '@/components/buttons/primary_btn';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -129,27 +130,16 @@ const NewResource = ({ setShow, organization, setShowResources, setResources }: 
             </div>
           </>
         )}
-        <div className="w-full flex justify-between items-center">
-          {tab == 0 ? (
-            <div></div>
-          ) : (
-            <div
-              onClick={() => setTab(0)}
-              className="w-32 p-2 flex-center dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active transition-ease-300 cursor-pointer rounded-lg font-medium text-lg border-2 border-primary_text text-primary_text"
-            >
-              Back
-            </div>
-          )}
-
-          <div
+        <div className="w-full flex justify-between items-center mt-4">
+          {tab == 0 ? <div></div> : <PrimaryButton onClick={() => setTab(0)} label="Back" />}
+          <PrimaryButton
             onClick={() => {
               if (tab === 0) setTab(1);
               else if (tab === 1) handleSubmit();
             }}
-            className="w-32 p-2 flex-center dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active transition-ease-300 cursor-pointer rounded-lg font-medium text-lg border-2 border-primary_text text-primary_text"
-          >
-            {tab === 0 ? 'Next' : 'Create'}
-          </div>
+            label={tab === 0 ? 'Next' : 'Create'}
+            disabled={title.trim() == ''}
+          />
         </div>
       </div>
 

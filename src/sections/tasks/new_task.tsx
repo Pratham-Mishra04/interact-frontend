@@ -11,6 +11,7 @@ import moment from 'moment';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
 import { useSelector } from 'react-redux';
 import { initialOrganization, initialProject } from '@/types/initials';
+import PrimaryButton from '@/components/buttons/primary_btn';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -83,6 +84,22 @@ const NewTask = ({
   };
 
   const currentOrgID = useSelector(currentOrgIDSelector);
+
+  const taskDetailsValidator = () => {
+    if (title.trim() == '') {
+      Toaster.error('Enter Title');
+      return false;
+    }
+
+    const deadline = moment(description);
+
+    if (deadline.isBefore(moment())) {
+      Toaster.error('Enter A Valid Deadline');
+      return false;
+    }
+
+    return true;
+  };
 
   const handleSubmit = async () => {
     if (title.trim().length == 0) {
@@ -230,11 +247,7 @@ const NewTask = ({
                           <div className="w-5/6 flex flex-col">
                             <div className="text-lg font-bold">{user.name}</div>
                             <div className="text-sm dark:text-gray-200">@{user.username}</div>
-                            {user.tagline && user.tagline != '' ? (
-                              <div className="text-sm mt-2">{user.tagline}</div>
-                            ) : (
-                              <></>
-                            )}
+                            {user.tagline && user.tagline != '' && <div className="text-sm mt-2">{user.tagline}</div>}
                           </div>
                         </div>
                       );
@@ -297,8 +310,8 @@ const NewTask = ({
                       }}
                     />
                   </div>
-                  <div className="w-full flex flex-col gap-2 px-4 py-2">
-                    <div>Members ({selectedUsers.length}/25)</div>
+                  <div className="w-full flex flex-col gap-2 px-2 py-2">
+                    <div className="text-xl">Members ({selectedUsers.length}/25)</div>
                     <div className="w-full flex flex-wrap gap-4">
                       {selectedUsers.map((user, index) => {
                         return (
@@ -329,44 +342,25 @@ const NewTask = ({
         </div>
         <div className={`w-full flex ${status == 0 ? 'justify-end' : 'justify-between'}`}>
           {status == 0 ? (
-            <div
-              onClick={() => setStatus(1)}
-              className="w-32 p-2 flex-center dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active transition-ease-300 cursor-pointer rounded-lg font-medium text-lg"
-            >
-              Next
-            </div>
+            <PrimaryButton
+              onClick={() => {
+                const checker = taskDetailsValidator();
+                if (checker) setStatus(prev => prev + 1);
+              }}
+              label="Next"
+              animateIn={false}
+            />
           ) : (
             <>
               {status == 1 ? (
                 <>
-                  {' '}
-                  <div
-                    onClick={() => setStatus(0)}
-                    className="w-32 p-2 flex-center dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active transition-ease-300 cursor-pointer rounded-lg font-medium text-lg"
-                  >
-                    Prev
-                  </div>{' '}
-                  <div
-                    onClick={() => setStatus(2)}
-                    className="w-32 p-2 flex-center dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active transition-ease-300 cursor-pointer rounded-lg font-medium text-lg"
-                  >
-                    Next
-                  </div>
+                  <PrimaryButton onClick={() => setStatus(0)} label="Prev" animateIn={false} />
+                  <PrimaryButton onClick={() => setStatus(2)} label="Next" animateIn={false} />
                 </>
               ) : (
                 <>
-                  <div
-                    onClick={() => setStatus(1)}
-                    className="w-32 p-2 flex-center dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active transition-ease-300 cursor-pointer rounded-lg font-medium text-lg"
-                  >
-                    Prev
-                  </div>
-                  <div
-                    onClick={handleSubmit}
-                    className="w-32 p-2 flex-center dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active transition-ease-300 cursor-pointer rounded-lg font-medium text-lg"
-                  >
-                    Submit
-                  </div>
+                  <PrimaryButton onClick={() => setStatus(1)} label="Prev" animateIn={false} />
+                  <PrimaryButton onClick={handleSubmit} label="Submit" animateIn={false} />
                 </>
               )}
             </>
