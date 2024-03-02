@@ -8,7 +8,6 @@ import { currentOrgIDSelector } from '@/slices/orgSlice';
 import { userSelector } from '@/slices/userSlice';
 import { Project } from '@/types';
 import categories from '@/utils/categories';
-import isArrEdited from '@/utils/funcs/check_array_edited';
 import Toaster from '@/utils/toaster';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -48,6 +47,10 @@ const EditProject = ({ projectToEdit, setShow, setProjectToEdit, setProjects, or
     }
     if (category == 'Select Category') {
       Toaster.error('Select Category');
+      return;
+    }
+    if (tags.length == 0) {
+      Toaster.error('Tags cannot be empty');
       return;
     }
 

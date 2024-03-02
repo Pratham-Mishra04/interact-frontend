@@ -1,6 +1,5 @@
 import React from 'react';
 import { ReactSVG } from 'react-svg';
-import ArrowRight from '@phosphor-icons/react/dist/icons/ArrowRight';
 import { useState } from 'react';
 import Toaster from '@/utils/toaster';
 import Cookies from 'js-cookie';
@@ -17,6 +16,7 @@ import nookies from 'nookies';
 import { SERVER_ERROR } from '@/config/errors';
 import configuredAxios from '@/config/axios';
 import generateRandomProfilePicture from '@/utils/generate_profile_picture';
+import RegistrationButton from '@/components/buttons/registration_btn';
 
 interface Props {
   token: string;
@@ -124,13 +124,7 @@ const SignUpCallback = ({ token }: Props) => {
               />
             </div>
             <div className="w-full flex flex-col gap-2 items-center">
-              <button
-                type="submit"
-                className="w-full flex items-center cursor-pointer justify-center gap-2 bg-[#3D6DB3] hover:bg-[#345C98] active:bg-[#2D5185] border-[#d1d1d1] text-white py-2 rounded-xl border-2 font-semibold"
-              >
-                <div> Continue</div>
-                <ArrowRight size={20} weight="regular" />
-              </button>
+              <RegistrationButton />
             </div>
           </form>
           <div className="w-3/4 max-lg:w-full text-[12px] text-center text-gray-400">

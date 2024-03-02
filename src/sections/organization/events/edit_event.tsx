@@ -44,6 +44,10 @@ const EditEvent = ({ setShow, event, setEvents }: Props) => {
       Toaster.error('Select Category');
       return;
     }
+    if (tags.length == 0) {
+      Toaster.error('Tags cannot be empty');
+      return;
+    }
 
     const start = moment(startTime);
     const end = moment(endTime);

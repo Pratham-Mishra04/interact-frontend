@@ -16,7 +16,7 @@ const ProfileCompletion = () => {
   const getPercentage = (): number => {
     const totalPoints = 5;
     var counter = 0;
-    if (user.bio != '') counter++;
+    if ((user.following || []).length >= 3) counter++;
     if ((user.links || []).length != 0) counter++;
     if (user.tagline != '') counter++;
     if (user.email != '' && user.isVerified) counter++;
@@ -48,7 +48,7 @@ const ProfileCompletion = () => {
       }}
       className={`${
         hide ? 'hidden' : ''
-      } w-96 p-6 max-md:p-4 flex flex-col items-center justify-between hover:shadow-xl bg-white dark:bg-transparent dark:text-white dark:border-dark_primary_btn rounded-xl cursor-pointer transition-ease-500`}
+      } w-96 p-6 max-md:p-4 flex flex-col items-center justify-center gap-2 hover:shadow-xl bg-white dark:bg-transparent dark:text-white dark:border-dark_primary_btn rounded-xl cursor-pointer transition-ease-500`}
     >
       <div className="relative">
         <div className="text-3xl font-bold absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 text-gradient">

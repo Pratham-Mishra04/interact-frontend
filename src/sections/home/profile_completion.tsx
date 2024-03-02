@@ -16,7 +16,7 @@ const ProfileCompletion = () => {
   const getPercentage = (): number => {
     const totalPoints = 5;
     var counter = 0;
-    if (user.bio != '') counter++;
+    if ((user.following || []).length >= 3) counter++;
     if ((user.links || []).length != 0) counter++;
     if (user.tagline != '') counter++;
     if (user.email != '' && user.isVerified) counter++;
@@ -132,16 +132,16 @@ const ProfileCompletion = () => {
           )}
         </div>
         <div className="flex items-center gap-4 px-2 py-4 border-b-[1px] border-gray-200 dark:border-dark_primary_btn">
-          {user.bio != '' ? <CheckCircle size={32} /> : <Circle size={32} />}
-          {user.bio != '' ? (
-            <div className="cursor-default">Add a Descriptive Bio</div>
+          {user.following && user.following.length >= 3 ? <CheckCircle size={32} /> : <Circle size={32} />}
+          {user.following && user.following.length >= 3 ? (
+            <div className="cursor-default">Follow at least 3 Profiles</div>
           ) : (
             <Link
-              href={'/profile?action=edit&tag=bio'}
+              href={'/explore?tab=users'}
               onClick={() => dispatch(setProfileCompletionOpen(false))}
               className="hover-underline-animation after:bg-black dark:after:bg-dark_primary_btn"
             >
-              Add a Descriptive Bio
+              Follow at least 3 Profiles
             </Link>
           )}
         </div>

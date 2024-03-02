@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { ReactSVG } from 'react-svg';
-import ArrowRight from '@phosphor-icons/react/dist/icons/ArrowRight';
 import Eye from '@phosphor-icons/react/dist/icons/Eye';
 import EyeClosed from '@phosphor-icons/react/dist/icons/EyeClosed';
 import { useState } from 'react';
@@ -21,6 +20,7 @@ import useUserStateFetcher from '@/hooks/user_fetcher';
 import WidthCheck from '@/utils/wrappers/widthCheck';
 import { Buildings } from '@phosphor-icons/react';
 import Link from 'next/link';
+import RegistrationButton from '@/components/buttons/registration_btn';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -178,13 +178,7 @@ const Login = () => {
               </div>
             </div>
             <div className="w-full p-1 flex flex-col gap-2 items-center">
-              <button
-                type="submit"
-                className="w-full relative p-2 border-2 after:absolute after:-top-[3px] after:-left-[3px] after:-right-[3px] after:-bottom-[3.5px] after:-z-10 after:bg-[#395887] after:rounded-xl flex items-center cursor-pointer justify-center gap-2 bg-[#3D6DB3] hover:bg-[#345C98] active:bg-[#2D5185] border-[#d1d1d1a7] text-white py-2 rounded-xl font-semibold"
-              >
-                <div> Continue</div>
-                <ArrowRight size={20} weight="regular" />
-              </button>
+              <RegistrationButton />
               <div onClick={() => window.location.assign('/signup')} className="text-gray-400 text-sm cursor-pointer">
                 Don&apos;t have an Account? <span className="font-medium underline underline-offset-2">Sign Up</span>
               </div>

@@ -107,8 +107,8 @@ const TrendingCard = () => {
               >
                 <div
                   className={`w-fit flex group absolute top-1/2 ${
-                    homeTab == 0 ? '-translate-y-1/2' : '-translate-y-20'
-                  } hover:-translate-x-1 text-lg font-semibold transition-ease-out-300`}
+                    homeTab == 0 ? '-translate-y-1/2 opacity-100' : '-translate-y-20 opacity-0'
+                  } hover:-translate-x-1 text-lg font-semibold transition-ease-out-500`}
                 >
                   <div className="text-gradient">Checkout What&apos;s Trending!</div>
                   <ArrowRight
@@ -118,8 +118,8 @@ const TrendingCard = () => {
                 </div>
                 <div
                   className={`w-fit flex group absolute top-1/2 ${
-                    homeTab == 0 ? 'translate-y-20' : '-translate-y-1/2'
-                  } hover:translate-x-1 text-lg font-semibold transition-ease-out-300`}
+                    homeTab == 0 ? 'translate-y-20 opacity-0' : '-translate-y-1/2 opacity-100'
+                  } hover:translate-x-1 text-lg font-semibold transition-ease-out-500`}
                 >
                   <div className="text-gradient">Back to your Following</div>
                   <ArrowLeft
