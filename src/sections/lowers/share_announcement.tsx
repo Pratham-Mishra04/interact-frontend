@@ -71,7 +71,7 @@ const ShareAnnouncement = ({ announcement, setShow }: Props) => {
     const toaster = Toaster.startLoad('Sharing Announcement..');
     const URL = `/share/post/`;
     const formData = {
-      content: message.trim() != '' ? message : 'Checkout this Announcement!',
+      content: message.trim() != '' ? message : 'Check Out this Announcement!',
       chats: selectedChats,
       announcementID: announcement.id,
     };

@@ -58,7 +58,7 @@ const ShareProject = ({ project, setShow, setNoShares }: Props) => {
     const toaster = Toaster.startLoad('Sharing Project..');
     const URL = `/share/project/`;
     const formData = {
-      content: message.trim() != '' ? message : 'Checkout this Project!',
+      content: message.trim() != '' ? message : 'Check Out this Project!',
       chats: selectedChats,
       projectID: project.id,
     };

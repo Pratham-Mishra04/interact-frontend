@@ -43,8 +43,7 @@ const CommentBox = ({ type, item, setNoComments }: Props) => {
 
   const getComments = async () => {
     //TODO add pagination
-    // const URL = `${COMMENT_URL}/${type}/${item.id}?page=${page}&limit=${10}`;
-    const URL = `${COMMENT_URL}/${type}/${item.id}`;
+    const URL = `${COMMENT_URL}/${type}/${item.id}?page=${page}&limit=${100}`;
     getHandler(URL)
       .then(res => {
         if (res.statusCode == 200) {
@@ -67,6 +66,7 @@ const CommentBox = ({ type, item, setNoComments }: Props) => {
   };
 
   const submitHandler = async () => {
+    if (commentBody.trim() == '') return;
     const toaster = Toaster.startLoad('Adding your comment...');
 
     const formData =
@@ -109,6 +109,7 @@ const CommentBox = ({ type, item, setNoComments }: Props) => {
     }
   };
 
+  //TODO add confirm delete
   const deleteComment = async (commentID: string) => {
     const toaster = Toaster.startLoad('Deleting Comment');
     const URL = `${COMMENT_URL}/${commentID}`;
@@ -133,7 +134,7 @@ const CommentBox = ({ type, item, setNoComments }: Props) => {
   const profilePic = loggedInUser.profilePic;
 
   return (
-    <div className="w-full h-full overflow-auto flex flex-col p-4 font-primary gap-4 max-md:px-4">
+    <div className="w-full h-full overflow-y-auto flex flex-col over p-4 font-primary gap-4 max-md:px-4">
       <div className="w-full flex gap-2">
         <Image
           crossOrigin="anonymous"
@@ -165,76 +166,74 @@ const CommentBox = ({ type, item, setNoComments }: Props) => {
       </div>
       {loading ? (
         <CommentsLoader />
-      ) : (
-        <>
-          {comments.length > 0 ? (
-            // <InfiniteScroll dataLength={comments.length} next={getComments} hasMore={hasMore} loader={<Loader />}>
-            <div className="w-full flex flex-col gap-4">
-              {comments.map(comment => {
-                return (
-                  <div key={comment.id} className="flex flex-col gap-2">
-                    <div className="w-full flex justify-between items-center">
-                      <div className="flex gap-2">
-                        <Link
-                          href={`${
-                            comment.user.username != loggedInUser.username
-                              ? `/explore/user/${comment.user.username}`
-                              : '/profile'
-                          }`}
-                          className="rounded-full"
-                        >
-                          <Image
-                            crossOrigin="anonymous"
-                            width={50}
-                            height={50}
-                            alt={'User Pic'}
-                            src={`${USER_PROFILE_PIC_URL}/${comment.user.profilePic}`}
-                            className={'rounded-full w-8 h-8 cursor-pointer'}
-                          />
-                        </Link>
-                        <div className="flex flex-col">
-                          <Link
-                            href={`${
-                              comment.user.username != loggedInUser.username
-                                ? `/explore/user/${comment.user.username}`
-                                : '/profile'
-                            }`}
-                            className="text-base font-medium"
-                          >
-                            @{comment.user.username}
-                          </Link>
-                          <div className="flex gap-1 items-center">
-                            <div className="text-xs max-md:text-xxs">•</div>
-                            <div className="text-xs max-md:text-xxs">{moment(comment.createdAt).fromNow()}</div>
-                          </div>
-                        </div>
-                      </div>
-                      {comment.userID == userID && (
-                        <Trash
-                          onClick={() => {
-                            deleteComment(comment.id);
-                          }}
-                          className="cursor-pointer mr-1 max-md:w-4 max-md:h-4 transition-all ease-in-out duration-200 hover:scale-110"
-                          size={20}
-                          weight="regular"
-                        />
-                      )}
-                    </div>
-                    <div className="pl-10">
-                      <div className="w-fit bg-primary_comp dark:bg-dark_primary_comp_hover px-4 py-2 max-md:px-2 max-md:py-1 text-sm max-md:text-xs rounded-xl max-md:rounded-lg">
-                        {comment.content}
-                      </div>
-                      {/* <LowerComment comment={comment} type={type} /> */}
+      ) : comments.length > 0 ? (
+        <InfiniteScroll
+          dataLength={comments.length}
+          next={getComments}
+          hasMore={hasMore}
+          loader={<Loader />}
+          className="w-full flex flex-col gap-4"
+        >
+          {comments.map(comment => (
+            <div key={comment.id} className="flex flex-col gap-2">
+              <div className="w-full flex justify-between items-center">
+                <div className="flex gap-2">
+                  <Link
+                    href={`${
+                      comment.user.username != loggedInUser.username
+                        ? `/explore/user/${comment.user.username}`
+                        : '/profile'
+                    }`}
+                    className="rounded-full"
+                  >
+                    <Image
+                      crossOrigin="anonymous"
+                      width={50}
+                      height={50}
+                      alt={'User Pic'}
+                      src={`${USER_PROFILE_PIC_URL}/${comment.user.profilePic}`}
+                      className={'rounded-full w-8 h-8 cursor-pointer'}
+                    />
+                  </Link>
+                  <div className="flex flex-col">
+                    <Link
+                      href={`${
+                        comment.user.username != loggedInUser.username
+                          ? `/explore/user/${comment.user.username}`
+                          : '/profile'
+                      }`}
+                      className="text-base font-medium"
+                    >
+                      @{comment.user.username}
+                    </Link>
+                    <div className="flex gap-1 items-center">
+                      <div className="text-xs max-md:text-xxs">•</div>
+                      <div className="text-xs max-md:text-xxs">{moment(comment.createdAt).fromNow()}</div>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+                {comment.userID == userID && (
+                  <Trash
+                    onClick={() => {
+                      deleteComment(comment.id);
+                    }}
+                    className="cursor-pointer mr-1 max-md:w-4 max-md:h-4 transition-all ease-in-out duration-200 hover:scale-110"
+                    size={20}
+                    weight="regular"
+                  />
+                )}
+              </div>
+              <div className="pl-10">
+                <div className="w-fit bg-primary_comp dark:bg-dark_primary_comp_hover px-4 py-2 max-md:px-2 max-md:py-1 text-sm max-md:text-xs rounded-xl max-md:rounded-lg">
+                  {comment.content}
+                </div>
+                {/* <LowerComment comment={comment} type={type} /> */}
+              </div>
             </div>
-          ) : (
-            // </InfiniteScroll>
-            <div className="w-fit mx-auto text-xl">No Comments Yet :)</div>
-          )}
-        </>
+          ))}
+        </InfiniteScroll>
+      ) : (
+        <div className="w-fit mx-auto text-xl">No Comments Yet :)</div>
       )}
     </div>
   );

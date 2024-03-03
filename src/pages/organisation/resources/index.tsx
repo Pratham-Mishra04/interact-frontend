@@ -123,7 +123,7 @@ const Resources = () => {
                 )}
               </div>
             ) : (
-              <Mascot message="We couldn't find any resources at the moment" />
+              <Mascot message="There are no resources at the moment" />
             )}
           </div>
         </div>

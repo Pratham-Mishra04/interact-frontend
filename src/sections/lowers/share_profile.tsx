@@ -69,7 +69,7 @@ const ShareProfile = ({ user, setShow }: Props) => {
     const toaster = Toaster.startLoad('Sharing Profile..');
     const URL = `/share/profile/`;
     const formData = {
-      content: message.trim() != '' ? message : 'Checkout this Profile!',
+      content: message.trim() != '' ? message : 'Check Out this Profile!',
       chats: selectedChats,
       profileID: user.id,
     };

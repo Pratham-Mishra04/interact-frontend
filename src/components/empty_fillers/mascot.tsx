@@ -5,7 +5,7 @@ interface Props {
 }
 export default function Mascot({ message }: Props) {
   return (
-    <div className="container w-full  h-full flex flex-col items-center justify-center">
+    <div className="w-full  h-full flex flex-col items-center justify-center">
       <div className="mascot w-fit scale-75 -mb-48">
         <div className="mascot flex flex-col justify-center items-center relative">
           <div

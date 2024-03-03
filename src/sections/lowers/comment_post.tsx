@@ -26,7 +26,7 @@ const CommentPost = ({ post, setShow, numComments, setNoComments }: Props) => {
 
   return (
     <>
-      <div className="w-1/2 h-[90%] overflow-y-auto max-lg:w-5/6 max-lg:overflow-y-auto fixed backdrop-blur-xl dark:text-white bg-white dark:bg-[#ffe1fc22] z-30 translate-x-1/2 -translate-y-1/4 top-56 max-lg:top-1/4 right-1/2 flex flex-col font-primary p-8 max-lg:p-4 gap-2 border-2 shadow-xl dark:border-dark_primary_btn rounded-xl animate-fade_third">
+      <div className="w-1/2 h-[90%] overflow-y-auto max-lg:w-5/6 fixed backdrop-blur-xl dark:text-white bg-white dark:bg-[#ffe1fc22] z-30 translate-x-1/2 -translate-y-1/4 top-56 max-lg:top-1/4 right-1/2 flex flex-col font-primary p-8 max-lg:p-4 gap-2 border-2 shadow-xl dark:border-dark_primary_btn rounded-xl animate-fade_third">
         <div onClick={() => setShow(false)} className="md:hidden absolute top-2 right-2">
           <X size={24} weight="bold" />
         </div>

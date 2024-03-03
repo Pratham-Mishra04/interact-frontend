@@ -5,9 +5,10 @@ interface Props {
   show: boolean;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   smallScreen?: boolean;
+  announcement?: boolean;
 }
 
-const NewPostHelper: React.FC<Props> = ({ show, setShow, smallScreen }) => {
+const NewPostHelper: React.FC<Props> = ({ show, setShow, smallScreen, announcement = false }) => {
   const [firstMount, setFirstMount] = useState<boolean>(true);
   return (
     <div className="font-primary">
@@ -41,6 +42,7 @@ const NewPostHelper: React.FC<Props> = ({ show, setShow, smallScreen }) => {
           <div className={`heading font-medium tracking-wide ${smallScreen ? 'text-base' : 'text-lg'}`}>Tips:</div>
           <div className="tips-list text-xs pl-4 mt-2">
             <ul className={`list-disc flex flex-col gap-2 text-xs`}>
+              {announcement && <li>Announcements have a better short term reach than a posts.</li>}
               <li>
                 Enclose your text with double asterisks <b>(**)</b>, or select text and press control+B to emphasize and
                 make it bold.

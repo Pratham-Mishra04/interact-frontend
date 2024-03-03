@@ -214,7 +214,7 @@ const NewAnnouncement = ({ setShow, setAnnouncements }: Props) => {
 
             <div className="w-full flex flex-col gap-4 relative">
               <div className="w-full flex gap-4">
-                <NewPostHelper setShow={setShowTipsModal} show={showTipsModal} />
+                <NewPostHelper setShow={setShowTipsModal} show={showTipsModal} announcement={true} />
               </div>
               <input
                 type="text"
@@ -233,27 +233,36 @@ const NewAnnouncement = ({ setShow, setAnnouncements }: Props) => {
                 maxLength={1000}
                 placeholder="What's the announcement?"
               ></textarea>
-              <label className="flex w-fit cursor-pointer select-none items-center text-sm gap-2">
-                <div className="font-semibold">Open for All</div>
-                <div className="relative">
-                  <input
-                    type="checkbox"
-                    checked={isOpen}
-                    onChange={() => setIsOpen(prev => !prev)}
-                    className="sr-only"
-                  />
-                  <div
-                    className={`box block h-6 w-10 rounded-full ${
-                      isOpen ? 'bg-blue-300' : 'bg-black'
-                    } transition-ease-300`}
-                  ></div>
-                  <div
-                    className={`absolute left-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white transition ${
-                      isOpen ? 'translate-x-full' : ''
-                    }`}
-                  ></div>
+              <div className="w-fit flex-center gap-4">
+                <label className="w-fit flex cursor-pointer select-none items-center text-sm gap-2">
+                  <div className="font-semibold">Open for All</div>
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      checked={isOpen}
+                      onChange={() => setIsOpen(prev => !prev)}
+                      className="sr-only"
+                    />
+                    <div
+                      className={`box block h-6 w-10 rounded-full ${
+                        isOpen ? 'bg-blue-300' : 'bg-black'
+                      } transition-ease-300`}
+                    ></div>
+                    <div
+                      className={`absolute left-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white transition ${
+                        isOpen ? 'translate-x-full' : ''
+                      }`}
+                    ></div>
+                  </div>
+                </label>
+                <div className="text-sm font-medium text-gray-500">
+                  (
+                  {isOpen
+                    ? 'Will be shown in the feed of your Followers'
+                    : 'Will be shown in the feed of your Members Only'}
+                  )
                 </div>
-              </label>
+              </div>
             </div>
           </div>
         </div>

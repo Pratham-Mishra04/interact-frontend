@@ -71,7 +71,7 @@ const ShareOpening = ({ opening, setShow, org = false }: Props) => {
     const toaster = Toaster.startLoad('Sharing Opening..');
     const URL = `/share/opening/`;
     const formData = {
-      content: message.trim() != '' ? message : 'Checkout this Opening!',
+      content: message.trim() != '' ? message : 'Check Out this Opening!',
       chats: selectedChats,
       openingID: opening.id,
     };

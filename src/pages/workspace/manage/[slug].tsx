@@ -54,11 +54,6 @@ const ManageProject = ({ slug }: Props) => {
       <MainWrapper>
         <div className="w-full flex flex-col items-center gap-4">
           <div className="w-[50vw] max-lg:w-[75vw] max-md:w-[95%] flex items-start gap-3 p-base_padding pl-0 pt-28">
-            <ArrowArcLeft
-              onClick={() => window.history.back()}
-              className="w-10 h-10 p-2 dark:text-white dark:bg-dark_primary_comp_hover rounded-full cursor-pointer"
-              size={40}
-            />
             <div className="text-4xl font-semibold dark:text-white font-primary">Manage Project</div>
           </div>
           <TabMenu items={['Openings', 'Collaborators', 'Chats']} active={active} setState={setActive} />

@@ -1,4 +1,5 @@
 import Loader from '@/components/common/loader';
+import Mascot from '@/components/empty_fillers/mascot';
 import AnnouncementCard from '@/components/organization/announcement_card';
 import { ORG_SENIOR } from '@/config/constants';
 import { SERVER_ERROR } from '@/config/errors';
@@ -72,9 +73,24 @@ const Announcements = () => {
         <Loader />
       ) : (
         <div className="w-4/5 mx-auto pb-base_padding flex flex-col gap-4">
-          {announcements.map(announcement => (
-            <AnnouncementCard key={announcement.id} announcement={announcement} />
-          ))}
+          {announcements.length > 0 ? (
+            announcements.map(announcement => (
+              <AnnouncementCard key={announcement.id} announcement={announcement} setAnnouncements={setAnnouncements} />
+            ))
+          ) : (
+            <Mascot
+              message={
+                <div className="flex flex-col items-center">
+                  <div>There are no announcements available at the moment.</div>
+                  {checkOrgAccess(ORG_SENIOR) && (
+                    <div className="text-sm">
+                      Share updates or news for better short-term reach. Create an announcement now!
+                    </div>
+                  )}
+                </div>
+              }
+            />
+          )}
         </div>
       )}
     </div>

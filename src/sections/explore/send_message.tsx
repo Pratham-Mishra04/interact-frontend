@@ -55,7 +55,7 @@ const SendMessage = ({ user, setShow }: Props) => {
       const messageRes = await postHandler(MESSAGE_URL, messageFormData);
 
       if (messageRes.statusCode == 201) {
-        Toaster.stopLoad(toaster, 'Message Send', 1);
+        Toaster.stopLoad(toaster, 'Message Sent', 1);
         setShow(false);
       } else {
         if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);

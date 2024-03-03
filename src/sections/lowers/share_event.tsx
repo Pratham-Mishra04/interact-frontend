@@ -71,7 +71,7 @@ const ShareEvent = ({ event, setShow }: Props) => {
     const toaster = Toaster.startLoad('Sharing Event..');
     const URL = `/share/event/`;
     const formData = {
-      content: message.trim() != '' ? message : 'Checkout this Post!',
+      content: message.trim() != '' ? message : 'Check Out this Post!',
       chats: selectedChats,
       eventID: event.id,
     };

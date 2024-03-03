@@ -18,15 +18,12 @@ const Bookmarks = () => {
       <OrgSidebar index={11} />
       <MainWrapper>
         <div className="w-full flex flex-col items-center gap-4 py-20">
-          <TabMenu items={['Posts', 'Projects', 'Openings']} active={active} setReduxState={setBookmarksTab} />
+          <TabMenu items={['Posts', 'Projects']} active={active} setReduxState={setBookmarksTab} />
           <div className={`w-full ${active === 0 ? 'block' : 'hidden'}`}>
             <Posts />
           </div>
           <div className={`w-full ${active === 1 ? 'block' : 'hidden'}`}>
             <Projects />
-          </div>
-          <div className={`w-full ${active === 2 ? 'block' : 'hidden'}`}>
-            <Openings />
           </div>
         </div>
       </MainWrapper>

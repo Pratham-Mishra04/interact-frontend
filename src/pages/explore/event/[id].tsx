@@ -185,7 +185,7 @@ const Event = ({ id }: Props) => {
           onClick={handleChat}
           className="w-fit font-medium text-primary_black hover:text-gray-600 transition-ease-300 cursor-pointer"
         >
-          Contact the Host
+          Message the Host
         </div>
         <div
           onClick={() => setClickedOnReport(true)}

@@ -110,7 +110,7 @@ const TrendingCard = () => {
                     homeTab == 0 ? '-translate-y-1/2 opacity-100' : '-translate-y-20 opacity-0'
                   } hover:-translate-x-1 text-lg font-semibold transition-ease-out-500`}
                 >
-                  <div className="text-gradient">Checkout What&apos;s Trending!</div>
+                  <div className="text-gradient">Check Out What&apos;s Trending!</div>
                   <ArrowRight
                     className="text-dark_secondary_gradient_end absolute z-10 opacity-0 group-hover:opacity-100 top-1/2 right-0 group-hover:-right-5 -translate-y-1/2 transition-ease-out-300"
                     weight="bold"

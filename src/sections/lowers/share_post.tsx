@@ -70,7 +70,7 @@ const SharePost = ({ post, setShow }: Props) => {
     const toaster = Toaster.startLoad('Sharing Post..');
     const URL = `/share/post/`;
     const formData = {
-      content: message.trim() != '' ? message : 'Checkout this Post!',
+      content: message.trim() != '' ? message : 'Check Out this Post!',
       chats: selectedChats,
       postID: post.id,
     };

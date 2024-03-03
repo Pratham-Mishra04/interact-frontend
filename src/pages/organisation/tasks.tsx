@@ -162,7 +162,7 @@ const Tasks = () => {
                 )}
               </div>
             ) : (
-              <Mascot message="There are no tasks available at this time" />
+              <Mascot message="There are no tasks available at the moment." />
             )}
           </div>
         </div>
