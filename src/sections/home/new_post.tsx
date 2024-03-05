@@ -28,17 +28,11 @@ const NewPost = ({ setShow, setFeed, org = false }: Props) => {
   const [showUsers, setShowUsers] = useState(false);
   const [cursorPosition, setCursorPosition] = useState<number | null>(null);
 
-  let profilePic = useSelector(userSelector).profilePic;
-  let name = useSelector(userSelector).name;
-  let username = useSelector(userSelector).username;
+  const user = useSelector(userSelector);
 
   useEffect(() => {
     document.documentElement.style.overflowY = 'hidden';
     document.documentElement.style.height = '100vh';
-
-    profilePic = profilePic == '' ? 'default.jpg' : profilePic;
-    name = name == '' ? 'Interact User' : name;
-    username = username == '' ? 'interactUser' : username;
 
     return () => {
       document.documentElement.style.overflowY = 'auto';
@@ -50,7 +44,8 @@ const NewPost = ({ setShow, setFeed, org = false }: Props) => {
     const URL = `${EXPLORE_URL}/users/trending?search=${search}&limit=${10}`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
-      setUsers(res.data.users || []);
+      const userData: User[] = res.data.users || [];
+      setUsers(org ? userData : userData.filter(u => u.id != user.id));
     } else {
       if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
       else Toaster.error(SERVER_ERROR, 'error_toaster');
@@ -196,13 +191,13 @@ const NewPost = ({ setShow, setFeed, org = false }: Props) => {
               width={50}
               height={50}
               alt="user"
-              src={`${USER_PROFILE_PIC_URL}/${profilePic}`}
+              src={`${USER_PROFILE_PIC_URL}/${user.profilePic || 'default.jpg'}`}
             />
             <div className="grow flex flex-col gap-4">
               <div className="flex justify-between items-center">
                 <div className="flex flex-col">
-                  <div className="text-2xl font-semibold">{name}</div>
-                  <div className="text-sm">@{username}</div>
+                  <div className="text-2xl font-semibold">{user.name}</div>
+                  <div className="text-sm">@{user.username}</div>
                 </div>
                 <div
                   onClick={handleSubmit}

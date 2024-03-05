@@ -47,8 +47,9 @@ const OpeningView = ({ opening, setShow, setOpening, org = false, showBack = fal
     <>
       {clickedOnAddResume ? (
         <UpdateResume setShow={setClickedOnAddResume} />
-      ) : clickedOnApply ? (
-        userID != '' ? (
+      ) : (
+        clickedOnApply &&
+        (userID != '' ? (
           <ApplyOpening
             opening={opening}
             setShow={setClickedOnApply}
@@ -58,9 +59,7 @@ const OpeningView = ({ opening, setShow, setOpening, org = false, showBack = fal
           />
         ) : (
           <SignUp setShow={setClickedOnApply} />
-        )
-      ) : (
-        <></>
+        ))
       )}
       <div
         className={`sticky max-md:fixed top-[152px] bg-white dark:bg-transparent max-md:top-navbar max-md:right-0 ${

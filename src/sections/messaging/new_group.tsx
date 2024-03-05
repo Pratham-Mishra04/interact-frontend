@@ -47,9 +47,8 @@ const NewGroup = ({ setShow }: Props) => {
     const URL = `${EXPLORE_URL}/users/trending?search=${key}`;
     const res = await getHandler(URL, abortController.signal);
     if (res.statusCode == 200) {
-      let userData = res.data.users || [];
-      userData = userData.filter((user: User) => user.id != userID);
-      setUsers(userData);
+      const userData: User[] = res.data.users || [];
+      setUsers(userData.filter(user => user.id != userID));
       setLoading(false);
     } else {
       if (res.data.message) Toaster.error(res.data.message, 'error_toaster');

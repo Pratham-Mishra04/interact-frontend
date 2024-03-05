@@ -32,7 +32,7 @@ const OpeningCard = ({ opening, clickedOpening, setClickedOnOpening, setClickedO
           width={200}
           height={200}
           alt={'User Pic'}
-          src={`${USER_PROFILE_PIC_URL}/${opening.organization?.user?.coverPic}`}
+          src={`${USER_PROFILE_PIC_URL}/${opening.organization?.user?.profilePic}`}
           className={'w-[140px] h-[140px] max-lg:w-[90px] max-lg:h-[90px] rounded-lg object-cover'}
         />
       ) : (
@@ -62,7 +62,7 @@ const OpeningCard = ({ opening, clickedOpening, setClickedOnOpening, setClickedO
           </div>
         </div>
 
-        {opening.tags.length > 0 ? (
+        {opening.tags.length > 0 && (
           <div className="w-full flex flex-wrap gap-2">
             {opening.tags &&
               opening.tags // Splicing causes array mutation
@@ -79,16 +79,12 @@ const OpeningCard = ({ opening, clickedOpening, setClickedOnOpening, setClickedO
                     </div>
                   );
                 })}
-            {opening.tags.length - 3 > 0 ? (
+            {opening.tags.length - 3 > 0 && (
               <div className="flex-center p-2 font-primary text-xs dark:text-white border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-xl">
                 + {opening.tags.length - 3}
               </div>
-            ) : (
-              <></>
             )}
           </div>
-        ) : (
-          <></>
         )}
 
         <div className="text-xs opacity-60 max-lg:text-xs">{moment(opening.createdAt).fromNow()}</div>

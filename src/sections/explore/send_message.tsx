@@ -118,7 +118,7 @@ const SendMessage = ({ user, setShow }: Props) => {
       </div>
       <div
         onClick={() => setShow(false)}
-        className=" bg-backdrop w-screen h-screen max-md:h-base fixed top-0 right-0 animate-fade_third z-20"
+        className=" bg-backdrop w-screen h-screen fixed top-0 right-0 animate-fade_third z-20"
       ></div>
     </>
   );

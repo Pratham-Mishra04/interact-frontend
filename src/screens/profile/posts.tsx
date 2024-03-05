@@ -96,12 +96,10 @@ const Posts = ({ userID, org = false }: Props) => {
       {posts.length === 0 ? (
         <NoUserItems />
       ) : (
-        <>
-          {posts.map(post => {
-            if (post.rePost) return <RePostComponent key={post.id} post={post} />;
-            else return <PostComponent key={post.id} post={post} />;
-          })}
-        </>
+        posts.map(post => {
+          if (post.rePost) return <RePostComponent key={post.id} post={post} />;
+          else return <PostComponent key={post.id} post={post} />;
+        })
       )}
     </InfiniteScroll>
   );

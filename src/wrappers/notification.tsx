@@ -33,7 +33,7 @@ const NotificationWrapper: React.FC<WrapperProps> = ({
               className="rounded-full w-10 h-10 border-[1px] border-black"
             />
           )}
-          <div className="flex items-center gap-2">{children}</div>
+          <div className="flex flex-wrap items-center gap-2 gap-y-0">{children}</div>
         </div>
         <div className="text-xxs">{getDisplayTime(notification.createdAt, false)}</div>
       </div>

@@ -26,17 +26,11 @@ const RePost = ({ post, setShow, setFeed, org = false }: Props) => {
   const [showUsers, setShowUsers] = useState(false);
   const [cursorPosition, setCursorPosition] = useState<number | null>(null);
 
-  let profilePic = useSelector(userSelector).profilePic;
-  let name = useSelector(userSelector).name;
-  let username = useSelector(userSelector).username;
+  const user = useSelector(userSelector);
 
   useEffect(() => {
     document.documentElement.style.overflowY = 'hidden';
     document.documentElement.style.height = '100vh';
-
-    profilePic = profilePic == '' ? 'default.jpg' : profilePic;
-    name = name == '' ? 'Interact User' : name;
-    username = username == '' ? 'interactUser' : username;
 
     return () => {
       document.documentElement.style.overflowY = 'auto';
@@ -86,7 +80,8 @@ const RePost = ({ post, setShow, setFeed, org = false }: Props) => {
     const URL = `${EXPLORE_URL}/users/trending?search=${search}&limit=${10}`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
-      setUsers(res.data.users || []);
+      const userData: User[] = res.data.users || [];
+      setUsers(userData.filter(u => u.id != user.id));
     } else {
       if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
       else Toaster.error(SERVER_ERROR, 'error_toaster');
@@ -173,7 +168,7 @@ const RePost = ({ post, setShow, setFeed, org = false }: Props) => {
             width={100}
             height={100}
             alt="user"
-            src={`${USER_PROFILE_PIC_URL}/${profilePic}`}
+            src={`${USER_PROFILE_PIC_URL}/${user.profilePic}`}
           />
           <div className="grow flex flex-col gap-2">
             <div className="flex max-md:flex-col justify-between items-center max-md:items-start">
@@ -184,11 +179,11 @@ const RePost = ({ post, setShow, setFeed, org = false }: Props) => {
                   width={100}
                   height={100}
                   alt="user"
-                  src={`${USER_PROFILE_PIC_URL}/${profilePic}`}
+                  src={`${USER_PROFILE_PIC_URL}/${user.profilePic}`}
                 />
                 <div className="flex flex-col">
-                  <div className="text-2xl font-semibold">{name}</div>
-                  <div className="font-medium">@{username}</div>
+                  <div className="text-2xl font-semibold">{user.name}</div>
+                  <div className="font-medium">@{user.username}</div>
                 </div>
               </div>
 

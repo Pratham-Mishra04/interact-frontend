@@ -13,6 +13,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import Loader from '@/components/common/loader';
 import Mascot from '@/components/empty_fillers/mascot';
 import { EXPLORE_URL } from '@/config/routes';
+import { useWindowWidth } from '@react-hook/window-size';
 
 interface Props {
   orgID: string;
@@ -28,6 +29,8 @@ export default function Openings({ orgID }: Props) {
   const [clickedOnOpening, setClickedOnOpening] = useState(false);
   const [clickedOpening, setClickedOpening] = useState(initialOpening);
 
+  const windowWidth = useWindowWidth();
+
   const fetchOpenings = async () => {
     const URL = `${EXPLORE_URL}/openings/org/${orgID}?page=${page}&limit=${10}`;
     const res = await getHandler(URL);
@@ -42,7 +45,7 @@ export default function Openings({ orgID }: Props) {
           setClickedOnOpening(false);
           setClickedOpening(initialOpening);
         }
-      } else if (page == 1 && addedOpenings.length > 0) {
+      } else if (page == 1 && addedOpenings.length > 0 && windowWidth > 640) {
         setClickedOnOpening(true);
         setClickedOpening(addedOpenings[0]);
       }

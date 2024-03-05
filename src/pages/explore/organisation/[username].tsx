@@ -138,7 +138,7 @@ const User = ({ username }: Props) => {
               alt={'User Pic'}
               src={`${USER_COVER_PIC_URL}/${user.coverPic}`}
               // className="w-5/6 h-72 mx-auto object-cover rounded-b-md"
-              className="w-full h-80 object-cover"
+              className="w-full h-80 max-md:h-fit object-cover"
             />
             <div className="w-full flex items-end max-md:items-center gap-4 absolute -translate-y-1/3 max-md:translate-y-0 px-36 max-md:px-4 max-md:pt-4">
               <Image

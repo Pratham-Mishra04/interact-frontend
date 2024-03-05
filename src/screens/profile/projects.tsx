@@ -91,13 +91,7 @@ const Projects = ({ userID, displayOnProfile = false, contributing = false, org 
         next={getProjects}
         hasMore={hasMore}
         loader={<Loader />}
-        className={`${
-          projects?.length > 0 || displayOnProfile
-            ? 'w-fit grid'
-            : org
-            ? 'w-full'
-            : 'w-[45vw] max-lg:w-[85%] max-md:w-screen'
-        } ${
+        className={`${projects?.length > 0 ? 'w-fit grid' : 'w-5/6'} ${
           projects.length == 1
             ? 'grid-cols-1'
             : navbarOpen
@@ -109,7 +103,7 @@ const Projects = ({ userID, displayOnProfile = false, contributing = false, org 
       >
         {projects?.length > 0 ? (
           <>
-            {clickedOnProject ? (
+            {clickedOnProject && (
               <ProjectView
                 projectSlugs={projects.map(project => project.slug)}
                 clickedProjectIndex={clickedProjectIndex}
@@ -118,8 +112,6 @@ const Projects = ({ userID, displayOnProfile = false, contributing = false, org 
                 fadeIn={fadeInProject}
                 setFadeIn={setFadeInProject}
               />
-            ) : (
-              <></>
             )}
             {projects.map((project, index) => {
               return (
@@ -139,7 +131,7 @@ const Projects = ({ userID, displayOnProfile = false, contributing = false, org 
             <Mascot message="This organization is as quiet as a library at midnight. Shh, no projects yet." />
           </div>
         ) : (
-          <>{!displayOnProfile ? <NoUserItems /> : <></>}</>
+          <NoUserItems />
         )}
       </InfiniteScroll>
     </div>
