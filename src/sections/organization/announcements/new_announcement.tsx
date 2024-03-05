@@ -7,17 +7,18 @@ import Image from 'next/image';
 import { userSelector } from '@/slices/userSlice';
 import { useSelector } from 'react-redux';
 import NewPostHelper from '@/components/home/new_post_helper';
-import { Announcement, Post, User } from '@/types';
+import { Announcement, Organization, Post, User } from '@/types';
 import { useWindowWidth } from '@react-hook/window-size';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
 import getHandler from '@/handlers/get_handler';
 
 interface Props {
+  organisation: Organization;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   setAnnouncements?: React.Dispatch<React.SetStateAction<Announcement[]>>;
 }
 
-const NewAnnouncement = ({ setShow, setAnnouncements }: Props) => {
+const NewAnnouncement = ({ organisation, setShow, setAnnouncements }: Props) => {
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [isOpen, setIsOpen] = useState(true);
@@ -27,17 +28,9 @@ const NewAnnouncement = ({ setShow, setAnnouncements }: Props) => {
   const [showUsers, setShowUsers] = useState(false);
   const [cursorPosition, setCursorPosition] = useState<number | null>(null);
 
-  let profilePic = useSelector(userSelector).profilePic;
-  let name = useSelector(userSelector).name;
-  let username = useSelector(userSelector).username;
-
   useEffect(() => {
     document.documentElement.style.overflowY = 'hidden';
     document.documentElement.style.height = '100vh';
-
-    profilePic = profilePic == '' ? 'default.jpg' : profilePic;
-    name = name == '' ? 'Interact User' : name;
-    username = username == '' ? 'interactUser' : username;
 
     return () => {
       document.documentElement.style.overflowY = 'auto';
@@ -172,7 +165,9 @@ const NewAnnouncement = ({ setShow, setAnnouncements }: Props) => {
     if (res.statusCode === 201) {
       setContent('');
       setShow(false);
-      if (setAnnouncements) setAnnouncements(prev => [res.data.announcement, ...prev]);
+      const announcement: Announcement = res.data.announcement;
+      announcement.organization = organisation;
+      if (setAnnouncements) setAnnouncements(prev => [announcement, ...prev]);
       Toaster.stopLoad(toaster, 'Announcement Added!', 1);
       setShow(false);
     } else {
@@ -196,13 +191,13 @@ const NewAnnouncement = ({ setShow, setAnnouncements }: Props) => {
             width={50}
             height={50}
             alt="user"
-            src={`${USER_PROFILE_PIC_URL}/${profilePic}`}
+            src={`${USER_PROFILE_PIC_URL}/${organisation.user.profilePic}`}
           />
           <div className="grow flex flex-col gap-4">
             <div className="flex justify-between items-center">
               <div className="flex flex-col">
-                <div className="text-2xl font-semibold">{name}</div>
-                <div className="text-sm">@{username}</div>
+                <div className="text-2xl font-semibold">{organisation.user.name}</div>
+                <div className="text-sm">@{organisation.user.username}</div>
               </div>
               <div
                 onClick={handleSubmit}

@@ -22,7 +22,6 @@ import { SERVER_ERROR } from '@/config/errors';
 import Info from '@phosphor-icons/react/dist/icons/Info';
 import generateRandomProfilePicture from '@/utils/generate_profile_picture';
 import StrongPassInfo from '@/components/common/strong_pass_info';
-import WidthCheck from '@/utils/wrappers/widthCheck';
 import RegistrationButton from '@/components/buttons/registration_btn';
 
 const SignUp = () => {

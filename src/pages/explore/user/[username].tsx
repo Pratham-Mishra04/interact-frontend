@@ -18,7 +18,6 @@ import ProfileCardLoader from '@/components/loaders/profile_card';
 import { SERVER_ERROR } from '@/config/errors';
 import Loader from '@/components/common/loader';
 import PostsLoader from '@/components/loaders/posts';
-import WidthCheck from '@/utils/wrappers/widthCheck';
 import About from '@/screens/profile/about';
 import OrgSidebar from '@/components/common/org_sidebar';
 import { userSelector } from '@/slices/userSlice';
@@ -63,11 +62,11 @@ const User = ({ username }: Props) => {
   }, [user]);
 
   return (
-    <BaseWrapper title={user.name}>
+    <BaseWrapper title={`${user.name} | Interact`}>
       {loggedInUser.isOrganization ? <OrgSidebar index={1} /> : <Sidebar index={2} />}
       <MainWrapper>
         <div className="w-full flex max-lg:flex-col transition-ease-out-500 font-primary">
-          {user.coverPic != '' ? (
+          {user.coverPic != '' && (
             <Image
               crossOrigin="anonymous"
               priority={true}
@@ -79,17 +78,13 @@ const User = ({ username }: Props) => {
                 open ? 'w-no_side_base_open' : 'w-no_side_base_close'
               } max-lg:w-screen h-64 cursor-default fixed top-navbar fade-img transition-ease-out-500 object-cover`}
             />
-          ) : (
-            <></>
           )}
           {loading ? <ProfileCardLoader width="400px" /> : <ProfileCard user={user} />}
           <div className={`grow flex flex-col gap-12 pt-12 max-lg:pt-0`}>
-            {user.tagline && user.tagline != '' ? (
+            {user.tagline && user.tagline != '' && (
               <div className="w-full h-24 font-bold text-5xl max-lg:text-3xl flex-center text-center dark:text-white">
                 {user.tagline}
               </div>
-            ) : (
-              <></>
             )}
 
             <TabMenu

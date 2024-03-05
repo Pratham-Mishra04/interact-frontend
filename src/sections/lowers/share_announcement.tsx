@@ -1,14 +1,14 @@
+import CopyClipboardButton from '@/components/buttons/copy_clipboard_btn';
 import Loader from '@/components/common/loader';
 import { SERVER_ERROR } from '@/config/errors';
 import { MESSAGING_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import postHandler from '@/handlers/post_handler';
-
-import { Announcement, Chat, Post } from '@/types';
+import { Announcement, Chat } from '@/types';
 import getDisplayTime from '@/utils/funcs/get_display_time';
 import getMessagingUser from '@/utils/funcs/get_messaging_user';
 import Toaster from '@/utils/toaster';
-import { X } from '@phosphor-icons/react';
+import { ClipboardText, X } from '@phosphor-icons/react';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
@@ -122,6 +122,7 @@ const ShareAnnouncement = ({ announcement, setShow }: Props) => {
               <div className="w-full text-sm whitespace-pre-wrap mb-1 line-clamp-4">{announcement.content}</div>
             </div>
           </div>
+          <CopyClipboardButton url={`explore/announcement/${announcement.id}`} />
         </div>
 
         <div className="w-full h-[400px] overflow-y-auto flex flex-col justify-between gap-2">

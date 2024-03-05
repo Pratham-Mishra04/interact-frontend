@@ -10,7 +10,6 @@ import { GetServerSidePropsContext } from 'next/types';
 import PostComponent from '@/components/home/post';
 import Loader from '@/components/common/loader';
 import { SERVER_ERROR } from '@/config/errors';
-import WidthCheck from '@/utils/wrappers/widthCheck';
 import OrgSidebar from '@/components/common/org_sidebar';
 import { userSelector } from '@/slices/userSlice';
 import { useSelector } from 'react-redux';
@@ -49,7 +48,7 @@ const Post = ({ id }: Props) => {
   }, []);
 
   return (
-    <BaseWrapper title="Post">
+    <BaseWrapper title="Post | Interact">
       {user.isOrganization ? <OrgSidebar index={1} /> : <Sidebar index={2} />}
       <MainWrapper>
         <div className="w-[50vw] pt-6 mx-auto max-lg:w-full flex max-md:flex-col transition-ease-out-500 font-primary">

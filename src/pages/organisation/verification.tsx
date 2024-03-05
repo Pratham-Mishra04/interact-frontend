@@ -162,4 +162,19 @@ const Verification = () => {
   );
 };
 
+export async function getServerSideProps() {
+  if (process.env.NODE_ENV != 'development') {
+    return {
+      redirect: {
+        permanent: true,
+        destination: '/organisation/home',
+      },
+      props: {},
+    };
+  } else
+    return {
+      props: {},
+    };
+}
+
 export default WidthCheck(OrgOnlyAndProtect(Verification));

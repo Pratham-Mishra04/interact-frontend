@@ -49,7 +49,7 @@ const ManageProject = ({ slug }: Props) => {
   }, [slug]);
 
   return (
-    <BaseWrapper title="Manage Project">
+    <BaseWrapper title={`Manage | ${project.title}`}>
       <Sidebar index={3} />
       <MainWrapper>
         <div className="w-full flex flex-col items-center gap-4">

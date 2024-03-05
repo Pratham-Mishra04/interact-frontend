@@ -80,7 +80,7 @@ const Projects = () => {
   }, []);
 
   return (
-    <BaseWrapper title="Projects">
+    <BaseWrapper title={`Projects | ${currentOrg.title}`}>
       <OrgSidebar index={3} />
       <MainWrapper>
         <div className="w-full max-md:w-full mx-auto flex flex-col items-center relative gap-6 max-md:px-2 p-base_padding">
@@ -88,15 +88,13 @@ const Projects = () => {
             <div className="w-fit text-6xl font-semibold dark:text-white font-primary">Projects</div>
 
             <div className="flex items-center gap-2">
-              {checkOrgAccess(ORG_MANAGER) ? (
+              {checkOrgAccess(ORG_MANAGER) && (
                 <Plus
                   onClick={() => setClickedOnNewProject(true)}
                   size={42}
                   className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
                   weight="regular"
                 />
-              ) : (
-                <></>
               )}
               <Info
                 onClick={() => setClickedOnInfo(true)}
@@ -106,50 +104,44 @@ const Projects = () => {
               />
             </div>
           </div>
-          {clickedOnNewProject ? <NewProject setShow={setClickedOnNewProject} setProjects={setProjects} /> : <></>}
-          {clickedOnInfo ? <AccessTree type="project" setShow={setClickedOnInfo} /> : <></>}
+          {clickedOnNewProject && <NewProject setShow={setClickedOnNewProject} setProjects={setProjects} />}
+          {clickedOnInfo && <AccessTree type="project" setShow={setClickedOnInfo} />}
 
           {loading ? (
             <Loader />
-          ) : (
-            <>
-              {projects.length > 0 ? (
-                <div
-                  className={`w-full grid ${
-                    navbarOpen ? 'grid-cols-3 gap-12' : 'grid-cols-4 gap-8'
-                  } max-lg:grid-cols-3 max-md:grid-cols-1 max-lg:gap-4 max-md:gap-6 max-md:px-4 max-md:justify-items-center pb-8 transition-ease-out-500`}
-                >
-                  {clickedOnProject ? (
-                    <ProjectView
-                      projectSlugs={projects.map(project => project.slug)}
-                      clickedProjectIndex={clickedProjectIndex}
-                      setClickedProjectIndex={setClickedProjectIndex}
-                      setClickedOnProject={setClickedOnProject}
-                      fadeIn={fadeIn}
-                      setFadeIn={setFadeIn}
-                      setProjects={setProjects}
-                    />
-                  ) : (
-                    <></>
-                  )}
-                  {projects.map((project, index) => {
-                    return (
-                      <ProjectCard
-                        key={project.id}
-                        index={index}
-                        size="[24vw]"
-                        project={project}
-                        setProjects={setProjects}
-                        setClickedOnProject={setClickedOnProject}
-                        setClickedProjectIndex={setClickedProjectIndex}
-                      />
-                    );
-                  })}
-                </div>
-              ) : (
-                <NoProjects setClickedOnNewProject={setClickedOnNewProject} />
+          ) : projects.length > 0 ? (
+            <div
+              className={`w-full grid ${
+                navbarOpen ? 'grid-cols-3 gap-12' : 'grid-cols-4 gap-8'
+              } max-lg:grid-cols-3 max-md:grid-cols-1 max-lg:gap-4 max-md:gap-6 max-md:px-4 max-md:justify-items-center pb-8 transition-ease-out-500`}
+            >
+              {clickedOnProject && (
+                <ProjectView
+                  projectSlugs={projects.map(project => project.slug)}
+                  clickedProjectIndex={clickedProjectIndex}
+                  setClickedProjectIndex={setClickedProjectIndex}
+                  setClickedOnProject={setClickedOnProject}
+                  fadeIn={fadeIn}
+                  setFadeIn={setFadeIn}
+                  setProjects={setProjects}
+                />
               )}
-            </>
+              {projects.map((project, index) => {
+                return (
+                  <ProjectCard
+                    key={project.id}
+                    index={index}
+                    size="[24vw]"
+                    project={project}
+                    setProjects={setProjects}
+                    setClickedOnProject={setClickedOnProject}
+                    setClickedProjectIndex={setClickedProjectIndex}
+                  />
+                );
+              })}
+            </div>
+          ) : (
+            <NoProjects setClickedOnNewProject={setClickedOnNewProject} />
           )}
         </div>
       </MainWrapper>

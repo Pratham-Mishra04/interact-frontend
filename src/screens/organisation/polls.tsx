@@ -55,7 +55,7 @@ const Polls = () => {
       )}
       {checkOrgAccess(ORG_SENIOR) && !clickedOnNewPoll && (
         <div
-          className="fixed z-50 bottom-28 right-0 lg:bottom-12 lg:right-12 flex-center text-sm bg-primary_text text-white px-4 py-3 rounded-full flex gap-2 shadow-lg hover:shadow-2xl font-medium cursor-pointer animate-fade_third transition-ease-300"
+          className="fixed z-10 bottom-28 right-0 lg:bottom-12 lg:right-12 flex-center text-sm bg-primary_text text-white px-4 py-3 rounded-full flex gap-2 shadow-lg hover:shadow-2xl font-medium cursor-pointer animate-fade_third transition-ease-300"
           onClick={() => setClickedOnNewPoll(true)}
         >
           <Plus size={20} /> <div className="h-fit">Add Poll</div>

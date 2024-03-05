@@ -21,8 +21,6 @@ import Loader from '@/components/common/loader';
 import patchHandler from '@/handlers/patch_handler';
 import { setReduxTagline } from '@/slices/userSlice';
 import PostsLoader from '@/components/loaders/posts';
-import Protect from '@/utils/wrappers/protect';
-import WidthCheck from '@/utils/wrappers/widthCheck';
 import About from '@/screens/profile/my_about';
 import NonOrgOnlyAndProtect from '@/utils/wrappers/non_org_only';
 
@@ -147,7 +145,7 @@ const Profile = () => {
   };
 
   return (
-    <BaseWrapper title="Profile">
+    <BaseWrapper title="Profile | Interact">
       <Sidebar index={7} />
       <MainWrapper>
         <div className="w-full max-lg:w-full flex max-lg:flex-col transition-ease-out-500 font-primary">

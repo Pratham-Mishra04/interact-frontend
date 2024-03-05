@@ -9,7 +9,7 @@ import React, { useEffect, useState } from 'react';
 import { OrganizationHistory } from '@/types';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { SERVER_ERROR } from '@/config/errors';
-import { currentOrgIDSelector } from '@/slices/orgSlice';
+import { currentOrgSelector } from '@/slices/orgSlice';
 import { useSelector } from 'react-redux';
 import Created from '@/components/history/organisation/created';
 import Deleted from '@/components/history/organisation/deleted';
@@ -23,10 +23,10 @@ const History = () => {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
 
-  const currentOrgID = useSelector(currentOrgIDSelector);
+  const currentOrg = useSelector(currentOrgSelector);
 
   const fetchHistory = async () => {
-    const URL = `${ORG_URL}/${currentOrgID}/history?page=${page}&limit=${10}`;
+    const URL = `${ORG_URL}/${currentOrg.id}/history?page=${page}&limit=${10}`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
       const addedHistory: OrganizationHistory[] = [...history, ...(res.data.history || [])];
@@ -44,7 +44,7 @@ const History = () => {
     fetchHistory();
   }, []);
   return (
-    <BaseWrapper title="History">
+    <BaseWrapper title={`History | ${currentOrg.title}`}>
       <OrgSidebar index={7} />
       <MainWrapper>
         <div className="w-full flex flex-col items-center gap-6 max-md:px-2 p-base_padding">

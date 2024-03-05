@@ -9,7 +9,6 @@ import Users from '@/screens/explore/users';
 import ProfileCompletion from '@/sections/home/profile_completion';
 import { exploreTabSelector, setExploreTab } from '@/slices/feedSlice';
 import { userSelector } from '@/slices/userSlice';
-import WidthCheck from '@/utils/wrappers/widthCheck';
 import BaseWrapper from '@/wrappers/base';
 import MainWrapper from '@/wrappers/main';
 import React, { useEffect } from 'react';
@@ -17,7 +16,7 @@ import { useSelector } from 'react-redux';
 
 const Explore = () => {
   const active = useSelector(exploreTabSelector);
-  const initialSearch = new URLSearchParams(window.location.search).get('search');
+  const initialSearch = new URLSearchParams(window.location.search).get('search') || '';
 
   const user = useSelector(userSelector);
 
@@ -25,7 +24,7 @@ const Explore = () => {
     if (user.isOrganization) window.location.replace('/organisation/explore');
   }, []);
   return (
-    <BaseWrapper title="Explore">
+    <BaseWrapper title="Explore | Interact">
       <Sidebar index={2} />
       <MainWrapper>
         <div className="w-full max-lg:w-full flex flex-col items-center gap-4 transition-ease-out-500 pt-20 pb-base_padding">
@@ -35,7 +34,7 @@ const Explore = () => {
             setReduxState={setExploreTab}
             width="840px"
           />
-          <SearchBar initialValue={initialSearch && initialSearch != '' ? initialSearch : ''} />
+          <SearchBar initialValue={initialSearch} />
           <div className={`w-full ${active === 0 ? 'block' : 'hidden'}`}>
             <Projects />
           </div>

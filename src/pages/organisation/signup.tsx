@@ -142,10 +142,8 @@ const SignUp = () => {
         />
       </Head>
       <div className="h-full flex">
-        {clickedOnStrongPassInfo ? (
+        {clickedOnStrongPassInfo && (
           <StrongPassInfo password={password} confirmPassword={confirmPassword} setShow={setClickedOnStrongPassInfo} />
-        ) : (
-          <></>
         )}
         <div className="w-[55%] max-lg:hidden min-h-screen bg-onboarding bg-cover"></div>
         <div className="w-[45%] max-lg:w-full h-full min-h-screen font-primary gap-12 py-8 px-8 flex flex-col justify-between items-center">

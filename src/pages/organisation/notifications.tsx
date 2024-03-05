@@ -22,6 +22,8 @@ import Invitation from '@/components/notifications/invitation';
 import Task from '@/components/notifications/task';
 import Impressions from '@/components/notifications/impressions';
 import Tagged from '@/components/notifications/tagged';
+import { currentOrgSelector } from '@/slices/orgSlice';
+import { useSelector } from 'react-redux';
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -29,6 +31,8 @@ const Notifications = () => {
 
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
+
+  const currentOrg = useSelector(currentOrgSelector);
 
   useEffect(() => {
     getNotifications();
@@ -57,7 +61,7 @@ const Notifications = () => {
       });
   };
   return (
-    <BaseWrapper title="Notifications">
+    <BaseWrapper title={`Notifications | ${currentOrg.title}`}>
       <OrgSidebar index={10} />
       <MainWrapper>
         <div className="w-full flex flex-col items-center gap-6 max-md:px-2 p-base_padding">

@@ -28,10 +28,10 @@ const Home = () => {
   }, []);
 
   return (
-    <BaseWrapper title="Home">
+    <BaseWrapper title="Home | Interact">
       <Sidebar index={1} />
       <MainWrapper>
-        {onboarding && user.id != '' ? <Onboarding /> : <></>}
+        {onboarding && user.id != '' && <Onboarding />}
         <div className="w-full flex gap-6 px-12 max-md:px-2 py-base_padding">
           <div className="w-[70%] max-md:w-full flex flex-col items-center relative">
             {user.id != '' ? (
@@ -53,10 +53,6 @@ const Home = () => {
             {user.id != '' && <ProfileCard />}
             <TrendingCard />
           </div>
-
-          {
-            //TODO Profile Completion for Organisations
-          }
           <ProfileCompletion />
         </div>
       </MainWrapper>

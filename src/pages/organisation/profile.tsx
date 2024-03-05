@@ -1,4 +1,3 @@
-import TabMenu from '@/components/common/tab_menu';
 import BaseWrapper from '@/wrappers/base';
 import MainWrapper from '@/wrappers/main';
 import React, { useEffect, useState } from 'react';
@@ -9,8 +8,6 @@ import Toaster from '@/utils/toaster';
 import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
 import { navbarOpenSelector } from '@/slices/feedSlice';
-import Posts from '@/screens/profile/posts';
-import Projects from '@/screens/profile/projects';
 import { Check, ImageSquare, PencilSimple, X } from '@phosphor-icons/react';
 import { resizeImage } from '@/utils/resize_image';
 import ProfileCardLoader from '@/components/loaders/profile_card';
@@ -18,22 +15,17 @@ import { SERVER_ERROR } from '@/config/errors';
 import Loader from '@/components/common/loader';
 import patchHandler from '@/handlers/patch_handler';
 import { setReduxTagline } from '@/slices/userSlice';
-import PostsLoader from '@/components/loaders/posts';
-import Protect from '@/utils/wrappers/protect';
 import WidthCheck from '@/utils/wrappers/widthCheck';
 import About from '@/screens/profile/about';
 import MyAbout from '@/screens/profile/my_about';
 import OrgSidebar from '@/components/common/org_sidebar';
-import Events from '@/screens/profile/events';
-import { currentOrgIDSelector } from '@/slices/orgSlice';
+import { currentOrgIDSelector, currentOrgSelector } from '@/slices/orgSlice';
 import OrgMembersOnlyAndProtect from '@/utils/wrappers/org_members_only';
 import checkOrgAccess from '@/utils/funcs/check_org_access';
 import { ORG_SENIOR } from '@/config/constants';
 import OrgCard from '@/sections/profile/org_card';
-import Reviews from '@/screens/profile/reviews';
-import Openings from '@/screens/profile/opening';
+
 const Profile = () => {
-  const [active, setActive] = useState(0);
   const [user, setUser] = useState(initialUser);
   const [loading, setLoading] = useState(true);
 
@@ -45,10 +37,10 @@ const Profile = () => {
   const [clickedOnTagline, setClickedOnTagline] = useState(false);
   const [clickedOnCoverPic, setClickedOnCoverPic] = useState(false);
 
-  const currentOrgID = useSelector(currentOrgIDSelector);
+  const currentOrg = useSelector(currentOrgSelector);
 
   const getUser = () => {
-    const URL = `${ORG_URL}/${currentOrgID}`;
+    const URL = `${ORG_URL}/${currentOrg.id}`;
     getHandler(URL)
       .then(res => {
         if (res.statusCode === 200) {
@@ -82,7 +74,7 @@ const Profile = () => {
     if (field == 'coverPic' && coverPic) formData.append('coverPic', coverPic);
     else if (field == 'tagline') formData.append('tagline', tagline);
 
-    const URL = `${ORG_URL}/${currentOrgID}`;
+    const URL = `${ORG_URL}/${currentOrg.id}`;
 
     const res = await patchHandler(URL, formData, 'multipart/form-data');
 
@@ -155,7 +147,7 @@ const Profile = () => {
   };
 
   return (
-    <BaseWrapper title="Profile">
+    <BaseWrapper title={`Profile | ${currentOrg.title}`}>
       <OrgSidebar index={9} />
       <MainWrapper>
         <div className="w-full max-lg:w-full flex max-lg:flex-col transition-ease-out-500 font-primary">
@@ -177,9 +169,7 @@ const Profile = () => {
             }}
           />
 
-          {loading ? (
-            <></>
-          ) : clickedOnCoverPic && checkOrgAccess(ORG_SENIOR) ? (
+          {!loading && clickedOnCoverPic && checkOrgAccess(ORG_SENIOR) ? (
             <div>
               <div
                 onClick={() => handleSubmit('coverPic')}
@@ -210,7 +200,7 @@ const Profile = () => {
             </div>
           ) : (
             <div>
-              {checkOrgAccess(ORG_SENIOR) ? (
+              {checkOrgAccess(ORG_SENIOR) && (
                 <label
                   htmlFor="coverPic"
                   className="w-12 h-12 absolute top-1 right-4 mt-navbar rounded-full z-10 flex-center bg-white transition-ease-200 cursor-pointer opacity-50 hover:opacity-75"
@@ -218,8 +208,6 @@ const Profile = () => {
                   <PencilSimple className="max-lg:hidden" color="black" size={24} />
                   <ImageSquare className="lg:hidden" color="black" size={24} />
                 </label>
-              ) : (
-                <></>
               )}
 
               <Image
@@ -266,14 +254,12 @@ const Profile = () => {
                   checkOrgAccess(ORG_SENIOR) ? (!clickedOnCoverPic ? 'hover:bg-[#ffffff81] cursor-pointer' : '') : ''
                 } transition-ease-300`}
               >
-                {checkOrgAccess(ORG_SENIOR) ? (
+                {checkOrgAccess(ORG_SENIOR) && (
                   <PencilSimple
                     className={`absolute opacity-0 ${
                       !clickedOnCoverPic ? 'group-hover:opacity-100' : ''
                     } top-2 right-2 transition-ease-300`}
                   />
-                ) : (
-                  <></>
                 )}
 
                 <div
@@ -286,15 +272,13 @@ const Profile = () => {
               </div>
             )}
 
-            <div className={`${active === 0 ? 'block' : 'hidden'}`}>
-              {loading ? (
-                <Loader />
-              ) : checkOrgAccess(ORG_SENIOR) ? (
-                <MyAbout profile={user.profile ? user.profile : initialProfile} setUser={setUser} org={true} />
-              ) : (
-                <About profile={user.profile ? user.profile : initialProfile} org={true} />
-              )}
-            </div>
+            {loading ? (
+              <Loader />
+            ) : checkOrgAccess(ORG_SENIOR) ? (
+              <MyAbout profile={user.profile ? user.profile : initialProfile} setUser={setUser} org={true} />
+            ) : (
+              <About profile={user.profile ? user.profile : initialProfile} org={true} />
+            )}
           </div>
         </div>
       </MainWrapper>

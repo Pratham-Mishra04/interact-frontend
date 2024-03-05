@@ -6,17 +6,20 @@ import MainWrapper from '@/wrappers/main';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import OrgSidebar from '@/components/common/org_sidebar';
 import { ArrowArcLeft } from '@phosphor-icons/react';
 import { SERVER_ERROR } from '@/config/errors';
 import WidthCheck from '@/utils/wrappers/widthCheck';
 import OrgOnlyAndProtect from '@/utils/wrappers/org_only';
+import { currentOrgSelector } from '@/slices/orgSlice';
 
-const Deactive = () => {
+const Deactivate = () => {
   const [mutex, setMutex] = useState(false);
 
   const router = useRouter();
+
+  const currentOrg = useSelector(currentOrgSelector);
 
   const dispatch = useDispatch();
 
@@ -46,7 +49,7 @@ const Deactive = () => {
   };
 
   return (
-    <BaseWrapper title="Settings">
+    <BaseWrapper title={`Deactivate Account | ${currentOrg.title}`}>
       <OrgSidebar index={11} />
       <MainWrapper>
         {/* {showDeactivate ? <ConfirmDeactiveAccount setShow={setShowDeactivate} handleSubmit={handleSubmit} /> : <></>} */}
@@ -76,4 +79,4 @@ const Deactive = () => {
   );
 };
 
-export default OrgOnlyAndProtect(Deactive);
+export default WidthCheck(OrgOnlyAndProtect(Deactivate));

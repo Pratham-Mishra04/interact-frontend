@@ -12,7 +12,6 @@ import getHandler from '@/handlers/get_handler';
 import { invitationsTabSelector, setInvitationsTab } from '@/slices/feedSlice';
 import { Invitation } from '@/types';
 import Toaster from '@/utils/toaster';
-import WidthCheck from '@/utils/wrappers/widthCheck';
 import BaseWrapper from '@/wrappers/base';
 import MainWrapper from '@/wrappers/main';
 import React, { useEffect, useState } from 'react';
@@ -52,7 +51,7 @@ const Invitations = () => {
     fetchInvitations();
   }, []);
   return (
-    <BaseWrapper title="Invitations">
+    <BaseWrapper title="Invitations | Interact">
       <Sidebar index={5} />
       <MainWrapper>
         <div

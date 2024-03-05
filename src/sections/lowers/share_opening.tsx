@@ -1,3 +1,4 @@
+import CopyClipboardButton from '@/components/buttons/copy_clipboard_btn';
 import Loader from '@/components/common/loader';
 import { SERVER_ERROR } from '@/config/errors';
 import { MESSAGING_URL, PROJECT_PIC_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
@@ -133,7 +134,7 @@ const ShareOpening = ({ opening, setShow, org = false }: Props) => {
               <div className="w-full flex justify-center flex-wrap gap-2">
                 {opening.tags &&
                   opening.tags // Splicing causes array mutation
-                    .filter((tag, index) => {
+                    .filter((_, index) => {
                       return index >= 0 && index < 3;
                     })
                     .map(tag => {
@@ -146,28 +147,14 @@ const ShareOpening = ({ opening, setShow, org = false }: Props) => {
                         </div>
                       );
                     })}
-                {opening.tags && opening.tags.length - 3 > 0 ? (
+                {opening.tags && opening.tags.length - 3 > 0 && (
                   <div className="flex-center p-2 font-primary text-xs dark:text-white border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-xl">
                     + {opening.tags.length - 3}
                   </div>
-                ) : (
-                  <></>
                 )}
               </div>
             </div>
-            <div
-              onClick={() => {
-                navigator.clipboard.writeText(
-                  `${process.env.NEXT_PUBLIC_FRONTEND_URL}/explore?oid=${opening.id}&action=external`
-                );
-                Toaster.success('Copied to Clipboard!');
-              }}
-              className="w-full text-center py-2 flex justify-center gap-2 rounded-lg border-[1px] border-primary_btn dark:border-[#ffe1fc10] 
-hover:bg-primary_comp dark:hover:bg-[#ffe1fc10] cursor-pointer transition-ease-200"
-            >
-              <ClipboardText size={24} />
-              <div> Copy Link</div>
-            </div>
+            <CopyClipboardButton url={`explore?oid=${opening.id}&action=external`} />
           </div>
           <div className="w-1/2 max-lg:w-full h-[400px] overflow-auto flex flex-col justify-between gap-2">
             {loading ? (

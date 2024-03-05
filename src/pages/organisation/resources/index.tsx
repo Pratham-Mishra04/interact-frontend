@@ -8,7 +8,7 @@ import { ORG_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import NewResource from '@/sections/organization/resources/new_resource';
 import ResourceView from '@/sections/organization/resources/resource_view';
-import { currentOrgIDSelector } from '@/slices/orgSlice';
+import { currentOrgSelector } from '@/slices/orgSlice';
 import { ResourceBucket } from '@/types';
 import { initialOrganization, initialResourceBucket } from '@/types/initials';
 import checkOrgAccess from '@/utils/funcs/check_org_access';
@@ -33,10 +33,10 @@ const Resources = () => {
   const [clickedOnNewResource, setClickedOnNewResource] = useState(false);
   const [clickedOnInfo, setClickedOnInfo] = useState(false);
 
-  const currentOrgID = useSelector(currentOrgIDSelector);
+  const currentOrg = useSelector(currentOrgSelector);
 
   const getResourceBuckets = () => {
-    const URL = `${ORG_URL}/${currentOrgID}/resource`;
+    const URL = `${ORG_URL}/${currentOrg.id}/resource`;
     getHandler(URL)
       .then(res => {
         if (res.statusCode === 200) {
@@ -67,7 +67,7 @@ const Resources = () => {
   }, []);
 
   return (
-    <BaseWrapper title="Resources">
+    <BaseWrapper title={`Resources | ${currentOrg.title}`}>
       <OrgSidebar index={14} />
       <MainWrapper>
         {clickedOnNewResource && (

@@ -15,7 +15,6 @@ import { GetServerSidePropsContext } from 'next/types';
 import { SERVER_ERROR } from '@/config/errors';
 import Loader from '@/components/common/loader';
 import PostsLoader from '@/components/loaders/posts';
-import WidthCheck from '@/utils/wrappers/widthCheck';
 import About from '@/screens/profile/org_about';
 import Events from '@/screens/profile/events';
 import OrgSidebar from '@/components/common/org_sidebar';
@@ -105,7 +104,7 @@ const User = ({ username }: Props) => {
   }, [username]);
 
   return (
-    <BaseWrapper title={user.name}>
+    <BaseWrapper title={`${user.name} | Interact`}>
       {loggedInUser.isOrganization ? <OrgSidebar index={1} /> : <Sidebar index={2} />}
       <MainWrapper>
         {clickedOnShare &&

@@ -13,14 +13,13 @@ import { userSelector } from '@/slices/userSlice';
 import { ArrowArcLeft } from '@phosphor-icons/react';
 import Openings from '@/screens/workspace/manage_project/openings';
 import Loader from '@/components/common/loader';
-import Protect from '@/utils/wrappers/protect';
 import Collaborators from '@/screens/workspace/manage_project/collaborators';
-import Chats from '@/screens/workspace/manage_project/chats';
 import WidthCheck from '@/utils/wrappers/widthCheck';
-import { currentOrgIDSelector } from '@/slices/orgSlice';
+import { currentOrgSelector } from '@/slices/orgSlice';
 import { ORG_SENIOR } from '@/config/constants';
 import checkOrgAccess from '@/utils/funcs/check_org_access';
 import OrgSidebar from '@/components/common/org_sidebar';
+import OrgMembersOnlyAndProtect from '@/utils/wrappers/org_members_only';
 
 interface Props {
   slug: string;
@@ -33,7 +32,7 @@ const ManageProject = ({ slug }: Props) => {
 
   const user = useSelector(userSelector);
 
-  const currentOrgID = useSelector(currentOrgIDSelector);
+  const currentOrgID = useSelector(currentOrgSelector).id;
 
   const fetchProject = async () => {
     const URL = `${ORG_URL}/${currentOrgID}/projects/${slug}`;
@@ -53,7 +52,7 @@ const ManageProject = ({ slug }: Props) => {
   }, [slug]);
 
   return (
-    <BaseWrapper title="Manage Project">
+    <BaseWrapper title={`Manage | ${project.title}`}>
       <OrgSidebar index={3} />
       <MainWrapper>
         <div className="w-full flex flex-col items-center gap-4">
@@ -87,7 +86,7 @@ const ManageProject = ({ slug }: Props) => {
   );
 };
 
-export default WidthCheck(Protect(ManageProject));
+export default WidthCheck(OrgMembersOnlyAndProtect(ManageProject));
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { slug } = context.query;

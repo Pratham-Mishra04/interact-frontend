@@ -8,7 +8,6 @@ import TaskView from '@/sections/workspace/task_view';
 import { userSelector } from '@/slices/userSlice';
 import { Project, Task } from '@/types';
 import { initialProject } from '@/types/initials';
-import Protect from '@/utils/wrappers/protect';
 import Toaster from '@/utils/toaster';
 import WidthCheck from '@/utils/wrappers/widthCheck';
 import BaseWrapper from '@/wrappers/base';
@@ -126,19 +125,17 @@ const Tasks = ({ slug }: Props) => {
   };
 
   return (
-    <BaseWrapper title="Tasks">
+    <BaseWrapper title={`Tasks | ${project.title}`}>
       <OrgSidebar index={3} />
 
       <MainWrapper>
-        {clickedOnNewTask ? (
+        {clickedOnNewTask && (
           <NewTask
             setShow={setClickedOnNewTask}
             project={project}
             setTasks={setTasks}
             setFilteredTasks={setFilteredTasks}
           />
-        ) : (
-          <></>
         )}
         <div className="w-full flex flex-col">
           <div className="w-full flex justify-between p-base_padding">
@@ -151,15 +148,13 @@ const Tasks = ({ slug }: Props) => {
               <div className="text-6xl font-semibold dark:text-white font-primary">Tasks</div>
             </div>
             <div className="flex gap-8 items-center">
-              {project.userID == user.id || user.managerProjects.includes(project.id) ? (
+              {(project.userID == user.id || user.managerProjects.includes(project.id)) && (
                 <div
                   onClick={() => setClickedOnNewTask(true)}
                   className="text-xl text-gradient font-semibold hover-underline-animation after:bg-dark_primary_btn cursor-pointer"
                 >
                   <span className="max-md:hidden">Create a</span> New Task
                 </div>
-              ) : (
-                <></>
               )}
               {/* <div onClick={() => filterAssigned(!filterStatus)} className="">
                 Show Assigned To Me
@@ -169,43 +164,37 @@ const Tasks = ({ slug }: Props) => {
           <div className="w-full flex flex-col gap-6 px-2 py-2">
             {loading ? (
               <Loader />
-            ) : (
-              <>
-                {filteredTasks.length > 0 ? (
-                  <div className="flex justify-evenly px-4">
-                    <div className={`${clickedOnTask ? 'w-[40%]' : 'w-[720px]'} max-lg:w-[720px] flex flex-col gap-4`}>
-                      {filteredTasks.map((task, i) => {
-                        return (
-                          <TaskCard
-                            key={task.id}
-                            task={task}
-                            index={i}
-                            clickedTaskID={clickedTaskID}
-                            clickedOnTask={clickedOnTask}
-                            setClickedOnTask={setClickedOnTask}
-                            setClickedTaskID={setClickedTaskID}
-                          />
-                        );
-                      })}
-                    </div>
-                    {clickedOnTask ? (
-                      <TaskView
-                        taskID={clickedTaskID}
-                        tasks={filteredTasks}
-                        project={project}
-                        setShow={setClickedOnTask}
-                        setTasks={setTasks}
-                        setFilteredTasks={setFilteredTasks}
+            ) : filteredTasks.length > 0 ? (
+              <div className="flex justify-evenly px-4">
+                <div className={`${clickedOnTask ? 'w-[40%]' : 'w-[720px]'} max-lg:w-[720px] flex flex-col gap-4`}>
+                  {filteredTasks.map((task, i) => {
+                    return (
+                      <TaskCard
+                        key={task.id}
+                        task={task}
+                        index={i}
+                        clickedTaskID={clickedTaskID}
+                        clickedOnTask={clickedOnTask}
+                        setClickedOnTask={setClickedOnTask}
                         setClickedTaskID={setClickedTaskID}
                       />
-                    ) : (
-                      <></>
-                    )}
-                  </div>
-                ) : (
-                  <div className="mx-auto font-medium text-xl mt-8">No Tasks found :)</div>
+                    );
+                  })}
+                </div>
+                {clickedOnTask && (
+                  <TaskView
+                    taskID={clickedTaskID}
+                    tasks={filteredTasks}
+                    project={project}
+                    setShow={setClickedOnTask}
+                    setTasks={setTasks}
+                    setFilteredTasks={setFilteredTasks}
+                    setClickedTaskID={setClickedTaskID}
+                  />
                 )}
-              </>
+              </div>
+            ) : (
+              <div className="mx-auto font-medium text-xl mt-8">No Tasks found :)</div>
             )}
           </div>
         </div>
@@ -217,7 +206,7 @@ const Tasks = ({ slug }: Props) => {
 export default WidthCheck(OrgMembersOnlyAndProtect(Tasks));
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { slug, org } = context.query;
+  const { slug } = context.query;
 
   return {
     props: { slug },

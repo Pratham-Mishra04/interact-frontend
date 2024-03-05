@@ -1,3 +1,4 @@
+import CopyClipboardButton from '@/components/buttons/copy_clipboard_btn';
 import Loader from '@/components/common/loader';
 import { SERVER_ERROR } from '@/config/errors';
 import { MESSAGING_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
@@ -119,19 +120,7 @@ const ShareProfile = ({ user, setShow }: Props) => {
                 <div>Following</div>
               </div>
             </div>
-            <div
-              onClick={() => {
-                navigator.clipboard.writeText(
-                  `${process.env.NEXT_PUBLIC_FRONTEND_URL}/explore/user/${user.username}?action=external`
-                );
-                Toaster.success('Copied to Clipboard!');
-              }}
-              className="w-full text-center py-2 flex justify-center gap-2 rounded-lg border-[1px] border-primary_btn dark:border-[#ffe1fc10] 
-hover:bg-primary_comp dark:hover:bg-[#ffe1fc10] cursor-pointer transition-ease-200"
-            >
-              <ClipboardText size={24} />
-              <div> Copy Link</div>
-            </div>
+            <CopyClipboardButton url={`explore/user/${user.username}?action=external`} />
           </div>
           <div className="w-1/2 max-lg:w-full h-[400px] overflow-auto flex flex-col justify-between gap-2">
             {loading ? (

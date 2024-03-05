@@ -268,7 +268,7 @@ const Event = ({ id }: Props) => {
   );
 
   return (
-    <BaseWrapper title={event.title}>
+    <BaseWrapper title={`${event.title} | Interact`}>
       {user.isOrganization ? <OrgSidebar index={1} /> : <Sidebar index={2} />}
       <MainWrapper>
         {clickedOnChat &&
@@ -292,7 +292,7 @@ const Event = ({ id }: Props) => {
                 <AboutHosts />
                 <AboutEvent />
               </div>
-              {similarEvents && similarEvents.length > 0 ? (
+              {similarEvents && similarEvents.length > 0 && (
                 <div className="w-full flex flex-col gap-4">
                   <div className="w-full flex-center text-sm font-semibold text-gray-500">SIMILAR EVENTS</div>
                   <div className="w-full flex gap-6 flex-wrap justify-around">
@@ -301,8 +301,6 @@ const Event = ({ id }: Props) => {
                     ))}
                   </div>
                 </div>
-              ) : (
-                <></>
               )}
             </div>
           )}

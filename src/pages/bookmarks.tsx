@@ -7,16 +7,14 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import Posts from '@/screens/bookmarks/posts';
 import Projects from '@/screens/bookmarks/projects';
-import Protect from '@/utils/wrappers/protect';
 import Openings from '@/screens/bookmarks/openings';
-import WidthCheck from '@/utils/wrappers/widthCheck';
 import NonOrgOnlyAndProtect from '@/utils/wrappers/non_org_only';
 import Events from '@/screens/bookmarks/events';
 
 const Bookmarks = () => {
   const active = useSelector(bookmarksTabSelector);
   return (
-    <BaseWrapper title="Bookmarks">
+    <BaseWrapper title="Bookmarks | Interact">
       <Sidebar index={6} />
       <MainWrapper>
         <div className="w-full flex flex-col items-center gap-4 py-20">

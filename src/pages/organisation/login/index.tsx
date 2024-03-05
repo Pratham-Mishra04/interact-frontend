@@ -217,4 +217,4 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
   };
 };
 
-export default Login;
+export default WidthCheck(Login);

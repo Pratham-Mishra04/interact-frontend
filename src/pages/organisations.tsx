@@ -35,7 +35,7 @@ const Organizations = () => {
     getHandler(URL)
       .then(res => {
         if (res.statusCode === 200) {
-          const organizationMemberships: OrganizationMembership[] = res.data.memberships;
+          const organizationMemberships: OrganizationMembership[] = res.data.memberships || [];
           setMemberships(organizationMemberships);
         } else Toaster.error(res.data.message, 'error_toaster');
       })
@@ -95,20 +95,14 @@ const Organizations = () => {
   };
 
   return (
-    <BaseWrapper title="Organizations">
+    <BaseWrapper title="Organizations | Interact">
       <Sidebar index={10} />
       <MainWrapper>
         <div className="w-full flex flex-col gap-8 px-32 py-10">
-          {clickedOnLeaveOrg ? (
+          {clickedOnLeaveOrg && (
             <ConfirmDelete setShow={setClickedOnLeaveOrg} handleDelete={sendOTP} title="Leave Organisation?" />
-          ) : (
-            <></>
           )}
-          {clickedOnConfirmLeave ? (
-            <ConfirmOTP setShow={setClickedOnConfirmLeave} handleSubmit={handleLeaveOrg} />
-          ) : (
-            <></>
-          )}
+          {clickedOnConfirmLeave && <ConfirmOTP setShow={setClickedOnConfirmLeave} handleSubmit={handleLeaveOrg} />}
 
           <div className="text-5xl font-semibold dark:text-white font-primary">Memberships</div>
 

@@ -60,22 +60,20 @@ const Posts = () => {
   }, []);
 
   return (
-    <BaseWrapper title="Posts">
+    <BaseWrapper title={`Posts | ${currentOrg.title}`}>
       <OrgSidebar index={2} />
       <MainWrapper>
         <div className="w-full flex flex-col items-center gap-2 max-md:px-2 p-base_padding">
           <div className="w-full flex justify-between items-center">
             <div className="w-fit text-6xl font-semibold dark:text-white font-primary">Posts</div>
             <div className="flex items-center gap-2">
-              {checkOrgAccess(ORG_SENIOR) ? (
+              {checkOrgAccess(ORG_SENIOR) && (
                 <Plus
                   onClick={() => setClickedOnNewPost(true)}
                   size={42}
                   className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
                   weight="regular"
                 />
-              ) : (
-                <></>
               )}
               <Info
                 onClick={() => setClickedOnInfo(true)}
@@ -87,8 +85,8 @@ const Posts = () => {
           </div>
 
           <div className="w-full max-md:w-full mx-auto flex flex-col items-center gap-4">
-            {clickedOnNewPost ? <NewPost setFeed={setPosts} setShow={setClickedOnNewPost} org={true} /> : <></>}
-            {clickedOnInfo ? <AccessTree type="post" setShow={setClickedOnInfo} /> : <></>}
+            {clickedOnNewPost && <NewPost setFeed={setPosts} setShow={setClickedOnNewPost} org={true} />}
+            {clickedOnInfo && <AccessTree type="post" setShow={setClickedOnInfo} />}
             {loading ? (
               <Loader />
             ) : (

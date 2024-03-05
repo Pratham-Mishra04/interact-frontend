@@ -3,7 +3,6 @@ import { SERVER_ERROR } from '@/config/errors';
 import { OPENING_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import { Application } from '@/types';
-import Protect from '@/utils/wrappers/protect';
 import Toaster from '@/utils/toaster';
 import BaseWrapper from '@/wrappers/base';
 import MainWrapper from '@/wrappers/main';
@@ -17,6 +16,7 @@ import WidthCheck from '@/utils/wrappers/widthCheck';
 import { useSelector } from 'react-redux';
 import { userSelector } from '@/slices/userSlice';
 import OrgSidebar from '@/components/common/org_sidebar';
+import NonOrgOnlyAndProtect from '@/utils/wrappers/non_org_only';
 
 interface Props {
   oid: string;
@@ -101,7 +101,7 @@ const Applications = ({ oid }: Props) => {
               >
                 Filters <SlidersHorizontal size={24} />
               </div>
-              {clickedOnFilter ? (
+              {clickedOnFilter && (
                 <div
                   className={`absolute top-12 right-0 ${
                     clickedOnApplication ? 'bg-gray-50' : ''
@@ -140,53 +140,43 @@ const Applications = ({ oid }: Props) => {
                     Rejected
                   </div>
                 </div>
-              ) : (
-                <></>
               )}
             </div>
           </div>
           <div className="w-full flex flex-col gap-6 px-2 py-2">
             {loading ? (
               <Loader />
-            ) : (
-              <>
-                {filteredApplications.length > 0 ? (
-                  <div className="flex justify-evenly px-4">
-                    <div
-                      className={`${
-                        clickedOnApplication ? 'w-[40%]' : 'w-[720px]'
-                      } max-md:w-[720px] flex flex-col gap-4`}
-                    >
-                      {filteredApplications.map((application, i) => {
-                        return (
-                          <ApplicationCard
-                            key={application.id}
-                            index={i}
-                            application={application}
-                            applications={filteredApplications}
-                            clickedApplicationID={clickedApplicationID}
-                            setClickedOnApplication={setClickedOnApplication}
-                            setClickedApplicationID={setClickedApplicationID}
-                          />
-                        );
-                      })}
-                    </div>
-                    {clickedOnApplication ? (
-                      <ApplicationView
-                        applicationIndex={clickedApplicationID}
+            ) : filteredApplications.length > 0 ? (
+              <div className="flex justify-evenly px-4">
+                <div
+                  className={`${clickedOnApplication ? 'w-[40%]' : 'w-[720px]'} max-md:w-[720px] flex flex-col gap-4`}
+                >
+                  {filteredApplications.map((application, i) => {
+                    return (
+                      <ApplicationCard
+                        key={application.id}
+                        index={i}
+                        application={application}
                         applications={filteredApplications}
-                        setShow={setClickedOnApplication}
-                        setApplications={setApplications}
-                        setFilteredApplications={setFilteredApplications}
+                        clickedApplicationID={clickedApplicationID}
+                        setClickedOnApplication={setClickedOnApplication}
+                        setClickedApplicationID={setClickedApplicationID}
                       />
-                    ) : (
-                      <></>
-                    )}
-                  </div>
-                ) : (
-                  <div className="w-full text-center text-xl font-medium">No Applications found :)</div>
+                    );
+                  })}
+                </div>
+                {clickedOnApplication && (
+                  <ApplicationView
+                    applicationIndex={clickedApplicationID}
+                    applications={filteredApplications}
+                    setShow={setClickedOnApplication}
+                    setApplications={setApplications}
+                    setFilteredApplications={setFilteredApplications}
+                  />
                 )}
-              </>
+              </div>
+            ) : (
+              <div className="w-full text-center text-xl font-medium">No Applications found :)</div>
             )}
           </div>
         </div>
@@ -195,7 +185,7 @@ const Applications = ({ oid }: Props) => {
   );
 };
 
-export default WidthCheck(Protect(Applications));
+export default WidthCheck(NonOrgOnlyAndProtect(Applications));
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { oid } = context.query;

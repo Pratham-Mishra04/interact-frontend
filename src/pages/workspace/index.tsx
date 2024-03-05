@@ -8,14 +8,12 @@ import { useSelector } from 'react-redux';
 import YourProjects from '@/screens/workspace/your_projects';
 import ContributingProjects from '@/screens/workspace/contributing_projects';
 import Applications from '@/screens/workspace/applications';
-import Protect from '@/utils/wrappers/protect';
-import WidthCheck from '@/utils/wrappers/widthCheck';
 import NonOrgOnlyAndProtect from '@/utils/wrappers/non_org_only';
 
 const Workspace = () => {
   const active = useSelector(workspaceTabSelector);
   return (
-    <BaseWrapper title="Workspace">
+    <BaseWrapper title="Workspace | Interact">
       <Sidebar index={3} />
       <MainWrapper>
         <div className="w-full flex flex-col items-center gap-4 pt-20 pb-base_padding">

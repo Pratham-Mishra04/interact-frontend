@@ -114,7 +114,7 @@ const Events = () => {
   const open = useSelector(navbarOpenSelector);
 
   return (
-    <BaseWrapper title="Events">
+    <BaseWrapper title={`Events | ${currentOrg.title}`}>
       <OrgSidebar index={12} />
       <MainWrapper>
         <div className="w-full flex flex-col items-center gap-6 max-md:px-2 p-base_padding pl-0 pb-0">

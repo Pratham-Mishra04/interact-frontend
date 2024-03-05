@@ -17,7 +17,6 @@ import { User } from '@/types';
 import socketService from '@/config/ws';
 import { SERVER_ERROR } from '@/config/errors';
 import useUserStateFetcher from '@/hooks/user_fetcher';
-import WidthCheck from '@/utils/wrappers/widthCheck';
 import { Buildings } from '@phosphor-icons/react';
 import Link from 'next/link';
 import RegistrationButton from '@/components/buttons/registration_btn';

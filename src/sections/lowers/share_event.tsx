@@ -1,11 +1,10 @@
+import CopyClipboardButton from '@/components/buttons/copy_clipboard_btn';
 import Loader from '@/components/common/loader';
 import { SERVER_ERROR } from '@/config/errors';
 import { MESSAGING_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import postHandler from '@/handlers/post_handler';
-
-import { Chat, Event, Post } from '@/types';
-import getDisplayTime from '@/utils/funcs/get_display_time';
+import { Chat, Event } from '@/types';
 import getMessagingUser from '@/utils/funcs/get_messaging_user';
 import Toaster from '@/utils/toaster';
 import { X } from '@phosphor-icons/react';
@@ -177,6 +176,7 @@ const ShareEvent = ({ event, setShow }: Props) => {
             <div className="font-medium text-xl m-auto">No chat present :(</div>
           )}
         </div>
+        <CopyClipboardButton url={`explore/event/${event.id}`} />
       </div>
       <div
         onClick={() => setShow(false)}

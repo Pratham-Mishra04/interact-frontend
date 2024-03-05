@@ -17,6 +17,7 @@ import {
   setMessagingTab,
 } from '@/slices/messagingSlice';
 import { userSelector } from '@/slices/userSlice';
+import NonOrgOnlyAndProtect from '@/utils/wrappers/non_org_only';
 import WidthCheck from '@/utils/wrappers/widthCheck';
 import BaseWrapper from '@/wrappers/base';
 import MainWrapper from '@/wrappers/main';
@@ -63,7 +64,7 @@ const Messaging = () => {
   }, []);
 
   return (
-    <BaseWrapper title="Messaging">
+    <BaseWrapper title="Messaging | Interact">
       {user.isOrganization ? <OrgSidebar index={-1} /> : <Sidebar index={-1} />}
       <MainWrapper>
         <div
@@ -144,4 +145,4 @@ const Messaging = () => {
   );
 };
 
-export default WidthCheck(Messaging);
+export default WidthCheck(NonOrgOnlyAndProtect(Messaging));

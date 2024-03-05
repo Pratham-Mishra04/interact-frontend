@@ -7,6 +7,7 @@ import Projects from '@/screens/explore/projects';
 import Users from '@/screens/explore/users';
 import ProfileCompletion from '@/sections/home/profile_completion';
 import { exploreTabSelector, setExploreTab } from '@/slices/feedSlice';
+import { currentOrgSelector } from '@/slices/orgSlice';
 import OrgOnlyAndProtect from '@/utils/wrappers/org_only';
 import WidthCheck from '@/utils/wrappers/widthCheck';
 import BaseWrapper from '@/wrappers/base';
@@ -16,9 +17,10 @@ import { useSelector } from 'react-redux';
 
 const Explore = () => {
   const active = useSelector(exploreTabSelector);
-  const initialSearch = new URLSearchParams(window.location.search).get('search');
+  const currentOrg = useSelector(currentOrgSelector);
+  const initialSearch = new URLSearchParams(window.location.search).get('search') || '';
   return (
-    <BaseWrapper title="Explore">
+    <BaseWrapper title={`Explore | ${currentOrg.title}`}>
       <OrgSidebar index={1} />
       <MainWrapper>
         <div
@@ -30,7 +32,7 @@ const Explore = () => {
             setReduxState={setExploreTab}
             width="720px"
           />
-          <SearchBar initialValue={initialSearch && initialSearch != '' ? initialSearch : ''} />
+          <SearchBar initialValue={initialSearch} />
           <div className={`w-full ${active === 0 ? 'block' : 'hidden'}`}>
             <Projects />
           </div>

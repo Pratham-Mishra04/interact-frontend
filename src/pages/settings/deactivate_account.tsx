@@ -9,7 +9,6 @@ import { useDispatch } from 'react-redux';
 import Sidebar from '@/components/common/sidebar';
 import { ArrowArcLeft } from '@phosphor-icons/react';
 import { SERVER_ERROR } from '@/config/errors';
-import WidthCheck from '@/utils/wrappers/widthCheck';
 import NonOrgOnlyAndProtect from '@/utils/wrappers/non_org_only';
 import ConfirmOTP from '@/components/common/confirm_otp';
 import getHandler from '@/handlers/get_handler';
@@ -75,7 +74,7 @@ const Deactivate = () => {
   };
 
   return (
-    <BaseWrapper title="Settings">
+    <BaseWrapper title="Deactivate Account | Settings">
       <Sidebar index={9} />
       <MainWrapper>
         {clickedConfirm ? (

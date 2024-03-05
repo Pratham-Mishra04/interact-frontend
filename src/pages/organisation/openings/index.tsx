@@ -17,6 +17,8 @@ import Loader from '@/components/common/loader';
 import { SERVER_ERROR } from '@/config/errors';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import AccessTree from '@/components/organization/access_tree';
+import OrgMembersOnlyAndProtect from '@/utils/wrappers/org_members_only';
+import WidthCheck from '@/utils/wrappers/widthCheck';
 
 const Openings = () => {
   const [loading, setLoading] = useState(true);
@@ -51,7 +53,7 @@ const Openings = () => {
   }, []);
 
   return (
-    <BaseWrapper title="Openings">
+    <BaseWrapper title={`Openings | ${currentOrg.title}`}>
       <OrgSidebar index={15}></OrgSidebar>
       <MainWrapper>
         {clickedOnNewOpening && (
@@ -100,4 +102,4 @@ const Openings = () => {
   );
 };
 
-export default Openings;
+export default WidthCheck(OrgMembersOnlyAndProtect(Openings));

@@ -27,7 +27,7 @@ const Home = () => {
   }, []);
 
   return (
-    <BaseWrapper title="Home">
+    <BaseWrapper title={`Home | ${user.name}`}>
       <OrgSidebar index={1} />
       <MainWrapper>
         {onboarding && user.id != '' ? <OrgOnboarding /> : <></>}

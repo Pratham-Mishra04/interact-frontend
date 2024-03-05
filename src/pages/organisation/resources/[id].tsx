@@ -3,6 +3,7 @@ import { BACKEND_URL, ORG_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
 import Toaster from '@/utils/toaster';
+import OrgMembersOnlyAndProtect from '@/utils/wrappers/org_members_only';
 import Cookies from 'js-cookie';
 import { GetServerSidePropsContext } from 'next/types';
 import React, { useEffect } from 'react';
@@ -47,4 +48,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   };
 }
 
-export default File;
+export default OrgMembersOnlyAndProtect(File);

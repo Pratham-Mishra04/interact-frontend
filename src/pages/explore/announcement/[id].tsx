@@ -2,15 +2,13 @@ import BaseWrapper from '@/wrappers/base';
 import MainWrapper from '@/wrappers/main';
 import Sidebar from '@/components/common/sidebar';
 import React, { useEffect, useState } from 'react';
-import { initialAnnouncement, initialPost } from '@/types/initials';
-import { EXPLORE_URL, ORG_URL, POST_URL } from '@/config/routes';
+import { initialAnnouncement } from '@/types/initials';
+import { EXPLORE_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import Toaster from '@/utils/toaster';
 import { GetServerSidePropsContext } from 'next/types';
-import PostComponent from '@/components/home/post';
 import Loader from '@/components/common/loader';
 import { SERVER_ERROR } from '@/config/errors';
-import WidthCheck from '@/utils/wrappers/widthCheck';
 import OrgSidebar from '@/components/common/org_sidebar';
 import { userSelector } from '@/slices/userSlice';
 import { useSelector } from 'react-redux';
@@ -50,10 +48,10 @@ const Announcement = ({ id }: Props) => {
   }, []);
 
   return (
-    <BaseWrapper title="Announcement">
+    <BaseWrapper title={`${announcement.title} | Interact`}>
       {user.isOrganization ? <OrgSidebar index={1} /> : <Sidebar index={2} />}
       <MainWrapper>
-        <div className="w-[50vw] pt-6 mx-auto max-lg:w-full flex max-md:flex-col transition-ease-out-500 font-primary">
+        <div className="w-[50vw] pt-6 mx-auto max-lg:w-full max-lg:px-4 flex max-md:flex-col transition-ease-out-500 font-primary">
           {loading ? <Loader /> : <AnnouncementCard announcement={announcement} />}
         </div>
       </MainWrapper>

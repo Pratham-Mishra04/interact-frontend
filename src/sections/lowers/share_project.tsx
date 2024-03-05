@@ -1,3 +1,4 @@
+import CopyClipboardButton from '@/components/buttons/copy_clipboard_btn';
 import Loader from '@/components/common/loader';
 import { SERVER_ERROR } from '@/config/errors';
 import { MESSAGING_URL, PROJECT_PIC_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
@@ -104,17 +105,7 @@ const ShareProject = ({ project, setShow, setNoShares }: Props) => {
               <div className="font-bold line-clamp-2 text-center text-3xl text-gradient">{project.title}</div>
               <div className="text-sm font-medium">{project.tagline}</div>
             </div>
-            <div
-              onClick={() => {
-                navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_FRONTEND_URL}/explore?pid=${project.slug}`);
-                Toaster.success('Copied to Clipboard!');
-              }}
-              className="w-full text-center py-2 flex justify-center gap-2 rounded-lg border-[1px] border-primary_btn dark:border-[#ffe1fc10] 
-hover:bg-primary_comp active:bg-primary_comp_hover dark:hover:bg-[#ffe1fc10] cursor-pointer transition-ease-200"
-            >
-              <ClipboardText size={24} />
-              <div>Copy Link</div>
-            </div>
+            <CopyClipboardButton url={`explore?pid=${project.slug}?action=external`} />
           </div>
           <div className="w-1/2 max-lg:w-full h-[400px] overflow-auto flex flex-col justify-between gap-2">
             {loading ? (

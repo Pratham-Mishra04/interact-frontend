@@ -2,7 +2,6 @@ import Loader from '@/components/common/loader';
 import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
 import { Application } from '@/types';
-import Protect from '@/utils/wrappers/protect';
 import Toaster from '@/utils/toaster';
 import BaseWrapper from '@/wrappers/base';
 import MainWrapper from '@/wrappers/main';
@@ -14,7 +13,8 @@ import ApplicationView from '@/sections/workspace/manage_project/application_vie
 import WidthCheck from '@/utils/wrappers/widthCheck';
 import { useSelector } from 'react-redux';
 import OrgSidebar from '@/components/common/org_sidebar';
-import { currentOrgIDSelector } from '@/slices/orgSlice';
+import { currentOrgSelector } from '@/slices/orgSlice';
+import OrgMembersOnlyAndProtect from '@/utils/wrappers/org_members_only';
 
 interface Props {
   oid: string;
@@ -30,10 +30,10 @@ const Applications = ({ oid }: Props) => {
   const [clickedOnApplication, setClickedOnApplication] = useState(false);
   const [clickedApplicationID, setClickedApplicationID] = useState(-1);
 
-  const currentOrgID = useSelector(currentOrgIDSelector);
+  const currentOrg = useSelector(currentOrgSelector);
 
   const fetchApplications = async () => {
-    const URL = `/org/${currentOrgID}/org_openings/applications/${oid}`;
+    const URL = `/org/${currentOrg.id}/org_openings/applications/${oid}`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
       const applicationData = res.data.applications || [];
@@ -75,7 +75,7 @@ const Applications = ({ oid }: Props) => {
   // }, [clickedApplicationID]);
 
   return (
-    <BaseWrapper title="Openings">
+    <BaseWrapper title={`Applications | ${currentOrg.title}`}>
       <OrgSidebar index={15}></OrgSidebar>
 
       <MainWrapper>
@@ -99,7 +99,7 @@ const Applications = ({ oid }: Props) => {
               >
                 Filters <SlidersHorizontal size={24} />
               </div>
-              {clickedOnFilter ? (
+              {clickedOnFilter && (
                 <div
                   className={`absolute top-12 right-0 ${
                     clickedOnApplication ? 'bg-gray-50' : ''
@@ -138,54 +138,44 @@ const Applications = ({ oid }: Props) => {
                     Rejected
                   </div>
                 </div>
-              ) : (
-                <></>
               )}
             </div>
           </div>
           <div className="w-full flex flex-col gap-6 px-2 py-2">
             {loading ? (
               <Loader />
-            ) : (
-              <>
-                {filteredApplications.length > 0 ? (
-                  <div className="flex justify-evenly px-4">
-                    <div
-                      className={`${
-                        clickedOnApplication ? 'w-[40%]' : 'w-[720px]'
-                      } max-md:w-[720px] flex flex-col gap-4`}
-                    >
-                      {filteredApplications.map((application, i) => {
-                        return (
-                          <ApplicationCard
-                            key={application.id}
-                            index={i}
-                            application={application}
-                            applications={filteredApplications}
-                            clickedApplicationID={clickedApplicationID}
-                            setClickedOnApplication={setClickedOnApplication}
-                            setClickedApplicationID={setClickedApplicationID}
-                          />
-                        );
-                      })}
-                    </div>
-                    {clickedOnApplication ? (
-                      <ApplicationView
-                        applicationIndex={clickedApplicationID}
+            ) : filteredApplications.length > 0 ? (
+              <div className="flex justify-evenly px-4">
+                <div
+                  className={`${clickedOnApplication ? 'w-[40%]' : 'w-[720px]'} max-md:w-[720px] flex flex-col gap-4`}
+                >
+                  {filteredApplications.map((application, i) => {
+                    return (
+                      <ApplicationCard
+                        key={application.id}
+                        index={i}
+                        application={application}
                         applications={filteredApplications}
-                        setShow={setClickedOnApplication}
-                        setApplications={setApplications}
-                        setFilteredApplications={setFilteredApplications}
-                        org={true}
+                        clickedApplicationID={clickedApplicationID}
+                        setClickedOnApplication={setClickedOnApplication}
+                        setClickedApplicationID={setClickedApplicationID}
                       />
-                    ) : (
-                      <></>
-                    )}
-                  </div>
-                ) : (
-                  <div className="w-full text-center text-xl font-medium">No Applications found :)</div>
+                    );
+                  })}
+                </div>
+                {clickedOnApplication && (
+                  <ApplicationView
+                    applicationIndex={clickedApplicationID}
+                    applications={filteredApplications}
+                    setShow={setClickedOnApplication}
+                    setApplications={setApplications}
+                    setFilteredApplications={setFilteredApplications}
+                    org={true}
+                  />
                 )}
-              </>
+              </div>
+            ) : (
+              <div className="w-full text-center text-xl font-medium">No Applications found :)</div>
             )}
           </div>
         </div>
@@ -194,7 +184,7 @@ const Applications = ({ oid }: Props) => {
   );
 };
 
-export default WidthCheck(Protect(Applications));
+export default WidthCheck(OrgMembersOnlyAndProtect(Applications));
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { oid } = context.query;

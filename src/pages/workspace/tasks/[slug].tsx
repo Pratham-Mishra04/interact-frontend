@@ -8,7 +8,6 @@ import TaskView from '@/sections/workspace/task_view';
 import { userSelector } from '@/slices/userSlice';
 import { Project, Task } from '@/types';
 import { initialProject } from '@/types/initials';
-import Protect from '@/utils/wrappers/protect';
 import Toaster from '@/utils/toaster';
 import WidthCheck from '@/utils/wrappers/widthCheck';
 import BaseWrapper from '@/wrappers/base';
@@ -95,7 +94,7 @@ const Tasks = ({ slug }: Props) => {
   };
 
   return (
-    <BaseWrapper title="Tasks">
+    <BaseWrapper title={`Tasks | ${project.title}`}>
       <Sidebar index={3} />
 
       <MainWrapper>

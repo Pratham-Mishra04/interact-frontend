@@ -7,14 +7,15 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import Posts from '@/screens/bookmarks/posts';
 import Projects from '@/screens/bookmarks/projects';
-import Openings from '@/screens/bookmarks/openings';
 import WidthCheck from '@/utils/wrappers/widthCheck';
 import OrgOnlyAndProtect from '@/utils/wrappers/org_only';
+import { currentOrgSelector } from '@/slices/orgSlice';
 
 const Bookmarks = () => {
   const active = useSelector(bookmarksTabSelector);
+  const currentOrg = useSelector(currentOrgSelector);
   return (
-    <BaseWrapper title="Bookmarks">
+    <BaseWrapper title={`Bookmarks | ${currentOrg.title}`}>
       <OrgSidebar index={11} />
       <MainWrapper>
         <div className="w-full flex flex-col items-center gap-4 py-20">

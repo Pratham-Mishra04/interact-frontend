@@ -7,7 +7,7 @@ import { SERVER_ERROR } from '@/config/errors';
 import { ORG_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import TaskView from '@/sections/organization/tasks/task_view';
-import { currentOrgIDSelector } from '@/slices/orgSlice';
+import { currentOrgSelector } from '@/slices/orgSlice';
 import { Task } from '@/types';
 import { initialOrganization } from '@/types/initials';
 import checkOrgAccess from '@/utils/funcs/check_org_access';
@@ -36,10 +36,10 @@ const Tasks = () => {
   const [clickedOnNewTask, setClickedOnNewTask] = useState(false);
   const [clickedOnInfo, setClickedOnInfo] = useState(false);
 
-  const currentOrgID = useSelector(currentOrgIDSelector);
+  const currentOrg = useSelector(currentOrgSelector);
 
   const getTasks = () => {
-    const URL = `${ORG_URL}/${currentOrgID}/tasks`;
+    const URL = `${ORG_URL}/${currentOrg.id}/tasks`;
     getHandler(URL)
       .then(res => {
         if (res.statusCode === 200) {
@@ -95,7 +95,7 @@ const Tasks = () => {
   };
 
   return (
-    <BaseWrapper title="Tasks">
+    <BaseWrapper title={`Tasks | ${currentOrg.title}`}>
       <OrgSidebar index={4} />
       <MainWrapper>
         {clickedOnNewTask && (

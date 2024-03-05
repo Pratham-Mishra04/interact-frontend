@@ -20,14 +20,13 @@ import patchHandler from '@/handlers/patch_handler';
 import Toaster from '@/utils/toaster';
 import Head from 'next/head';
 import { resizeImage } from '@/utils/resize_image';
-import Protect from '@/utils/wrappers/protect';
-import WidthCheck from '@/utils/wrappers/widthCheck';
 import { setOnboarding } from '@/slices/feedSlice';
 import { Id } from 'react-toastify';
 import { ReactSVG } from 'react-svg';
 import ProgressBar from '@/components/onboarding/progress_bar';
 import UserCard from '@/components/onboarding/user_card';
 import DummyUserCard from '@/components/onboarding/dummy_user_card';
+import NonOrgOnlyAndProtect from '@/utils/wrappers/non_org_only';
 
 const Onboarding = () => {
   const [clickedOnBuild, setClickedOnBuild] = useState(false);
@@ -523,4 +522,4 @@ const Onboarding = () => {
   );
 };
 
-export default Protect(Onboarding);
+export default NonOrgOnlyAndProtect(Onboarding);
