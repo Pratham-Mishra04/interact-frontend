@@ -21,6 +21,7 @@ import OrgOnlyAndProtect from '@/utils/wrappers/org_only';
 import Invitation from '@/components/notifications/invitation';
 import Task from '@/components/notifications/task';
 import Impressions from '@/components/notifications/impressions';
+import Tagged from '@/components/notifications/tagged';
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -111,6 +112,9 @@ const Notifications = () => {
                       case 16:
                       case 17:
                         return <Impressions notification={notification} />;
+                      case 21:
+                      case 22:
+                        return <Tagged notification={notification} />;
                       default:
                         return <></>;
                     }

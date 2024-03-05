@@ -16,6 +16,10 @@ import { NOTIFICATION_URL } from '@/config/routes';
 import Link from 'next/link';
 import { SERVER_ERROR } from '@/config/errors';
 import { userSelector } from '@/slices/userSlice';
+import Invitation from '@/components/notifications/invitation';
+import Task from '@/components/notifications/task';
+import Impressions from '@/components/notifications/impressions';
+import Tagged from '@/components/notifications/tagged';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -86,14 +90,17 @@ const Notifications = ({ setShow }: Props) => {
                     case 0:
                       return <Follow notification={notification} />;
                     case 1:
+                    case 3:
+                    case 12:
+                    case 18:
                       return <Liked notification={notification} />;
                     case 2:
-                      return <Comment notification={notification} />;
-                    case 3:
-                      return <Liked notification={notification} />;
                     case 4:
+                    case 13:
+                    case 19:
                       return <Comment notification={notification} />;
                     case 5:
+                    case 20:
                       return <UserAppliedToOpening notification={notification} />;
                     case 6:
                       return <ApplicationUpdate notification={notification} status={1} />;
@@ -101,6 +108,18 @@ const Notifications = ({ setShow }: Props) => {
                       return <ApplicationUpdate notification={notification} status={0} />;
                     case 9:
                       return <ChatRequest notification={notification} />;
+                    case 10:
+                      return <Invitation notification={notification} />;
+                    case 11:
+                      return <Task notification={notification} />;
+                    case 14:
+                    case 15:
+                    case 16:
+                    case 17:
+                      return <Impressions notification={notification} />;
+                    case 21:
+                    case 22:
+                      return <Tagged notification={notification} />;
                     default:
                       return <></>;
                   }

@@ -21,6 +21,7 @@ import NonOrgOnlyAndProtect from '@/utils/wrappers/non_org_only';
 import Impressions from '@/components/notifications/impressions';
 import Invitation from '@/components/notifications/invitation';
 import Task from '@/components/notifications/task';
+import Tagged from '@/components/notifications/tagged';
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -75,7 +76,7 @@ const Notifications = () => {
                   loader={<Loader />}
                   className="flex flex-col gap-2"
                 >
-                  {notifications.map((notification, index) => {
+                  {notifications.map(notification => {
                     switch (notification.notificationType) {
                       case -1:
                         return <Welcome notification={notification} />;
@@ -109,6 +110,9 @@ const Notifications = () => {
                       case 16:
                       case 17:
                         return <Impressions notification={notification} />;
+                      case 21:
+                      case 22:
+                        return <Tagged notification={notification} />;
                       default:
                         return <></>;
                     }
