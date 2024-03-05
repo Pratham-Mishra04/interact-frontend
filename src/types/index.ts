@@ -475,6 +475,7 @@ export interface ProjectHistory {
   invitation: Invitation;
   taskID: string;
   task: Task;
+  deletedText: string;
   createdAt: Date;
 }
 
