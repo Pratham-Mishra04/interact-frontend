@@ -20,6 +20,7 @@ import Invitation from '@/components/notifications/invitation';
 import Task from '@/components/notifications/task';
 import Impressions from '@/components/notifications/impressions';
 import Tagged from '@/components/notifications/tagged';
+import Removal from '@/components/notifications/removal';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -106,6 +107,8 @@ const Notifications = ({ setShow }: Props) => {
                       return <ApplicationUpdate notification={notification} status={1} />;
                     case 7:
                       return <ApplicationUpdate notification={notification} status={0} />;
+                    case 8:
+                      return <Removal notification={notification} />;
                     case 9:
                       return <ChatRequest notification={notification} />;
                     case 10:

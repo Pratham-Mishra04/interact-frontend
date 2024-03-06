@@ -7,7 +7,6 @@ import getHandler from '@/handlers/get_handler';
 import Toaster from '@/utils/toaster';
 import { Info, Plus, Envelope } from '@phosphor-icons/react';
 import { EXPLORE_URL, ORG_URL } from '@/config/routes';
-import NoFeed from '@/components/empty_fillers/feed';
 import OrgMembersOnlyAndProtect from '@/utils/wrappers/org_members_only';
 import { useSelector } from 'react-redux';
 import { currentOrgSelector } from '@/slices/orgSlice';
@@ -29,6 +28,7 @@ import AccessTree from '@/components/organization/access_tree';
 import ViewInvitations from '@/sections/organization/events/view_invitations';
 import EditCoHosts from '@/sections/organization/events/edit_cohosts';
 import EventHistory from '@/sections/organization/events/history';
+import NoEvents from '@/components/empty_fillers/events';
 
 const Events = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -117,7 +117,7 @@ const Events = () => {
     <BaseWrapper title={`Events | ${currentOrg.title}`}>
       <OrgSidebar index={12} />
       <MainWrapper>
-        <div className="w-full flex flex-col items-center gap-6 max-md:px-2 p-base_padding pl-0 pb-0">
+        <div className="w-full flex flex-col items-center gap-4 max-md:px-2 p-base_padding pl-0 pb-0">
           <div className="w-full flex justify-between items-center">
             <div className="w-fit text-6xl font-semibold dark:text-white font-primary pl-6">Events</div>
             <div className="flex items-center gap-2">
@@ -180,8 +180,9 @@ const Events = () => {
             ) : (
               <div className="w-full">
                 {events.length === 0 ? (
-                  //TODO noEvents
-                  <NoFeed />
+                  <div onClick={() => setClickedOnNewEvent(true)} className="w-full pl-6">
+                    <NoEvents />
+                  </div>
                 ) : (
                   <InfiniteScroll
                     dataLength={events.length}

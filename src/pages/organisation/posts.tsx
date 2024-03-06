@@ -9,7 +9,6 @@ import Post from '@/components/home/post';
 import NewPost from '@/sections/home/new_post';
 import { Info, Plus } from '@phosphor-icons/react';
 import { EXPLORE_URL } from '@/config/routes';
-import NoFeed from '@/components/empty_fillers/feed';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import PostComponent from '@/components/home/post';
 import RePostComponent from '@/components/home/repost';
@@ -22,6 +21,7 @@ import Masonry from 'react-masonry-css';
 import Loader from '@/components/common/loader';
 import WidthCheck from '@/utils/wrappers/widthCheck';
 import AccessTree from '@/components/organization/access_tree';
+import NoPosts from '@/components/empty_fillers/posts';
 
 const Posts = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -63,7 +63,7 @@ const Posts = () => {
     <BaseWrapper title={`Posts | ${currentOrg.title}`}>
       <OrgSidebar index={2} />
       <MainWrapper>
-        <div className="w-full flex flex-col items-center gap-2 max-md:px-2 p-base_padding">
+        <div className="w-full flex flex-col items-center gap-4 max-md:px-2 p-base_padding">
           <div className="w-full flex justify-between items-center">
             <div className="w-fit text-6xl font-semibold dark:text-white font-primary">Posts</div>
             <div className="flex items-center gap-2">
@@ -92,7 +92,9 @@ const Posts = () => {
             ) : (
               <div className="w-full">
                 {posts.length === 0 ? (
-                  <NoFeed />
+                  <div onClick={() => setClickedOnNewPost(true)} className="w-full">
+                    <NoPosts />
+                  </div>
                 ) : (
                   <InfiniteScroll
                     className="w-full"

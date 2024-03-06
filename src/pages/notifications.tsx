@@ -22,6 +22,7 @@ import Impressions from '@/components/notifications/impressions';
 import Invitation from '@/components/notifications/invitation';
 import Task from '@/components/notifications/task';
 import Tagged from '@/components/notifications/tagged';
+import Removal from '@/components/notifications/removal';
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -99,6 +100,8 @@ const Notifications = () => {
                         return <ApplicationUpdate notification={notification} status={1} />;
                       case 7:
                         return <ApplicationUpdate notification={notification} status={0} />;
+                      case 8:
+                        return <Removal notification={notification} />;
                       case 9:
                         return <ChatRequest notification={notification} />;
                       case 10:
@@ -113,6 +116,7 @@ const Notifications = () => {
                       case 21:
                       case 22:
                         return <Tagged notification={notification} />;
+
                       default:
                         return <></>;
                     }
