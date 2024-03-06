@@ -14,6 +14,12 @@ const Deleted = ({ history }: Props) => {
           <div className="w-fit text-center flex-center gap-1">deleted an Opening - {history.deletedText}.</div>
         </ProjectHistoryWrapper>
       );
+    case 12: //User withdrew invitation
+      return (
+        <ProjectHistoryWrapper history={history}>
+          <div className="w-fit text-center flex-center gap-1">withdrew an Invitation - {history.deletedText}.</div>
+        </ProjectHistoryWrapper>
+      );
     default:
       return <></>;
   }

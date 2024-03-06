@@ -475,6 +475,8 @@ export interface ProjectHistory {
   invitation: Invitation;
   taskID: string;
   task: Task;
+  membershipID: string;
+  membership: Membership;
   deletedText: string;
   createdAt: Date;
 }
@@ -547,6 +549,8 @@ export interface OrganizationHistory {
   opening?: Opening;
   applicationID?: string;
   application?: Application;
+  membershipID?: string;
+  membership?: OrganizationMembership;
   createdAt: Date;
   deletedText: String;
 }

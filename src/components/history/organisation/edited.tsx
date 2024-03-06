@@ -94,6 +94,18 @@ const Edited = ({ history }: Props) => {
           </div>
         </OrganizationHistoryWrapper>
       );
+    case 30: //User edited memberships details
+      return (
+        <OrganizationHistoryWrapper history={history}>
+          <div className="w-fit bg-priority_mid px-1 rounded-md gap-4">
+            Edited Memberships Details -{' '}
+            <Link href={`/organisation/members`} className="font-semibold">
+              {history.membership?.user?.name}
+            </Link>
+            .
+          </div>
+        </OrganizationHistoryWrapper>
+      );
     default:
       return <></>;
   }

@@ -27,6 +27,18 @@ const Edited = ({ history }: Props) => {
           </div>
         </ProjectHistoryWrapper>
       );
+    case 13: //User edited memberships details
+      return (
+        <ProjectHistoryWrapper history={history}>
+          <div className="w-fit text-center flex-center gap-1">
+            edited Memberships Details -{' '}
+            <Link href={`/explore?pid=${history.membership.projectID}`} className="font-semibold">
+              {history.membership.user.name}
+            </Link>
+            .
+          </div>
+        </ProjectHistoryWrapper>
+      );
     default:
       return <></>;
   }

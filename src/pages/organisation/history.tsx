@@ -95,6 +95,7 @@ const History = () => {
                     case 20:
                     case 23:
                     case 26:
+                    case 30:
                       return <Edited key={index} history={history} />;
                     default:
                       return <></>;

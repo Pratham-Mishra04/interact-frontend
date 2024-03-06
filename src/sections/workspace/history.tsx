@@ -83,8 +83,10 @@ const History = ({ projectID, setShow, org = false }: Props) => {
                   return <Membership history={history} />;
                 case 2:
                 case 4:
+                case 13:
                   return <Edited history={history} />;
                 case 5:
+                case 12:
                   return <Deleted history={history} />;
                 default:
                   return <></>;
