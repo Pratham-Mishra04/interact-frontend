@@ -1,5 +1,3 @@
-import Links from '@/components/utils/edit_links';
-import Tags from '@/components/utils/edit_tags';
 import CoverPic from '@/components/utils/new_cover';
 import { ORG_URL } from '@/config/routes';
 import { currentOrgSelector } from '@/slices/orgSlice';
@@ -13,6 +11,13 @@ import moment from 'moment';
 import isArrEdited from '@/utils/funcs/check_array_edited';
 import patchHandler from '@/handlers/patch_handler';
 import { SERVER_ERROR } from '@/config/errors';
+import Select from '@/components/form/select';
+import Input from '@/components/form/input';
+import Time from '@/components/form/time';
+import TextArea from '@/components/form/textarea';
+import Tags from '@/components/form/tags';
+import Links from '@/components/form/links';
+import PrimaryButton from '@/components/buttons/primary_btn';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -136,103 +141,23 @@ const EditEvent = ({ setShow, event, setEvents }: Props) => {
         </div>
         <div className="w-full flex flex-col justify-between gap-2">
           <div className="w-full text-primary_black flex flex-col gap-6 pb-8 max-lg:pb-4">
-            <select
-              onChange={el => setCategory(el.target.value)}
-              className="w-1/2 max-lg:w-full h-12 border-[1px] border-primary_btn  dark:border-dark_primary_btn dark:text-white bg-primary_comp dark:bg-[#10013b30] focus:outline-nonetext-sm rounded-lg block p-2"
-            >
-              {categories.map((c, i) => {
-                return (
-                  <option className="bg-primary_comp_hover dark:bg-[#10013b30]" key={i} value={c}>
-                    {c}
-                  </option>
-                );
-              })}
-            </select>
-
-            <div>
-              <div className="text-xs ml-1 font-medium uppercase text-gray-500">
-                Event Tagline ({tagline.trim().length}/50)
-              </div>
-              <input
-                value={tagline}
-                onChange={el => setTagline(el.target.value)}
-                maxLength={50}
-                type="text"
-                className="w-full font-medium bg-transparent focus:outline-none border-[1px] border-gray-400 rounded-lg p-2"
-                placeholder="Write your Tagline here..."
-              />
-            </div>
-
-            <div>
-              <div className="text-xs ml-1 font-medium uppercase text-gray-500">
-                Event Location ({location.trim().length}/25)
-              </div>
-              <input
-                value={location}
-                onChange={el => setLocation(el.target.value)}
-                maxLength={25}
-                type="text"
-                className="w-full bg-transparent focus:outline-none border-[1px] border-gray-400 rounded-lg p-2"
-                placeholder="Online"
-              />
-            </div>
-
+            <Select label="Event Category" val={category} setVal={setCategory} options={categories} required={true} />
+            <Input label="Event Tagline" val={tagline} setVal={setTagline} maxLength={50} required={true} />
+            <Input label="Event Location" val={location} setVal={setLocation} maxLength={25} placeholder="Online" />
             <div className="w-full flex justify-between gap-4">
               <div className="w-1/2">
-                <div className="text-xs ml-1 font-medium uppercase text-gray-500">Start Time</div>
-                <input
-                  value={startTime}
-                  onChange={el => {
-                    setStartTime(el.target.value);
-                  }}
-                  type="datetime-local"
-                  className="w-full bg-transparent focus:outline-none border-[1px] border-gray-400 rounded-lg p-2"
-                />
+                <Time label="Start Time" val={startTime} setVal={setStartTime} required={true} />
               </div>
               <div className="w-1/2">
-                <div className="text-xs ml-1 font-medium uppercase text-gray-500">End Time</div>
-                <input
-                  value={endTime}
-                  onChange={el => setEndTime(el.target.value)}
-                  type="datetime-local"
-                  className="w-full bg-transparent focus:outline-none border-[1px] border-gray-400 rounded-lg p-2"
-                />
+                <Time label="End Time" val={endTime} setVal={setEndTime} required={true} />
               </div>
             </div>
-
-            <div>
-              <div className="text-xs ml-1 font-medium uppercase text-gray-500">
-                Event Description ({description.trim().length}/2500)
-              </div>
-              <textarea
-                value={description}
-                onChange={el => setDescription(el.target.value)}
-                maxLength={2500}
-                className="w-full min-h-[80px] max-h-80 bg-transparent focus:outline-none border-[1px] border-gray-400 rounded-lg p-2"
-                placeholder="Explain your event"
-              />
-            </div>
-
-            <div>
-              <div className="text-xs ml-1 font-medium uppercase text-gray-500">Event Tags ({tags.length || 0}/10)</div>
-              <Tags tags={tags} setTags={setTags} maxTags={10} />
-            </div>
-
-            <div>
-              <div className="text-xs ml-1 font-medium uppercase text-gray-500">
-                Event Links ({links.length || 0}/3)
-              </div>
-              <Links links={links} setLinks={setLinks} maxLinks={3} />
-            </div>
+            <TextArea label="Event Description" val={description} setVal={setDescription} maxLength={2500} />
+            <Tags label="Event Tags" tags={tags} setTags={setTags} maxTags={10} required={true} />
+            <Links label="Event Links" links={links} setLinks={setLinks} maxLinks={3} />
           </div>
-
           <div className="w-full flex max-lg:justify-center justify-end">
-            <button
-              onClick={handleSubmit}
-              className="w-44 h-12 bg-primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active rounded-lg flex-center font-medium text-lg transition-ease-300"
-            >
-              Edit Event
-            </button>
+            <PrimaryButton onClick={handleSubmit} label="Edit Event" animateIn={true} />
           </div>
         </div>
       </div>

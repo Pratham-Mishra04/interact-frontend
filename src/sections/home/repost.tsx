@@ -10,6 +10,7 @@ import { Announcement, Poll, Post, User } from '@/types';
 import getHandler from '@/handlers/get_handler';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
 import moment from 'moment';
+import renderContentWithLinks from '@/utils/funcs/render_content_with_links';
 
 interface Props {
   post: Post;
@@ -213,7 +214,9 @@ const RePost = ({ post, setShow, setFeed, org = false }: Props) => {
                   <div className="font-medium">{post.user.username}</div>
                   <div className="flex gap-2 font-light text-xxs">{moment(post.postedAt).fromNow()}</div>
                 </div>
-                <div className="w-full text-xs whitespace-pre-wrap mb-2 line-clamp-8">{post.content}</div>
+                <div className="w-full text-xs  whitespace-pre-wrap mb-2 line-clamp-8">
+                  {renderContentWithLinks(post.content, post.taggedUsers)}
+                </div>
               </div>
             </div>
 

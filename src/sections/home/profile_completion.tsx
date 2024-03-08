@@ -86,7 +86,7 @@ const ProfileCompletion = () => {
 
       <div
         className={`w-full ${
-          open ? 'opacity-100' : 'opacity-0'
+          open ? 'opacity-100 pr-24' : 'opacity-0 pr-0'
         } cursor-default transition-ease-500 font-semibold text-xl text-gray-800 dark:text-white`}
       >
         <div className="text-gradient font-bold text-5xl">Complete Profile </div>

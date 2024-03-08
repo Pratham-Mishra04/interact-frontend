@@ -138,19 +138,19 @@ const OrgSidebar = ({ index }: Props) => {
             open={open}
           />
           <SidebarItem
-            index={7}
+            index={15}
             org={true}
-            title="History"
-            icon={<ClockCounterClockwise size={24} />}
+            title="Openings"
+            icon={<EnvelopeSimpleOpen size={24} />}
             active={active}
             setActive={setActive}
             open={open}
           />
           <SidebarItem
-            index={15}
+            index={7}
             org={true}
-            title="Openings"
-            icon={<EnvelopeSimpleOpen size={24} />}
+            title="History"
+            icon={<ClockCounterClockwise size={24} />}
             active={active}
             setActive={setActive}
             open={open}

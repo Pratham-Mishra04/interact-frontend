@@ -8,6 +8,8 @@ import { currentOrgIDSelector } from '@/slices/orgSlice';
 import { useSelector } from 'react-redux';
 import { ORG_MANAGER, ORG_MEMBER, ORG_SENIOR } from '@/config/constants';
 import PrimaryButton from '@/components/buttons/primary_btn';
+import Input from '@/components/form/input';
+import TextArea from '@/components/form/textarea';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -70,22 +72,13 @@ const NewResource = ({ setShow, organization, setShowResources, setResources }: 
             <div className="text-3xl max-md:text-xl font-semibold">Resource Bucket Info</div>
             <div className="w-full h-fit flex flex-col gap-4">
               <div className="w-full flex flex-col gap-4">
-                <input
-                  type="text"
-                  className="w-full bg-transparent px-4 py-2 focus:outline-none text-xl font-medium"
-                  placeholder="Resource Bucket Title (50 characters)"
-                  maxLength={50}
-                  value={title}
-                  onChange={el => setTitle(el.target.value)}
-                />
-
-                <textarea
-                  className="w-full min-h-[64px] max-h-56 px-4 py-2 bg-primary_comp dark:bg-dark_primary_comp rounded-lg focus:outline-none"
-                  placeholder="Resource Description (500 characters)"
+                <Input label="Resource Bucket Title" val={title} setVal={setTitle} maxLength={50} required={true} />
+                <TextArea
+                  label="Resource Bucket Description"
+                  val={description}
+                  setVal={setDescription}
                   maxLength={500}
-                  value={description}
-                  onChange={el => setDescription(el.target.value)}
-                ></textarea>
+                />
               </div>
             </div>
           </>

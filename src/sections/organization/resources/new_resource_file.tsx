@@ -8,6 +8,8 @@ import Toaster from '@/utils/toaster';
 import { SERVER_ERROR } from '@/config/errors';
 import { X } from '@phosphor-icons/react';
 import isURL from 'validator/lib/isURL';
+import Input from '@/components/form/input';
+import TextArea from '@/components/form/textarea';
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   resourceBucketID: string;
@@ -92,24 +94,8 @@ const NewResourceFile = ({
       <div className="w-[60%] absolute bg-white border-2 border-primary_text shadow-xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[150] p-6 rounded-xl flex flex-col gap-4 animate-fade_third">
         <h1 className="text-2xl font-bold">Upload File</h1>
         <div className="w-full h-fit flex flex-col gap-4">
-          <div className="w-full flex flex-col gap-4">
-            <div className="w-full flex gap-4 px-4 py-2 dark:bg-dark_primary_comp_hover rounded-lg ">
-              <input
-                type="text"
-                className="grow bg-transparent focus:outline-none text-xl"
-                placeholder="File Title"
-                value={title}
-                onChange={el => setTitle(el.target.value)}
-              />
-            </div>
-            <textarea
-              className="w-full min-h-[64px] max-h-36 px-4 py-2 bg-primary_comp dark:bg-dark_primary_comp rounded-lg focus:outline-none"
-              placeholder="File Description"
-              maxLength={250}
-              value={description}
-              onChange={el => setDescription(el.target.value)}
-            ></textarea>
-          </div>
+          <Input label="Resource File Title" val={title} setVal={setTitle} maxLength={50} required={true} />
+          <TextArea label="Resource File Description" val={description} setVal={setDescription} maxLength={500} />
         </div>
         <input
           type="file"

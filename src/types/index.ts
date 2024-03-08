@@ -423,6 +423,7 @@ export interface SubTask {
 }
 
 export type PRIORITY = 'low' | 'medium' | 'high';
+
 export interface Task {
   id: string;
   projectID: string;

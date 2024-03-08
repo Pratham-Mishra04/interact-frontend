@@ -206,7 +206,7 @@ const NewPost = ({ setShow, setFeed, org = false }: Props) => {
                   Post
                 </div>
               </div>
-              {width > 640 ? (
+              {width > 640 && (
                 <div className="w-full flex flex-col gap-8 relative">
                   <div className="w-full flex gap-4">
                     <NewPostImages setSelectedFiles={setImages} />
@@ -222,12 +222,10 @@ const NewPost = ({ setShow, setFeed, org = false }: Props) => {
                     placeholder="Start a conversation..."
                   ></textarea>
                 </div>
-              ) : (
-                <></>
               )}
             </div>
           </div>
-          {width <= 640 ? (
+          {width <= 640 && (
             <div className="md:hidden w-full flex flex-col gap-8 relative">
               <div className="w-full flex gap-4">
                 <NewPostImages setSelectedFiles={setImages} />
@@ -243,8 +241,6 @@ const NewPost = ({ setShow, setFeed, org = false }: Props) => {
                 placeholder="Start a conversation..."
               ></textarea>
             </div>
-          ) : (
-            <></>
           )}
         </div>
 
