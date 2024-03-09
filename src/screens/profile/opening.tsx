@@ -11,7 +11,7 @@ import { initialOpening } from '@/types/initials';
 import OpeningView from '@/sections/explore/opening_view';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Loader from '@/components/common/loader';
-import Mascot from '@/components/empty_fillers/mascot';
+import Mascot from '@/components/fillers/mascot';
 import { EXPLORE_URL } from '@/config/routes';
 import { useWindowWidth } from '@react-hook/window-size';
 

@@ -21,7 +21,7 @@ import Masonry from 'react-masonry-css';
 import Loader from '@/components/common/loader';
 import WidthCheck from '@/utils/wrappers/widthCheck';
 import AccessTree from '@/components/organization/access_tree';
-import NoPosts from '@/components/empty_fillers/posts';
+import NoPosts from '@/components/fillers/posts';
 
 const Posts = () => {
   const [posts, setPosts] = useState<Post[]>([]);

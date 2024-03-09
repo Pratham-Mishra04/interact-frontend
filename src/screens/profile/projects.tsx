@@ -4,14 +4,14 @@ import React, { useEffect, useState } from 'react';
 import ProjectView from '../../sections/explore/project_view';
 import { useSelector } from 'react-redux';
 import { navbarOpenSelector } from '@/slices/feedSlice';
-import NoUserItems from '@/components/empty_fillers/user_items';
+import NoUserItems from '@/components/fillers/user_items';
 import { EXPLORE_URL } from '@/config/routes';
 import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
 import Toaster from '@/utils/toaster';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Loader from '@/components/common/loader';
-import Mascot from '@/components/empty_fillers/mascot';
+import Mascot from '@/components/fillers/mascot';
 
 interface Props {
   userID: string;

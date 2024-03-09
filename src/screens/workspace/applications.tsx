@@ -9,7 +9,7 @@ import moment from 'moment';
 import Link from 'next/link';
 import { useDispatch } from 'react-redux';
 import { setExploreTab } from '@/slices/feedSlice';
-import NoApplications from '@/components/empty_fillers/applications';
+import NoApplications from '@/components/fillers/applications';
 import { SERVER_ERROR } from '@/config/errors';
 import { X, Plus, Check, Buildings } from '@phosphor-icons/react';
 

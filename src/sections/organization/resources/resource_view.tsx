@@ -21,7 +21,7 @@ import Toaster from '@/utils/toaster';
 import { SERVER_ERROR } from '@/config/errors';
 import NewResourceFile from '@/sections/organization/resources/new_resource_file';
 import Loader from '@/components/common/loader';
-import Mascot from '@/components/empty_fillers/mascot';
+import Mascot from '@/components/fillers/mascot';
 import moment from 'moment';
 import patchHandler from '@/handlers/patch_handler';
 import deleteHandler from '@/handlers/delete_handler';

@@ -14,7 +14,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { configSelector } from '@/slices/configSlice';
 import { navbarOpenSelector } from '@/slices/feedSlice';
 import patchHandler from '@/handlers/patch_handler';
-import NoEventBookmarks from '@/components/empty_fillers/event_bookmarks';
+import NoEventBookmarks from '@/components/fillers/event_bookmarks';
 
 const Events = () => {
   const [bookmarks, setBookmarks] = useState<EventBookmark[]>([]);

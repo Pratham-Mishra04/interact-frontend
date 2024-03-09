@@ -10,7 +10,7 @@ import NewProject from '@/sections/workspace/new_project';
 import { Plus } from '@phosphor-icons/react';
 import { userSelector } from '@/slices/userSlice';
 import { useSelector } from 'react-redux';
-import NoProjects from '@/components/empty_fillers/your_projects';
+import NoProjects from '@/components/fillers/your_projects';
 import { navbarOpenSelector } from '@/slices/feedSlice';
 import { SERVER_ERROR } from '@/config/errors';
 

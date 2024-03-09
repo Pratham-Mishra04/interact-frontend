@@ -9,7 +9,7 @@ import React, { useState, useEffect } from 'react';
 import ProjectView from '@/sections/explore/project_view';
 import { useDispatch, useSelector } from 'react-redux';
 import { navbarOpenSelector, setExploreTab } from '@/slices/feedSlice';
-import NoSearch from '@/components/empty_fillers/search';
+import NoSearch from '@/components/fillers/search';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 const Projects = () => {

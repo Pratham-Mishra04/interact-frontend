@@ -1,7 +1,7 @@
 import FollowBtn from '@/components/common/follow_btn';
 import Loader from '@/components/common/loader';
 import UserHoverCard from '@/components/common/user_hover_card';
-import Mascot from '@/components/empty_fillers/mascot';
+import Mascot from '@/components/fillers/mascot';
 import { SERVER_ERROR } from '@/config/errors';
 import { ORG_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';

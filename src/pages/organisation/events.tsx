@@ -28,7 +28,7 @@ import AccessTree from '@/components/organization/access_tree';
 import ViewInvitations from '@/sections/organization/events/view_invitations';
 import EditCoHosts from '@/sections/organization/events/edit_cohosts';
 import EventHistory from '@/sections/organization/events/history';
-import NoEvents from '@/components/empty_fillers/events';
+import NoEvents from '@/components/fillers/events';
 
 const Events = () => {
   const [events, setEvents] = useState<Event[]>([]);

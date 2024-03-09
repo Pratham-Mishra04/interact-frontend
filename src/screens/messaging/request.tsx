@@ -1,5 +1,5 @@
 import Loader from '@/components/common/loader';
-import NoChats from '@/components/empty_fillers/chats';
+import NoChats from '@/components/fillers/chats';
 import PersonalChatCard from '@/components/messaging/personal_chat_card';
 import { SERVER_ERROR } from '@/config/errors';
 import { MESSAGING_URL } from '@/config/routes';

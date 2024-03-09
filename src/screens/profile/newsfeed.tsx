@@ -10,7 +10,7 @@ import AnnouncementCard from '@/components/organization/announcement_card';
 import Loader from '@/components/common/loader';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Masonry from 'react-masonry-css';
-import Mascot from '@/components/empty_fillers/mascot';
+import Mascot from '@/components/fillers/mascot';
 import { useSelector } from 'react-redux';
 import { userSelector } from '@/slices/userSlice';
 

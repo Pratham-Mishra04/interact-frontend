@@ -12,7 +12,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Image from 'next/image';
 import { ArrowArcLeft } from '@phosphor-icons/react';
-import NoChats from '@/components/empty_fillers/chats';
+import NoChats from '@/components/fillers/chats';
 
 const Project = () => {
   const [chats, setChats] = useState<GroupChat[]>([]);

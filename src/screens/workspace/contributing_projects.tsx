@@ -6,7 +6,7 @@ import { Project } from '@/types';
 import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import ProjectView from '../../sections/workspace/project_view';
-import NoProjects from '@/components/empty_fillers/contributing_projects';
+import NoProjects from '@/components/fillers/contributing_projects';
 import { navbarOpenSelector } from '@/slices/feedSlice';
 import { useSelector } from 'react-redux';
 import { SERVER_ERROR } from '@/config/errors';

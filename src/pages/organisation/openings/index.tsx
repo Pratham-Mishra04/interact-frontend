@@ -9,7 +9,7 @@ import NewOpening from '@/sections/organization/openings/new_opening';
 import checkOrgAccess from '@/utils/funcs/check_org_access';
 import { Info, Plus } from '@phosphor-icons/react';
 import { ORG_MANAGER } from '@/config/constants';
-import NoOpenings from '@/components/empty_fillers/no_openings';
+import NoOpenings from '@/components/fillers/no_openings';
 import OpeningCard from '@/components/organization/opening_card';
 import { Opening } from '@/types';
 import Toaster from '@/utils/toaster';

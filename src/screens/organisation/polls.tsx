@@ -1,5 +1,5 @@
 import Loader from '@/components/common/loader';
-import Mascot from '@/components/empty_fillers/mascot';
+import Mascot from '@/components/fillers/mascot';
 import PollCard from '@/components/organization/poll_card';
 import { ORG_SENIOR } from '@/config/constants';
 import { SERVER_ERROR } from '@/config/errors';

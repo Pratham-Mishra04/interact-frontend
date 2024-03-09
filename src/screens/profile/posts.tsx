@@ -1,4 +1,4 @@
-import NoUserItems from '@/components/empty_fillers/user_items';
+import NoUserItems from '@/components/fillers/user_items';
 import PostComponent from '@/components/home/post';
 import RePostComponent from '@/components/home/repost';
 import { SERVER_ERROR } from '@/config/errors';
@@ -11,7 +11,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import PostsLoader from '@/components/loaders/posts';
 import Masonry from 'react-masonry-css';
 import Loader from '@/components/common/loader';
-import Mascot from '@/components/empty_fillers/mascot';
+import Mascot from '@/components/fillers/mascot';
 
 interface Props {
   userID: string;

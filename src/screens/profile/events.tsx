@@ -7,8 +7,8 @@ import Toaster from '@/utils/toaster';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Loader from '@/components/common/loader';
 import EventCard from '@/components/organization/event_card';
-import NoUserItems from '@/components/empty_fillers/user_items';
-import Mascot from '@/components/empty_fillers/mascot';
+import NoUserItems from '@/components/fillers/user_items';
+import Mascot from '@/components/fillers/mascot';
 
 interface Props {
   orgID: string;

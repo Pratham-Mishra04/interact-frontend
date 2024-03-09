@@ -7,7 +7,7 @@ import Toaster from '@/utils/toaster';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Loader from '@/components/common/loader';
 import ReviewCard from '@/components/explore/review_card';
-import NoUserItems from '@/components/empty_fillers/user_items';
+import NoUserItems from '@/components/fillers/user_items';
 import { useSelector, useDispatch } from 'react-redux';
 import { userSelector } from '@/slices/userSlice';
 import NewReview from '@/sections/organization/reviews/new_review';
@@ -15,7 +15,7 @@ import { Star, Plus } from '@phosphor-icons/react';
 import StarRating from '@/components/organization/star_rating';
 import { reviewModalOpenSelector, setReviewModalOpen } from '@/slices/feedSlice';
 import Masonry from 'react-masonry-css';
-import Mascot from '@/components/empty_fillers/mascot';
+import Mascot from '@/components/fillers/mascot';
 interface Props {
   orgID: string;
 }

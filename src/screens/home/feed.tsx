@@ -13,7 +13,7 @@ import { navbarOpenSelector } from '@/slices/feedSlice';
 import RePostComponent from '@/components/home/repost';
 import Image from 'next/image';
 import { USER_PROFILE_PIC_URL } from '@/config/routes';
-import NoFeed from '@/components/empty_fillers/feed';
+import NoFeed from '@/components/fillers/feed';
 import { SERVER_ERROR } from '@/config/errors';
 import PostsLoader from '@/components/loaders/posts';
 import PollCard from '@/components/organization/poll_card';
