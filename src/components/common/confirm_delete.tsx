@@ -1,8 +1,9 @@
 import { X } from '@phosphor-icons/react';
 import React, { useEffect } from 'react';
+import DangerButton from '../buttons/danger_btn';
 
 interface Props {
-  handleDelete: ({}: any) => void;
+  handleDelete: () => void;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   title?: string;
   subtitle?: string;
@@ -37,13 +38,7 @@ const ConfirmDelete = ({
             <div className={`font-semibold text-${titleSize} text-gray-800 dark:text-white`}>{title}</div>
             <div className="font-medium text-sm">{subtitle}</div>
           </div>
-
-          <div
-            onClick={handleDelete}
-            className="mx-auto text-center  border-2 border-[#ea333e] dark:border-dark_primary_btn px-6 w-fit py-2 rounded-lg text-xl hover:bg-[#ea333e20] cursor-pointer transition-ease-200 text-[#ea333e] font-medium"
-          >
-            Confirm
-          </div>
+          <DangerButton label="Confirm" onClick={handleDelete} />
         </div>
       </div>
       <div

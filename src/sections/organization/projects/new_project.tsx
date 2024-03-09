@@ -1,5 +1,3 @@
-import Links from '@/components/utils/edit_links';
-import Tags from '@/components/utils/edit_tags';
 import CoverPic from '@/components/utils/new_cover';
 import { SERVER_ERROR } from '@/config/errors';
 import { ORG_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
@@ -18,6 +16,12 @@ import { PROJECT_EDITOR, PROJECT_MANAGER, PROJECT_MEMBER } from '@/config/consta
 import { Id } from 'react-toastify';
 import PrimaryButton from '@/components/buttons/primary_btn';
 import BuildButton from '@/components/buttons/build_btn';
+import Select from '@/components/form/select';
+import Input from '@/components/form/input';
+import TextArea from '@/components/form/textarea';
+import Tags from '@/components/form/tags';
+import Links from '@/components/form/links';
+import Checkbox from '@/components/form/checkbox';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -229,82 +233,18 @@ const NewProject = ({ setShow, setProjects }: Props) => {
                       placeholder="Untitled Project"
                       className="w-full text-5xl max-lg:text-center max-lg:text-3xl font-bold bg-transparent focus:outline-none"
                     />
-
-                    <select
-                      onChange={el => setCategory(el.target.value)}
-                      className="w-1/2 max-lg:w-full h-12 border-[1px] border-primary_btn  dark:border-dark_primary_btn dark:text-white bg-primary_comp dark:bg-[#10013b30] focus:outline-nonetext-sm rounded-lg block p-2"
-                    >
-                      {categories.map((c, i) => {
-                        return (
-                          <option className="bg-primary_comp_hover dark:bg-[#10013b30]" key={i} value={c}>
-                            {c}
-                          </option>
-                        );
-                      })}
-                    </select>
-
-                    <div>
-                      <div className="text-xs ml-1 font-medium uppercase text-gray-500">
-                        Project Tagline ({tagline.trim().length}/40)
-                      </div>
-                      <input
-                        value={tagline}
-                        onChange={el => setTagline(el.target.value)}
-                        maxLength={40}
-                        type="text"
-                        className="w-full font-medium bg-transparent focus:outline-none border-[1px] border-gray-400 rounded-lg p-2"
-                        placeholder="Write your Tagline here..."
-                      />
-                    </div>
-
-                    <div>
-                      <div className="text-xs ml-1 font-medium uppercase text-gray-500">
-                        Project Description ({description.trim().length}/1000)
-                      </div>
-                      <textarea
-                        value={description}
-                        onChange={el => setDescription(el.target.value)}
-                        maxLength={1000}
-                        className="w-full min-h-[80px] max-h-80 bg-transparent focus:outline-none border-[1px] border-gray-400 rounded-lg p-2"
-                        placeholder="Explain your project"
-                      />
-                    </div>
-
-                    <div>
-                      <div className="text-xs ml-1 font-medium uppercase text-gray-500">
-                        Project Tags ({tags.length || 0}/10)
-                      </div>
-                      <Tags tags={tags} setTags={setTags} maxTags={10} />
-                    </div>
-
-                    <div>
-                      <div className="text-xs ml-1 font-medium uppercase text-gray-500">
-                        Project Links ({links.length || 0}/5)
-                      </div>
-                      <Links links={links} setLinks={setLinks} maxLinks={5} />
-                    </div>
-
-                    <label className="flex w-fit cursor-pointer select-none items-center text-sm gap-2">
-                      <div className="font-semibold">Keep this Project Private</div>
-                      <div className="relative">
-                        <input
-                          type="checkbox"
-                          checked={isPrivate}
-                          onChange={() => setIsPrivate(prev => !prev)}
-                          className="sr-only"
-                        />
-                        <div
-                          className={`box block h-6 w-10 rounded-full ${
-                            isPrivate ? 'bg-blue-300' : 'bg-black'
-                          } transition-ease-300`}
-                        ></div>
-                        <div
-                          className={`absolute left-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white transition ${
-                            isPrivate ? 'translate-x-full' : ''
-                          }`}
-                        ></div>
-                      </div>
-                    </label>
+                    <Select
+                      label="Project Category"
+                      val={category}
+                      setVal={setCategory}
+                      options={categories}
+                      required={true}
+                    />
+                    <Input label="Project Tagline" val={tagline} setVal={setTagline} maxLength={50} required={true} />
+                    <TextArea label="Project Description" val={description} setVal={setDescription} maxLength={1000} />
+                    <Tags label="Project Tags" tags={tags} setTags={setTags} maxTags={10} required={true} />
+                    <Links label="Project Links" links={links} setLinks={setLinks} maxLinks={5} />
+                    <Checkbox label="Keep this Project Private" val={isPrivate} setVal={setIsPrivate} />
                   </div>
                 </div>
               </div>
@@ -348,11 +288,7 @@ const NewProject = ({ setShow, setProjects }: Props) => {
                           <div className="w-[calc(100%-48px)] flex flex-col">
                             <div className="text-lg font-bold">{user.name}</div>
                             <div className="text-sm dark:text-gray-200">@{user.username}</div>
-                            {user.tagline && user.tagline != '' ? (
-                              <div className="text-sm mt-2">{user.tagline}</div>
-                            ) : (
-                              <></>
-                            )}
+                            {user.tagline && user.tagline != '' && <div className="text-sm mt-2">{user.tagline}</div>}
                           </div>
                         </div>
                       );

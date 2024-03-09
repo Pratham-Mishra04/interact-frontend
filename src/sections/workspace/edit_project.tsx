@@ -1,5 +1,10 @@
-import Links from '@/components/utils/edit_links';
-import Tags from '@/components/utils/edit_tags';
+import PrimaryButton from '@/components/buttons/primary_btn';
+import Checkbox from '@/components/form/checkbox';
+import Input from '@/components/form/input';
+import Links from '@/components/form/links';
+import Select from '@/components/form/select';
+import Tags from '@/components/form/tags';
+import TextArea from '@/components/form/textarea';
 import Images from '@/components/utils/new_cover';
 import { SERVER_ERROR } from '@/config/errors';
 import { ORG_URL, PROJECT_URL } from '@/config/routes';
@@ -126,96 +131,17 @@ const EditProject = ({ projectToEdit, setShow, setProjectToEdit, setProjects, or
         <div className="w-2/5 max-lg:w-full lg:sticky lg:top-0">
           <Images initialImage={projectToEdit.coverPic} setSelectedFile={setImage} />
         </div>
-
         <div className="w-3/5 max-lg:w-full h-fit flex flex-col max-lg:items-center gap-4 max-lg:gap-6 max-lg:pb-4">
           <div className="w-fit text-5xl max-lg:text-3xl font-bold cursor-default">{projectToEdit.title}</div>
-
-          <select
-            onChange={el => setCategory(el.target.value)}
-            value={category}
-            className="w-fit h-12 border-[1px] border-primary_btn dark:border-dark_primary_btn dark:text-white bg-primary_comp dark:bg-[#10013b30] focus:outline-none text-sm rounded-lg block p-2"
-          >
-            {categories.map((c, i) => {
-              return (
-                <option className="bg-primary_comp_hover dark:bg-[#10013b30]" key={i} value={c}>
-                  {c}
-                </option>
-              );
-            })}
-          </select>
-
-          <div className="w-full flex flex-col gap-2">
-            <div className="text-xs ml-1 font-medium uppercase text-gray-500">Tags ({tags.length || 0}/10)</div>
-            <Tags tags={tags} setTags={setTags} maxTags={10} />
-          </div>
-
-          <div className="w-full flex flex-col gap-2">
-            <div className="text-xs ml-1 font-medium uppercase text-gray-500">Tagline ({tagline.trim().length}/40)</div>
-            <input
-              value={tagline}
-              onChange={el => setTagline(el.target.value)}
-              type="text"
-              maxLength={40}
-              placeholder="Write your Tagline here..."
-              className="w-full text-primary_black focus:outline-none border-[1px] border-primary_btn dark:border-dark_primary_btn rounded-lg text-lg p-2 font-medium bg-transparent"
-            />
-          </div>
-
-          <div className="w-full">
-            <div className="text-xs ml-1 font-medium uppercase text-gray-500">
-              Description ({description.trim().length}/1000)
-            </div>
-            <textarea
-              value={description}
-              onChange={el => setDescription(el.target.value)}
-              placeholder="add a professional bio"
-              maxLength={1000}
-              className="w-full min-h-[160px] max-h-[200px] focus:outline-none text-primary_black border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg p-2 text-sm bg-transparent"
-            />
-          </div>
-
-          <div className="w-full flex flex-col gap-2">
-            <div className="text-xs ml-1 font-medium uppercase text-gray-500">Public Links ({links.length || 0}/5)</div>
-            <Links links={links} setLinks={setLinks} maxLinks={5} />
-          </div>
-
-          <div className="w-full flex flex-col gap-2">
-            <div className="text-xs ml-1 font-medium uppercase text-gray-500">
-              Private Links ({privateLinks.length || 0}/5)
-            </div>
-            <Links title="Private Links" links={privateLinks} setLinks={setPrivateLinks} />
-          </div>
-
-          <label className="flex w-fit cursor-pointer select-none items-center text-sm gap-2">
-            <div>Keep this Project Private</div>
-            <div className="relative">
-              <input
-                type="checkbox"
-                checked={isPrivate}
-                onChange={() => setIsPrivate(prev => !prev)}
-                className="sr-only"
-              />
-              <div
-                className={`box block h-6 w-10 rounded-full ${
-                  isPrivate ? 'bg-blue-300' : 'bg-black'
-                } transition-ease-300`}
-              ></div>
-              <div
-                className={`absolute left-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white transition ${
-                  isPrivate ? 'translate-x-full' : ''
-                }`}
-              ></div>
-            </div>
-          </label>
-          <div
-            onClick={handleSubmit}
-            className="w-36 h-12 font-semibold border-[1px] border-primary_btn dark:border-dark_primary_btn dark:shadow-xl dark:text-white bg-dark:dark_primary_btn hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active flex-center rounded-lg transition-ease-300 cursor-pointer"
-          >
-            Edit Project
-          </div>
+          <Select label="Project Category" val={category} setVal={setCategory} options={categories} required={true} />
+          <Input label="Project Tagline" val={tagline} setVal={setTagline} maxLength={50} required={true} />
+          <TextArea label="Project Description" val={description} setVal={setDescription} maxLength={1000} />
+          <Tags label="Project Tags" tags={tags} setTags={setTags} maxTags={10} required={true} />
+          <Links label="Project Links" links={links} setLinks={setLinks} maxLinks={5} />
+          <Checkbox label="Keep this Project Private" val={isPrivate} setVal={setIsPrivate} />
+          <PrimaryButton label="Edit Project" onClick={handleSubmit} width="40" />
         </div>
       </div>
-
       <div
         onClick={() => setShow(false)}
         className="bg-backdrop w-screen h-screen max-lg:backdrop-blur-sm fixed top-0 left-0 animate-fade_third z-20"
