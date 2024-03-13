@@ -87,7 +87,7 @@ const NewOpening = ({ setShow, project, setProject, org = false }: Props) => {
               src={`${PROJECT_PIC_URL}/${project.coverPic}`}
               className={'w-[160px] h-[160px] max-lg:w-[200px] max-lg:h-[200px] rounded-lg object-cover'}
               placeholder="blur"
-              blurDataURL={project.blurHash}
+              blurDataURL={project.blurHash || 'no-hash'}
             />
             <div className="max-lg:w-full grow flex flex-col gap-4">
               <input

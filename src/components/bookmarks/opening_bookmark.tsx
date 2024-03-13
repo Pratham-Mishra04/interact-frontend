@@ -100,7 +100,7 @@ const OpeningBookmark = ({ bookmark, setClick, setBookmark, handleEdit, handleDe
                       alt=""
                       src={`${PROJECT_PIC_URL}/${bookmark.openingItems[0].opening.project.coverPic}`}
                       placeholder="blur"
-                      blurDataURL={bookmark.openingItems[0].opening.project.blurHash}
+                      blurDataURL={bookmark.openingItems[0].opening.project.blurHash || 'no-hash'}
                     />
                   </div>
                 ) : bookmark.openingItems[0].opening.organization?.user.profilePic ? (
@@ -140,7 +140,7 @@ const OpeningBookmark = ({ bookmark, setClick, setBookmark, handleEdit, handleDe
                       alt=""
                       src={`${PROJECT_PIC_URL}/${openingItem.opening.project.coverPic}`}
                       placeholder="blur"
-                      blurDataURL={openingItem.opening.project.blurHash}
+                      blurDataURL={openingItem.opening.project.blurHash || 'no-hash'}
                     />
                   ) : (
                     <Image

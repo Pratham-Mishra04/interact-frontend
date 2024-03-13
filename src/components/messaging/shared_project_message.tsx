@@ -32,7 +32,7 @@ const SharedProjectMessage = ({ message }: Props) => {
               src={`${PROJECT_PIC_URL}/${message.project.coverPic}`}
               className={'w-[200px] h-[200px] max-md:w-[120px] max-md:h-[120px] rounded-lg object-cover'}
               placeholder="blur"
-              blurDataURL={message.project.blurHash}
+              blurDataURL={message.project.blurHash || 'no-hash'}
             />
 
             <div className="w-full flex flex-col gap-4 max-md:gap-2 px-8">

@@ -239,7 +239,7 @@ const RePost = ({ post, showLowerPost = true, setFeed, org = false }: Props) => 
             {renderContentWithLinks(post.content, post.taggedUsers)}
           </div>
         )}
-        {showLowerPost ? <LowerPost post={post} /> : <></>}
+        {showLowerPost && <LowerPost post={post} />}
       </div>
     </div>
   );

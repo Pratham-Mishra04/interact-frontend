@@ -103,7 +103,7 @@ const Project = () => {
                               src={`${PROJECT_PIC_URL}/${project.coverPic}`}
                               className={'w-[90px] h-[90px] max-lg:w-[60px] max-lg:h-[60px] rounded-lg object-cover'}
                               placeholder="blur"
-                              blurDataURL={project.blurHash}
+                              blurDataURL={project.blurHash || 'no-hash'}
                             />
 
                             <div className="grow flex flex-col gap-2">

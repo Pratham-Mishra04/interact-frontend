@@ -79,7 +79,7 @@ const EditOpening = ({ setShow, opening, project, setProject, org = false }: Pro
               src={`${PROJECT_PIC_URL}/${project.coverPic}`}
               className={'w-[160px] h-[160px] max-lg:w-[120px] max-lg:h-[120px] rounded-lg object-cover'}
               placeholder="blur"
-              blurDataURL={project.blurHash}
+              blurDataURL={project.blurHash || 'no-hash'}
             />
             <div className="grow flex flex-col gap-2 max-md:text-center">
               <div className="w-full text-4xl max-lg:text-3xl font-bold text-gradient cursor-default">

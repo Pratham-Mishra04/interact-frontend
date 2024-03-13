@@ -162,7 +162,7 @@ const ProjectCard = ({
           width={200}
           height={200}
           placeholder="blur"
-          blurDataURL={project.blurHash}
+          blurDataURL={project.blurHash || 'no-hash'}
         />
         <div className="w-full glassMorphism text-white rounded-b-lg font-primary absolute bottom-0 right-0 flex flex-col px-4 py-2">
           <div className="text-xl max-lg:text-base max-md:text-xl">{project.title}</div>

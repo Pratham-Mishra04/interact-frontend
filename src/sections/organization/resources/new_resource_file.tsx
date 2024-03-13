@@ -91,7 +91,7 @@ const NewResourceFile = ({
 
   return (
     <>
-      <div className="w-[60%] absolute bg-white border-2 border-primary_text shadow-xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[150] p-6 rounded-xl flex flex-col gap-4 animate-fade_third">
+      <div className="w-[60%] absolute bg-white border-2 border-primary_text shadow-xl top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 p-6 rounded-xl flex flex-col gap-4 animate-fade_third">
         <h1 className="text-2xl font-bold">Upload File</h1>
         <div className="w-full h-fit flex flex-col gap-4">
           <Input label="Resource File Title" val={title} setVal={setTitle} maxLength={50} required={true} />
@@ -168,7 +168,7 @@ const NewResourceFile = ({
         </div>
       </div>
       <div
-        className="overlay w-full h-full fixed top-0 left-0 bg-backdrop rounded-xl animate-fade_third"
+        className="overlay w-full h-full fixed top-0 left-0 bg-backdrop rounded-xl animate-fade_third z-10"
         onClick={() => setShow(false)}
       ></div>
     </>

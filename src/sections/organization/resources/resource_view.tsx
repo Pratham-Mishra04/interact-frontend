@@ -29,7 +29,6 @@ import { initialResourceBucket, initialResourceFile } from '@/types/initials';
 import ConfirmDelete from '@/components/common/confirm_delete';
 import Link from 'next/link';
 import ResourceFileView from './resource_file_view';
-import PDFViewer from '@/components/utils/pdf_viewer';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -57,10 +56,6 @@ const ResourceView = ({
   const [clickedOnUploadFile, setClickedOnUploadFile] = useState(false);
   const [clickedOnEdit, setClickedOnEdit] = useState(false);
   const [clickedOnDelete, setClickedOnDelete] = useState(false);
-
-  const [showDeleteTip, setShowDeleteTip] = useState<boolean>(false);
-  const [showEditTip, setShowEditTip] = useState<boolean>(false);
-  const [showAddNewTip, setShowAddNewTip] = useState<boolean>(false);
 
   const [clickedOnFile, setClickedOnFile] = useState(false);
   const [clickedFile, setClickedFile] = useState(initialResourceFile);
@@ -143,7 +138,7 @@ const ResourceView = ({
   return (
     <>
       <div className="w-[70%] aspect-[5/3] font-primary bg-white rounded-xl fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-[100] shadow-lg p-4 animate-fade_third">
-        {clickedOnUploadFile ? (
+        {clickedOnUploadFile && (
           <NewResourceFile
             setShow={setClickedOnUploadFile}
             resourceBucketID={resourceBucket.id}
@@ -152,12 +147,9 @@ const ResourceView = ({
             setResourceBuckets={setResources}
             setClickedResourceBucket={setClickedResourceBucket}
           />
-        ) : (
-          <></>
         )}
-        {clickedOnDelete ? <ConfirmDelete setShow={setClickedOnDelete} handleDelete={handleDelete} /> : <></>}
-
-        {clickedOnFile ? (
+        {clickedOnDelete && <ConfirmDelete setShow={setClickedOnDelete} handleDelete={handleDelete} />}
+        {clickedOnFile && (
           <ResourceFileView
             resourceFile={clickedFile}
             setShow={setClickedOnFile}
@@ -167,11 +159,9 @@ const ResourceView = ({
             setResourceBuckets={setResources}
             setClickedResourceBucket={setClickedResourceBucket}
           />
-        ) : (
-          <></>
         )}
 
-        {/* {clickedOnFile ? <PDFViewer resourceID={clickedFile.id} setShow={setClickedOnFile} /> : <></>} */}
+        {/* {clickedOnFile && <PDFViewer resourceID={clickedFile.id} setShow={setClickedOnFile} />} */}
 
         {loading ? (
           <Loader />
@@ -196,70 +186,59 @@ const ResourceView = ({
                 </div>
               ) : (
                 <div className="w-full flex justify-end items-center gap-1">
-                  {checkOrgAccess(resourceBucket.editAccess) ? (
+                  {checkOrgAccess(resourceBucket.editAccess) && (
                     <div className="relative">
                       <Plus
                         size={40}
                         className="flex-center rounded-full hover:bg-slate-100 p-2 transition-ease-300 cursor-pointer"
                         weight="regular"
                         onClick={() => setClickedOnUploadFile(true)}
-                        onMouseEnter={() => setShowAddNewTip(true)}
-                        onMouseLeave={() => setShowAddNewTip(false)}
                       />
-                      <div
-                        className={`${
-                          showAddNewTip ? 'block' : 'hidden'
-                        } tip absolute top-10 bg-dark_sidebar text-white px-4 rounded-lg py-2 w-max left-1/2 -translate-x-1/2 z-[100]`}
+                      {/* <div
+                        className={`tip absolute top-10 bg-dark_sidebar text-white px-4 rounded-lg py-2 w-max left-1/2 -translate-x-1/2 z-[100]`}
                       >
                         Add new file
-                      </div>
+                      </div> */}
                     </div>
-                  ) : (
-                    <></>
                   )}
 
-                  {checkOrgAccess(ORG_SENIOR) ? (
+                  {checkOrgAccess(ORG_SENIOR) && (
                     <div className="relative">
                       <PencilSimple
                         size={40}
                         className="flex-center rounded-full hover:bg-slate-100 p-2 transition-ease-300 cursor-pointer"
                         weight="regular"
                         onClick={() => setClickedOnEdit(true)}
-                        onMouseEnter={() => setShowEditTip(true)}
-                        onMouseLeave={() => setShowEditTip(false)}
                       />
-                      <div
+                      {
+                        //TODO add common toolkit Icon
+                      }
+                      {/* <div
                         className={`${
                           showEditTip ? 'block' : 'hidden'
                         } tip absolute top-10 bg-dark_sidebar text-white px-4 rounded-lg py-2 w-max left-1/2 -translate-x-1/2 z-[100]`}
                       >
                         Edit Details
-                      </div>
+                      </div> */}
                     </div>
-                  ) : (
-                    <></>
                   )}
 
-                  {checkOrgAccess(ORG_SENIOR) ? (
+                  {checkOrgAccess(ORG_SENIOR) && (
                     <div className="relative">
                       <TrashSimple
                         size={40}
                         className="flex-center rounded-full hover:bg-slate-100 p-2 transition-ease-300 cursor-pointer"
                         weight="regular"
                         onClick={() => setClickedOnDelete(true)}
-                        onMouseEnter={() => setShowDeleteTip(true)}
-                        onMouseLeave={() => setShowDeleteTip(false)}
                       />
-                      <div
+                      {/* <div
                         className={`${
                           showDeleteTip ? 'block' : 'hidden'
                         } tip absolute top-10 bg-dark_sidebar text-white px-4 rounded-lg py-2 w-max left-1/2 -translate-x-1/2 z-[100]`}
                       >
                         Delete Bucket
-                      </div>
+                      </div> */}
                     </div>
-                  ) : (
-                    <></>
                   )}
                 </div>
               )}

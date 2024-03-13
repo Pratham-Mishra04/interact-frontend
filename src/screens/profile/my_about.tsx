@@ -149,7 +149,7 @@ const About = ({ profile, setUser, org = false }: Props) => {
 
   return (
     <div className="w-[640px] max-md:w-screen text-primary_black mx-auto flex flex-col gap-4 max-md:px-6 pb-8">
-      {!org ? (
+      {!org && (
         <>
           <div className="w-full flex flex-col gap-2">
             <div className="w-full flex justify-between items-center flex-wrap gap-4">
@@ -230,21 +230,23 @@ const About = ({ profile, setUser, org = false }: Props) => {
                   </div>
                 )}
               </div>
-              {profile.school != '' ? (
+              {profile.school != '' && (
                 <div
                   className={`flex items-center ${
-                    yog == 0 ? 'flex-row-reverse gap-2' : 'gap-1 max-md:flex-row-reverse'
+                    !profile.yearOfGraduation ? 'flex-row-reverse gap-2' : 'gap-2 max-md:flex-row-reverse'
                   }`}
                 >
                   {clickedOnYOG ? (
                     <div className="w-fit">
                       <div className="text-xs ml-1 font-medium uppercase text-gray-500">Graduation Year</div>
                       <input
-                        value={yog}
+                        value={!profile.yearOfGraduation ? 2024 : yog}
                         type="number"
                         onChange={el => setYOG(Number(el.target.value))}
-                        placeholder="2023"
-                        className="w-fit text-primary_black focus:outline-none border-[1px] border-primary_btn dark:border-dark_primary_btn rounded-lg p-2 font-semibold bg-transparent"
+                        min={2000}
+                        max={2030}
+                        placeholder="2024"
+                        className="w-full text-primary_black focus:outline-none border-[1px] border-primary_btn dark:border-dark_primary_btn rounded-lg p-2 font-semibold bg-transparent"
                       />
                       <SaveBtn setter={setClickedOnYOG} field="yog" />
                     </div>
@@ -252,19 +254,19 @@ const About = ({ profile, setUser, org = false }: Props) => {
                     <div
                       onClick={() => setClickedOnYOG(true)}
                       className={`w-fit relative group rounded-lg p-2 ${
-                        profile.yearOfGraduation == 0
+                        !profile.yearOfGraduation
                           ? 'bg-gray-100 pr-8'
                           : 'hover:bg-gray-100 pl-8 max-md:pr-8 max-md:pl-0'
                       } cursor-pointer transition-ease-300`}
                     >
                       <PencilSimple
                         className={`absolute ${
-                          profile.yearOfGraduation == 0
+                          !profile.yearOfGraduation
                             ? 'opacity-100 right-2'
                             : 'opacity-0 group-hover:opacity-100 md:left-2 max-md:right-2'
                         } -translate-y-1/2 top-1/2 transition-ease-300`}
                       />
-                      {profile.yearOfGraduation == 0 ? (
+                      {!profile.yearOfGraduation ? (
                         <div className="text-sm">Add Degree Completion Year</div>
                       ) : (
                         <div>{profile.yearOfGraduation}</div>
@@ -274,8 +276,6 @@ const About = ({ profile, setUser, org = false }: Props) => {
 
                   <CalendarBlank weight="bold" size={24} />
                 </div>
-              ) : (
-                <></>
               )}
             </div>
             <div className="w-full flex gap-2 items-center text-lg">
@@ -318,8 +318,6 @@ const About = ({ profile, setUser, org = false }: Props) => {
           </div>
           <div className="w-full h-[1px] border-t-[1px] border-gray-400 border-dashed"></div>
         </>
-      ) : (
-        <></>
       )}
 
       <div className="w-full flex flex-col gap-2">

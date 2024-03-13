@@ -5,7 +5,7 @@ import { SERVER_ERROR } from '@/config/errors';
 import { EXPLORE_URL, OPENING_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import OpeningView from '@/sections/explore/opening_view';
-import { Opening, Organization } from '@/types';
+import { Opening } from '@/types';
 import { initialOpening } from '@/types/initials';
 import Toaster from '@/utils/toaster';
 import { useWindowWidth } from '@react-hook/window-size';
@@ -31,6 +31,7 @@ const Openings = () => {
 
     const projectSlug = new URLSearchParams(window.location.search).get('pid');
     if (projectSlug) URL = `${EXPLORE_URL}/openings/${projectSlug}`;
+
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
       if (search && search != '') {
@@ -97,43 +98,39 @@ const Openings = () => {
     <div className="w-full flex flex-col gap-6 py-2">
       {loading ? (
         <Loader />
-      ) : (
-        <>
-          {openings.length > 0 ? (
-            <div className="w-full flex justify-evenly gap-4 px-4">
-              <InfiniteScroll
-                className={`${clickedOnOpening ? 'w-full' : 'w-[720px]'} max-lg:w-full flex flex-col gap-4`}
-                dataLength={openings.length}
-                next={() => fetchOpenings(new URLSearchParams(window.location.search).get('search'))}
-                hasMore={hasMore}
-                loader={<Loader />}
-              >
-                {openings.map(opening => {
-                  return (
-                    <OpeningCard
-                      key={opening.id}
-                      opening={opening}
-                      clickedOpening={clickedOpening}
-                      setClickedOnOpening={setClickedOnOpening}
-                      setClickedOpening={setClickedOpening}
-                      org={isOrg(opening)}
-                    />
-                  );
-                })}
-              </InfiniteScroll>
-              {clickedOnOpening && (
-                <OpeningView
-                  opening={clickedOpening}
-                  setShow={setClickedOnOpening}
-                  setOpening={setClickedOpening}
-                  org={isOrg(clickedOpening)}
+      ) : openings.length > 0 ? (
+        <div className="w-full flex justify-evenly gap-4 px-4">
+          <InfiniteScroll
+            className={`${clickedOnOpening ? 'w-[480px]' : 'w-[720px]'} max-lg:w-full flex flex-col gap-4`}
+            dataLength={openings.length}
+            next={() => fetchOpenings(new URLSearchParams(window.location.search).get('search'))}
+            hasMore={hasMore}
+            loader={<Loader />}
+          >
+            {openings.map(opening => {
+              return (
+                <OpeningCard
+                  key={opening.id}
+                  opening={opening}
+                  clickedOpening={clickedOpening}
+                  setClickedOnOpening={setClickedOnOpening}
+                  setClickedOpening={setClickedOpening}
+                  org={isOrg(opening)}
                 />
-              )}
-            </div>
-          ) : (
-            <NoSearch />
+              );
+            })}
+          </InfiniteScroll>
+          {clickedOnOpening && (
+            <OpeningView
+              opening={clickedOpening}
+              setShow={setClickedOnOpening}
+              setOpening={setClickedOpening}
+              org={isOrg(clickedOpening)}
+            />
           )}
-        </>
+        </div>
+      ) : (
+        <NoSearch />
       )}
     </div>
   );

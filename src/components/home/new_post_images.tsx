@@ -56,7 +56,7 @@ const NewPostImages = ({ setSelectedFiles }: Props) => {
       <label htmlFor="image" className="w-fit cursor-pointer">
         <Images className="cursor-pointer" size={24} />
       </label>
-      {selectedImageUrls.length > 0 ? (
+      {selectedImageUrls.length > 0 && (
         <CarouselProvider
           naturalSlideHeight={500}
           naturalSlideWidth={1000}
@@ -97,18 +97,14 @@ const NewPostImages = ({ setSelectedFiles }: Props) => {
               );
             })}
           </Slider>
-          {selectedImageUrls.length > 2 ? (
+          {selectedImageUrls.length > 2 && (
             <div className="absolute bottom-2">
               {selectedImageUrls.map((_, i) => {
                 return <Dot key={i} slide={i} />;
               })}
             </div>
-          ) : (
-            <></>
           )}
         </CarouselProvider>
-      ) : (
-        <></>
       )}
     </div>
   );

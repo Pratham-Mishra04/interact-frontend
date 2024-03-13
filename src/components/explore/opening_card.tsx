@@ -48,7 +48,7 @@ const OpeningCard = ({ opening, clickedOpening, setClickedOnOpening, setClickedO
         />
       )}
 
-      <div className="grow flex flex-col gap-2">
+      <div className="w-[calc(100%-140px)] flex flex-col gap-2">
         <div className="w-5/6 flex flex-col gap-1">
           <div className="font-bold text-2xl max-lg:text-lg text-gradient">{opening.title}</div>
           <div className="font-medium text-lg max-lg:text-sm">
