@@ -1,5 +1,7 @@
 import { ChangeEvent, KeyboardEvent, useState, useRef } from 'react';
 import TagSuggestions from './tag_suggestions';
+import fuzzysort from 'fuzzysort';
+import skill_suggestions from '@/utils/skill_suggestions';
 
 interface Props {
   tags: string[];
@@ -25,10 +27,22 @@ const Tags = ({
   draggable = true,
 }: Props) => {
   const [tagInput, setTagInput] = useState('');
+  const[fuzzy,setFuzzy] = useState<any>([]);
 
   const handleTagInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+
     setTagInput(event.target.value);
+    const results = fuzzysort.go(tagInput,skill_suggestions,{threshold:-Infinity,limit:3});
+    if(event.target.value === "")
+    {
+      setFuzzy([]);
+      return;
+    }
+    setFuzzy(results);
   };
+  
+ 
+
 
   const handleTagInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -49,6 +63,7 @@ const Tags = ({
       }
     } else if (event.key === 'Backspace' && tagInput === '') {
       event.preventDefault();
+      setFuzzy([]);
       const lastTag = tags[tags.length - 1];
       if (lastTag) {
         handleTagRemove(lastTag);
@@ -118,7 +133,9 @@ const Tags = ({
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
+            
           </div>
+          
         ))}
         {tags.length < maxTags ? (
           <input
@@ -132,8 +149,9 @@ const Tags = ({
         ) : (
           <></>
         )}
+        
       </div>
-      {suggestions ? <TagSuggestions tags={tags} setTags={setTags} maxTags={maxTags} /> : <></>}
+      {suggestions ? <TagSuggestions fuzzy = {fuzzy} setFuzzy = {setFuzzy} tags = {tags} setTags={setTags} maxTags={maxTags} /> : <></>}
     </>
   );
 };
