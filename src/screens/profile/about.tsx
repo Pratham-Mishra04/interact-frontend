@@ -4,14 +4,15 @@ import { Profile, Organization } from '@/types';
 import renderContentWithLinks from '@/utils/funcs/render_content_with_links';
 import { Buildings, CalendarBlank, Certificate, Envelope, MapPin, Phone } from '@phosphor-icons/react';
 import { USER_PROFILE_PIC_URL } from '@/config/routes';
+import Link from 'next/link';
 
 interface Props {
   profile: Profile;
   org?: boolean;
-  organizations: Organization[];
+  organizations?: Organization[];
 }
 
-const About: React.FC<Props> = ({ profile, org = false, organizations }) => {
+const About = ({ profile, org = false, organizations }: Props) => {
   const hasBasicInfo = profile.email || profile.phoneNo || profile.location;
   const hasEducation = profile.school || profile.degree;
   const hasOrganizations = organizations && organizations.length > 0;
@@ -20,17 +21,53 @@ const About: React.FC<Props> = ({ profile, org = false, organizations }) => {
   const hasHobbies = profile.hobbies && profile.hobbies.length > 0;
 
   return (
-    <div className="w-[640px] max-md:w-screen text-primary_black mx-auto flex flex-col gap-4 max-md:px-6 pb-8 animate-fade_third">
+    <div className="w-[640px] max-md:w-screen text-primary_black mx-auto flex flex-col gap-6 max-md:px-6 pb-8 animate-fade_third">
       {!org && (
         <>
-          <div className="w-full flex flex-col gap-2">
+          {hasOrganizations && (
+            <>
+              <div className="w-fit flex-center gap-2">
+                <div className="">Member of</div>
+                <div className="flex flex-wrap gap-2">
+                  {organizations.map((org, i) => {
+                    const isLast = i === organizations.length - 1;
+                    const separator = isLast ? (organizations.length > 1 ? ' and ' : '') : ', ';
+                    const suffix = isLast ? '.' : '';
+
+                    return (
+                      <div key={i} className="flex-center gap-2">
+                        {i > 0 && separator}
+                        <Link
+                          href={`/explore/organisation/${org.user.username}`}
+                          target="_blank"
+                          className="flex-center gap-1"
+                        >
+                          <Image
+                            src={`${USER_PROFILE_PIC_URL}/${org.user.profilePic}`}
+                            alt={org.title}
+                            width={24}
+                            height={24}
+                            className="rounded-full"
+                          />
+                          <div className="font-medium hover-underline-animation after:bg-gray-700">{org.title}</div>
+                          {suffix}
+                        </Link>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="w-full h-[1px] border-t-[1px] border-gray-400 border-dashed"></div>
+            </>
+          )}
+          <div className="w-full flex flex-col gap-4">
             {profile.school && (
               <div className="w-full flex justify-between items-center flex-wrap gap-4">
                 <div className="flex gap-2 items-center text-xl font-medium">
                   <Buildings weight="bold" size={24} />
                   <div>{profile.school}</div>
                 </div>
-                {profile.yearOfGraduation && (
+                {profile.yearOfGraduation != 0 && (
                   <div className="flex gap-1 items-center">
                     <div>{profile.yearOfGraduation}</div>
                     <CalendarBlank weight="bold" size={20} />
@@ -44,41 +81,20 @@ const About: React.FC<Props> = ({ profile, org = false, organizations }) => {
                 <div>{profile.degree}</div>
               </div>
             )}
-            {hasOrganizations && (
-              <div className="flex flex-col gap-2">
-                <div className="text-sm font-medium">Member of:</div>
-                <div className="flex flex-wrap gap-4">
-                  {organizations.map((org, i) => (
-                    <div key={i} className="flex items-center gap-2">
-                      <Image
-                        src={`${USER_PROFILE_PIC_URL}/${org.user.profilePic}`}
-                        alt={org.title}
-                        width={32} // Set the width of the image
-                        height={32} // Set the height of the image
-                        className="rounded-full"
-                      />
-                      <span>{org.title}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
-          {(hasEducation) && (
-            <div className="w-full h-[1px] border-t-[1px] border-gray-400 border-dashed"></div>
-          )}
+          {hasEducation && <div className="w-full h-[1px] border-t-[1px] border-gray-400 border-dashed"></div>}
         </>
       )}
-      <div className="w-full flex flex-col gap-2">
+      <div className="w-full flex flex-col gap-4">
         <div className="w-full flex justify-between items-center flex-wrap gap-4">
           {profile.email && (
-            <div className="flex gap-2 items-center text-xl font-medium">
+            <div className="flex gap-2 items-center text-lg font-medium">
               <Envelope weight="regular" size={24} />
               <div>{profile.email}</div>
             </div>
           )}
           {profile.phoneNo && (
-            <div className="flex gap-2 items-center text-xl font-medium">
+            <div className="flex gap-2 items-center text-lg font-medium">
               <Phone weight="regular" size={24} />
               <div>{profile.phoneNo}</div>
             </div>
@@ -107,9 +123,12 @@ const About: React.FC<Props> = ({ profile, org = false, organizations }) => {
             <div className="text-sm font-medium uppercase">
               {org ? 'Areas of Work' : 'Preferred Areas of Collaboration'}
             </div>
-            <div className="w-full flex flex-wrap gap-4">
+            <div className="w-full flex flex-wrap gap-2">
               {profile.areasOfCollaboration.map((el, i) => (
-                <div key={i} className="border-gray-500 border-[1px] border-dashed p-2 text-sm rounded-lg flex-center">
+                <div
+                  key={i}
+                  className="bg-white p-3 py-2 text-xs rounded-lg cursor-default hover:scale-105 transition-ease-500"
+                >
                   {el}
                 </div>
               ))}
@@ -121,11 +140,11 @@ const About: React.FC<Props> = ({ profile, org = false, organizations }) => {
       {hasHobbies && (
         <div className="w-full flex flex-col gap-2">
           <div className="text-sm font-medium uppercase">{org ? 'Message Board' : 'Hobbies and Interests'}</div>
-          <div className="w-full flex flex-wrap">
+          <div className="w-full flex flex-wrap gap-2">
             {profile.hobbies.map((el, i) => (
               <div
                 key={i}
-                className="text-sm hover:bg-white p-3 py-2 rounded-lg cursor-default hover:scale-105 transition-ease-500"
+                className="bg-white p-3 py-2 text-xs rounded-lg cursor-default hover:scale-105 transition-ease-500"
               >
                 {el}
               </div>
@@ -140,9 +159,7 @@ const About: React.FC<Props> = ({ profile, org = false, organizations }) => {
         !hasDescription &&
         !profile.email &&
         !profile.phoneNo &&
-        !profile.location && (
-          <div className="w-fit mx-auto font-medium text-xl">No Content Here</div>
-        )}
+        !profile.location && <div className="w-fit mx-auto font-medium text-xl">No Content Here</div>}
     </div>
   );
 };

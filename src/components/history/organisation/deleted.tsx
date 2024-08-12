@@ -29,7 +29,7 @@ const Deleted = ({ history }: Props) => {
       return (
         <OrganizationHistoryWrapper history={history}>
           <div className="w-fit bg-priority_high px-1 rounded-md gap-4">
-            Removed a member: <span className="font-semibold">{history.user.username}</span>
+            Removed a member: <span className="font-semibold">{history.deletedText}</span>
           </div>
         </OrganizationHistoryWrapper>
       );

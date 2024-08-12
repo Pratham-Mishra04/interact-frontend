@@ -65,15 +65,12 @@ const Impressions = ({ notification, short = true }: Props) => {
       }
     >
       Your
-      <span>
-        <Link className="font-bold capitalize" href={getRedirectURL()}>
-          {getType()}
-        </Link>{' '}
-      </span>
+      <Link className="font-bold capitalize" href={getRedirectURL()}>
+        {getType()}
+      </Link>
       got {notification.impressionCount} impressions!
     </NotificationWrapper>
   );
 };
-
 
 export default Impressions;

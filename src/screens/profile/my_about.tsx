@@ -123,7 +123,7 @@ const About = ({ profile, setUser, org = false }: Props) => {
       else if (field == 'yog') return yog == profile.yearOfGraduation || yog < 1980;
       else if (field == 'description') return description == profile.description;
       else if (field == 'email') return email == profile.email;
-      else if (field == 'phoneNo') return phoneNo == profile.phoneNo;
+      else if (field == 'phoneNo') return phoneNo == profile.phoneNo || phoneNo.length != 10;
       else if (field == 'location') return location == profile.location;
       else if (field == 'hobbies') return !isArrEdited(hobbies, profile.hobbies);
       else if (field == 'areas') return !isArrEdited(areas, profile.areasOfCollaboration);
@@ -247,14 +247,11 @@ const About = ({ profile, setUser, org = false }: Props) => {
                       <div className="text-xs ml-1 font-medium uppercase text-gray-500">Graduation Year</div>
                       <input
                         value={yog}
-                        type="number"
                         onChange={el => {
                           const val = el.target.value;
-                          if (Number(val) > 1980 && Number(val) < 2030) setYOG(Number(val));
+                          if (Number(val) < 2030) setYOG(Number(val));
                         }}
-                        min={1980}
-                        max={2030}
-                        placeholder="2024"
+                        placeholder="2025"
                         className="w-full text-primary_black focus:outline-none border-[1px] border-primary_btn dark:border-dark_primary_btn rounded-lg p-2 font-semibold bg-transparent"
                       />
                       <SaveBtn setter={setClickedOnYOG} field="yog" />
@@ -372,9 +369,11 @@ const About = ({ profile, setUser, org = false }: Props) => {
                 <div className="text-xs ml-1 font-medium uppercase text-gray-500">Public Phone Number</div>
                 <input
                   value={phoneNo}
-                  type="string"
                   maxLength={10}
-                  onChange={el => setPhoneNo(el.target.value)}
+                  onChange={el => {
+                    const val = el.target.value;
+                    if (Number(val) || val == '') setPhoneNo(el.target.value);
+                  }}
                   className="w-fit text-primary_black focus:outline-none border-[1px] border-primary_btn dark:border-dark_primary_btn rounded-lg p-2 text-sm font-medium bg-transparent"
                 />
                 <SaveBtn setter={setClickedOnPhoneNo} field="phoneNo" />

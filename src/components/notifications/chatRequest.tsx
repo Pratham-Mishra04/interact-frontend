@@ -10,8 +10,6 @@ interface Props {
 }
 
 const ChatRequest = ({ notification }: Props) => {
-  const loggedInUser = useSelector(userSelector);
-
   const getMessage = () => {
     switch (notification.notificationType) {
       case 9:
@@ -32,17 +30,12 @@ const ChatRequest = ({ notification }: Props) => {
 
   return (
     <NotificationWrapper notification={notification}>
-      <span>
-        <Link className="font-bold capitalize" href={getRedirectURL()}>
-          {notification.sender.name}
-        </Link>{' '}
-      </span>
+      <Link className="font-bold capitalize" href={getRedirectURL()}>
+        {notification.sender.name}
+      </Link>{' '}
       {getMessage()}
     </NotificationWrapper>
   );
 };
 
 export default ChatRequest;
-
-
-

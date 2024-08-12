@@ -22,6 +22,7 @@ import { getUserFromState } from '@/utils/funcs/redux';
 import { getMessagingUser, getSelfMembership } from '@/utils/funcs/messaging';
 import ScrollWrapper from './scroll_wrapper';
 import GroupInfo from '@/sections/messaging/group_info';
+import { setChats, userSelector } from '@/slices/userSlice';
 
 const ChatScreen = () => {
   const [chat, setChat] = useState<Chat>(initialChat);
@@ -32,7 +33,7 @@ const ChatScreen = () => {
 
   const chatID = useSelector(currentChatIDSelector);
   const unreadChatIDs = useSelector(unreadChatsSelector) || [];
-  const userID = Cookies.get('id') || '';
+  const user = useSelector(userSelector);
 
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -60,7 +61,7 @@ const ChatScreen = () => {
     if (res.statusCode == 200) {
       const messageData: Message[] = res.data.messages || [];
       for (const message of messageData) {
-        if (!message.readBy.map(r => r.userID).includes(userID))
+        if (!message.readBy.map(r => r.userID).includes(user.id))
           socketService.sendReadMessage(getUserFromState(), message.id, chatID);
       }
 
@@ -85,6 +86,10 @@ const ChatScreen = () => {
     const URL = `${MESSAGING_URL}/accept/${chatID}`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
+      const chats = [...(user.chats || []), chat.id];
+      dispatch(setChats(chats));
+      socketService.setupChats(chats);
+
       setChat({ ...chat, isAccepted: true });
     } else {
       if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
@@ -169,7 +174,7 @@ const ChatScreen = () => {
                 .map(date => {
                   return <MessageGroup key={date} date={date} messages={messagesByDate[date]} chat={chat} />;
                 })}
-            {typingStatus.chatID == chat.id && typingStatus.user.id !== '' && typingStatus.user.id != userID && (
+            {typingStatus.chatID == chat.id && typingStatus.user.id !== '' && typingStatus.user.id != user.id && (
               <div className="w-fit dark:text-white text-sm cursor-default border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-xl px-4 py-2">
                 {typingStatus.user.username} is typing...
               </div>
@@ -178,7 +183,7 @@ const ChatScreen = () => {
           <div className="flex w-[calc(100%-16px)] max-lg:w-[99%] items-end gap-2 absolute max-lg:sticky bottom-2 right-1/2 translate-x-1/2 max-lg:translate-x-0">
             {chat.isAccepted ? (
               <ChatTextarea chat={chat} />
-            ) : userID != chat.userID ? (
+            ) : user.id != chat.userID ? (
               <div
                 onClick={handleAccept}
                 className="w-full h-12 rounded-md dark:text-white font-primary flex-center text-xl font-medium bg-primary_comp dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active cursor-pointer transition-ease-300"

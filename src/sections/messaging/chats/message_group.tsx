@@ -41,18 +41,18 @@ const MessageGroup = ({ date, messages, chat }: Props) => {
               )}
               {message.userID == userID && (
                 <>
-                  {chat.isGroup ? (
-                    <div className="w-fit text-xs self-end opacity-75">
-                      {message.readBy?.length == chat.noMembers
-                        ? ' • Seen'
-                        : message.readBy?.length - 1 != 0 && `• Seen by ${message.readBy?.length - 1} users`}
-                    </div>
-                  ) : (
-                    chat.isAccepted &&
-                    message.readBy?.length == chat.noMembers && (
-                      <div className="w-fit text-xs self-end opacity-75">• Seen</div>
-                    )
-                  )}
+                  {chat.isGroup
+                    ? message.readBy && (
+                        <div className="w-fit text-xs self-end opacity-75">
+                          {message.readBy?.length == chat.noMembers
+                            ? ' • Seen'
+                            : message.readBy?.length - 1 != 0 && `• Seen by ${message.readBy?.length - 1} users`}
+                        </div>
+                      )
+                    : chat.isAccepted &&
+                      message.readBy?.length == chat.noMembers && (
+                        <div className="w-fit text-xs self-end opacity-75">• Seen</div>
+                      )}
                 </>
               )}
             </div>

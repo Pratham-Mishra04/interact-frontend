@@ -26,16 +26,12 @@ const Removal = ({ notification }: Props) => {
   };
   return (
     <NotificationWrapper notification={notification}>
-      <span>You were removed from the</span>
-      <span>
-        {' '}
-        <Link className="font-bold capitalize" href={getRedirectURL()}>
-          {getType()}.
-        </Link>{' '}
-      </span>
+      <span>You were removed from the</span>{' '}
+      <Link className="font-bold capitalize" href={getRedirectURL()}>
+        {getType()}.
+      </Link>{' '}
     </NotificationWrapper>
   );
 };
 
 export default Removal;
-

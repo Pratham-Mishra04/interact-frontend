@@ -41,7 +41,6 @@ const User = ({ username }: Props) => {
       .then(res => {
         if (res.statusCode === 200) {
           setUser(res.data.user);
-          // Capture organisations
           setOrganizations(res.data.organizations);
           setLoading(false);
         } else {

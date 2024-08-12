@@ -82,22 +82,15 @@ const Tagged = ({ notification, short = true }: Props) => {
         )
       }
     >
-      <span>
-        <Link className="font-bold" href={`/explore/user/${notification.sender.username}`}>
-          {notification.sender.name}
-        </Link>{' '}
-      </span>
-      Tagged you in a
-      <span>
-        {' '}
-        <Link className="font-bold capitalize" href={getRedirectURL()}>
-          {getType()}.
-        </Link>{' '}
-      </span>
+      <Link className="font-bold" href={`/explore/user/${notification.sender.username}`}>
+        {notification.sender.name}
+      </Link>
+      Tagged you in a{' '}
+      <Link className="font-bold capitalize" href={getRedirectURL()}>
+        {getType()}.
+      </Link>{' '}
     </NotificationWrapper>
   );
 };
 
 export default Tagged;
-
-

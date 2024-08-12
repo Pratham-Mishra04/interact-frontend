@@ -46,6 +46,7 @@ class SocketService {
 
   public connect(userID: string | undefined = Cookies.get('id')): void {
     if (!userID || userID === '') return;
+
     const token = Cookies.get('token');
     if (!token || token === '') return;
 
@@ -61,8 +62,8 @@ class SocketService {
         this.setupUpdateMembership();
       });
 
-      this.socket.addEventListener('close', event => {
-        setTimeout(connectToSocket, 10000); // retry after 10 seconds
+      this.socket.addEventListener('error', event => {
+        setTimeout(connectToSocket, 5000); // retry after 5 seconds
       });
     };
 

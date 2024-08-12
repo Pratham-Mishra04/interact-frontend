@@ -51,17 +51,12 @@ const ApplicationUpdate = ({ notification, status }: Props) => {
   return (
     <NotificationWrapper notification={notification} imageURL={getImageURL()}>
       <div className="gap-2 cursor-default">
-        {notification.notificationType === 20 ? (
-          <span>Your Application for</span>
-        ) : (
-          <span>{getStatusText()}</span>
-        )}
+        {notification.notificationType === 20 ? <span>Your Application for</span> : <span>{getStatusText()}</span>}
         {notification.notificationType !== 20 && ' of '}
-        <span>
-          <Link href={getLinkURL()} className="font-bold capitalize">
-            {getTitle()}
-          </Link>
-        </span>{' '}
+
+        <Link href={getLinkURL()} className="font-bold capitalize">
+          {getTitle()}
+        </Link>
         {getStatusText()}
       </div>
     </NotificationWrapper>
@@ -69,6 +64,3 @@ const ApplicationUpdate = ({ notification, status }: Props) => {
 };
 
 export default ApplicationUpdate;
-
-
-

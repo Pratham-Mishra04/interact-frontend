@@ -24,9 +24,9 @@ const Organisations = () => {
     const URL =
       search && search != ''
         ? `${EXPLORE_URL}/${sub_url}/trending?${'search=' + search}`
-        : userID != ''
-        ? `${EXPLORE_URL}/${sub_url}/recommended?page=${page}&limit=${10}`
-        : `${EXPLORE_URL}/${sub_url}/trending?page=${page}&limit=${10}`;
+        : // : userID != ''
+          // ? `${EXPLORE_URL}/${sub_url}/recommended?page=${page}&limit=${10}`
+          `${EXPLORE_URL}/${sub_url}/trending?page=${page}&limit=${10}`;
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
       if (search && search != '') {

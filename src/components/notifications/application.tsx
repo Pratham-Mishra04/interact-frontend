@@ -25,29 +25,18 @@ const Application = ({ notification }: Props) => {
         return '';
     }
   };
-    
 
   return (
     <NotificationWrapper notification={notification}>
-      <span>
-        <Link className="font-bold" href={`/explore/user/${notification.sender.username}`}>
-          {notification.sender.name}
-        </Link>{' '}
-      </span>
-      Applied for the opening of {notification.opening.title} at
-      <span>
-        {' '}
-        <Link className="font-bold capitalize" href={getRedirectURL()}>
+      <Link className="font-bold" href={`/explore/user/${notification.sender.username}`}>
+        {notification.sender.name}
+      </Link>
+      Applied for the opening of {notification.opening.title} at{' '}
+      <Link className="font-bold capitalize" href={getRedirectURL()}>
         {getOrganizationOrProjectTitle()}.
-        </Link>
-      </span>
+      </Link>
     </NotificationWrapper>
   );
 };
 
 export default Application;
-
-
-
-
-

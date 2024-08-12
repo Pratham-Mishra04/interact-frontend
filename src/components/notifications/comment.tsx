@@ -49,20 +49,15 @@ const Comment = ({ notification, short = true }: Props) => {
         )
       }
     >
-      <span>
-        <Link className="font-bold" href={`/explore/user/${notification.sender.username}`}>
-          {notification.sender.name}
-        </Link>{' '}
-      </span>
+      <Link className="font-bold" href={`/explore/user/${notification.sender.username}`}>
+        {notification.sender.name}
+      </Link>
       Commented on your
-      <span>
-        <Link className="font-bold capitalize" href={getRedirectURL()}>
-          {getType()}.
-        </Link>{' '}
-      </span>
+      <Link className="font-bold capitalize" href={getRedirectURL()}>
+        {getType()}.
+      </Link>{' '}
     </NotificationWrapper>
   );
 };
 
 export default Comment;
-

@@ -7,21 +7,10 @@ interface Props {
 }
 
 const Welcome = ({ notification }: Props) => {
-  const getMessage = () => {
-    switch (notification.notificationType) {
-      case -1:
-        return "Woohoo! You made it to Interact 🎉🥳";
-      default:
-        return "Welcome to Interact";
-    }
-  };
-
   return (
     <NotificationWrapper notification={notification} image={false}>
       <div className="w-fit text-center flex-center gap-4">
-        <div className="">
-          <b>{getMessage()}</b>
-        </div>
+        Woohoo! You made it to <div className="font-semibold">Interact 🎉🥳</div>
       </div>
     </NotificationWrapper>
   );

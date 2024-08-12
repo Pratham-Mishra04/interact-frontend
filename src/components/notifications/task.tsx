@@ -15,18 +15,13 @@ const Task = ({ notification }: Props) => {
   };
   return (
     <NotificationWrapper notification={notification}>
-      <span>
-        <Link className="font-bold" href={`/explore/user/${notification.sender.username}`}>
-          {notification.sender.name}
-        </Link>{' '}
-      </span>
+      <Link className="font-bold" href={`/explore/user/${notification.sender.username}`}>
+        {notification.sender.name}
+      </Link>
       assigned you a{' '}
-      <span>
-        {' '}
-        <Link className="font-bold" href={getRedirectURL()}>
-          Task
-        </Link>
-      </span>{' '}
+      <Link className="font-bold" href={getRedirectURL()}>
+        Task
+      </Link>
       in
       {' ' + notification.task?.title}
     </NotificationWrapper>
@@ -34,5 +29,3 @@ const Task = ({ notification }: Props) => {
 };
 
 export default Task;
-
-

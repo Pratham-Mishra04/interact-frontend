@@ -6,12 +6,11 @@ import Users from '@/components/filters/users';
 import TasksTable from '@/components/tables/tasks';
 import { PROJECT_MANAGER } from '@/config/constants';
 import { SERVER_ERROR } from '@/config/errors';
-import { ORG_URL, PROJECT_URL } from '@/config/routes';
+import { EXPLORE_URL, ORG_URL, PROJECT_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import NewTask from '@/sections/tasks/new_task';
 import TaskView from '@/sections/workspace/task_view';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
-import { userSelector } from '@/slices/userSlice';
 import { Project, Task, User } from '@/types';
 import { initialProject } from '@/types/initials';
 import { checkProjectAccess } from '@/utils/funcs/access';
@@ -43,34 +42,57 @@ const ProjectTasks = ({ slug, org = false }: Props) => {
   const [search, setSearch] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [users, setUsers] = useState<User[]>([]);
-
-  const user = useSelector(userSelector);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
 
   const currentOrgID = useSelector(currentOrgIDSelector);
 
-  const getTasks = (abortController: AbortController) => {
+  const getProject = () => {
+    const URL = `${EXPLORE_URL}/projects/${slug}`;
+    getHandler(URL)
+      .then(res => {
+        if (res.statusCode == 200) setProject(res.data.project);
+        else {
+          if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
+          else {
+            Toaster.error(SERVER_ERROR, 'error_toaster');
+          }
+        }
+      })
+      .catch(err => {
+        Toaster.error(SERVER_ERROR, 'error_toaster');
+      });
+  };
+
+  const getTasks = (abortController?: AbortController, initialPage?: number) => {
     const URL =
       (org ? `${ORG_URL}/${currentOrgID}/projects/${slug}` : `${PROJECT_URL}/tasks/populated/${slug}`) +
       `?order=${order}&search=${search}&tags=${tags.join(',')}&priority=${priority}&is_completed=${
         status == '' ? '' : status == 'completed'
-      }&user_id=${users.map(u => u.id).join(',')}`;
+      }&user_id=${users.map(u => u.id).join(',')}&page=${initialPage ? initialPage : page}&limit=${20}`;
 
-    getHandler(URL, abortController.signal)
+    getHandler(URL, abortController?.signal)
       .then(res => {
         if (res.statusCode === 200) {
-          setProject(res.data.project);
           const taskData = res.data.tasks || [];
-          setTasks(taskData);
-          const tid = new URLSearchParams(window.location.search).get('tid');
-          if (tid && tid != '') {
-            taskData.forEach((task: Task, i: number) => {
-              if (tid == task.id) {
-                setClickedTaskID(i);
-                setClickedOnTask(true);
-              }
-            });
+          if (initialPage == 1) {
+            setTasks(taskData);
+            const tid = new URLSearchParams(window.location.search).get('tid');
+            if (tid && tid != '') {
+              taskData.forEach((task: Task, i: number) => {
+                if (tid == task.id) {
+                  setClickedTaskID(i);
+                  setClickedOnTask(true);
+                }
+              });
+            }
+          } else {
+            const addedTasks = [...tasks, ...taskData];
+            if (addedTasks.length === tasks.length) setHasMore(false);
+            setTasks(addedTasks);
           }
 
+          setPage(prev => prev + 1);
           setLoading(false);
         } else if (res.status != -1) {
           if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
@@ -91,12 +113,19 @@ const ProjectTasks = ({ slug, org = false }: Props) => {
     if (oldAbortController) oldAbortController.abort();
     oldAbortController = abortController;
 
-    getTasks(abortController);
+    setPage(1);
+    setTasks([]);
+    setHasMore(true);
+    setLoading(true);
+    getTasks(abortController, 1);
     return () => {
       abortController.abort();
     };
   }, [order, search, priority, status, tags, users]);
 
+  useEffect(() => {
+    getProject();
+  }, []);
   return (
     <MainWrapper>
       {clickedOnNewTask && <NewTask org={false} setShow={setClickedOnNewTask} project={project} setTasks={setTasks} />}
@@ -162,7 +191,13 @@ const ProjectTasks = ({ slug, org = false }: Props) => {
                   setClickedTaskID={setClickedTaskID}
                 />
               )}
-              <TasksTable tasks={tasks} setClickedOnTask={setClickedOnTask} setClickedTaskID={setClickedTaskID} />
+              <TasksTable
+                tasks={tasks}
+                fetcher={getTasks}
+                hasMore={hasMore}
+                setClickedOnTask={setClickedOnTask}
+                setClickedTaskID={setClickedTaskID}
+              />
             </div>
           ) : (
             <div className="mx-auto font-medium text-xl mt-8">No Tasks found :)</div>
