@@ -22,6 +22,8 @@ const TaskHistories: React.FC<Props> = ({ histories }) => {
             return <Created key={history.id} history={history} />;
           case 0:
           case 3:
+          case 8:
+          case 9:
             return <Assigned key={history.id} history={history} />;
           case 1:
           case 4:

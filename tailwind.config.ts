@@ -35,7 +35,6 @@ const config: Config = {
         bottomBar: '100px',
         base_md: 'calc(100vh - 64px - 48px)',
       },
-
       boxShadow: {
         outer: '0 0 15px 2px #262626a1;',
         inner: '0px 0px 10px 1px #262626a1 inset;',
@@ -76,6 +75,7 @@ const config: Config = {
       },
       fontFamily: {
         primary: ['var(--inter-font)'],
+        title: ['var(--fraunces-font)'],
       },
       fontSize: {
         xxs: '0.5rem',

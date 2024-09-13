@@ -4,7 +4,7 @@ interface Props {
   label?: string;
   options: any[];
   val: any;
-  setVal: React.Dispatch<React.SetStateAction<any>>;
+  setVal: any;
   required?: boolean;
   styles?: React.CSSProperties;
 }

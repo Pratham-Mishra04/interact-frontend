@@ -4,6 +4,7 @@ import '@/styles/toastify.css';
 import '@/styles/extras.tailwind.css';
 import '@/styles/project_card.css';
 import '@/styles/variables.module.scss';
+import '@/styles/landing.css';
 import type { AppProps } from 'next/app';
 import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
@@ -13,7 +14,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import NProgressConfig from '@/config/nprogress';
 import socketService from '@/config/ws';
-import { Inter } from 'next/font/google';
+import { Inter, Fraunces } from 'next/font/google';
 import ThemeCheck from '@/config/theme';
 import Head from 'next/head';
 
@@ -22,6 +23,11 @@ NProgressConfig();
 const inter = Inter({
   subsets: ['latin'],
   variable: '--inter-font',
+});
+
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  variable: '--fraunces-font',
 });
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -49,7 +55,7 @@ export default function App({ Component, pageProps }: AppProps) {
       `}
       </Script> */}
 
-      <main className={`${inter.variable}`}>
+      <main className={`${inter.variable} ${fraunces.variable}`}>
         <Head>
           <title>Interact Now</title>
           <meta

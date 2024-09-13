@@ -543,6 +543,8 @@ export interface Event {
   noViews: number;
   meetingID: string;
   meeting: Meeting | null;
+  hackathonID: string;
+  hackathon: Hackathon | null;
   createdAt: Date;
   userID: string; //Dummy for type fixes in comment_box
 }
@@ -738,4 +740,131 @@ export interface Recording {
   started_time: Date;
   stopped_time: Date;
   recording_duration: number;
+}
+
+export interface Hackathon {
+  id: string;
+  organizationID: string;
+  organization: Organization;
+  title: string;
+  tagline?: string;
+  coverPic: string;
+  blurHash: string;
+  description: string;
+  tags?: string[];
+  links?: string[];
+  startTime: Date;
+  endTime: Date;
+  location: string;
+  minTeamSize: number;
+  maxTeamSize: number;
+  createdAt: Date;
+  noParticipants: number;
+  participants: User[];
+  coordinators: User[];
+  judges: User[];
+  isEnded?: boolean;
+  eventID: string;
+  history: HackathonHistory[];
+}
+
+export interface HackathonTrack {
+  id: string;
+  hackathonID: string;
+  title: string;
+  description?: string;
+  prizes: HackathonPrize[];
+}
+
+export interface HackathonPrize {
+  id: string;
+  hackathonID: string;
+  title: string;
+  trackID?: string;
+  track?: HackathonTrack;
+  description?: string;
+  amount: number;
+}
+
+export interface HackathonSponsor {
+  id: string;
+  hackathonID: string;
+  name: string;
+  coverPic: string;
+  blurHash: string;
+  link?: string;
+  title?: string;
+  description?: string;
+}
+
+export interface HackathonFAQ {
+  id: string;
+  hackathonID: string;
+  question: string;
+  answer: string;
+}
+
+export interface HackathonTeam {
+  id: string;
+  hackathonID: string;
+  title: string;
+  token: string;
+  idea?: string;
+  userID: string;
+  user: User;
+  projectID?: string;
+  project?: Project;
+  members: User[];
+  isEliminated: boolean;
+  noComments: number;
+  createdAt: Date;
+  comments: Comment[];
+}
+
+export interface HackathonRound {
+  id: string;
+  hackathonID: string;
+  title: string;
+  index: number;
+  isIdeation: boolean;
+  startTime: Date;
+  endTime: Date;
+  judgingStartTime: Date;
+  judgingEndTime: Date;
+  metrics: HackathonRoundScoreMetric[];
+}
+
+export interface HackathonRoundScoreMetric {
+  hackathonRoundID: string;
+  title: string;
+  description?: string;
+  type: string;
+  options?: string[];
+}
+
+export interface HackathonRoundTeamScoreCard {
+  id: string;
+  hackathonRoundID: string;
+  hackathonTeamID: string;
+  scores: HackathonRoundTeamScore[];
+  overallScore: number;
+}
+
+export interface HackathonRoundTeamScore {
+  id: string;
+  hackathonRoundTeamScoreCardID: string;
+  hackathonRoundScoreMetricID: string;
+  score: string;
+}
+
+export interface HackathonHistory {
+  id: string;
+  hackathonID: string;
+  historyType: number;
+  senderID: string;
+  sender: User;
+  userID?: string;
+  user?: User;
+  deletedText?: string;
+  createdAt: Date;
 }

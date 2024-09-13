@@ -5,7 +5,7 @@ import OrgSidebar from '@/components/common/org_sidebar';
 import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
 import Toaster from '@/utils/toaster';
-import { Info, Plus, Envelope } from '@phosphor-icons/react';
+import { Info, Plus, Envelope, Code } from '@phosphor-icons/react';
 import { EXPLORE_URL, ORG_URL } from '@/config/routes';
 import OrgMembersOnlyAndProtect from '@/utils/wrappers/org_members_only';
 import { useSelector } from 'react-redux';
@@ -28,10 +28,12 @@ import ViewInvitations from '@/sections/organization/events/view_invitations';
 import EditCoHosts from '@/sections/organization/events/edit_cohosts';
 import EventHistory from '@/sections/organization/events/history';
 import NoEvents from '@/components/fillers/events';
+import NewHackathon from '@/sections/organization/hackathons/new_hackathon';
 
 const Events = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [clickedOnNewEvent, setClickedOnNewEvent] = useState(false);
+  const [clickedOnNewHackathon, setClickedOnNewHackathon] = useState(false);
   const [clickedOnViewInvitations, setClickedOnViewInvitations] = useState(false);
   const [clickedOnViewHistory, setClickedOnViewHistory] = useState(false);
   const [clickedOnEditEvent, setClickedOnEditEvent] = useState(false);
@@ -61,6 +63,16 @@ const Events = () => {
           const addEvents = [...events, ...(res.data.events || [])];
           if (addEvents.length === events.length) setHasMore(false);
           setEvents(addEvents);
+          if (page == 1) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const eid = urlParams.get('eid');
+            const event = addEvents.filter(event => event.id == eid)[0];
+            if (event) {
+              setClickedEditEvent(event);
+              setClickedOnEditEvent(true);
+            }
+          }
+
           setPage(prev => prev + 1);
           setLoading(false);
         } else {
@@ -122,6 +134,12 @@ const Events = () => {
             <div className="flex items-center gap-2">
               {checkOrgAccess(ORG_SENIOR) && (
                 <>
+                  <Code
+                    onClick={() => setClickedOnNewHackathon(true)}
+                    size={42}
+                    className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
+                    weight="regular"
+                  />
                   <Plus
                     onClick={() => setClickedOnNewEvent(true)}
                     size={42}
@@ -154,6 +172,7 @@ const Events = () => {
 
           <div className="w-full max-md:w-full mx-auto flex flex-col items-center gap-4">
             {clickedOnInfo && <AccessTree type="event" setShow={setClickedOnInfo} />}
+            {clickedOnNewHackathon && <NewHackathon setEvents={setEvents} setShow={setClickedOnNewHackathon} />}
             {clickedOnNewEvent && <NewEvent setEvents={setEvents} setShow={setClickedOnNewEvent} />}
             {clickedOnViewInvitations && <ViewInvitations setShow={setClickedOnViewInvitations} />}
             {clickedOnViewHistory && <EventHistory eventID={clickedEditEvent.id} setShow={setClickedOnViewHistory} />}

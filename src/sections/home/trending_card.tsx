@@ -107,8 +107,11 @@ const TrendingCard = () => {
   useEffect(() => {
     fetchProfiles();
     fetchSearches();
-    fetchTasks();
-    fetchMeetings();
+
+    if (user.id) {
+      fetchTasks();
+      fetchMeetings();
+    }
   }, []);
 
   return loading ? (

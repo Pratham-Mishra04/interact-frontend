@@ -1,0 +1,62 @@
+@keyframes shiftGradient {
+  0% {
+    background-position: 70% 50%; /* Starting point */
+  }
+  12.5% {
+    background-position: 60% 30%; /* 45 degrees */
+  }
+  25% {
+    background-position: 50% 25%; /* 90 degrees */
+  }
+  37.5% {
+    background-position: 40% 30%; /* 135 degrees */
+  }
+  50% {
+    background-position: 30% 50%; /* 180 degrees */
+  }
+  62.5% {
+    background-position: 40% 70%; /* 225 degrees */
+  }
+  75% {
+    background-position: 50% 75%; /* 270 degrees */
+  }
+  87.5% {
+    background-position: 60% 70%; /* 315 degrees */
+  }
+  100% {
+    background-position: 70% 50%; /* Back to starting point */
+  }
+}
+  
+  .bg-animated-gradient {
+    background: linear-gradient(to bottom, #a0d4ff, #ffeded);
+    background-size: 180% 180%;
+    animation: shiftGradient 20s ease-in-out infinite;
+  }
+  
+  .noise {
+    background-image: url('/noise.svg'); 
+    background-repeat: repeat; 
+    background-size: cover; 
+    z-index: 10;
+    mix-blend-mode: overlay;
+  }
+  
+.bg-animated-container {
+  --grid-color: rgba(114, 114, 114, 0.3);
+  --dot-color: rgba(114, 114, 114, 0); 
+
+  /* Grid background */
+  background-image: 
+    linear-gradient(0deg, transparent 24%, var(--grid-color) 25%, var(--grid-color) 26%, transparent 27%, transparent 74%, var(--grid-color) 75%, var(--grid-color) 76%, transparent 77%, transparent),
+    linear-gradient(90deg, transparent 24%, var(--grid-color) 25%, var(--grid-color) 26%, transparent 27%, transparent 74%, var(--grid-color) 75%, var(--grid-color) 76%, transparent 77%, transparent),
+
+    /* Dots layer */
+    radial-gradient(circle, var(--dot-color) 8%, transparent 9%);
+  
+  background-size: 55px 55px, 55px 55px, 55px 55px; 
+  background-position: 0px 0px, 0px 0px, 27.5px 27.5px; /* Center dots within the grid */
+  opacity: 0.4;
+  animation: shiftGradient 20s ease-in-out infinite;
+}
+

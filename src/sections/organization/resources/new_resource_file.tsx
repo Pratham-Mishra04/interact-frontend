@@ -152,7 +152,6 @@ const NewResourceFile = ({
               type="text"
               className="w-1/3 max-md:w-full md:focus:w-1/2 md:focus:scale-110 bg-transparent focus:outline-none text-sm md:focus:text-base text-primary_text text-center rounded-lg p-2 px-6 border-2 border-primary_text transition-ease-300"
               placeholder="Enter Link to the file"
-              maxLength={25}
               value={fileLink}
               onChange={el => setFileLink(el.target.value)}
             />

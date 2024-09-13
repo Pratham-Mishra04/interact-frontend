@@ -447,6 +447,8 @@ export const initialEvent: Event = {
   meeting: null,
   createdAt: new Date(),
   userID: '',
+  hackathonID: '',
+  hackathon: null,
 };
 
 export const initialReview: Review = {

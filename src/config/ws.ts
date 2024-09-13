@@ -64,6 +64,7 @@ class SocketService {
 
       this.socket.addEventListener('error', event => {
         setTimeout(connectToSocket, 5000); // retry after 5 seconds
+        this.disconnect();
       });
     };
 

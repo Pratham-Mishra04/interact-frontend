@@ -1,14 +1,14 @@
 import { MESSAGING_URL } from '@/config/routes';
 import socketService from '@/config/ws';
 import patchHandler from '@/handlers/patch_handler';
+import { setCurrentOrgRole } from '@/slices/orgSlice';
 import { store } from '@/store';
-import { Chat, Message, TypingStatus, User,OrganizationMembership } from '@/types';
+import { Chat, Message, OrganizationMembership, TypingStatus, User } from '@/types';
 import { initialUser } from '@/types/initials';
 import { getUserFromState } from '@/utils/funcs/redux';
 import sortChats from '@/utils/funcs/sort_chats';
 import { toast } from 'react-toastify';
 import { messageToastSettings } from '../utils/toaster';
-import {setCurrentOrgRole } from '@/slices/orgSlice';
 
 export class WSEvent {
   type = '';
@@ -252,7 +252,7 @@ export function routeChatReadEvents(event: WSEvent, setMessages: React.Dispatch<
   }
 }
 
-export function routeUpdateMembership(event: WSEvent){
+export function routeUpdateMembership(event: WSEvent) {
   if (event.type === undefined) {
     alert('No Type in the Event');
   }
@@ -264,7 +264,7 @@ export function routeUpdateMembership(event: WSEvent){
     case 'receive_update_membership':
       const payload = event.payload as OrganizationMembership;
       if (payload.userID === userID && organizationID === payload.organizationID) {
-        store.dispatch(setCurrentOrgRole(payload.role)); 
+        store.dispatch(setCurrentOrgRole(payload.role));
       }
       break;
 
@@ -278,7 +278,9 @@ export function sendEvent(eventName: string, payloadEvent: any, conn: WebSocket)
   try {
     conn.send(JSON.stringify(event));
   } catch (err) {
-    console.log(err);
-    alert('Socket connection error: ' + eventName);
+    if (process.env.NODE_ENV == 'development') {
+      console.log(err);
+      alert('Socket connection error: ' + eventName);
+    }
   }
 }

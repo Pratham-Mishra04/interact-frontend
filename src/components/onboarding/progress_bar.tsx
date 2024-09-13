@@ -4,10 +4,14 @@ import { Check } from '@phosphor-icons/react';
 interface Props {
   step: number;
   setStep: React.Dispatch<React.SetStateAction<number>>;
+  steps?: string[];
 }
 
-const ProgressBar = ({ step, setStep }: Props) => {
-  const steps: string[] = ['Name', 'Tagline', 'Bio', 'Skills', 'Pictures', 'Socials', 'Location', 'College'];
+const ProgressBar = ({
+  step,
+  setStep,
+  steps = ['Name', 'Tagline', 'Bio', 'Skills', 'Pictures', 'Socials', 'Location', 'College'],
+}: Props) => {
   return (
     <div className="w-full flex flex-col animate-fade_half">
       <div className="w-full h-full relative">
