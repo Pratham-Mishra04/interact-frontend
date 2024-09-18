@@ -755,6 +755,8 @@ export interface Hackathon {
   links?: string[];
   startTime: Date;
   endTime: Date;
+  teamFormationStartTime: Date;
+  teamFormationEndTime: Date;
   location: string;
   minTeamSize: number;
   maxTeamSize: number;
@@ -766,6 +768,9 @@ export interface Hackathon {
   isEnded?: boolean;
   eventID: string;
   history: HackathonHistory[];
+  tracks: HackathonTrack[];
+  sponsors: HackathonSponsor[];
+  rounds: HackathonRound[];
 }
 
 export interface HackathonTrack {
@@ -824,9 +829,7 @@ export interface HackathonTeam {
 export interface HackathonRound {
   id: string;
   hackathonID: string;
-  title: string;
   index: number;
-  isIdeation: boolean;
   startTime: Date;
   endTime: Date;
   judgingStartTime: Date;

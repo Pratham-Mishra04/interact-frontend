@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { Event } from '@/types';
 import Link from 'next/link';
 import { EVENT_PIC_URL } from '@/config/routes';
-import { Buildings, ClockCounterClockwise, Eye, PencilSimple, Trash, Users } from '@phosphor-icons/react';
+import { Buildings, ClockCounterClockwise, Eye, Gavel, PencilSimple, Trash, Users } from '@phosphor-icons/react';
 import moment from 'moment';
 import checkOrgAccess, { checkParticularOrgAccess } from '@/utils/funcs/access';
 import { ORG_SENIOR } from '@/config/constants';
@@ -19,6 +19,7 @@ interface Props {
   setClickedEditEvent?: React.Dispatch<React.SetStateAction<Event>>;
   setClickedOnDeleteEvent?: React.Dispatch<React.SetStateAction<boolean>>;
   setClickedDeleteEvent?: React.Dispatch<React.SetStateAction<Event>>;
+  setClickedOnEditJudges?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const EventCard = ({
@@ -32,6 +33,7 @@ const EventCard = ({
   setClickedEditEvent,
   setClickedOnDeleteEvent,
   setClickedDeleteEvent,
+  setClickedOnEditJudges,
 }: Props) => {
   const variants = ['w-96', 'w-84', 'w-80', 'w-72', 'w-64', 'w-[22rem]'];
   return (
@@ -55,7 +57,7 @@ const EventCard = ({
         />
         {org && checkOrgAccess(ORG_SENIOR) && (
           <div className="w-full flex gap-2 absolute opacity-0 group-hover:opacity-100 top-2 left-2 transition-ease-300">
-            {checkParticularOrgAccess(ORG_SENIOR, event.organization) && (
+            {checkParticularOrgAccess(ORG_SENIOR, event.organization) && !event.hackathonID && (
               <div
                 onClick={el => {
                   el.stopPropagation();
@@ -96,11 +98,15 @@ const EventCard = ({
                   el.stopPropagation();
                   el.preventDefault();
                   if (setClickedEditEvent) setClickedEditEvent(event);
-                  if (setClickedOnEditCoHosts) setClickedOnEditCoHosts(true);
+                  if (event.hackathonID) {
+                    if (setClickedOnEditJudges) setClickedOnEditJudges(true);
+                  } else {
+                    if (setClickedOnEditCoHosts) setClickedOnEditCoHosts(true);
+                  }
                 }}
                 className="bg-white text-gray-500 text-xxs px-2 py-1 rounded-lg"
               >
-                <Buildings size={18} />
+                {event.hackathonID ? <Gavel size={18} /> : <Buildings size={18} />}
               </div>
             )}
             <div
@@ -116,10 +122,14 @@ const EventCard = ({
             </div>
           </div>
         )}
-
         <div className="absolute bottom-2 right-2 bg-white text-gray-500 text-xxs px-2 py-1 rounded-lg">
           {event.organization.title}
         </div>
+        {event.hackathonID && (
+          <div className="absolute bottom-2 left-2 bg-white text-gray-500 text-xxs px-2 py-1 rounded-lg">
+            Competition
+          </div>
+        )}
       </div>
       <div className="w-full h-20 bg-white rounded-b-xl flex p-4">
         <div className="w-1/6 flex items-start justify-start mt-1">

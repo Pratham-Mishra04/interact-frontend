@@ -29,6 +29,7 @@ import { setCurrentChatID } from '@/slices/messagingSlice';
 import SendMessage from '@/sections/explore/send_message';
 import renderContentWithLinks from '@/utils/funcs/render_content_with_links';
 import SecondaryButton from '@/components/buttons/secondary_btn';
+import Hackathon from '@/screens/hackathon/hackathon';
 
 interface Props {
   id: string;
@@ -228,80 +229,6 @@ const EventComponent = ({ id }: Props) => {
     );
   };
 
-  const AboutHackathon = () => {
-    const isRegistered = user.registeredEvents?.includes(event.id);
-    const isLive = !event.hackathon?.isEnded ?? false;
-    const startTime = moment(event.hackathon?.startTime).utcOffset('+05:30');
-    const endTime = moment(event.hackathon?.endTime).utcOffset('+05:30');
-    const now = moment().utcOffset('+05:30');
-    const isBeforeStart = now.isBefore(startTime);
-
-    let timeUntilStart = '';
-
-    if (isBeforeStart) {
-      const duration = moment.duration(startTime.diff(now));
-      const hours = duration.hours();
-      const minutes = duration.minutes();
-
-      if (hours > 0) {
-        timeUntilStart = `${hours} hour${hours > 1 ? 's' : ''} `;
-      }
-      timeUntilStart += `${minutes} minute${minutes !== 1 ? 's' : ''}`;
-    }
-
-    const handleRedirect = async () => {
-      if (event.hackathonID && event.hackathon) {
-        window.location.assign(`${process.env.NEXT_PUBLIC_HACKATHONS_URL}?action=sync`);
-      } else {
-        await getHandler(`/events/meeting/token/${id}`)
-          .then(res => {
-            if (res.statusCode === 200) {
-              const authToken = res.data.authToken;
-              if (!authToken || authToken == '') {
-                Toaster.error(SERVER_ERROR, 'error_toaster');
-                return;
-              }
-              window.location.assign(`/explore/event/live?id=${id}&token=${authToken}`);
-            } else {
-              if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
-              else {
-                Toaster.error(SERVER_ERROR, 'error_toaster');
-              }
-            }
-          })
-          .catch(err => {
-            Toaster.error(SERVER_ERROR, 'error_toaster');
-          });
-      }
-    };
-
-    return (
-      <div className="w-full flex flex-col gap-2">
-        <div className="text-xs font-semibold text-gray-500">This event is happening on Interact!</div>
-        {user.organizationMemberships.map(membership => membership.organizationID).includes(event.organizationID) ? (
-          <SecondaryButton label="Go to Dashboard" onClick={handleRedirect} />
-        ) : isRegistered ? (
-          isLive || now.isBetween(startTime, endTime) ? (
-            <SecondaryButton label="Go to Dashboard" onClick={handleRedirect} />
-          ) : isBeforeStart ? (
-            <div className="w-full relative p-2 text-center bg-yellow-200 text-gray-700 rounded-lg font-medium cursor-default">
-              Event starts in {timeUntilStart}!
-            </div>
-          ) : (
-            <button
-              type="submit"
-              className="w-full relative p-2 bg-priority_high text-gray-700 rounded-lg cursor-default"
-            >
-              Event has Ended
-            </button>
-          )
-        ) : (
-          <SecondaryButton label="Register Now!" onClick={handleRegister} />
-        )}
-      </div>
-    );
-  };
-
   const AboutHosts = () => (
     <div className="w-2/5 bg-white rounded-xl max-md:w-full shadow-lg">
       <Image
@@ -316,7 +243,6 @@ const EventComponent = ({ id }: Props) => {
       <div className="w-full flex flex-col gap-6 p-4 pt-2">
         <LowerEvent event={event} numLikes={eventLikes} setNumLikes={setEventLikes} />
         {event.meetingID && <AboutSession />}
-        {event.hackathonID && <AboutHackathon />}
         <div className="w-full flex flex-col gap-4">
           <div className="text-sm font-medium text-gray-500 border-b-2 border-gray-300 pb-2">HOSTED BY</div>
           <AboutUser user={event.organization.user} host={true} />
@@ -447,40 +373,46 @@ const EventComponent = ({ id }: Props) => {
     <BaseWrapper title={`${event.title}`}>
       {user.isOrganization ? <OrgSidebar index={1} /> : <Sidebar index={2} />}
       <MainWrapper>
-        {clickedOnChat &&
-          (user.id != '' ? (
-            <SendMessage user={event.organization.user} setShow={setClickedOnChat} />
-          ) : (
-            <SignUp setShow={setClickedOnChat} />
-          ))}
-        {clickedOnReport &&
-          (user.id != '' ? (
-            <Report eventID={event.id} setShow={setClickedOnReport} />
-          ) : (
-            <SignUp setShow={setClickedOnReport} />
-          ))}
-        <div className="w-full p-12 max-md:p-2 flex flex-col transition-ease-out-500 font-primary">
-          {loading ? (
-            <Loader />
-          ) : (
-            <div className="w-full max-md:w-full mx-auto flex flex-col gap-12">
-              <div className="w-full flex max-md:flex-col gap-12 max-md:px-2">
-                <AboutHosts />
-                <AboutEvent />
-              </div>
-              {similarEvents && similarEvents.length > 0 && (
-                <div className="w-full flex flex-col gap-4">
-                  <div className="w-full flex-center text-sm font-semibold text-gray-500">SIMILAR EVENTS</div>
-                  <div className="w-full flex gap-6 flex-wrap justify-around">
-                    {similarEvents.map(e => (
-                      <EventCard key={e.id} event={e} size={80} />
-                    ))}
+        {event.hackathonID ? (
+          <Hackathon event={event} handleRegister={handleRegister} />
+        ) : (
+          <>
+            {clickedOnChat &&
+              (user.id != '' ? (
+                <SendMessage user={event.organization.user} setShow={setClickedOnChat} />
+              ) : (
+                <SignUp setShow={setClickedOnChat} />
+              ))}
+            {clickedOnReport &&
+              (user.id != '' ? (
+                <Report eventID={event.id} setShow={setClickedOnReport} />
+              ) : (
+                <SignUp setShow={setClickedOnReport} />
+              ))}
+            <div className="w-full p-12 max-md:p-2 flex flex-col transition-ease-out-500 font-primary">
+              {loading ? (
+                <Loader />
+              ) : (
+                <div className="w-full max-md:w-full mx-auto flex flex-col gap-12">
+                  <div className="w-full flex max-md:flex-col gap-12 max-md:px-2">
+                    <AboutHosts />
+                    <AboutEvent />
                   </div>
+                  {similarEvents && similarEvents.length > 0 && (
+                    <div className="w-full flex flex-col gap-4">
+                      <div className="w-full flex-center text-sm font-semibold text-gray-500">SIMILAR EVENTS</div>
+                      <div className="w-full flex gap-6 flex-wrap justify-around">
+                        {similarEvents.map(e => (
+                          <EventCard key={e.id} event={e} size={80} />
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
-          )}
-        </div>
+          </>
+        )}
       </MainWrapper>
     </BaseWrapper>
   );

@@ -103,7 +103,10 @@ const AddMembers = ({ setShow, setOrganization }: Props) => {
     let attemptedCount = 0;
 
     invitationSlices.forEach(async invitation => {
-      const formData = invitation;
+      const formData = {
+        ...invitation,
+        title: invitation.title.trim() === '' ? '-' : invitation.title.trim()
+      };
       const res = await postHandler(URL, formData);
       attemptedCount++;
       if (res.statusCode === 201) {

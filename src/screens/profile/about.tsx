@@ -26,35 +26,27 @@ const About = ({ profile, org = false, organizations }: Props) => {
         <>
           {hasOrganizations && (
             <>
-              <div className="w-fit flex-center gap-2">
-                <div className="">Member of</div>
+              <div className="w-full flex flex-wrap items-center gap-2">
+                <div className="whitespace-nowrap">Member of</div>
                 <div className="flex flex-wrap gap-2">
-                  {organizations.map((org, i) => {
-                    const isLast = i === organizations.length - 1;
-                    const separator = isLast ? (organizations.length > 1 ? ' and ' : '') : ', ';
-                    const suffix = isLast ? '.' : '';
-
-                    return (
-                      <div key={i} className="flex-center gap-2">
-                        {i > 0 && separator}
-                        <Link
-                          href={`/explore/organisation/${org.user.username}`}
-                          target="_blank"
-                          className="flex-center gap-1"
-                        >
-                          <Image
-                            src={`${USER_PROFILE_PIC_URL}/${org.user.profilePic}`}
-                            alt={org.title}
-                            width={24}
-                            height={24}
-                            className="rounded-full"
-                          />
-                          <div className="font-medium hover-underline-animation after:bg-gray-700">{org.title}</div>
-                          {suffix}
-                        </Link>
-                      </div>
-                    );
-                  })}
+                  {organizations.map((org, i) => (
+                    <Link
+                      key={i}
+                      href={`/explore/organisation/${org.user.username}`}
+                      target="_blank"
+                      className="flex items-center gap-1"
+                    >
+                      <Image
+                        src={`${USER_PROFILE_PIC_URL}/${org.user.profilePic}`}
+                        alt={org.title}
+                        width={24}
+                        height={24}
+                        className="rounded-full"
+                      />
+                      <div className="font-medium hover-underline-animation after:bg-gray-700">{org.title}</div>
+                      {i < organizations.length - 1 && <span>,</span>}
+                    </Link>
+                  ))}
                 </div>
               </div>
               <div className="w-full h-[1px] border-t-[1px] border-gray-400 border-dashed"></div>

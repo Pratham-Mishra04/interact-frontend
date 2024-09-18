@@ -138,7 +138,7 @@ const EditEvent = ({ setShow, event, setEvents }: Props) => {
           size={32}
         />
         <div className="w-full">
-          <CoverPic setSelectedFile={setImage} type="Event" initialImage={event.coverPic} />
+          <CoverPic setSelectedFile={setImage} picType="Event" initialImage={event.coverPic} />
         </div>
         <div className="w-full flex flex-col justify-between gap-2">
           <div className="w-full text-primary_black flex flex-col gap-6 pb-8 max-lg:pb-4">

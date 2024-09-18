@@ -95,6 +95,7 @@ const Onboarding = () => {
     if (name != user.name) formData.append('name', name.trim());
     if (bio != user.bio) formData.append('description', bio.trim());
     if (tagline != user.tagline) formData.append('tagline', tagline.trim());
+    if (gender != '') formData.append('gender', gender);
     tags.forEach(tag => formData.append('tags', tag));
     links.forEach(link => formData.append('links', link));
 

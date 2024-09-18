@@ -29,6 +29,8 @@ import EditCoHosts from '@/sections/organization/events/edit_cohosts';
 import EventHistory from '@/sections/organization/events/history';
 import NoEvents from '@/components/fillers/events';
 import NewHackathon from '@/sections/organization/hackathons/new_hackathon';
+import EditHackathonCoordinators from '@/sections/organization/hackathons/edit_hackathon_coordinators';
+import EditHackathonJudges from '@/sections/organization/hackathons/edit_hackathon_judges';
 
 const Events = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -42,6 +44,7 @@ const Events = () => {
   const [clickedEditEvent, setClickedEditEvent] = useState(initialEvent);
   const [clickedOnDeleteEvent, setClickedOnDeleteEvent] = useState(false);
   const [clickedDeleteEvent, setClickedDeleteEvent] = useState(initialEvent);
+  const [clickedOnEditJudges, setClickedOnEditJudges] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
@@ -179,15 +182,25 @@ const Events = () => {
             {clickedOnEditEvent && (
               <EditEvent event={clickedEditEvent} setEvents={setEvents} setShow={setClickedOnEditEvent} />
             )}
-            {clickedOnEditCollaborators && (
-              <EditCoordinators
-                event={clickedEditEvent}
-                setEvents={setEvents}
-                setShow={setClickedOnEditCollaborators}
-              />
-            )}
+            {clickedOnEditCollaborators &&
+              (clickedEditEvent.hackathonID ? (
+                <EditHackathonCoordinators
+                  event={clickedEditEvent}
+                  setEvents={setEvents}
+                  setShow={setClickedOnEditCollaborators}
+                />
+              ) : (
+                <EditCoordinators
+                  event={clickedEditEvent}
+                  setEvents={setEvents}
+                  setShow={setClickedOnEditCollaborators}
+                />
+              ))}
             {clickedOnEditCoHosts && (
               <EditCoHosts event={clickedEditEvent} setEvents={setEvents} setShow={setClickedOnEditCoHosts} />
+            )}
+            {clickedOnEditJudges && (
+              <EditHackathonJudges event={clickedEditEvent} setEvents={setEvents} setShow={setClickedOnEditJudges} />
             )}
             {clickedOnDeleteEvent && (
               <ConfirmDelete handleDelete={handleDeleteEvent} setShow={setClickedOnDeleteEvent} />
@@ -221,6 +234,7 @@ const Events = () => {
                         setClickedOnDeleteEvent={setClickedOnDeleteEvent}
                         setClickedDeleteEvent={setClickedDeleteEvent}
                         setClickedOnEditCoHosts={setClickedOnEditCoHosts}
+                        setClickedOnEditJudges={setClickedOnEditJudges}
                         size={open ? '[22rem]' : 96}
                       />
                     ))}

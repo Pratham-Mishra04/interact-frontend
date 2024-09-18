@@ -30,6 +30,7 @@ import Select from '@/components/form/select';
 import Checkbox from '@/components/form/checkbox';
 import { ORG_URL } from '@/config/routes';
 import { getFormattedTime } from '@/utils/funcs/time';
+import CoverPic from '@/components/utils/new_cover';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -149,7 +150,7 @@ const NewHackathon = ({ setShow, setEvents }: Props) => {
     if (res.statusCode === 201) {
       const event: Event = res.data.event;
       setEvents(prev => [event, ...prev]);
-
+      localStorage.removeItem(`hackathon-draft-${currentOrg.id}`);
       setShow(false);
     } else if (res.statusCode == 413) {
       Toaster.stopLoad(toaster, 'Image too large', 0);
@@ -162,11 +163,136 @@ const NewHackathon = ({ setShow, setEvents }: Props) => {
     }
   };
 
+  const handleSaveDraft = () => {
+    const formData = {
+      title,
+      description,
+      tagline,
+      tags,
+      links,
+      location,
+      startTime,
+      endTime,
+      teamFormationStartTime,
+      teamFormationEndTime,
+      minTeamSize,
+      maxTeamSize,
+      tracks,
+      prizes,
+      rounds,
+      sponsors,
+      faqs,
+    };
+
+    localStorage.setItem(`hackathon-draft-${currentOrg.id}`, JSON.stringify(formData));
+    Toaster.success('Draft saved!');
+  };
+
+  useEffect(() => {
+    const savedData = localStorage.getItem(`hackathon-draft-${currentOrg.id}`);
+    if (savedData) {
+      const formData = JSON.parse(savedData);
+      setTitle(formData.title || '');
+      setDescription(formData.description || '');
+      setTagline(formData.tagline || '');
+      setTags(formData.tags || []);
+      setLinks(formData.links || []);
+      setLocation(formData.location || '');
+      setStartTime(formData.startTime || '');
+      setEndTime(formData.endTime || '');
+      setTeamFormationStartTime(formData.teamFormationStartTime || '');
+      setTeamFormationEndTime(formData.teamFormationEndTime || '');
+      setMinTeamSize(formData.minTeamSize || 2);
+      setMaxTeamSize(formData.maxTeamSize || 5);
+      setTracks(formData.tracks || []);
+      setPrizes(formData.prizes || []);
+      setRounds(formData.rounds || []);
+      setSponsors(formData.sponsors || []);
+      setFaqs(formData.faqs || []);
+    }
+  }, []);
+
+  const validateRounds = () => {
+    const hackathonStart = moment(startTime);
+    const hackathonEnd = moment(endTime);
+    const teamFormationEnd = moment(teamFormationEndTime);
+
+    for (let i = 0; i < rounds.length; i++) {
+      const round = rounds[i];
+      const roundStart = moment(round.startTime);
+      const roundEnd = moment(round.endTime);
+      const judgingStart = moment(round.judgingStartTime);
+      const judgingEnd = moment(round.judgingEndTime);
+
+      // 1. Check if the round is within hackathon start and end times
+      if (roundStart.isBefore(hackathonStart) || roundEnd.isAfter(hackathonEnd)) {
+        Toaster.error(`Round ${round.index + 1} is outside the hackathon start or end time.`);
+        return false;
+      }
+
+      // 2. Check if the round is after the team formation end time
+      if (roundStart.isBefore(teamFormationEnd)) {
+        Toaster.error(`Round ${round.index + 1} starts before team formation ends.`);
+        return false;
+      }
+
+      // 3. Check if judging time is within the round time
+      if (judgingStart.isBefore(roundStart) || judgingEnd.isAfter(roundEnd)) {
+        Toaster.error(`Judging time for round ${round.index + 1} is not within the round's start and end times.`);
+        return false;
+      }
+
+      // 4. Check for overlapping rounds
+      if (i > 0) {
+        const previousRoundEnd = moment(rounds[i - 1].endTime);
+        if (roundStart.isBefore(previousRoundEnd)) {
+          Toaster.error(`Round ${round.index + 1} overlaps with the previous round.`);
+          return false;
+        }
+      }
+
+      // 5. Check if round end time matches the next round's start time (for all except last round)
+      if (i < rounds.length - 1) {
+        const nextRoundStart = moment(rounds[i + 1].startTime);
+        if (!roundEnd.isSame(nextRoundStart)) {
+          Toaster.error(`The end time of round ${round.index + 1} should match the start time of the next round.`);
+          return false;
+        }
+      }
+    }
+
+    return true;
+  };
+
+  const validateTeamFormationTimes = () => {
+    const hackathonStart = moment(startTime);
+    const hackathonEnd = moment(endTime);
+    const teamFormationStart = moment(teamFormationEndTime);
+    const teamFormationEnd = moment(teamFormationEndTime);
+
+    if (!teamFormationStart.isBetween(hackathonStart, hackathonEnd)) {
+      Toaster.error('Team Formation Start Time is not between hackathon timings.');
+      return false;
+    }
+
+    if (!teamFormationEnd.isBetween(hackathonStart, hackathonEnd)) {
+      Toaster.error('Team Formation End Time is not between hackathon timings.');
+      return false;
+    }
+
+    return true;
+  };
+
   return (
     <ModalWrapper setShow={setShow} width={'4/5'} height={'4/5'} blur={true} top={'1/2'}>
       <div className="w-full h-full flex flex-col gap-2 p-6 justify-between">
         <div>
-          <div className="text-4xl font-semibold">Build your Hackathon!</div>
+          <div className="w-full flex items-center justify-between">
+            <div className="text-4xl font-semibold">Build your Hackathon!</div>
+            <div onClick={handleSaveDraft} className="cursor-pointer">
+              Save Draft
+            </div>
+          </div>
           <div className="w-full mb-8 mt-2">
             <ProgressBar
               step={step + 1}
@@ -200,8 +326,6 @@ const NewHackathon = ({ setShow, setEvents }: Props) => {
             ) : step === 2 ? (
               <Prizes prizes={prizes} setPrizes={setPrizes} tracks={tracks} />
             ) : step === 3 ? (
-              <Rounds rounds={rounds} setRounds={setRounds} />
-            ) : step === 4 ? (
               <Teams
                 minTeamSize={minTeamSize}
                 setMinTeamSize={setMinTeamSize}
@@ -212,6 +336,8 @@ const NewHackathon = ({ setShow, setEvents }: Props) => {
                 teamFormationEndTime={teamFormationEndTime}
                 setTeamFormationEndTime={setTeamFormationEndTime}
               />
+            ) : step === 4 ? (
+              <Rounds rounds={rounds} setRounds={setRounds} />
             ) : step === 5 ? (
               <Sponsors sponsors={sponsors} setSponsors={setSponsors} />
             ) : step === 6 ? (
@@ -229,7 +355,11 @@ const NewHackathon = ({ setShow, setEvents }: Props) => {
                 if (step === 0) {
                   if (eventDetailsValidator()) setStep(prev => prev + 1);
                 } else {
-                  setStep(prev => prev + 1);
+                  if (step == 3) {
+                    if (validateTeamFormationTimes()) setStep(prev => prev + 1);
+                  } else if (step === 4) {
+                    if (validateRounds()) setStep(prev => prev + 1);
+                  } else setStep(prev => prev + 1);
                 }
               }}
             />
@@ -270,6 +400,9 @@ const Basics = ({
 }: any) => {
   return (
     <div className="w-full flex flex-col gap-8 max-lg:gap-4">
+      {/* <div className="w-full">
+        <CoverPic setSelectedFile={setImage} picType="Hackathon" />
+      </div> */}
       <Input label="Title" val={title} setVal={setTitle} maxLength={25} required={true} />
       <Input label="Tagline" val={tagline} setVal={setTagline} maxLength={50} required={true} />
       <Input label="Location" val={location} setVal={setLocation} maxLength={25} placeholder="Online" />
@@ -284,9 +417,6 @@ const Basics = ({
       <TextArea label="Description" val={description} setVal={setDescription} maxLength={2500} />
       <Tags label="Tags" tags={tags} setTags={setTags} maxTags={10} required={true} />
       <Links label="Links" links={links} setLinks={setLinks} maxLinks={5} />
-      {/* <div className="w-full">
-        <Input label="Cover Picture" type="file" onChange={(e: any) => setImage(e.target.files[0])} />
-      </div> */}
     </div>
   );
 };
@@ -449,25 +579,23 @@ const Prizes = ({ prizes, setPrizes, tracks }: any) => {
 };
 
 const Rounds = ({ rounds, setRounds }: any) => {
-  const [roundName, setRoundName] = useState('');
-  const [description, setDescription] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [judgingStartTime, setJudgingStartTime] = useState('');
   const [judgingEndTime, setJudgingEndTime] = useState('');
-  const [isIdeationRound, setIsIdeationRound] = useState(false);
   const [metrics, setMetrics] = useState<HackathonRoundScoreMetric[]>([]);
   const [isEditing, setIsEditing] = useState<number | null>(null);
 
   const addRound = () => {
-    if (!roundName.trim() || !description.trim()) return;
+    // Check if there are existing rounds and set the start time for the new round
+    const lastRoundEndTime = rounds.length > 0 ? rounds[rounds.length - 1].endTime : null;
+    const newRoundStartTime = lastRoundEndTime ? new Date(lastRoundEndTime) : new Date(startTime);
+
     const newRound: HackathonRound = {
       id: '',
       hackathonID: '',
-      title: roundName,
       index: rounds.length,
-      isIdeation: isIdeationRound,
-      startTime: new Date(startTime),
+      startTime: newRoundStartTime,
       endTime: new Date(endTime),
       judgingStartTime: new Date(judgingStartTime),
       judgingEndTime: new Date(judgingEndTime),
@@ -485,25 +613,19 @@ const Rounds = ({ rounds, setRounds }: any) => {
   };
 
   const resetForm = () => {
-    setRoundName('');
-    setDescription('');
     setStartTime('');
     setEndTime('');
     setJudgingStartTime('');
     setJudgingEndTime('');
-    setIsIdeationRound(false);
     setMetrics([]);
   };
 
   const editRound = (index: number) => {
     const round = rounds[index];
-    setRoundName(round.title);
-    setDescription(round.description);
     setStartTime(round.startTime.toISOString().split('T')[0]);
     setEndTime(round.endTime.toISOString().split('T')[0]);
     setJudgingStartTime(round.judgingStartTime.toISOString().split('T')[0]);
     setJudgingEndTime(round.judgingEndTime.toISOString().split('T')[0]);
-    setIsIdeationRound(round.isIdeation);
     setMetrics(round.metrics);
     setIsEditing(index);
   };
@@ -532,15 +654,10 @@ const Rounds = ({ rounds, setRounds }: any) => {
   return (
     <div className="w-full flex flex-col gap-6">
       <div className="flex flex-col gap-4">
-        <Input label="Round Title" val={roundName} setVal={setRoundName} maxLength={50} />
-        <TextArea label="Description" val={description} setVal={setDescription} maxLength={250} />
         <Time label="Start Time" val={startTime} setVal={setStartTime} includeDate={true} />
         <Time label="End Time" val={endTime} setVal={setEndTime} includeDate={true} />
         <Time label="Judging Start Time" val={judgingStartTime} setVal={setJudgingStartTime} includeDate={true} />
         <Time label="Judging End Time" val={judgingEndTime} setVal={setJudgingEndTime} includeDate={true} />
-        <div className="flex items-center gap-4">
-          <Checkbox label="Is Ideation Round?" val={isIdeationRound} setVal={setIsIdeationRound} />
-        </div>
 
         <div className="w-full flex flex-col gap-4">
           <h4 className="font-bold">Metrics</h4>
@@ -593,14 +710,12 @@ const Rounds = ({ rounds, setRounds }: any) => {
             <div key={idx} className="bg-gray-200 rounded-lg px-4 py-4 flex flex-col w-full">
               <div className="flex justify-between items-center">
                 <div>
-                  <h3 className="font-bold">{round.title}</h3>
                   <p className="text-sm text-gray-500">Start: {moment(round.startTime).format('YYYY-MM-DD HH:mm')}</p>
                   <p className="text-sm text-gray-500">End: {moment(round.endTime).format('YYYY-MM-DD HH:mm')}</p>
                   <p className="text-sm text-gray-500">
                     Judging: {moment(round.judgingStartTime).format('YYYY-MM-DD HH:mm')} -{' '}
                     {moment(round.judgingEndTime).format('YYYY-MM-DD HH:mm')}
                   </p>
-                  <p className="text-sm text-gray-500">{round.isIdeation ? 'Ideation Round' : ''}</p>
                 </div>
                 <div className="flex gap-2">
                   <PencilSimple className="cursor-pointer text-blue-500" size={24} onClick={() => editRound(idx)} />
