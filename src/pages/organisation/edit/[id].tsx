@@ -8,15 +8,21 @@ import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import { FloppyDisk, Link, Medal, PencilSimple, Plus, Trash, X } from '@phosphor-icons/react';
 import Image from 'next/image';
-import Input from '@/components/form/input';
-import { EditableBox, EditableFAQBox, EditableSponsorBox, EditableTrackBox } from '@/components/form/EditableFields';
+import {
+  EditableBox,
+  EditableFAQBox,
+  EditableRoundsBox,
+  EditableSponsorBox,
+  EditableTrackBox,
+} from '@/components/form/EditableFields';
 import { EVENT_PIC_URL, EXPLORE_URL, ORG_URL, USER_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import Toaster from '@/utils/toaster';
 import { SERVER_ERROR } from '@/config/errors';
 import postHandler from '@/handlers/post_handler';
-import { Hackathon } from '@/types';
+import { Hackathon, HackathonRound } from '@/types';
 import { initialHackathon } from '@/types/initials';
+import { round } from 'lodash';
 
 const boxWrapperClass = 'w-full px-4 py-2 bg-[#E6E7EB70] relative rounded-md';
 
@@ -63,6 +69,44 @@ function EditEvent() {
       setHackathon({
         ...hackathon,
         faqs: [...(hackathon.faqs || []), faq],
+      });
+    } else {
+      if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
+      else Toaster.stopLoad(toaster, SERVER_ERROR, 0);
+    }
+    setMutex(false);
+  };
+
+  const handleCreateTrack = async (data: { title: string; description: string }) => {
+    if (mutex) return;
+    setMutex(true);
+    const toaster = Toaster.startLoad('Creating a Track...');
+    const res = await postHandler(`${ORG_URL}/${currentOrg.id}/hackathons/${hackathon.id}/track`, data);
+    if (res.statusCode === 201) {
+      const track = res.data.track;
+      Toaster.stopLoad(toaster, 'Track Added!', 1);
+      setHackathon({
+        ...hackathon,
+        tracks: [...(hackathon.tracks || []), track],
+      });
+    } else {
+      if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
+      else Toaster.stopLoad(toaster, SERVER_ERROR, 0);
+    }
+    setMutex(false);
+  };
+
+  const handleCreateRound = async (data: Partial<HackathonRound>) => {
+    if (mutex) return;
+    setMutex(true);
+    const toaster = Toaster.startLoad('Creating a Round...');
+    const res = await postHandler(`${ORG_URL}/${currentOrg.id}/hackathons/${hackathon.id}/round`, data);
+    if (res.statusCode === 201) {
+      const round = res.data.round;
+      Toaster.stopLoad(toaster, 'Round Added!', 1);
+      setHackathon({
+        ...hackathon,
+        rounds: [...(hackathon.rounds || []), round],
       });
     } else {
       if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
@@ -248,6 +292,40 @@ function EditEvent() {
               </div>
               <div className="w-full flex items-start gap-2">
                 <div className={boxWrapperClass}>
+                  <h1 className="text-xl font-semibold mb-2">Rounds</h1>
+                  <div className="w-full grid grid-cols-3 gap-2">
+                    {hackathon.rounds?.map((round, index) => (
+                      <EditableRoundsBox
+                        val={hackathon}
+                        round={round}
+                        index={index}
+                        key={index}
+                        setVal={setHackathon}
+                      />
+                    ))}
+                    <button
+                      className="bg-[#dedede] p-2 rounded-lg w-full flex flex-col items-center justify-center"
+                      onClick={() =>
+                        handleCreateRound({
+                          id: '', // Generate a unique ID for the new round
+                          hackathonID: hackathon.id,
+                          index: hackathon.rounds.length, // Set the appropriate index
+                          startTime: new Date(2020, 0, 1),
+                          endTime: new Date(2020, 0, 1),
+                          judgingStartTime: new Date(2020, 0, 1),
+                          judgingEndTime: new Date(2020, 0, 1),
+                          metrics: [],
+                        })
+                      }
+                    >
+                      <Plus size={24} weight="bold" />
+                      <p className="text-base font-semibold">Add Round</p>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div className="w-full flex items-start gap-2">
+                <div className={boxWrapperClass}>
                   <h1 className="text-xl font-semibold mb-2">FAQs</h1>
                   <div className="w-full grid grid-cols-3 gap-2">
                     {hackathon.faqs?.map((faq, index) => (
@@ -273,39 +351,13 @@ function EditEvent() {
                   <EditableTrackBox val={hackathon} track={track} index={index} key={index} setVal={setHackathon} />
                 ))}{' '}
                 <button
-                  className=" bg-[#dedede] p-2 rounded-lg w-full flex gap-2 items-center justify-center "
+                  className=" bg-[#dedede] p-2 rounded-lg w-full flex flex-col items-center justify-center "
                   onClick={() => {
-                    setHackathon({
-                      ...hackathon,
-                      tracks: [
-                        // {
-                        //   title: 'Track Title',
-                        //   description: 'This is a description of the track',
-                        //   prizes: [
-                        //     {
-                        //       title: 'First Prize',
-                        //       description: 'This is a description of the prize',
-                        //       amount: 100,
-                        //     },
-                        //     {
-                        //       title: 'Second  Prize',
-                        //       description: 'This is a description of the prize',
-                        //       amount: 100,
-                        //     },
-                        //     {
-                        //       title: 'Third Prize',
-                        //       description: 'This is a description of the prize',
-                        //       amount: 100,
-                        //     },
-                        //   ],
-                        // },
-                        ...hackathon.tracks,
-                      ],
-                    });
+                    handleCreateTrack({ title: 'Track', description: 'Description' });
                   }}
                 >
                   <Plus size={24} weight="bold" />
-                  <p className="text-base font-semibold">Add Track</p>
+                  <p className="text-base font-semibold">Add Round</p>
                 </button>
               </div>
             </aside>
