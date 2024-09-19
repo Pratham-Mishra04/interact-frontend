@@ -130,8 +130,8 @@ const NewHackathon = ({ setShow, setEvents }: Props) => {
       endTime: getFormattedTime(endTime),
       teamFormationStartTime: getFormattedTime(teamFormationStartTime),
       teamFormationEndTime: getFormattedTime(teamFormationEndTime),
-      minTeamSize,
-      maxTeamSize,
+      minTeamSize: Number(minTeamSize),
+      maxTeamSize: Number(maxTeamSize),
       tracks,
       prizes,
       rounds: rounds.map(round => {
@@ -209,8 +209,8 @@ const NewHackathon = ({ setShow, setEvents }: Props) => {
       setEndTime(formData.endTime || '');
       setTeamFormationStartTime(formData.teamFormationStartTime || '');
       setTeamFormationEndTime(formData.teamFormationEndTime || '');
-      setMinTeamSize(formData.minTeamSize || 2);
-      setMaxTeamSize(formData.maxTeamSize || 5);
+      setMinTeamSize(Number(formData.minTeamSize) || 2);
+      setMaxTeamSize(Number(formData.maxTeamSize) || 5);
       setTracks(formData.tracks || []);
       setPrizes(formData.prizes || []);
       setRounds(formData.rounds || []);
@@ -671,18 +671,14 @@ const Rounds = ({ rounds, setRounds, teamFormationEndTime }: any) => {
   return (
     <div className="w-full flex flex-col gap-6">
       <div className="flex flex-col gap-4">
-        {rounds?.length == 0 ? (
-          <div>
-            <div className="text-xs ml-1 font-medium uppercase text-gray-500">
-              Start Time (same as team formation end time)
-            </div>
-            <div className="w-full bg-transparent focus:outline-none border-[1px] border-gray-400 rounded-lg p-2">
-              {startTime.replace('T', ' ')}
-            </div>
+        <div>
+          <div className="text-xs ml-1 font-medium uppercase text-gray-500">
+            Start Time (same as team formation end time)
           </div>
-        ) : (
-          <Time label="Start Time" val={startTime} setVal={setStartTime} includeDate={true} />
-        )}
+          <div className="w-full bg-transparent focus:outline-none border-[1px] border-gray-400 rounded-lg p-2">
+            {startTime.replace('T', ' ')}
+          </div>
+        </div>
         <Time label="End Time" val={endTime} setVal={setEndTime} includeDate={true} />
         <Time label="Judging Start Time" val={judgingStartTime} setVal={setJudgingStartTime} includeDate={true} />
         <Time label="Judging End Time" val={judgingEndTime} setVal={setJudgingEndTime} includeDate={true} />
@@ -746,7 +742,7 @@ const Rounds = ({ rounds, setRounds, teamFormationEndTime }: any) => {
                   </p>
                 </div>
                 <div className="flex gap-2">
-                  <PencilSimple className="cursor-pointer text-blue-500" size={24} onClick={() => editRound(idx)} />
+                  {/* <PencilSimple className="cursor-pointer text-blue-500" size={24} onClick={() => editRound(idx)} /> */}
                   <TrashSimple className="cursor-pointer text-red-500" size={24} onClick={() => deleteRound(idx)} />
                 </div>
               </div>
@@ -781,8 +777,24 @@ const Teams = ({
 }: any) => {
   return (
     <div className="w-full flex flex-col gap-2">
-      <Input label="Min Team Size" val={minTeamSize} setVal={setMinTeamSize} type="number" maxLength={-1} />
-      <Input label="Max Team Size" val={maxTeamSize} setVal={setMaxTeamSize} type="number" maxLength={-1} />
+      <div className="w-full">
+        <div className="text-xs ml-1 font-medium uppercase text-gray-500">Min Team Size*</div>
+        <input
+          value={minTeamSize}
+          onChange={el => setMinTeamSize(Number(el.target.value))}
+          type="number"
+          className="w-full font-medium bg-transparent focus:outline-none border-[1px] border-gray-400 rounded-lg p-2"
+        />
+      </div>
+      <div className="w-full">
+        <div className="text-xs ml-1 font-medium uppercase text-gray-500">Min Team Size*</div>
+        <input
+          value={maxTeamSize}
+          onChange={el => setMaxTeamSize(Number(el.target.value))}
+          type="number"
+          className="w-full font-medium bg-transparent focus:outline-none border-[1px] border-gray-400 rounded-lg p-2"
+        />
+      </div>
       <Time
         label="Team Formation Start Time"
         val={teamFormationStartTime}
