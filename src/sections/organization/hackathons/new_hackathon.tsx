@@ -7,7 +7,6 @@ import {
   HackathonSponsor,
   HackathonFAQ,
   HackathonRoundScoreMetric,
-  Hackathon,
 } from '@/types';
 import ModalWrapper from '@/wrappers/modal';
 import PrimaryButton from '@/components/buttons/primary_btn';
@@ -27,9 +26,8 @@ import Links from '@/components/form/links';
 import ProgressBar from '@/components/onboarding/progress_bar';
 import SecondaryButton from '@/components/buttons/secondary_btn';
 import Select from '@/components/form/select';
-import Checkbox from '@/components/form/checkbox';
 import { ORG_URL } from '@/config/routes';
-import { getFormattedTime } from '@/utils/funcs/time';
+import { getFormattedTime, getInputFieldFormatTime } from '@/utils/funcs/time';
 import CoverPic from '@/components/utils/new_cover';
 
 interface Props {
@@ -80,6 +78,14 @@ const NewHackathon = ({ setShow, setEvents }: Props) => {
       Toaster.error('Add at least 3 tags');
       return false;
     }
+    if (startTime == '') {
+      Toaster.error('Enter Start Time');
+      return false;
+    }
+    if (endTime == '') {
+      Toaster.error('Enter End Time');
+      return false;
+    }
     // if (!image) {
     //   Toaster.error('Add a Cover Picture');
     //   return false;
@@ -88,11 +94,11 @@ const NewHackathon = ({ setShow, setEvents }: Props) => {
     const start = moment(startTime);
     const end = moment(endTime);
 
-    if (start.isBefore(moment())) {
+    if (start.isSameOrBefore(moment())) {
       Toaster.error('Start Time cannot be before current time.');
       return false;
     }
-    if (end.isBefore(start)) {
+    if (end.isSameOrBefore(start)) {
       Toaster.error('End Time cannot be before Start Time');
       return false;
     }
@@ -124,8 +130,8 @@ const NewHackathon = ({ setShow, setEvents }: Props) => {
       endTime: getFormattedTime(endTime),
       teamFormationStartTime: getFormattedTime(teamFormationStartTime),
       teamFormationEndTime: getFormattedTime(teamFormationEndTime),
-      minTeamSize,
-      maxTeamSize,
+      minTeamSize: Number(minTeamSize),
+      maxTeamSize: Number(maxTeamSize),
       tracks,
       prizes,
       rounds: rounds.map(round => {
@@ -151,6 +157,7 @@ const NewHackathon = ({ setShow, setEvents }: Props) => {
       const event: Event = res.data.event;
       setEvents(prev => [event, ...prev]);
       localStorage.removeItem(`hackathon-draft-${currentOrg.id}`);
+      Toaster.stopLoad(toaster, 'Competition Created!', 1);
       setShow(false);
     } else if (res.statusCode == 413) {
       Toaster.stopLoad(toaster, 'Image too large', 0);
@@ -202,8 +209,8 @@ const NewHackathon = ({ setShow, setEvents }: Props) => {
       setEndTime(formData.endTime || '');
       setTeamFormationStartTime(formData.teamFormationStartTime || '');
       setTeamFormationEndTime(formData.teamFormationEndTime || '');
-      setMinTeamSize(formData.minTeamSize || 2);
-      setMaxTeamSize(formData.maxTeamSize || 5);
+      setMinTeamSize(Number(formData.minTeamSize) || 2);
+      setMaxTeamSize(Number(formData.maxTeamSize) || 5);
       setTracks(formData.tracks || []);
       setPrizes(formData.prizes || []);
       setRounds(formData.rounds || []);
@@ -288,16 +295,16 @@ const NewHackathon = ({ setShow, setEvents }: Props) => {
       <div className="w-full h-full flex flex-col gap-2 p-6 justify-between">
         <div>
           <div className="w-full flex items-center justify-between">
-            <div className="text-4xl font-semibold">Build your Hackathon!</div>
+            <div className="text-4xl font-semibold">Build your Competition!</div>
             <div onClick={handleSaveDraft} className="cursor-pointer">
               Save Draft
             </div>
           </div>
-          <div className="w-full mb-8 mt-2">
+          <div className="w-full mb-16 mt-10">
             <ProgressBar
               step={step + 1}
               setStep={setStep}
-              steps={['Basics', 'Tracks', 'Prizes', 'Rounds', 'Teams', 'Sponsors', 'FAQs']}
+              steps={['Basics', 'Tracks', 'Prizes', 'Teams', 'Rounds', 'Sponsors', 'FAQs']}
             />
           </div>
           <div>
@@ -337,7 +344,7 @@ const NewHackathon = ({ setShow, setEvents }: Props) => {
                 setTeamFormationEndTime={setTeamFormationEndTime}
               />
             ) : step === 4 ? (
-              <Rounds rounds={rounds} setRounds={setRounds} />
+              <Rounds rounds={rounds} setRounds={setRounds} teamFormationEndTime={teamFormationEndTime} />
             ) : step === 5 ? (
               <Sponsors sponsors={sponsors} setSponsors={setSponsors} />
             ) : step === 6 ? (
@@ -346,8 +353,8 @@ const NewHackathon = ({ setShow, setEvents }: Props) => {
           </div>
         </div>
 
-        <div className="w-full flex items-end justify-between">
-          {step !== 0 && <PrimaryButton label="Back" onClick={() => setStep(prev => prev - 1)} />}
+        <div className={`w-full flex items-end justify-between ${step == 0 && 'py-12'}`}>
+          {step !== 0 ? <PrimaryButton label="Back" onClick={() => setStep(prev => prev - 1)} /> : <div></div>}
           {step !== 6 ? (
             <PrimaryButton
               label="Next"
@@ -578,8 +585,8 @@ const Prizes = ({ prizes, setPrizes, tracks }: any) => {
   );
 };
 
-const Rounds = ({ rounds, setRounds }: any) => {
-  const [startTime, setStartTime] = useState('');
+const Rounds = ({ rounds, setRounds, teamFormationEndTime }: any) => {
+  const [startTime, setStartTime] = useState(rounds?.length == 0 ? getInputFieldFormatTime(teamFormationEndTime) : '');
   const [endTime, setEndTime] = useState('');
   const [judgingStartTime, setJudgingStartTime] = useState('');
   const [judgingEndTime, setJudgingEndTime] = useState('');
@@ -590,6 +597,16 @@ const Rounds = ({ rounds, setRounds }: any) => {
     // Check if there are existing rounds and set the start time for the new round
     const lastRoundEndTime = rounds.length > 0 ? rounds[rounds.length - 1].endTime : null;
     const newRoundStartTime = lastRoundEndTime ? new Date(lastRoundEndTime) : new Date(startTime);
+
+    if (startTime == '' || endTime == '' || judgingStartTime == '' || judgingEndTime == '') {
+      Toaster.error('Invalid Round Timings');
+      return;
+    }
+
+    if (metrics.some(m => m.title == '')) {
+      Toaster.error('Metric title cannot be empty');
+      return;
+    }
 
     const newRound: HackathonRound = {
       id: '',
@@ -609,11 +626,11 @@ const Rounds = ({ rounds, setRounds }: any) => {
       setRounds((prev: HackathonRound[]) => [...prev, newRound]);
     }
 
-    resetForm();
+    resetForm(getInputFieldFormatTime(new Date(endTime)));
   };
 
-  const resetForm = () => {
-    setStartTime('');
+  const resetForm = (newStartTime?: string) => {
+    setStartTime(newStartTime ? newStartTime : '');
     setEndTime('');
     setJudgingStartTime('');
     setJudgingEndTime('');
@@ -654,7 +671,14 @@ const Rounds = ({ rounds, setRounds }: any) => {
   return (
     <div className="w-full flex flex-col gap-6">
       <div className="flex flex-col gap-4">
-        <Time label="Start Time" val={startTime} setVal={setStartTime} includeDate={true} />
+        <div>
+          <div className="text-xs ml-1 font-medium uppercase text-gray-500">
+            Start Time (same as team formation end time)
+          </div>
+          <div className="w-full bg-transparent focus:outline-none border-[1px] border-gray-400 rounded-lg p-2">
+            {startTime.replace('T', ' ')}
+          </div>
+        </div>
         <Time label="End Time" val={endTime} setVal={setEndTime} includeDate={true} />
         <Time label="Judging Start Time" val={judgingStartTime} setVal={setJudgingStartTime} includeDate={true} />
         <Time label="Judging End Time" val={judgingEndTime} setVal={setJudgingEndTime} includeDate={true} />
@@ -718,7 +742,7 @@ const Rounds = ({ rounds, setRounds }: any) => {
                   </p>
                 </div>
                 <div className="flex gap-2">
-                  <PencilSimple className="cursor-pointer text-blue-500" size={24} onClick={() => editRound(idx)} />
+                  {/* <PencilSimple className="cursor-pointer text-blue-500" size={24} onClick={() => editRound(idx)} /> */}
                   <TrashSimple className="cursor-pointer text-red-500" size={24} onClick={() => deleteRound(idx)} />
                 </div>
               </div>
@@ -753,8 +777,24 @@ const Teams = ({
 }: any) => {
   return (
     <div className="w-full flex flex-col gap-2">
-      <Input label="Min Team Size" val={minTeamSize} setVal={setMinTeamSize} type="number" maxLength={-1} />
-      <Input label="Max Team Size" val={maxTeamSize} setVal={setMaxTeamSize} type="number" maxLength={-1} />
+      <div className="w-full">
+        <div className="text-xs ml-1 font-medium uppercase text-gray-500">Min Team Size*</div>
+        <input
+          value={minTeamSize}
+          onChange={el => setMinTeamSize(Number(el.target.value))}
+          type="number"
+          className="w-full font-medium bg-transparent focus:outline-none border-[1px] border-gray-400 rounded-lg p-2"
+        />
+      </div>
+      <div className="w-full">
+        <div className="text-xs ml-1 font-medium uppercase text-gray-500">Min Team Size*</div>
+        <input
+          value={maxTeamSize}
+          onChange={el => setMaxTeamSize(Number(el.target.value))}
+          type="number"
+          className="w-full font-medium bg-transparent focus:outline-none border-[1px] border-gray-400 rounded-lg p-2"
+        />
+      </div>
       <Time
         label="Team Formation Start Time"
         val={teamFormationStartTime}

@@ -19,6 +19,8 @@ import { formatHackathonDate, getHackathonStatus } from '@/utils/funcs/hackathon
 import moment from 'moment';
 import SecondaryButton from '@/components/buttons/secondary_btn';
 import LowerEvent from '@/components/lowers/lower_event';
+import DisplayTracks from '@/sections/explore/tracks_modal';
+import DisplayPrizes from '@/sections/explore/prizes_modal';
 
 interface HackathonProps {
   event: Event;
@@ -64,6 +66,8 @@ const Hackathon: React.FC<HackathonProps> = ({ event, handleRegister }) => {
   const [clickedOnChat, setClickedOnChat] = useState(false);
   const [clickedOnReport, setClickedOnReport] = useState(false);
   const [eventLikes, setEventLikes] = useState(0);
+  const [showTracks, setShowTracks] = useState(false);
+  const [showPrizes, setShowPrizes] = useState(false);
 
   const hackathon = useMemo(() => event.hackathon, [event]);
 
@@ -87,6 +91,14 @@ const Hackathon: React.FC<HackathonProps> = ({ event, handleRegister }) => {
       dispatch(setCurrentChatID(chatID));
       window.location.assign('/messaging');
     } else setClickedOnChat(true);
+  };
+
+  const handleTracksClick = () => {
+    setShowTracks(!showTracks);
+  };
+
+  const handlePrizeClick = () => {
+    setShowPrizes(!showPrizes);
   };
 
   interface UserProps {
@@ -227,150 +239,156 @@ const Hackathon: React.FC<HackathonProps> = ({ event, handleRegister }) => {
   return loading ? (
     <Loader />
   ) : (
-    hackathon && (
-      <div className="flex items-start justify-start p-8 flex-col">
-        {clickedOnChat &&
-          (user.id != '' ? (
-            <SendMessage user={event.organization.user} setShow={setClickedOnChat} />
-          ) : (
-            <SignUp setShow={setClickedOnChat} />
-          ))}
-        {clickedOnReport &&
-          (user.id != '' ? (
-            <Report eventID={event.id} setShow={setClickedOnReport} />
-          ) : (
-            <SignUp setShow={setClickedOnReport} />
-          ))}
-        <div className="w-full h-90 max-md:h-fit relative">
-          <Image
-            width={500}
-            height={280}
-            src={`${EVENT_PIC_URL}/${hackathon.coverPic}`}
-            alt="Event Picture"
-            className="w-full h-full max-md:h-52 rounded-xl"
-            placeholder="blur"
-            blurDataURL={hackathon.blurHash || 'no-hash'}
-          />
-          <div className="w-full absolute top-0 flex flex-col gap-4 max-md:gap-2 md:items-end p-4">
-            <div className="w-fit bg-white bg-opacity-25 backdrop-blur-sm px-6 max-md:px-4 py-2 rounded-lg max-md:text-sm font-medium">
-              Starts: {moment(hackathon.startTime).format('HH:mma DD MMMM, YYYY')}
+    <>
+      {showTracks && hackathon && <DisplayTracks setShow={setShowTracks} tracks={hackathon.tracks} />}
+      {showPrizes && hackathon && <DisplayPrizes setShow={setShowPrizes} prizes={hackathon.prizes} />}
+      {hackathon && (
+        <div className="flex items-start justify-start p-8 flex-col">
+          {clickedOnChat &&
+            (user.id !== '' ? (
+              <SendMessage user={event.organization.user} setShow={setClickedOnChat} />
+            ) : (
+              <SignUp setShow={setClickedOnChat} />
+            ))}
+          {clickedOnReport &&
+            (user.id !== '' ? (
+              <Report eventID={event.id} setShow={setClickedOnReport} />
+            ) : (
+              <SignUp setShow={setClickedOnReport} />
+            ))}
+          <div className="w-full h-90 max-md:h-fit relative">
+            <Image
+              width={500}
+              height={280}
+              src={`${EVENT_PIC_URL}/${hackathon.coverPic}`}
+              alt="Event Picture"
+              className="w-full h-full max-md:h-52 rounded-xl"
+              placeholder="blur"
+              blurDataURL={hackathon.blurHash || 'no-hash'}
+            />
+            <div className="w-full absolute top-0 flex flex-col gap-4 max-md:gap-2 md:items-end p-4">
+              <div className="flex flex-col space-y-4">
+                <div className="flex-1 bg-white bg-opacity-25 backdrop-blur-sm px-6 max-md:px-4 py-2 rounded-lg max-md:text-sm font-medium">
+                  <span className="block font-semibold">Starts:</span>
+                  <span>{moment(hackathon.startTime).format('dddd, MMMM Do YYYY, h:mm A')}</span>
+                </div>
+                <div className="flex-1 bg-white bg-opacity-25 backdrop-blur-sm px-6 max-md:px-4 py-2 rounded-lg max-md:text-sm font-medium">
+                  <span className="block font-semibold">Ends:</span>
+                  <span>{moment(hackathon.endTime).format('dddd, MMMM Do YYYY, h:mm A')}</span>
+                </div>
+              </div>
             </div>
-            <div className="w-fit bg-white bg-opacity-25 backdrop-blur-sm px-6 max-md:px-4 py-2 rounded-lg max-md:text-sm font-medium">
-              Ends: {moment(hackathon.endTime).format('HH:mma DD MMMM, YYYY')}
+            <div className="w-full absolute max-md:static bottom-0 flex gap-8 max-md:gap-2 justify-end p-4 max-md:px-0">
+              <div
+                className="max-md:w-1/3 max-md:text-center bg-white bg-opacity-25 backdrop-blur-sm px-6 max-md:px-4 py-2 rounded-lg max-md:text-sm font-medium cursor-pointer"
+                onClick={handleTracksClick}
+              >
+                View Tracks
+              </div>
+              <div
+                className="max-md:w-1/3 max-md:text-center bg-white bg-opacity-25 backdrop-blur-sm px-6 max-md:px-4 py-2 rounded-lg max-md:text-sm font-medium cursor-pointer"
+                onClick={handlePrizeClick}
+              >
+                View Prizes
+              </div>
             </div>
           </div>
-          <div className="w-full absolute max-md:static bottom-0 flex gap-8 max-md:gap-2 justify-end p-4 max-md:px-0">
-            <div className="max-md:w-1/3 max-md:text-center bg-white bg-opacity-25 backdrop-blur-sm px-6 max-md:px-4 py-2 rounded-lg max-md:text-sm font-medium cursor-pointer">
-              Tracks
-            </div>
-            <div className="max-md:w-1/3 max-md:text-center bg-white bg-opacity-25 backdrop-blur-sm px-6 max-md:px-4 py-2 rounded-lg max-md:text-sm font-medium cursor-pointer">
-              Prizes
-            </div>
-            <div className="max-md:w-1/3 max-md:text-center bg-white bg-opacity-25 backdrop-blur-sm px-6 max-md:px-4 py-2 rounded-lg max-md:text-sm font-medium cursor-pointer">
-              Rounds
-            </div>
-          </div>
-        </div>
 
-        <div className="flex max-lg:flex-col py-8 max-md:py-0 gap-4 justify-center items-center md:justify-start md:items-start w-full">
-          <div className="w-2/3 max-md:w-full flex justify-center items-start flex-col">
-            <div className="w-full flex flex-col gap-6 items-start justify-center lg:mb-0">
-              <h1 className="text-5xl font-primary font-bold">{hackathon.title}</h1>
-              <h3 className="text-xl font-semibold">{hackathon.tagline}</h3>
-              {hackathon.description && (
-                <div className="w-full flex flex-col gap-2">
-                  <div className="text-sm font-medium text-gray-500">ABOUT THE EVENT</div>
-                  <div className="text-lg">{hackathon.description}</div>
-                </div>
-              )}
-              {hackathon.tags && hackathon.tags.length > 0 && (
-                <div className="w-full flex flex-col gap-2">
-                  <div className="text-sm font-medium text-gray-500">TAGS</div>
-                  <div className="flex flex-wrap gap-2">
-                    {hackathon.tags.map(tag => (
-                      <Link
-                        key={tag}
-                        href={'/explore?search=' + tag}
-                        target="_blank"
-                        className="flex-center bg-gray-100 px-2 py-1 border-[1px] border-dashed border-gray-400 text-xs rounded-lg"
-                      >
-                        {tag}
-                      </Link>
-                    ))}
+          <div className="flex max-lg:flex-col py-8 max-md:py-0 gap-4 justify-center items-center md:justify-start md:items-start w-full">
+            <div className="w-2/3 max-md:w-full flex justify-center items-start flex-col">
+              <div className="w-full flex flex-col gap-6 items-start justify-center lg:mb-0">
+                <h1 className="text-5xl font-primary font-bold">{hackathon.title}</h1>
+                <h3 className="text-xl font-semibold">{hackathon.tagline}</h3>
+                {hackathon.description && (
+                  <div className="w-full flex flex-col gap-2">
+                    <div className="text-sm font-medium text-gray-500">ABOUT THE EVENT</div>
+                    <div className="text-lg">{hackathon.description}</div>
                   </div>
-                </div>
-              )}
-            </div>
-            <div className="mt-6 flex flex-col lg:flex-row justify-center items-center">
-              <div>
-                {hackathon.sponsors.map((sponsor, index) => (
-                  <div key={index} className="flex items-start p-4">
-                    {/* <div className="w-24 h-24 relative mr-4">
-                            <Image
-                              src={`/${sponsor.coverPic}`}
-                              alt={sponsor.name}
-                              layout="fill"
-                              className="object-cover rounded-full"
-                            />
-                          </div> */}
-                    <div className="flex justify-center items-start flex-col mt-4">
-                      <h3 className="text-3xl font-bold font-primary">{sponsor.name}</h3>
-                      <p className="text-lg">{sponsor.description}</p>
+                )}
+                {hackathon.tags && hackathon.tags.length > 0 && (
+                  <div className="w-full flex flex-col gap-2">
+                    <div className="text-sm font-medium text-gray-500">TAGS</div>
+                    <div className="flex flex-wrap gap-2">
+                      {hackathon.tags.map(tag => (
+                        <Link
+                          key={tag}
+                          href={'/explore?search=' + tag}
+                          target="_blank"
+                          className="flex-center bg-gray-100 px-2 py-1 border-[1px] border-dashed border-gray-400 text-xs rounded-lg"
+                        >
+                          {tag}
+                        </Link>
+                      ))}
                     </div>
                   </div>
-                ))}
+                )}
               </div>
-              <div className="w-[5px] rounded-full h-64 my-4 bg-black mx-12 border border-black hidden lg:block"></div>
-              <div className="flex flex-row items-center mt-8 space-x-12">
-                {hackathon.rounds.map((round, index) => (
-                  <div key={index} className="flex flex-col items-center mb-8">
-                    <div className="relative flex flex-col items-center mb-4">
-                      <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
-                        {index + 1}
+              <div className="mt-6 flex flex-col lg:flex-row justify-center items-center space-y-8 lg:space-y-0 lg:space-x-12 w-full">
+                <div className="w-full lg:w-1/2">
+                  {hackathon.sponsors.map((sponsor, index) => (
+                    <div
+                      key={index}
+                      className="flex items-start p-4 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 mb-6"
+                    >
+                      <div className="flex justify-center items-start flex-col">
+                        <h3 className="text-3xl font-bold font-primary">{sponsor.name}</h3>
+                        <p className="text-lg text-gray-700">{sponsor.description}</p>
                       </div>
-                      {index < hackathon.rounds.length && (
-                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-px h-16 bg-gray-300"></div>
-                      )}
                     </div>
-                    <div className="flex flex-col items-center w-48 p-4 border rounded shadow-lg">
-                      <p className="font-primary mt-4">{formatHackathonDate(round.startTime)}</p>
-                      <p className="font-primary">{new Date(round.startTime).toLocaleTimeString()}</p>
-                      <p className="font-primary my-4">to</p>
-                      <p className="font-primary">{formatHackathonDate(round.endTime)}</p>
-                      <p className="font-primary">{new Date(round.endTime).toLocaleTimeString()}</p>
+                  ))}
+                </div>
+                <div className="hidden lg:block w-px h-64 bg-gray-300"></div>
+                <div className="w-full lg:w-1/2 flex flex-col items-center space-y-8">
+                  {hackathon.rounds.map((round, index) => (
+                    <div key={index} className="flex flex-col items-center mb-8">
+                      <div className="relative flex flex-col items-center mb-4">
+                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                          {index + 1}
+                        </div>
+                        {index < hackathon.rounds.length - 1 && (
+                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-px h-16 bg-gray-300"></div>
+                        )}
+                      </div>
+                      <div className="flex flex-col items-center w-48 p-4 bg-white border rounded-lg shadow-lg">
+                        <div className="flex flex-col items-center">
+                          <p className="font-primary text-lg font-semibold mt-4">
+                            {formatHackathonDate(round.startTime)}
+                          </p>
+                          <p className="font-primary text-sm text-gray-600">
+                            {new Date(round.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                        </div>
+                        <div className="my-4">
+                          <span className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600">
+                            to
+                          </span>
+                        </div>
+                        <div className="flex flex-col items-center">
+                          <p className="font-primary text-lg font-semibold">{formatHackathonDate(round.endTime)}</p>
+                          <p className="font-primary text-sm text-gray-600">
+                            {new Date(round.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
-            <div className="w-full mt-8">
-              <h2 className="text-4xl font-bold font-primary mb-6 text-center">Tracks</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {hackathon.tracks.map((track, index) => (
-                  <div
-                    key={index}
-                    className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
-                  >
-                    <h3 className="text-2xl font-bold font-primary mb-4">{track.title}</h3>
-                    <p className="text-lg text-gray-700">{track.description}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
 
-          <div className="w-1/3 max-lg:w-full flex flex-col gap-2">
-            <LowerEvent event={event} numLikes={eventLikes} setNumLikes={setEventLikes} />
-            <div className="w-full flex flex-col gap-4 mb-2">
-              <RegisterButton />
-              <h1 className="text-2xl font-semibold">{getHackathonStatus(hackathon)}</h1>
-              <ProgressBar hackathon={hackathon} />
+            <div className="w-1/3 max-lg:w-full flex flex-col gap-2">
+              <LowerEvent event={event} numLikes={eventLikes} setNumLikes={setEventLikes} />
+              <div className="w-full flex flex-col gap-4 mb-2">
+                <RegisterButton />
+                <h1 className="text-2xl font-semibold">{getHackathonStatus(hackathon)}</h1>
+                <ProgressBar hackathon={hackathon} />
+              </div>
+              <AboutHosts />
             </div>
-            <AboutHosts />
           </div>
         </div>
-      </div>
-    )
+      )}
+    </>
   );
 };
 

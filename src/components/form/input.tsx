@@ -9,9 +9,20 @@ interface Props {
   required?: boolean;
   styles?: React.CSSProperties;
   type?: React.HTMLInputTypeAttribute;
+  className?: string;
 }
 
-const Input = ({ label, val, setVal, maxLength, placeholder, required = false, styles, type = 'text' }: Props) => {
+const Input = ({
+  label,
+  val,
+  setVal,
+  maxLength,
+  placeholder,
+  required = false,
+  styles,
+  type = 'text',
+  className,
+}: Props) => {
   return (
     <div className="w-full">
       {label && (
@@ -30,7 +41,7 @@ const Input = ({ label, val, setVal, maxLength, placeholder, required = false, s
         onChange={el => setVal(el.target.value)}
         maxLength={maxLength}
         type={type}
-        className="w-full font-medium bg-transparent focus:outline-none border-[1px] border-gray-400 rounded-lg p-2"
+        className={`w-full font-medium bg-transparent focus:outline-none border-[1px] border-gray-400 rounded-lg p-2 ${className}`}
         placeholder={placeholder}
         style={styles}
       />
