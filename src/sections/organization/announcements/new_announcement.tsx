@@ -4,13 +4,12 @@ import postHandler from '@/handlers/post_handler';
 import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { userSelector } from '@/slices/userSlice';
 import { useSelector } from 'react-redux';
 import NewPostHelper from '@/components/home/new_post_helper';
-import { Announcement, Organization, Post, User } from '@/types';
-import { useWindowWidth } from '@react-hook/window-size';
+import { Announcement, Organization, User } from '@/types';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
 import getHandler from '@/handlers/get_handler';
+import TagUserUtils from '@/utils/funcs/tag_users';
 
 interface Props {
   organisation: Organization;
@@ -49,75 +48,17 @@ const NewAnnouncement = ({ organisation, setShow, setAnnouncements }: Props) => 
     }
   };
 
-  const handleContentChange = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { value, selectionStart } = e.target;
-
-    const cursorPos = selectionStart;
-    setCursorPosition(cursorPos);
-
-    setContent(value);
-
-    const lastWord = value.substring(0, cursorPos).split(' ').pop();
-
-    // Detect backspace key press
-    if ((e.nativeEvent as InputEvent).inputType === 'deleteContentBackward') {
-      // Check if the last word starts with "@" (indicating a tagged user)
-      if (lastWord && lastWord.startsWith('@')) {
-        const usernameToRemove = lastWord.substring(1); // Remove "@" symbol
-        handleRemoveTag(usernameToRemove);
-      }
-    } else {
-      if (lastWord && lastWord.startsWith('@')) {
-        // Remove "@" symbol
-        const usernameToSearch = lastWord.substring(1);
-
-        await fetchUsers(usernameToSearch);
-        setShowUsers(true);
-      } else if (showUsers) {
-        setShowUsers(false);
-      }
-    }
-  };
-
-  const handleTagUser = (username: string) => {
-    if (!taggedUsernames.includes(username)) setTaggedUsernames(prevUsernames => [...prevUsernames, username]);
-
-    if (cursorPosition !== null) {
-      // Find the last "@" symbol before the current cursor position
-      const lastAtIndex = content.lastIndexOf('@', cursorPosition - 1);
-
-      if (lastAtIndex !== -1) {
-        // Replace the part of the content with the selected username
-        setContent(prevContent => {
-          const contentBefore = prevContent.substring(0, lastAtIndex);
-          const contentAfter = prevContent.substring(cursorPosition);
-          return `${contentBefore}@${username} ${contentAfter}`;
-        });
-      }
-    }
-
-    setShowUsers(false);
-  };
-
-  const handleRemoveTag = (username: string) => {
-    setTaggedUsernames(prevUsernames => prevUsernames.filter(u => u !== username));
-
-    if (cursorPosition !== null) {
-      // Find the last occurrence of `@username` before the current cursor position
-      const lastAtIndex = content.lastIndexOf(`@${username}`, cursorPosition - 1);
-
-      if (lastAtIndex !== -1) {
-        // Replace the tagged username with an empty string in the content
-        setContent(prevContent => {
-          const contentBefore = prevContent.substring(0, lastAtIndex);
-          const contentAfter = prevContent.substring(lastAtIndex + `@${username}`.length);
-          return `${contentBefore}${contentAfter}`;
-        });
-      }
-    }
-
-    setShowUsers(false);
-  };
+  const tagsUserUtils = new TagUserUtils(
+    cursorPosition,
+    content,
+    showUsers,
+    taggedUsernames,
+    setCursorPosition,
+    setContent,
+    fetchUsers,
+    setShowUsers,
+    setTaggedUsernames
+  );
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'b' && (event.ctrlKey || event.metaKey)) {
@@ -179,8 +120,6 @@ const NewAnnouncement = ({ organisation, setShow, setAnnouncements }: Props) => 
     }
   };
 
-  const width = useWindowWidth();
-
   return (
     <>
       <div className="fixed top-24 max-md:top-[calc(50%-75px)] w-[953px] max-lg:w-5/6 h-[560px] max-md:h-2/3 shadow-2xl dark:shadow-none backdrop-blur-xl bg-[#ffffff] dark:bg-[#ffe1fc22] flex flex-col gap-8 justify-between max-md:items-end p-8 max-md:p-6 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg right-1/2 translate-x-1/2 max-md:-translate-y-1/2 animate-fade_third z-30">
@@ -223,7 +162,7 @@ const NewAnnouncement = ({ organisation, setShow, setAnnouncements }: Props) => 
                 id="textarea_id"
                 className="w-full border-[2px] border-dashed p-2 rounded-lg dark:text-white dark:bg-dark_primary_comp focus:outline-none min-h-[16rem] max-h-64 max-md:w-full"
                 value={content}
-                onChange={handleContentChange}
+                onChange={tagsUserUtils.handleContentChange}
                 onKeyDown={handleKeyDown}
                 maxLength={1000}
                 placeholder="What's the announcement?"
@@ -267,7 +206,7 @@ const NewAnnouncement = ({ organisation, setShow, setAnnouncements }: Props) => 
             {users.map(user => (
               <div
                 key={user.id}
-                onClick={() => handleTagUser(user.username)}
+                onClick={() => tagsUserUtils.handleTagUser(user.username)}
                 className="w-1/4 hover:scale-105 flex items-center gap-2 rounded-md border-[1px] border-primary_btn p-2 hover:bg-primary_comp cursor-pointer transition-ease-300"
               >
                 <Image
