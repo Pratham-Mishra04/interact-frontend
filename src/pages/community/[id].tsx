@@ -41,6 +41,8 @@ import CommunityLoader from '@/components/loaders/community';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import NoCommunityFeed from '@/components/fillers/community';
 import { Gear, Plus } from '@phosphor-icons/react';
+import { useSelector } from 'react-redux';
+import { userSelector } from '@/slices/userSlice';
 
 const Community = ({ id }: { id: string }) => {
   const [community, setCommunity] = useState(initialCommunity);
@@ -61,6 +63,8 @@ const Community = ({ id }: { id: string }) => {
 
   const [clickedOnNewPost, setClickedOnNewPost] = useState(false);
   const [clickedOnMembers, setClickedOnMembers] = useState(false);
+
+  const user = useSelector(userSelector);
 
   const fetchCommunity = async () => {
     const URL = `${COMMUNITY_URL}/${id}`;
@@ -121,7 +125,7 @@ const Community = ({ id }: { id: string }) => {
 
   const CommunityOptions = () => (
     <>
-      {checkCommunityStaticAccess(community.id, COMMUNITY_MEMBER) && (
+      {checkCommunityStaticAccess(user, community.id, COMMUNITY_MEMBER) && (
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Button>
@@ -129,13 +133,13 @@ const Community = ({ id }: { id: string }) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-full flex flex-col gap-2 p-2">
-            {checkCommunityAccess(community.id, 'edit_community', permissionConfig) && (
+            {checkCommunityAccess(user, community.id, 'edit_community', permissionConfig) && (
               <EditCommunity community={community} setCommunity={setCommunity} />
             )}
-            {checkCommunityAccess(community.id, 'edit_memberships', permissionConfig) && (
+            {checkCommunityAccess(user, community.id, 'edit_memberships', permissionConfig) && (
               <EditMemberships community={community} />
             )}
-            {checkCommunityStaticAccess(community.id, COMMUNITY_MEMBER) && (
+            {checkCommunityStaticAccess(user, community.id, COMMUNITY_MEMBER) && (
               <ViewPermissions
                 community={community}
                 permissionConfig={permissionConfig}
@@ -145,7 +149,7 @@ const Community = ({ id }: { id: string }) => {
           </DropdownMenuContent>
         </DropdownMenu>
       )}
-      {checkCommunityAccess(community.id, 'create_post', permissionConfig) && (
+      {checkCommunityAccess(user, community.id, 'create_post', permissionConfig) && (
         <Button onClick={() => setClickedOnNewPost(true)}>
           New Post <Plus size={18} />
         </Button>
@@ -228,7 +232,7 @@ const Community = ({ id }: { id: string }) => {
                           loader={<PostsLoader />}
                         >
                           {!community.isOpen &&
-                            !checkCommunityStaticAccess(community.id, COMMUNITY_MEMBER) &&
+                            !checkCommunityStaticAccess(user, community.id, COMMUNITY_MEMBER) &&
                             posts.length > 0 && (
                               <div className="w-full text-center text-sm text-gray-500 font-medium my-4">
                                 Some posts are hidden from non members.
@@ -301,13 +305,13 @@ const Community = ({ id }: { id: string }) => {
                   </>
                 )}
                 {((community.rules && community.rules.length > 0) ||
-                  checkCommunityAccess(community.id, 'manage_rules', permissionConfig)) && (
+                  checkCommunityAccess(user, community.id, 'manage_rules', permissionConfig)) && (
                   <>
                     <div className="w-full h-[1px] bg-gray-300 my-2"></div>
                     <div>
                       <div className="w-full flex items-center justify-between">
                         <div className="text-lg font-medium">Community Rules</div>
-                        {checkCommunityAccess(community.id, 'manage_rules', permissionConfig) && (
+                        {checkCommunityAccess(user, community.id, 'manage_rules', permissionConfig) && (
                           <AddRule communityID={community.id} setCommunity={setCommunity} />
                         )}
                       </div>
@@ -318,7 +322,7 @@ const Community = ({ id }: { id: string }) => {
                               <AccordionTrigger>{rule.title}</AccordionTrigger>
                               <AccordionContent className="flex justify-between">
                                 <div>{rule.description}</div>
-                                {checkCommunityAccess(community.id, 'manage_rules', permissionConfig) && (
+                                {checkCommunityAccess(user, community.id, 'manage_rules', permissionConfig) && (
                                   <EditRule rule={rule} communityID={community.id} setCommunity={setCommunity} />
                                 )}
                               </AccordionContent>

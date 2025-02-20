@@ -5,13 +5,13 @@ import Link from 'next/link';
 import { EVENT_PIC_URL } from '@/config/routes';
 import { Buildings, ClockCounterClockwise, Eye, Gavel, PencilSimple, Trash, Users } from '@phosphor-icons/react';
 import moment from 'moment';
-import checkOrgAccess, { checkParticularOrgAccess } from '@/utils/funcs/access';
-import { EVENT_PIC_HASH_DEFAULT, ORG_SENIOR } from '@/config/constants';
+import { EVENT_PIC_HASH_DEFAULT } from '@/config/constants';
 
 interface Props {
   event: Event;
-  org?: boolean;
   smaller?: boolean;
+  isSenior?: boolean;
+  isManager?: boolean;
   setClickedOnViewHistory?: React.Dispatch<React.SetStateAction<boolean>>;
   setClickedOnEditEvent?: React.Dispatch<React.SetStateAction<boolean>>;
   setClickedOnEditCollaborators?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -24,8 +24,9 @@ interface Props {
 
 const EventCard = ({
   event,
-  org = false,
   smaller = false,
+  isSenior = false,
+  isManager = false,
   setClickedOnViewHistory,
   setClickedOnEditEvent,
   setClickedOnEditCollaborators,
@@ -60,9 +61,9 @@ const EventCard = ({
               : EVENT_PIC_HASH_DEFAULT
           }
         />
-        {org && checkOrgAccess(ORG_SENIOR) && (
+        {isSenior && (
           <div className="w-full flex gap-2 absolute opacity-0 group-hover:opacity-100 top-2 left-2 transition-ease-300">
-            {checkParticularOrgAccess(ORG_SENIOR, event.organization) && !event.hackathonID && (
+            {isSenior && !event.hackathonID && (
               <div
                 onClick={el => {
                   el.stopPropagation();
@@ -93,33 +94,35 @@ const EventCard = ({
               <PencilSimple size={18} />
             </div>
 
-            <div
-              onClick={el => {
-                el.stopPropagation();
-                el.preventDefault();
-                if (setClickedEditEvent) setClickedEditEvent(event);
-                if (setClickedOnEditCollaborators) setClickedOnEditCollaborators(true);
-              }}
-              className="bg-white dark:bg-dark_primary_comp_hover text-gray-500 dark:text-white text-xxs px-2 py-1 rounded-lg"
-            >
-              <Users size={18} />
-            </div>
-            {checkParticularOrgAccess(ORG_SENIOR, event.organization) && (
-              <div
-                onClick={el => {
-                  el.stopPropagation();
-                  el.preventDefault();
-                  if (setClickedEditEvent) setClickedEditEvent(event);
-                  if (event.hackathonID) {
-                    if (setClickedOnEditJudges) setClickedOnEditJudges(true);
-                  } else {
-                    if (setClickedOnEditCoHosts) setClickedOnEditCoHosts(true);
-                  }
-                }}
-                className="bg-white dark:bg-dark_primary_comp_hover text-gray-500 dark:text-white text-xxs px-2 py-1 rounded-lg"
-              >
-                {event.hackathonID ? <Gavel size={18} /> : <Buildings size={18} />}
-              </div>
+            {isManager && (
+              <>
+                <div
+                  onClick={el => {
+                    el.stopPropagation();
+                    el.preventDefault();
+                    if (setClickedEditEvent) setClickedEditEvent(event);
+                    if (setClickedOnEditCollaborators) setClickedOnEditCollaborators(true);
+                  }}
+                  className="bg-white dark:bg-dark_primary_comp_hover text-gray-500 dark:text-white text-xxs px-2 py-1 rounded-lg"
+                >
+                  <Users size={18} />
+                </div>
+                <div
+                  onClick={el => {
+                    el.stopPropagation();
+                    el.preventDefault();
+                    if (setClickedEditEvent) setClickedEditEvent(event);
+                    if (event.hackathonID) {
+                      if (setClickedOnEditJudges) setClickedOnEditJudges(true);
+                    } else {
+                      if (setClickedOnEditCoHosts) setClickedOnEditCoHosts(true);
+                    }
+                  }}
+                  className="bg-white dark:bg-dark_primary_comp_hover text-gray-500 dark:text-white text-xxs px-2 py-1 rounded-lg"
+                >
+                  {event.hackathonID ? <Gavel size={18} /> : <Buildings size={18} />}
+                </div>
+              </>
             )}
             <div
               onClick={el => {

@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 import { currentOrgSelector } from '@/slices/orgSlice';
 import { useState, useEffect } from 'react';
 import NewOpening from '@/sections/organization/openings/new_opening';
-import checkOrgAccess from '@/utils/funcs/access';
 import { Info, Plus } from '@phosphor-icons/react';
 import { ORG_MANAGER } from '@/config/constants';
 import NoOpenings from '@/components/fillers/openings';
@@ -18,6 +17,7 @@ import { SERVER_ERROR } from '@/config/errors';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import AccessTree from '@/components/organization/access_tree';
 import OrgMembersOnlyAndProtect from '@/utils/wrappers/org_members_only';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 const Openings = () => {
   const [loading, setLoading] = useState(true);
@@ -29,6 +29,8 @@ const Openings = () => {
   const [clickedOnInfo, setClickedOnInfo] = useState(false);
 
   const currentOrg = useSelector(currentOrgSelector);
+
+  const isManager = useOrgAccess(ORG_MANAGER);
 
   const getOpenings = async () => {
     const URL = `/org/${currentOrg.id}/org_openings?page=${page}&limit=${10}`;
@@ -62,7 +64,7 @@ const Openings = () => {
         <div className="w-full flex justify-between items-center p-base_padding">
           <div className="w-fit text-6xl max-md:text-4xl font-semibold dark:text-white font-primary ">Openings</div>
           <div className="flex items-center gap-2">
-            {checkOrgAccess(ORG_MANAGER) && (
+            {isManager && (
               <Plus
                 onClick={() => setClickedOnNewOpening(prev => !prev)}
                 size={42}
@@ -90,7 +92,7 @@ const Openings = () => {
             className="w-full flex flex-wrap gap-4 justify-between px-base_padding"
           >
             {openings.map(opening => {
-              return <OpeningCard key={opening.id} opening={opening} setOpenings={setOpenings} />;
+              return <OpeningCard key={opening.id} opening={opening} setOpenings={setOpenings} isManager={isManager} />;
             })}
           </InfiniteScroll>
         ) : (

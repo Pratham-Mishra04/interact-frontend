@@ -6,9 +6,10 @@ import { ORG_MEMBER, PROJECT_MEMBER } from '@/config/constants';
 import { SERVER_ERROR } from '@/config/errors';
 import { USER_COVER_PIC_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
+import { userSelector } from '@/slices/userSlice';
 import { Meeting } from '@/types';
 import { initialMeeting } from '@/types/initials';
-import checkOrgAccess, { checkParticularOrgAccess, checkProjectAccess } from '@/utils/funcs/access';
+import { checkParticularOrgAccess, checkProjectAccess } from '@/utils/funcs/access';
 import renderContentWithLinks from '@/utils/funcs/render_content_with_links';
 import { getProjectPicHash, getProjectPicURL } from '@/utils/funcs/safe_extract';
 import { getNextSessionTime } from '@/utils/funcs/session_details';
@@ -19,11 +20,14 @@ import moment from 'moment';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { ReactNode, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const Redirect = () => {
   const [loading, setLoading] = useState(true);
   const [meeting, setMeeting] = useState(initialMeeting);
   const [status, setStatus] = useState('Ended');
+
+  const user = useSelector(userSelector);
 
   const getMeeting = (id: string) => {
     const URL = `/meetings/quick/${id}`;
@@ -105,9 +109,9 @@ const Redirect = () => {
 
   const handleJoinApplicationMeeting = async () => {
     await getHandler(
-      `/applications/meeting/token/${!checkProjectAccess(PROJECT_MEMBER, meeting.project?.id) ? 'applicant/' : ''}${
-        meeting.applicationID
-      }`
+      `/applications/meeting/token/${
+        !checkProjectAccess(user, PROJECT_MEMBER, meeting.project?.id) ? 'applicant/' : ''
+      }${meeting.applicationID}`
     )
       .then(res => {
         if (res.statusCode === 200) {
@@ -221,7 +225,7 @@ const Redirect = () => {
                     View This Meeting in Organisation
                   </Link>
                 ) : (
-                  checkProjectAccess(PROJECT_MEMBER, meeting.project?.id) && (
+                  checkProjectAccess(user, PROJECT_MEMBER, meeting.project?.id) && (
                     <Link
                       href={`/projects/${meeting.project?.slug}`}
                       className="hover-underline-animation after:bg-black dark:after:bg-white"

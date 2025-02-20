@@ -25,7 +25,7 @@ const BookmarkModal = ({
     <>
       <Popover open={isDialogOpen} onOpenChange={val => setIsDialogOpen(val)}>
         <PopoverTrigger></PopoverTrigger>
-        <PopoverContent className="flex flex-col gap-2 text-sm w-48 p-3">
+        <PopoverContent className="flex flex-col gap-2 text-sm w-48 p-3" align="end">
           {bookmarks.length > 0 && (
             <div className="w-full flex flex-col gap-2">
               {bookmarks.map((bookmark, index: number) => {

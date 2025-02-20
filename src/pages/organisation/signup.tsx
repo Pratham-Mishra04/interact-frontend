@@ -18,10 +18,20 @@ import isEmail from 'validator/lib/isEmail';
 import isStrongPassword from 'validator/lib/isStrongPassword';
 import { SERVER_ERROR } from '@/config/errors';
 import StrongPassInfo from '@/components/common/strong_pass_info';
-import WidthCheck from '@/utils/wrappers/widthCheck';
 import { setCurrentOrg } from '@/slices/orgSlice';
 import Link from 'next/link';
 import { Users } from '@phosphor-icons/react';
+import nookies from 'nookies';
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -30,6 +40,7 @@ const SignUp = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [mutex, setMutex] = useState(false);
+  const [approvalCode, setApprovalCode] = useState('');
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -83,6 +94,7 @@ const SignUp = () => {
     formData.append('username', username.trim().toLowerCase());
     formData.append('password', password);
     formData.append('confirmPassword', confirmPassword);
+    formData.append('approvalCode', approvalCode);
 
     const toaster = Toaster.startLoad('Creating your Account...');
 
@@ -114,11 +126,8 @@ const SignUp = () => {
           dispatch(setCurrentOrg(organization));
           socketService.connect(user.id);
 
-          sessionStorage.setItem('verification-redirect', 'signup-callback');
-          window.location.assign('/organisation/verification');
-
-          //   sessionStorage.setItem('onboarding-redirect', 'signup');
-          //   router.replace('/onboarding');
+          sessionStorage.setItem('onboarding-redirect', 'signup');
+          window.location.assign('/organisation/onboarding');
         }
         setMutex(false);
       })
@@ -145,7 +154,7 @@ const SignUp = () => {
           <StrongPassInfo password={password} confirmPassword={confirmPassword} setShow={setClickedOnStrongPassInfo} />
         )}
         <div className="w-[55%] max-lg:hidden min-h-screen bg-onboarding bg-cover"></div>
-        <div className="w-[45%] max-lg:w-full h-full min-h-screen font-primary gap-12 py-8 px-8 flex flex-col justify-between items-center">
+        <div className="w-[45%] max-lg:w-full h-full min-h-screen font-primary gap-12 py-8 px-8 flex flex-col justify-start items-center">
           <div className="w-full flex justify-between items-center">
             <Link href="/" className="hidden dark:flex">
               <ReactSVG src="/onboarding_logo_dark.svg" />
@@ -169,7 +178,7 @@ const SignUp = () => {
           <form onSubmit={handleSubmit} className="w-3/5 max-md:w-full flex flex-col items-center gap-6">
             <div className="flex flex-col gap-2 text-center">
               <div className="text-2xl font-semibold">Let&apos;s Get Started</div>
-              <div className="text-gray-400">Start setting up your account ✌️</div>
+              <div className="text-gray-400">Start setting up your organisation ✌️</div>
             </div>
 
             <div className="w-full flex flex-col gap-4">
@@ -272,6 +281,61 @@ const SignUp = () => {
                   </div>
                 </div>
               </div>
+
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2 font-medium">
+                  <div>Approval Code</div>
+                  <Sheet>
+                    <SheetTrigger>
+                      <Info className="cursor-pointer" size={18} weight="light" />
+                    </SheetTrigger>
+                    <SheetContent className="max-w-[360px]">
+                      <SheetHeader>
+                        <SheetTitle>🔑 What is an Approval Code?</SheetTitle>
+                        <SheetDescription className="text-left">
+                          <p className="text-sm mt-4">
+                            An <strong className="text-primary">Approval Code</strong> is a unique access token required
+                            to verify your organization. It ensures{' '}
+                            <span className="font-medium">only authorized users</span> gain access.
+                          </p>
+
+                          <div className="mt-4">
+                            <h3 className="text-lg font-semibold text-primary">⏳ Valid for 24 Hours</h3>
+                            <p className="text-sm">Use it before it expires or request a new one.</p>
+                          </div>
+
+                          <div className="mt-4">
+                            <h3 className="text-lg font-semibold text-primary">📩 How to Get One?</h3>
+                            <p className="text-sm">Submit your organization details to receive an approval code.</p>
+                          </div>
+
+                          <div className="mt-3 p-3 rounded-md border">
+                            <h4 className="text-md font-medium">📧 Send an Email</h4>
+                            <p className="text-sm">
+                              Email <strong className="text-primary">socials@interactnow.in</strong> with:
+                            </p>
+                            <ul className="mt-2 space-y-1 text-sm list-disc list-inside">
+                              <li>🏢 Organization Name</li>
+                              <li>📞 Contact Email</li>
+                              <li>📝 Purpose of Request</li>
+                            </ul>
+                          </div>
+
+                          <p className="mt-4 text-sm text-gray-500 italic">
+                            If approved, you&apos;ll receive your code with further instructions. 🚀
+                          </p>
+                        </SheetDescription>
+                      </SheetHeader>
+                    </SheetContent>
+                  </Sheet>
+                </div>
+                <input
+                  name="approvalCode"
+                  value={approvalCode}
+                  onChange={el => setApprovalCode(el.target.value)}
+                  className="w-full bg-white focus:outline-none border-2 p-2 rounded-xl text-gray-400"
+                />
+              </div>
             </div>
             <div className="w-full p-1 flex flex-col gap-2 items-center">
               <button
@@ -290,12 +354,12 @@ const SignUp = () => {
               </div>
             </div>
           </form>
-          <div className="w-3/4 max-lg:w-full text-[12px] text-center text-gray-400">
+          {/* <div className="w-3/4 max-lg:w-full text-[12px] text-center text-gray-400">
             By clicking “Continue” above, you acknowledge that you have read and understood, and agree to
             Interact&apos;s{' '}
             <span className="underline underline-offset-2 font-medium cursor-pointer">Term & Conditions</span> and{' '}
             <span className="underline underline-offset-2 font-medium cursor-pointer">Privacy Policy.</span>
-          </div>
+          </div> */}
         </div>
       </div>
     </>
@@ -303,13 +367,14 @@ const SignUp = () => {
 };
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  if (process.env.NODE_ENV != 'development') {
+  const token = nookies.get(context).token;
+  if (token && process.env.NODE_ENV != 'development') {
     return {
       redirect: {
         permanent: true,
-        destination: '/signup',
+        destination: '/',
       },
-      props: {},
+      props: { token },
     };
   }
   return {
@@ -317,4 +382,4 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
   };
 };
 
-export default WidthCheck(SignUp);
+export default SignUp;

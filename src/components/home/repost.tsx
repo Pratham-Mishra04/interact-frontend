@@ -16,11 +16,11 @@ import ConfirmDelete from '../common/confirm_delete';
 import Report from '../common/report';
 import SignUp from '../common/signup_box';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
-import { checkOrgAccessByOrgUserID } from '@/utils/funcs/access';
 import { ORG_SENIOR } from '@/config/constants';
 import { Buildings } from '@phosphor-icons/react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import Editor from '../editor';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 interface Props {
   post: Post;
@@ -36,10 +36,13 @@ const RePost = ({ post, showLowerPost = true, setFeed, org = false }: Props) => 
   const [clickedOnReport, setClickedOnReport] = useState(false);
 
   const [noUserClick, setNoUserClick] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const [caption, setCaption] = useState(post.content);
 
   const userID = useSelector(userIDSelector) || '';
+
+  const isSenior = useOrgAccess(ORG_SENIOR, post.userID, true);
 
   const handleDelete = async () => {
     const toaster = Toaster.startLoad('Deleting your post...');
@@ -125,24 +128,28 @@ const RePost = ({ post, showLowerPost = true, setFeed, org = false }: Props) => 
           <div className="flex gap-2 text-xs text-gray-400">
             <div>{moment(post.postedAt).fromNow()}</div>
             {!clickedOnEdit && showLowerPost && (
-              <Popover>
+              <Popover open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <PopoverTrigger>
                   <div className="text-xxs cursor-pointer">•••</div>
                 </PopoverTrigger>
-                <PopoverContent className="w-40 p-2 text-sm">
-                  {(post.userID == loggedInUser.id || checkOrgAccessByOrgUserID(ORG_SENIOR, post.userID)) && (
+                <PopoverContent className="w-40 p-2 text-sm" align="end">
+                  {(post.userID == loggedInUser.id || isSenior) && (
                     <div
-                      onClick={() => setClickedOnEdit(true)}
+                      onClick={() => {
+                        setIsDialogOpen(false);
+                        setClickedOnEdit(true);
+                      }}
                       className="w-full px-4 py-2 max-md:p-1 max-md:text-center hover:bg-primary_comp dark:hover:bg-dark_primary_comp_hover rounded-lg cursor-pointer transition-ease-300"
                     >
                       Edit
                     </div>
                   )}
-                  {(post.userID == loggedInUser.id || checkOrgAccessByOrgUserID(ORG_SENIOR, post.userID)) && (
+                  {(post.userID == loggedInUser.id || isSenior) && (
                     <div
                       onClick={el => {
                         el.stopPropagation();
                         setClickedOnDelete(true);
+                        setIsDialogOpen(false);
                       }}
                       className="w-full px-4 py-2 max-md:p-1 max-md:text-center hover:bg-primary_comp dark:hover:bg-dark_primary_comp_hover hover:text-primary_danger rounded-lg cursor-pointer transition-ease-100 "
                     >

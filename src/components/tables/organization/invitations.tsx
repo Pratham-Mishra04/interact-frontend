@@ -3,10 +3,10 @@ import { ORG_MANAGER } from '@/config/constants';
 import { SERVER_ERROR } from '@/config/errors';
 import { ORG_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import deleteHandler from '@/handlers/delete_handler';
+import { useOrgAccess } from '@/hooks/use-org-access';
 import { currentOrgSelector } from '@/slices/orgSlice';
 import { Invitation, Organization } from '@/types';
 import { initialInvitation } from '@/types/initials';
-import checkOrgAccess from '@/utils/funcs/access';
 import getInvitationStatus, { getInvitationStatusColor } from '@/utils/funcs/invitation';
 import Toaster from '@/utils/toaster';
 import { Trash } from '@phosphor-icons/react';
@@ -25,6 +25,8 @@ const OrgInvitationsTable = ({ invitations, setOrganization }: Props) => {
   const [clickedOnWithdraw, setClickedOnWithdraw] = useState(false);
 
   const currentOrgID = useSelector(currentOrgSelector).id;
+
+  const isManager = useOrgAccess(ORG_MANAGER);
 
   const handleWithdraw = async (invitation: Invitation) => {
     const toaster = Toaster.startLoad('Withdrawing Invitation...');
@@ -117,7 +119,7 @@ const OrgInvitationsTable = ({ invitations, setOrganization }: Props) => {
             {moment(invitation.createdAt).format('DD MMMM, YYYY')}
           </div>
           <div className="w-[10%] flex-center">
-            {checkOrgAccess(ORG_MANAGER) && invitation.status == 0 && (
+            {isManager && invitation.status == 0 && (
               <Trash
                 onClick={() => {
                   setClickedInvitation(invitation);

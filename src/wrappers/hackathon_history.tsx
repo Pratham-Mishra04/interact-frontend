@@ -14,7 +14,7 @@ const HackathonHistoryWrapper = ({ children, history }: Props) => {
   return (
     <div
       key={history.id}
-      className="w-full flex flex-col gap-1 p-3 dark:text-white hover:bg-primary_comp dark:hover:bg-dark_primary_comp_hover rounded-xl font-primary transition-ease-200"
+      className="w-full flex flex-col gap-1 p-3 hover:bg-primary_comp dark:hover:bg-dark_primary_comp_hover rounded-xl font-primary transition-ease-200"
     >
       <div className="w-full flex justify-between items-center">
         <Link href={`/users/${history.sender.username}`} className="w-fit flex-center gap-1">
@@ -30,7 +30,7 @@ const HackathonHistoryWrapper = ({ children, history }: Props) => {
         </Link>
         <div className="text-xxs">{getDisplayTime(history.createdAt, false)}</div>
       </div>
-      <div className="text-sm flex gap-1">- {children}</div>
+      <div className="text-sm flex gap-1 text-primary_black">- {children}</div>
     </div>
   );
 };

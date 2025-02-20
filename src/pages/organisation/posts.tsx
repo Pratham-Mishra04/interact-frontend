@@ -14,13 +14,13 @@ import RePostComponent from '@/components/home/repost';
 import OrgMembersOnlyAndProtect from '@/utils/wrappers/org_members_only';
 import { useSelector } from 'react-redux';
 import { currentOrgSelector } from '@/slices/orgSlice';
-import checkOrgAccess from '@/utils/funcs/access';
 import { ORG_SENIOR } from '@/config/constants';
 import Masonry from 'react-masonry-css';
 import Loader from '@/components/common/loader';
 import AccessTree from '@/components/organization/access_tree';
 import NoPosts from '@/components/fillers/posts';
 import { Post } from '@/types';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 const Posts = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -58,6 +58,8 @@ const Posts = () => {
     getFeed();
   }, []);
 
+  const isSenior = useOrgAccess(ORG_SENIOR);
+
   return (
     <BaseWrapper title={`Posts | ${currentOrg.title}`}>
       <OrgSidebar index={2} />
@@ -66,7 +68,7 @@ const Posts = () => {
           <div className="w-full flex justify-between items-center">
             <div className="w-fit text-6xl max-md:text-4xl font-semibold dark:text-white font-primary">Posts</div>
             <div className="flex items-center gap-2">
-              {checkOrgAccess(ORG_SENIOR) && (
+              {isSenior && (
                 <Plus
                   onClick={() => setClickedOnNewPost(true)}
                   size={42}

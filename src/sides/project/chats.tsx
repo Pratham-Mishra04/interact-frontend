@@ -6,12 +6,14 @@ import { MEMBERSHIP_URL, MESSAGING_URL, PROJECT_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import ProjectChatView from '@/sections/explore/project_chat_view';
 import NewGroup from '@/sections/messaging/new_group';
+import { userSelector } from '@/slices/userSlice';
 import { Chat } from '@/types';
 import { checkProjectAccess } from '@/utils/funcs/access';
 import Toaster from '@/utils/toaster';
 import PrimeWrapper from '@/wrappers/prime';
 import { Loader } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const ProjectChats = ({ projectID }: { projectID: string }) => {
   const [chats, setChats] = useState<Chat[]>([]);
@@ -35,6 +37,8 @@ const ProjectChats = ({ projectID }: { projectID: string }) => {
 
   const [clickedOnChat, setClickedOnChat] = useState(false);
 
+  const user = useSelector(userSelector);
+
   return (
     <PrimeWrapper>
       {clickedOnChat && (
@@ -43,7 +47,7 @@ const ProjectChats = ({ projectID }: { projectID: string }) => {
       <div className="space-y-4">
         <div className="w-full flex items-center justify-between">
           <div className="md:text-2xl font-semibold">Project Chats</div>
-          {checkProjectAccess(PROJECT_MANAGER, projectID) && (
+          {checkProjectAccess(user, PROJECT_MANAGER, projectID) && (
             <NewGroup
               userFetchURL={`${MEMBERSHIP_URL}/members/${projectID}`}
               userFetchURLQuery="&exclude_user=false"

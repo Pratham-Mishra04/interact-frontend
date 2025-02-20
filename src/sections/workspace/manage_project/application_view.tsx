@@ -323,7 +323,7 @@ const ApplicationView = ({
           />
         </div>
 
-        {checkProjectAccess(PROJECT_MANAGER, application.projectID) && (
+        {/* {checkProjectAccess(PROJECT_MANAGER, application.projectID) && (
           <div className="w-full space-y-1">
             <div className="text-xl font-medium">
               {application.meetingID ? 'Scheduled Meeting' : 'Meet the Applicant!'}
@@ -336,7 +336,7 @@ const ApplicationView = ({
               )}
             </div>
           </div>
-        )}
+        )} */}
 
         {(application.status == 0 || application.status == 1) && (
           <div className="w-full flex justify-center gap-12 max-lg:gap-4 border-t-[1px] border-primary_btn pt-4">
@@ -544,6 +544,7 @@ const MeetingCard = ({
           sessions={sessions}
           setClickedOnSession={setClickedOnSession}
           setClickedSessionID={setClickedSessionID}
+          org={false}
         />
       )}
     </div>

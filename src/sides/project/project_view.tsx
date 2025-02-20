@@ -9,6 +9,7 @@ import renderContentWithLinks from '@/utils/funcs/render_content_with_links';
 import { SidePrimeWrapper } from '@/wrappers/side';
 import LowerProject from '@/components/lowers/lower_project';
 import ProjectCardCarousel from '@/components/explore/project_card_carousel';
+import Editor from '@/components/editor';
 
 interface Props {
   project: Project;
@@ -72,21 +73,7 @@ const ProjectView = ({ project, setProject, openInNewTab }: Props) => {
             Open Project <ArrowUpRight size={20} weight="bold" />
           </Link>
           <div className="text-sm whitespace-pre-line">
-            {project.description.length > 200 ? (
-              clickedOnReadMore ? (
-                project.description
-              ) : (
-                <>
-                  {project.description.substring(0, 200)}
-                  <span onClick={() => setClickedOnReadMore(true)} className="text-xs italic opacity-60 cursor-pointer">
-                    {' '}
-                    Read More...
-                  </span>
-                </>
-              )
-            ) : (
-              renderContentWithLinks(project.description)
-            )}
+            <Editor editable={false} content={project.description} truncate maxHeight={120} />
           </div>
           <div className="w-full flex flex-wrap gap-2">
             {project.tags &&

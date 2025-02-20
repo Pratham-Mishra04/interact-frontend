@@ -17,12 +17,12 @@ import ConfirmDelete from '../common/confirm_delete';
 import Report from '../common/report';
 import SignUp from '../common/signup_box';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
-import { checkOrgAccessByOrgUserID } from '@/utils/funcs/access';
 import { ORG_SENIOR } from '@/config/constants';
 import { Buildings } from '@phosphor-icons/react';
 import isArrEdited from '@/utils/funcs/check_array_edited';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import Editor from '@/components/editor';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 interface Props {
   post: Post;
@@ -56,6 +56,8 @@ const PostComponent = ({
   const [caption, setCaption] = useState(post.content);
 
   const userID = useSelector(userIDSelector) || '';
+
+  const isSenior = useOrgAccess(ORG_SENIOR, post.userID, true);
 
   const handleDelete = async () => {
     const toaster = Toaster.startLoad('Deleting your post...');
@@ -152,12 +154,12 @@ const PostComponent = ({
               <></>
             ) : (
               showLowerPost && (
-                <Popover open={isDialogOpen} onOpenChange={val => setIsDialogOpen(val)}>
+                <Popover open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                   <PopoverTrigger>
                     <div className="text-xxs cursor-pointer">•••</div>
                   </PopoverTrigger>
-                  <PopoverContent className="w-40 p-2 text-sm">
-                    {(post.userID == loggedInUser.id || checkOrgAccessByOrgUserID(ORG_SENIOR, post.userID)) && (
+                  <PopoverContent className="w-40 p-2 text-sm" align="end">
+                    {(post.userID == loggedInUser.id || isSenior) && (
                       <div
                         onClick={e => {
                           e.stopPropagation();
@@ -169,7 +171,7 @@ const PostComponent = ({
                         Edit
                       </div>
                     )}
-                    {(post.userID == loggedInUser.id || checkOrgAccessByOrgUserID(ORG_SENIOR, post.userID)) && (
+                    {(post.userID == loggedInUser.id || isSenior) && (
                       <div
                         onClick={el => {
                           el.stopPropagation();

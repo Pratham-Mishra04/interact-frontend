@@ -30,6 +30,7 @@ import { currentOrgSelector } from '@/slices/orgSlice';
 import checkOrgAccess from '@/utils/funcs/access';
 import { ORG_SENIOR } from '@/config/constants';
 import AccessTree from '@/components/organization/access_tree';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 interface Props {
   user: User;
@@ -190,6 +191,8 @@ const OrgCard = ({ user, setUser, tagline, coverPic }: Props) => {
     }
   }, [window.location.search]);
 
+  const isSenior = useOrgAccess(ORG_SENIOR);
+
   return (
     <>
       {clickedOnFollowers ? <Connections type="followers" user={user} setShow={setClickedOnFollowers} /> : <></>}
@@ -221,7 +224,7 @@ const OrgCard = ({ user, setUser, tagline, coverPic }: Props) => {
             }
           }}
         />
-        {clickedOnProfilePic && checkOrgAccess(ORG_SENIOR) ? (
+        {clickedOnProfilePic && isSenior ? (
           <div className="relative">
             <div className="w-56 h-56 border-2 border-dashed border-primary_black max-md:w-40 max-md:h-40 absolute -top-4 -right-4 animate-spin rounded-full"></div>
             <div
@@ -250,8 +253,8 @@ const OrgCard = ({ user, setUser, tagline, coverPic }: Props) => {
             />
           </div>
         ) : (
-          <label className="relative" htmlFor={checkOrgAccess(ORG_SENIOR) ? 'userPic' : ''}>
-            {checkOrgAccess(ORG_SENIOR) ? (
+          <label className="relative" htmlFor={isSenior ? 'userPic' : ''}>
+            {isSenior ? (
               <div className="w-48 h-48 max-md:w-32 max-md:h-32 absolute top-0 right-0 rounded-full flex-center bg-white transition-ease-200 cursor-pointer opacity-0 hover:opacity-50">
                 <PencilSimple color="black" size={32} />
               </div>
@@ -309,7 +312,7 @@ const OrgCard = ({ user, setUser, tagline, coverPic }: Props) => {
 
         <div className="w-full h-[1px] border-t-[1px] border-gray-500 border-dashed"></div>
 
-        {/* {clickedOnBio && checkOrgAccess(ORG_SENIOR) ? (
+        {/* {clickedOnBio && isSenior ? (
           <div className="w-full">
             <div className="text-xs ml-1 font-medium uppercase text-gray-500">Bio ({bio.trim().length}/500)</div>
             <textarea
@@ -327,12 +330,12 @@ const OrgCard = ({ user, setUser, tagline, coverPic }: Props) => {
             className={`w-full relative rounded-lg flex-center p-4 ${
               user.bio.trim() == '' ? 'bg-primary_comp' : 'hover:bg-primary_comp'
             } ${
-              checkOrgAccess(ORG_SENIOR)
+              isSenior
                 ? 'group hover:bg-primary_comp cursor-pointer transition-ease-300'
                 : 'cursor-default'
             }`}
           >
-            {checkOrgAccess(ORG_SENIOR) ? (
+            {isSenior ? (
               <PencilSimple
                 className={`absolute opacity-0 ${
                   user.bio.trim() == '' ? 'opacity-100' : 'group-hover:opacity-100'
@@ -351,7 +354,7 @@ const OrgCard = ({ user, setUser, tagline, coverPic }: Props) => {
         )} */}
 
         <div className="w-full flex flex-col gap-8 mt-2">
-          {clickedOnTags && checkOrgAccess(ORG_SENIOR) ? (
+          {clickedOnTags && isSenior ? (
             <div className="w-full flex flex-col gap-2">
               <div className="text-xs ml-1 font-medium uppercase text-gray-500">Tags ({tags.length || 0}/10)</div>
               <Tags tags={tags} setTags={setTags} maxTags={10} suggestions={true} />
@@ -364,16 +367,10 @@ const OrgCard = ({ user, setUser, tagline, coverPic }: Props) => {
               <div
                 onClick={() => setClickedOnTags(true)}
                 className={`w-full relative rounded-lg flex-center p-4 ${
-                  !user.tags || user.tags?.length == 0
-                    ? 'bg-primary_comp'
-                    : checkOrgAccess(ORG_SENIOR) && 'hover:bg-primary_comp'
-                } ${
-                  checkOrgAccess(ORG_SENIOR)
-                    ? 'group hover:bg-primary_comp cursor-pointer transition-ease-300'
-                    : 'cursor-default'
-                }`}
+                  !user.tags || user.tags?.length == 0 ? 'bg-primary_comp' : isSenior && 'hover:bg-primary_comp'
+                } ${isSenior ? 'group hover:bg-primary_comp cursor-pointer transition-ease-300' : 'cursor-default'}`}
               >
-                {checkOrgAccess(ORG_SENIOR) ? (
+                {isSenior ? (
                   <PencilSimple
                     className={`absolute opacity-0 ${
                       !user.tags || user.tags?.length == 0 ? 'opacity-100' : 'group-hover:opacity-100'
@@ -408,7 +405,7 @@ const OrgCard = ({ user, setUser, tagline, coverPic }: Props) => {
               </div>
             </div>
           )}
-          {clickedOnLinks && checkOrgAccess(ORG_SENIOR) ? (
+          {clickedOnLinks && isSenior ? (
             <div className="w-full flex flex-col gap-2">
               <div className="text-xs ml-1 font-medium uppercase text-gray-500">Links ({links.length || 0}/5)</div>
               <Links links={links} setLinks={setLinks} maxLinks={5} />
@@ -421,16 +418,10 @@ const OrgCard = ({ user, setUser, tagline, coverPic }: Props) => {
               <div
                 onClick={() => setClickedOnLinks(true)}
                 className={`w-full relative rounded-lg flex-center p-4 ${
-                  !user.links || user.links?.length == 0
-                    ? 'bg-primary_comp'
-                    : checkOrgAccess(ORG_SENIOR) && 'hover:bg-primary_comp'
-                } ${
-                  checkOrgAccess(ORG_SENIOR)
-                    ? 'group hover:bg-primary_comp cursor-pointer transition-ease-300'
-                    : 'cursor-default'
-                }`}
+                  !user.links || user.links?.length == 0 ? 'bg-primary_comp' : isSenior && 'hover:bg-primary_comp'
+                } ${isSenior ? 'group hover:bg-primary_comp cursor-pointer transition-ease-300' : 'cursor-default'}`}
               >
-                {checkOrgAccess(ORG_SENIOR) ? (
+                {isSenior ? (
                   <PencilSimple
                     className={`absolute opacity-0 ${
                       !user.links || user.links?.length == 0 ? 'opacity-100' : 'group-hover:opacity-100'

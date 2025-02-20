@@ -13,6 +13,8 @@ import Masonry from 'react-masonry-css';
 import Mascot from '@/components/fillers/mascot';
 import { useSelector } from 'react-redux';
 import { userSelector } from '@/slices/userSlice';
+import { checkParticularOrgAccess } from '@/utils/funcs/access';
+import { ORG_SENIOR } from '@/config/constants';
 
 interface Props {
   orgID: string;
@@ -82,7 +84,12 @@ const NewsFeed = ({ orgID }: Props) => {
               {newsFeed.map((news, index) =>
                 'totalVotes' in news ? (
                   <div key={news.id} className={`${index != 0 && index != 1 && 'mt-4'} ${index == 0 && 'max-md:mb-4'}`}>
-                    <PollCard poll={news} organisation={organisation} setPolls={setNewsFeed} />
+                    <PollCard
+                      poll={news}
+                      organisation={organisation}
+                      setPolls={setNewsFeed}
+                      isSenior={checkParticularOrgAccess(ORG_SENIOR, organisation)}
+                    />
                   </div>
                 ) : (
                   <div key={news.id} className={`${index != 0 && index != 1 && 'mt-4'} ${index == 0 && 'max-md:mb-4'}`}>

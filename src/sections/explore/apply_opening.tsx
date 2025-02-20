@@ -12,6 +12,7 @@ import moment from 'moment';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocalDraft } from '@/hooks/use-local-draft';
 
 interface Props {
   opening: Opening;
@@ -23,6 +24,7 @@ interface Props {
 
 const ApplyOpening = ({ opening, setShow, setOpening, setAddResume, org = false }: Props) => {
   const [content, setContent] = useState('');
+  const {draft: applicationDraft, clearDraft} = useLocalDraft(`application-draft-${opening.id}`, content);
   const [links, setLinks] = useState<string[]>([]);
   const [includeEmail, setIncludeEmail] = useState(false);
   const [includeResume, setIncludeResume] = useState(false);
@@ -52,13 +54,13 @@ const ApplyOpening = ({ opening, setShow, setOpening, setAddResume, org = false 
   }, []);
 
   const handleSubmit = async () => {
-    if (content.trim() == '') {
+    if (applicationDraft.trim() == '') {
       Toaster.error('Message cannot be Empty', 'validation_error');
       return;
     }
     const toaster = Toaster.startLoad('Applying to Opening...');
 
-    const formData = { content, links, includeEmail, includeResume, yoe };
+    const formData = { content: applicationDraft, links, includeEmail, includeResume, yoe };
 
     const URL = org ? `/org/${opening.organizationID}/applications/${opening.id}` : `${APPLICATION_URL}/${opening.id}`;
 
@@ -71,6 +73,7 @@ const ApplyOpening = ({ opening, setShow, setOpening, setAddResume, org = false 
       socketService.sendNotification(opening.userID, `${user.name} applied at an opening!`);
       Toaster.stopLoad(toaster, 'Applied to the Opening!', 1);
       setShow(false);
+      clearDraft();
     } else {
       if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
       else Toaster.stopLoad(toaster, SERVER_ERROR, 0);
@@ -116,9 +119,9 @@ const ApplyOpening = ({ opening, setShow, setOpening, setAddResume, org = false 
           <div className="w-2/3 h-full max-lg:w-full flex max-lg:flex-col gap-4">
             <div className="w-1/2 max-lg:w-full h-full flex flex-col gap-2 relative">
               <textarea
-                value={content}
+                value={applicationDraft}
                 onChange={el => {
-                  setContent(el.target.value);
+                  setContent(el.target.value)
                 }}
                 maxLength={500}
                 className="w-full px-4 py-2 rounded-lg text-black dark:text-white bg-primary_comp dark:bg-dark_primary_comp_hover min-h-[27rem] max-h-[27rem] focus:outline-none"

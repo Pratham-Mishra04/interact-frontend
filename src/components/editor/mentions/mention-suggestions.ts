@@ -4,7 +4,7 @@ import getHandler from '@/handlers/get_handler';
 import { Community, Event, Opening, Organization, Project, User } from '@/types';
 import Toaster from '@/utils/toaster';
 import { ReactRenderer } from '@tiptap/react';
-import tippy from 'tippy.js';
+import tippy, { Props as TippyProps, Instance as TippyInstance } from 'tippy.js';
 import MentionList from './mention-list';
 
 export type FetchResponse = {
@@ -39,7 +39,7 @@ export default {
 
   render: () => {
     let component: any;
-    let popup: any;
+    let popup: TippyInstance<TippyProps>[];
 
     return {
       //TODO: IDEA: can pass query as prop and make request in the comp with useEffect
@@ -55,12 +55,14 @@ export default {
 
         popup = tippy('body', {
           getReferenceClientRect: props.clientRect,
-          appendTo: () => document.body,
+          appendTo: document.body,
           content: component.element,
           showOnCreate: true,
           interactive: true,
           trigger: 'manual',
           placement: 'bottom-start',
+          zIndex: 99999,
+          sticky: 'popper'
         });
       },
 

@@ -25,12 +25,12 @@ import Report from '@/components/common/report';
 import SignUp from '@/components/common/signup_box';
 import { setCurrentChatID } from '@/slices/messagingSlice';
 import SendMessage from '@/sections/explore/send_message';
-import renderContentWithLinks from '@/utils/funcs/render_content_with_links';
 import SecondaryButton from '@/components/buttons/secondary_btn';
 import Hackathon from '@/screens/hackathon/hackathon';
 import PrimeWrapper from '@/wrappers/prime';
 import Links from '@/components/explore/show_links';
 import { EVENT_PIC_HASH_DEFAULT } from '@/config/constants';
+import Editor from '@/components/editor';
 
 interface Props {
   id: string;
@@ -348,11 +348,12 @@ const EventComponent = ({ id }: Props) => {
           </div>
         </div>
       )}
-
-      <div className="w-full flex flex-col gap-2">
-        <div className="text-sm font-medium text-gray-500">ABOUT THE EVENT</div>
-        <div className="whitespace-pre-wrap">{renderContentWithLinks(event.description)}</div>
-      </div>
+      {event.description && (
+        <div className="w-full flex flex-col gap-2">
+          <div className="text-sm font-medium text-gray-500">ABOUT THE EVENT</div>
+          <div className="whitespace-pre-wrap">{<Editor content={event.description} editable={false} />}</div>
+        </div>
+      )}
     </div>
   );
 

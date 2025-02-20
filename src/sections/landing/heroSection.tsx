@@ -105,7 +105,7 @@ export const HeroSection = () => {
         </p>
 
         <div className="space-y-4">
-          <Link href={user.id ? '/home' : '/signup'}>
+          <Link href={user.id ? (user.isOrganization ? '/organisation/home' : '/home') : '/signup'}>
             <button className="w-fit bg-sky-400 hover:bg-sky-600 group relative text-white px-6 py-2 rounded-full text-lg transition-ease-300">
               <div className="w-fit flex-center gap-1 relative">
                 <div className="group-hover:pr-4 transition-ease-300">

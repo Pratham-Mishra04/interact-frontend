@@ -12,7 +12,6 @@ import {
 import { SidePrimeWrapper } from '@/wrappers/side';
 import Select from '@/components/form/select';
 import Input from '@/components/form/input';
-import TextArea from '@/components/form/textarea';
 import Tags from '@/components/form/tags';
 import { communityCategories } from '@/utils/categories';
 import Toaster from '@/utils/toaster';
@@ -29,6 +28,7 @@ import Link from 'next/link';
 import Checkbox from '@/components/form/checkbox';
 import SideLoader from '@/components/loaders/side';
 import { Plus } from '@phosphor-icons/react';
+import TextArea from '@/components/form/textarea';
 
 const CommunitySide = () => {
   const [communities, setCommunities] = useState<Community[]>([]);

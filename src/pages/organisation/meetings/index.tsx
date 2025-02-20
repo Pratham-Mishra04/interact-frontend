@@ -4,9 +4,8 @@ import MainWrapper from '@/wrappers/main';
 import getHandler from '@/handlers/get_handler';
 import { useSelector } from 'react-redux';
 import { currentOrgSelector } from '@/slices/orgSlice';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import NewMeeting from '@/sections/organization/meetings/new_meeting';
-import checkOrgAccess from '@/utils/funcs/access';
 import { ArrowCounterClockwise, Info, LockOpen, Plus, SortAscending } from '@phosphor-icons/react';
 import { ORG_SENIOR } from '@/config/constants';
 // import NoMeetings from '@/components/fillers/meetings';
@@ -22,6 +21,7 @@ import Mascot from '@/components/fillers/mascot';
 import Select from '@/components/filters/select';
 import Order from '@/components/filters/order';
 import Tags from '@/components/filters/tags';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 const Meetings = () => {
   const [loading, setLoading] = useState(true);
@@ -39,6 +39,8 @@ const Meetings = () => {
   const [clickedOnInfo, setClickedOnInfo] = useState(false);
 
   const currentOrg = useSelector(currentOrgSelector);
+
+  const isSenior = useOrgAccess(ORG_SENIOR);
 
   const getMeetings = async (initialPage: number | null) => {
     const URL = `/org/${currentOrg.id}/meetings?page=${
@@ -109,7 +111,7 @@ const Meetings = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {checkOrgAccess(ORG_SENIOR) && (
+            {isSenior && (
               <Plus
                 onClick={() => setClickedOnNewMeeting(prev => !prev)}
                 size={42}

@@ -5,12 +5,14 @@ import { PROJECT_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import NewResource from '@/sections/resources/new_resource';
 import ResourceView from '@/sections/resources/resource_view';
+import { userSelector } from '@/slices/userSlice';
 import { Project, ResourceBucket } from '@/types';
 import { initialResourceBucket } from '@/types/initials';
 import { checkProjectAccess } from '@/utils/funcs/access';
 import Toaster from '@/utils/toaster';
 import { SidePrimeWrapper } from '@/wrappers/side';
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 interface Props {
   projectID: string;
@@ -21,6 +23,8 @@ const Resources = ({ projectID }: Props) => {
   const [clickedOnResource, setClickedOnResource] = useState(false);
   const [clickedResource, setClickedResource] = useState<ResourceBucket>(initialResourceBucket);
   const [loading, setLoading] = useState(true);
+
+  const user = useSelector(userSelector);
 
   const fetchBuckets = () => {
     const URL = `${PROJECT_URL}/${projectID}/resource`;
@@ -49,7 +53,7 @@ const Resources = ({ projectID }: Props) => {
         <div className="w-full flex items-center justify-between">
           <div className="text-lg font-medium">Resource Buckets</div>
 
-          {checkProjectAccess(PROJECT_EDITOR, projectID) && (
+          {checkProjectAccess(user, PROJECT_EDITOR, projectID) && (
             <NewResource setResources={setBuckets} resourceType="project" resourceParentID={projectID} />
           )}
         </div>
@@ -66,13 +70,13 @@ const Resources = ({ projectID }: Props) => {
                       resource={resource}
                       setClickedOnResource={setClickedOnResource}
                       setClickedResource={setClickedResource}
-                      checkerFunc={a => checkProjectAccess(a, projectID)}
+                      checkerFunc={a => checkProjectAccess(user, a, projectID)}
                       smaller
                     />
                   );
                 })}
               </div>
-              {clickedOnResource && checkProjectAccess(clickedResource.viewAccess, projectID) && (
+              {clickedOnResource && checkProjectAccess(user, clickedResource.viewAccess, projectID) && (
                 <ResourceView
                   setShow={setClickedOnResource}
                   resourceBucket={clickedResource}
@@ -81,7 +85,7 @@ const Resources = ({ projectID }: Props) => {
                   setClickedOnResourceBucket={setClickedOnResource}
                   resourceType="project"
                   resourceParentID={projectID}
-                  checkerFunc={a => checkProjectAccess(a, projectID)}
+                  checkerFunc={a => checkProjectAccess(user, a, projectID)}
                 />
               )}
             </>

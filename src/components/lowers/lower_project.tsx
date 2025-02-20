@@ -33,6 +33,7 @@ import { SERVER_ERROR } from '@/config/errors';
 import router from 'next/router';
 import ConfirmDelete from '../common/confirm_delete';
 import ConfirmOTP from '../common/confirm_otp';
+import { orgSelector } from '@/slices/orgSlice';
 
 interface Props {
   project: Project;
@@ -66,10 +67,6 @@ const LowerProject = ({ project, setProject }: Props) => {
 
   const [clickedOnConfirmDelete, setClickedOnConfirmDelete] = useState(false);
 
-  const user = useSelector(userSelector);
-  const likes = user.likes;
-  const bookmarks = user.projectBookmarks || [];
-
   const dispatch = useDispatch();
 
   const updatingLikes = useSelector(configSelector).updatingLikes;
@@ -77,6 +74,11 @@ const LowerProject = ({ project, setProject }: Props) => {
   const semaphore = new Semaphore(updatingLikes, setUpdatingLikes);
 
   const userID = useSelector(userIDSelector) || '';
+  const user = useSelector(userSelector);
+  const org = useSelector(orgSelector);
+
+  const likes = user.likes;
+  const bookmarks = user.projectBookmarks || [];
 
   const setBookmark = (isBookmarked: boolean, projectItemID: string, bookmarkID: string) => {
     setBookmarkStatus({
@@ -284,8 +286,9 @@ const LowerProject = ({ project, setProject }: Props) => {
           <PopoverTrigger>
             <DotsThreeVertical className="cursor-pointer max-lg:w-6 max-lg:h-6" size={28} weight="bold" />
           </PopoverTrigger>
-          <PopoverContent className="flex flex-col gap-2 text-sm w-48 p-3">
+          <PopoverContent className="flex flex-col gap-2 text-sm w-48 p-3" align="end">
             {checkOrgProjectAccess(
+              { user, organization: org },
               PROJECT_EDITOR,
               project.id,
               ORG_SENIOR,
@@ -303,7 +306,8 @@ const LowerProject = ({ project, setProject }: Props) => {
               <Export className="cursor-pointer max-lg:w-6 max-lg:h-6" size={20} weight="regular" />
               Share
             </div>
-            {checkProjectAccess(PROJECT_MEMBER, project.id) && !checkProjectAccess(PROJECT_OWNER, project.id) ? (
+            {checkProjectAccess(user, PROJECT_MEMBER, project.id) &&
+            !checkProjectAccess(user, PROJECT_OWNER, project.id) ? (
               <div
                 onClick={() => {
                   setClickedOnLeave(true);
@@ -327,6 +331,7 @@ const LowerProject = ({ project, setProject }: Props) => {
               </div>
             )}
             {checkOrgProjectAccess(
+              { user, organization: org },
               PROJECT_OWNER,
               project.id,
               ORG_MANAGER,

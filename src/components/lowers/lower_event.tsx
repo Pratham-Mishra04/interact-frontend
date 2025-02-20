@@ -92,10 +92,10 @@ const LowerEvent = ({ event, numLikes, setNumLikes }: Props) => {
             <Eye size={24} />
             <div className="text-sm">{event.noImpressions}</div>
           </div>
-          <div className="flex-center gap-2">
+          {/* <div className="flex-center gap-2">
             <Users size={24} />
             <div className="text-sm">{event.hackathon?.noParticipants}</div>
-          </div>
+          </div> */}
           {user.organizationMemberships.map(membership => membership.organizationID).includes(event.organizationID) && (
             <Gear
               size={24}

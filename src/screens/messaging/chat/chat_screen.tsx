@@ -227,7 +227,7 @@ const ChatScreen = ({ projectWindow = false, initialChatState = initialChat, pro
             chat={chat}
             setShow={setClickedOnInfo}
             setChat={setChat}
-            access={getSelfMembership(chat).isAdmin || checkProjectAccess(PROJECT_EDITOR, projectID)}
+            access={getSelfMembership(chat).isAdmin || checkProjectAccess(user, PROJECT_EDITOR, projectID)}
           />
         ) : (
           <ChatInfo chat={chat} setShow={setClickedOnInfo} setChat={setChat} />

@@ -2,7 +2,6 @@ import Input from '@/components/form/input';
 import Links from '@/components/form/links';
 import Select from '@/components/form/select';
 import Tags from '@/components/form/tags';
-import TextArea from '@/components/form/textarea';
 import { SERVER_ERROR } from '@/config/errors';
 import { PROJECT_URL } from '@/config/routes';
 import postHandler from '@/handlers/post_handler';
@@ -17,6 +16,7 @@ import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogHeader, Dialog
 import { Plus } from '@phosphor-icons/react';
 import Checkbox from '@/components/form/checkbox';
 import { Button } from '@/components/ui/button';
+import EditorInput from '@/components/form/editor-input';
 
 interface Props {
   setProjects?: React.Dispatch<React.SetStateAction<Project[]>>;
@@ -127,7 +127,7 @@ const NewProject = ({ setProjects, setTriggerReload, setActiveTab }: Props) => {
           <Input label="Project Title" val={title} setVal={setTitle} maxLength={25} required={true} />
           <Select label="Project Category" val={category} setVal={setCategory} options={categories} required={true} />
           <Input label="Project Tagline" val={tagline} setVal={setTagline} maxLength={50} required={true} />
-          <TextArea label="Project Description" val={description} setVal={setDescription} maxLength={1000} />
+          <EditorInput label="Project Description" val={description} setVal={setDescription} maxLength={1000} />
           <Tags label="Project Tags" tags={tags} setTags={setTags} maxTags={10} suggestions required />
           <Links label="Project Links" links={links} setLinks={setLinks} maxLinks={5} />
           <Checkbox label="Keep this Project Private" val={isPrivate} setVal={setIsPrivate} />

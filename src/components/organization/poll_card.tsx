@@ -20,9 +20,10 @@ interface Props {
   organisation: Organization;
   setPolls?: React.Dispatch<React.SetStateAction<any[]>>;
   hoverShadow?: boolean;
+  isSenior: boolean;
 }
 
-const PollCard = ({ poll, setPolls, organisation, hoverShadow = true }: Props) => {
+const PollCard = ({ poll, setPolls, organisation, hoverShadow = true, isSenior }: Props) => {
   const [clickedOnDelete, setClickedOnDelete] = useState(false);
   const user = useSelector(userSelector);
 
@@ -52,7 +53,7 @@ const PollCard = ({ poll, setPolls, organisation, hoverShadow = true }: Props) =
         } transition-ease-300 z-[1] animate-fade_third`}
       >
         <Link
-          href={`/organisations/${organisation.user.username}`}
+          href={`/organisations/${organisation?.user?.username}`}
           target="_blank"
           className="h-full flex items-center gap-2"
         >
@@ -61,9 +62,9 @@ const PollCard = ({ poll, setPolls, organisation, hoverShadow = true }: Props) =
             width={100}
             height={100}
             alt={'User Pic'}
-            src={`${USER_PROFILE_PIC_URL}/${organisation.user.profilePic}`}
+            src={`${USER_PROFILE_PIC_URL}/${organisation?.user?.profilePic}`}
             placeholder="blur"
-            blurDataURL={organisation.user.profilePicBlurHash || 'no-hash'}
+            blurDataURL={organisation?.user?.profilePicBlurHash || 'no-hash'}
             className="rounded-full w-8 h-8"
           />
         </Link>
@@ -72,16 +73,16 @@ const PollCard = ({ poll, setPolls, organisation, hoverShadow = true }: Props) =
           <div className="w-full flex justify-between items-center">
             <Link
               href={
-                user.id == organisation.userID
+                user.id == organisation?.userID
                   ? '/organisation/profile'
-                  : `/organisations/${organisation.user.username}`
+                  : `/organisations/${organisation?.user?.username}`
               }
               target="_blank"
               className="flex max-md:flex-col md:items-center gap-2 max-md:gap-0 font-medium"
             >
-              {organisation.user.name}
+              {organisation?.user?.name}
               <div className="text-xs max-md:text-xxs font-normal text-gray-500">
-                @{organisation.user.username}
+                @{organisation?.user?.username}
               </div>{' '}
             </Link>
             <div className="text-gray-400 text-xs">{moment(poll.createdAt).fromNow()}</div>
@@ -109,7 +110,7 @@ const PollCard = ({ poll, setPolls, organisation, hoverShadow = true }: Props) =
                 {poll.totalVotes} Vote{poll.totalVotes != 1 ? 's' : ''}
               </div>
 
-              {checkOrgAccess(ORG_SENIOR) && (
+              {isSenior && (
                 <div onClick={() => setClickedOnDelete(true)} className="text-sm text-primary_danger cursor-pointer">
                   Delete
                 </div>

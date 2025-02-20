@@ -1,6 +1,6 @@
 import { ORG_MEMBER } from '@/config/constants';
+import { useOrgAccess } from '@/hooks/use-org-access';
 import { Session } from '@/types';
-import checkOrgAccess from '@/utils/funcs/access';
 import moment from 'moment';
 import React from 'react';
 
@@ -8,9 +8,12 @@ interface Props {
   sessions: Session[];
   setClickedOnSession: React.Dispatch<React.SetStateAction<boolean>>;
   setClickedSessionID: React.Dispatch<React.SetStateAction<string>>;
+  org: boolean;
 }
 
-const SessionTable = ({ sessions, setClickedOnSession, setClickedSessionID }: Props) => {
+const SessionTable = ({ sessions, setClickedOnSession, setClickedSessionID, org }: Props) => {
+  const isMember = useOrgAccess(ORG_MEMBER);
+
   return (
     <div className="w-full flex flex-col gap-2">
       <div className="text-3xl font-semibold my-2">Sessions</div>
@@ -24,15 +27,13 @@ const SessionTable = ({ sessions, setClickedOnSession, setClickedSessionID }: Pr
         <div
           key={session.id}
           onClick={() => {
-            if (checkOrgAccess(ORG_MEMBER)) {
+            if (!org || isMember) {
               setClickedSessionID(session.id);
               setClickedOnSession(true);
             }
           }}
           className={`w-full h-12 bg-white dark:bg-dark_primary_comp rounded-xl border-gray-400 dark:border-dark_primary_btn flex text-sm text-primary_black dark:text-white ${
-            checkOrgAccess(ORG_MEMBER)
-              ? 'dark:hover:bg-dark_primary_comp_hover dark:hover:bg-dark_primary_comp_hover cursor-pointer'
-              : 'cursor-default'
+            !org || isMember ? 'dark:hover:bg-dark_primary_comp_hover cursor-pointer' : 'cursor-default'
           } transition-ease-300`}
         >
           <div className="w-[30%] flex-center">{session.id}</div>

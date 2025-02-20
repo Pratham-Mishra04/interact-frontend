@@ -105,7 +105,7 @@ const MentionList = forwardRef<MentionListHandle, MentionListProps>((props, ref)
         orgs: `/organisations/${item.user?.username || ''}`,
         events: `/events/${item.id}`,
         openings: `/openings?oid=${item.id || ''}`,
-        communities: `/communities/${item.id}`,
+        communities: `/community/${item.id}`,
       };
 
       return hrefMap[type] || '';

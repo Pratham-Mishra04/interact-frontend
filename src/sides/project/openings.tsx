@@ -7,6 +7,8 @@ import { checkProjectAccess } from '@/utils/funcs/access';
 import { PROJECT_MANAGER } from '@/config/constants';
 import AddOpening from '@/sections/workspace/manage_project/new_opening';
 import ManageOpenings from '@/sections/workspace/manage_project/manage_openings';
+import { useSelector } from 'react-redux';
+import { userSelector } from '@/slices/userSlice';
 
 interface Props {
   project: Project;
@@ -14,12 +16,14 @@ interface Props {
 }
 
 const Openings = ({ project, setProject }: Props) => {
-  return (project.openings && project.openings.length > 0) || checkProjectAccess(PROJECT_MANAGER, project.id) ? (
+  const user = useSelector(userSelector);
+
+  return (project.openings && project.openings.length > 0) || checkProjectAccess(user, PROJECT_MANAGER, project.id) ? (
     <SidePrimeWrapper>
       <div className="w-full flex flex-col gap-2">
         <div className="w-full flex items-center justify-between">
           <div className="text-lg font-medium">Active Openings</div>
-          {checkProjectAccess(PROJECT_MANAGER, project.id) ? (
+          {checkProjectAccess(user, PROJECT_MANAGER, project.id) ? (
             <div className="flex-center gap-2">
               <AddOpening project={project} setProject={setProject} org={false} />
               {project.openings && project.openings.length > 0 && (
@@ -59,7 +63,7 @@ const Openings = ({ project, setProject }: Props) => {
                     <OpeningBookmarkIcon opening={opening} />
                   </div> */}
                   </div>
-                  {checkProjectAccess(PROJECT_MANAGER, project.id) ? (
+                  {checkProjectAccess(user, PROJECT_MANAGER, project.id) ? (
                     <div className="w-full flex items-center gap-1 text-sm">
                       {opening.noApplications} Applications
                       <Link href={`/workspace/manage/applications/${opening.id}`} className="text-xs">

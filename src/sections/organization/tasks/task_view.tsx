@@ -17,6 +17,7 @@ import checkOrgAccess from '@/utils/funcs/access';
 import { ORG_SENIOR } from '@/config/constants';
 import EditTask from '@/sections/tasks/edit_task';
 import { userSelector } from '@/slices/userSlice';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 interface Props {
   taskID: number;
@@ -40,6 +41,8 @@ const TaskView = ({ taskID, tasks, setShow, setTasks, organization, setClickedTa
 
   const user = useSelector(userSelector);
   const currentOrgID = useSelector(currentOrgIDSelector);
+
+  const isSenior = useOrgAccess(ORG_SENIOR);
 
   const handleDelete = async () => {
     const toaster = Toaster.startLoad('Deleting the task...');
@@ -88,9 +91,7 @@ const TaskView = ({ taskID, tasks, setShow, setTasks, organization, setClickedTa
   const toggleComplete = async () => {
     const toaster = Toaster.startLoad(task.isCompleted ? 'Marking Incomplete' : 'Marking Completed');
 
-    const URL = checkOrgAccess(ORG_SENIOR)
-      ? `${ORG_URL}/${currentOrgID}/tasks/completed/${task.id}`
-      : `${TASK_URL}/completed/${task.id}`;
+    const URL = isSenior ? `${ORG_URL}/${currentOrgID}/tasks/completed/${task.id}` : `${TASK_URL}/completed/${task.id}`;
 
     const res = await patchHandler(URL, { isCompleted: !task.isCompleted });
 
@@ -159,7 +160,7 @@ const TaskView = ({ taskID, tasks, setShow, setTasks, organization, setClickedTa
           setShow={setClickedOnNewSubTask}
           task={task}
           setTasks={setTasks}
-          byOrgManager={!isAssignedUser(user.id) && checkOrgAccess(ORG_SENIOR)}
+          byOrgManager={!isAssignedUser(user.id) && isSenior}
         />
       )}
       {clickedOnViewSubTask && (
@@ -176,7 +177,7 @@ const TaskView = ({ taskID, tasks, setShow, setTasks, organization, setClickedTa
       )}
       <TaskComponent
         task={task}
-        accessChecker={checkOrgAccess(ORG_SENIOR)}
+        accessChecker={isSenior}
         setClickedTaskID={setClickedTaskID}
         setClickedOnEditTask={setClickedOnEditTask}
         setClickedOnDeleteTask={setClickedOnDeleteTask}

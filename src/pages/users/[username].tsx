@@ -310,7 +310,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { username } = context.query;
 
   try {
-    const response = await axios.get(`${BACKEND_URL}${EXPLORE_URL}/quick/item?username=${username}`);
+    const response = await axios.get(`${BACKEND_URL}${EXPLORE_URL}/quick/item?username=${username}`, {
+      headers: {
+        'X-API-KEY': process.env.API_TOKEN,
+      },
+    });
 
     const user: User = response.data.user || initialUserObj;
     const seoProps: NextSeoProps = generateSEOProps(

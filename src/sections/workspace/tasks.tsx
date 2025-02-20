@@ -13,6 +13,8 @@ import { PROJECT_MANAGER } from '@/config/constants';
 import PictureList from '@/components/common/picture_list';
 import { SidePrimeWrapper } from '@/wrappers/side';
 import NewTask from '../tasks/new_task';
+import { useSelector } from 'react-redux';
+import { userSelector } from '@/slices/userSlice';
 
 interface Props {
   project: Project;
@@ -48,6 +50,8 @@ const Tasks = ({ project, org = false }: Props) => {
     getTasks();
   }, []);
 
+  const user = useSelector(userSelector);
+
   return (
     <SidePrimeWrapper>
       <div className="flex gap-2 items-center">
@@ -64,7 +68,7 @@ const Tasks = ({ project, org = false }: Props) => {
       {loading ? (
         <TasksLoader />
       ) : tasks.length == 0 ? (
-        checkProjectAccess(PROJECT_MANAGER, project.id) ? (
+        checkProjectAccess(user, PROJECT_MANAGER, project.id) ? (
           <>
             <div className="text-center my-2">
               <span className="text-xl text-gradient font-semibold">Empty Here! </span>The to-do list 📝 is your canvas,

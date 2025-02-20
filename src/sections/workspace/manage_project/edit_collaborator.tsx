@@ -23,6 +23,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { PencilSimple } from '@phosphor-icons/react';
 import Input from '@/components/form/input';
 import { Button } from '@/components/ui/button';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 interface Props {
   membership: Membership;
@@ -83,8 +84,10 @@ const EditCollaborator = ({ membership, project, setProject, org = false }: Prop
     setMutex(false);
   };
 
+  const isManager = useOrgAccess(ORG_MANAGER);
+
   const canEditRoles =
-    project.userID == userID || (org && checkOrgAccess(ORG_MANAGER))
+    project.userID == userID || (org && isManager)
       ? [PROJECT_MEMBER, PROJECT_EDITOR, PROJECT_MANAGER]
       : [PROJECT_MEMBER, PROJECT_EDITOR];
 

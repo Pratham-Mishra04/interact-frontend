@@ -78,7 +78,7 @@ const Tasks = ({ project, setShow, setClickedOnNewTask, org = false }: Props) =>
         {loading ? (
           <TasksLoader />
         ) : tasks.length == 0 ? (
-          checkProjectAccess(PROJECT_MANAGER, project.id) ? (
+          checkProjectAccess(user, PROJECT_MANAGER, project.id) ? (
             <>
               <div className="text-lg max-md:text-base">
                 <span className="text-2xl max-md:text-xl text-gradient font-semibold">Empty Here! </span>The to-do list

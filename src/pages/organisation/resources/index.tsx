@@ -8,7 +8,7 @@ import { ORG_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import NewResource from '@/sections/resources/new_resource';
 import ResourceView from '@/sections/resources/resource_view';
-import { currentOrgSelector } from '@/slices/orgSlice';
+import { currentOrgSelector, orgSelector } from '@/slices/orgSlice';
 import { ResourceBucket } from '@/types';
 import { initialOrganization, initialResourceBucket } from '@/types/initials';
 import checkOrgAccess from '@/utils/funcs/access';
@@ -20,6 +20,8 @@ import { Info, Plus } from '@phosphor-icons/react';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Mascot from '@/components/fillers/mascot';
+import { useOrgAccess } from '@/hooks/use-org-access';
+import { userSelector } from '@/slices/userSlice';
 
 const Resources = () => {
   const [resources, setResources] = useState<ResourceBucket[]>([]);
@@ -62,6 +64,11 @@ const Resources = () => {
     getResourceBuckets();
   }, []);
 
+  const user = useSelector(userSelector);
+  const org = useSelector(orgSelector);
+
+  const isSenior = useOrgAccess(ORG_SENIOR);
+
   return (
     <BaseWrapper title={`Resources | ${currentOrg.title}`}>
       <OrgSidebar index={14} />
@@ -72,7 +79,7 @@ const Resources = () => {
             <div className="text-6xl max-md:text-4xl font-semibold dark:text-white font-primary">Resources</div>
 
             <div className="flex items-center gap-2">
-              {checkOrgAccess(ORG_SENIOR) && (
+              {isSenior && (
                 <NewResource setResources={setResources} resourceType="org" resourceParentID={currentOrg.id} />
               )}
               <Info
@@ -96,12 +103,12 @@ const Resources = () => {
                         resource={resource}
                         setClickedOnResource={setClickedOnResource}
                         setClickedResource={setClickedResource}
-                        checkerFunc={checkOrgAccess}
+                        checkerFunc={a => checkOrgAccess({ user, organization: org }, a)}
                       />
                     );
                   })}
                 </div>
-                {clickedOnResource && checkOrgAccess(clickedResource.viewAccess) && (
+                {clickedOnResource && checkOrgAccess({ user, organization: org }, clickedResource.viewAccess) && (
                   <ResourceView
                     setShow={setClickedOnResource}
                     resourceBucket={clickedResource}
@@ -110,7 +117,7 @@ const Resources = () => {
                     setClickedOnResourceBucket={setClickedOnResource}
                     resourceType="org"
                     resourceParentID={currentOrg.id}
-                    checkerFunc={checkOrgAccess}
+                    checkerFunc={a => checkOrgAccess({ user, organization: org }, a)}
                   />
                 )}
               </div>

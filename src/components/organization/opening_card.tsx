@@ -10,17 +10,16 @@ import deleteHandler from '@/handlers/delete_handler';
 import { SERVER_ERROR } from '@/config/errors';
 import ConfirmDelete from '../common/confirm_delete';
 import Link from 'next/link';
-import checkOrgAccess from '@/utils/funcs/access';
-import { ORG_MANAGER } from '@/config/constants';
 import { Pen, TrashSimple } from '@phosphor-icons/react';
 import EditOpening from '@/sections/organization/openings/edit_opening';
 
 interface Props {
   opening: Opening;
   setOpenings: React.Dispatch<React.SetStateAction<Opening[]>>;
+  isManager: boolean;
 }
 
-const OpeningCard = ({ opening, setOpenings }: Props) => {
+const OpeningCard = ({ opening, setOpenings, isManager }: Props) => {
   const [clickedOnEdit, setClickedOnEdit] = useState(false);
   const [clickedOnDelete, setClickedOnDelete] = useState(false);
 
@@ -72,7 +71,7 @@ const OpeningCard = ({ opening, setOpenings }: Props) => {
                 </div>
               )}
 
-              {checkOrgAccess(ORG_MANAGER) &&
+              {isManager &&
                 (opening.noApplications > 0 ? (
                   <Link
                     href={`/organisation/openings/applications/${opening.id}`}
@@ -87,7 +86,7 @@ const OpeningCard = ({ opening, setOpenings }: Props) => {
                 ))}
             </div>
           </div>
-          {checkOrgAccess(ORG_MANAGER) && (
+          {isManager && (
             <div className="flex gap-3">
               <Pen onClick={() => setClickedOnEdit(true)} className="cursor-pointer" size={24} />
               <TrashSimple

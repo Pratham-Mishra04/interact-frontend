@@ -15,6 +15,7 @@ import { USER_PROFILE_PIC_URL } from '@/config/routes';
 import deleteHandler from '@/handlers/delete_handler';
 import getHandler from '@/handlers/get_handler';
 import postHandler from '@/handlers/post_handler';
+import { useOrgAccess } from '@/hooks/use-org-access';
 import AddMeetingParticipants from '@/sections/organization/meetings/add_participants';
 import EditMeeting from '@/sections/organization/meetings/edit_meeting';
 import ParticipantsList from '@/sections/organization/meetings/view_participants';
@@ -22,7 +23,6 @@ import { currentOrgSelector } from '@/slices/orgSlice';
 import { userSelector } from '@/slices/userSlice';
 import { Session } from '@/types';
 import { initialMeeting } from '@/types/initials';
-import checkOrgAccess from '@/utils/funcs/access';
 import { getUserFromState } from '@/utils/funcs/redux';
 import renderContentWithLinks from '@/utils/funcs/render_content_with_links';
 import { getNextSessionTime } from '@/utils/funcs/session_details';
@@ -35,7 +35,7 @@ import moment from 'moment';
 import Image from 'next/image';
 import Link from 'next/link';
 import { GetServerSidePropsContext } from 'next/types';
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 interface Props {
@@ -57,6 +57,9 @@ const Meeting = ({ id }: Props) => {
 
   const user = useSelector(userSelector);
   const currentOrg = useSelector(currentOrgSelector);
+
+  const isMember = useOrgAccess(ORG_MEMBER);
+  const isSenior = useOrgAccess(ORG_SENIOR);
 
   const getMeeting = async () => {
     const URL = `/org/${currentOrg.id}/meetings/${id}`;
@@ -242,7 +245,7 @@ const Meeting = ({ id }: Props) => {
                       </div>
                     </div>
                     <div className="w-fit flex-center gap-4">
-                      {checkOrgAccess(ORG_MEMBER) && !meeting.isLive && sessions && sessions.length > 0 && (
+                      {isMember && !meeting.isLive && sessions && sessions.length > 0 && (
                         <Record
                           onClick={() => setClickedOnViewRecordings(true)}
                           className=" cursor-pointer"
@@ -250,10 +253,10 @@ const Meeting = ({ id }: Props) => {
                           weight="duotone"
                         />
                       )}
-                      {!meeting.eventID && checkOrgAccess(ORG_SENIOR) && (
+                      {!meeting.eventID && isSenior && (
                         <Pen onClick={() => setClickedOnEdit(true)} className="cursor-pointer" size={28} />
                       )}
-                      {checkOrgAccess(ORG_SENIOR) && (
+                      {isSenior && (
                         <Trash onClick={() => setClickedOnDelete(true)} className="cursor-pointer" size={28} />
                       )}
                       <button
@@ -457,6 +460,7 @@ const Meeting = ({ id }: Props) => {
                   sessions={sessions}
                   setClickedOnSession={setClickedOnSession}
                   setClickedSessionID={setClickedSessionID}
+                  org={false}
                 />
               )}
             </div>

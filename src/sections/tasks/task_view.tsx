@@ -159,7 +159,7 @@ const TaskComponent = ({
           <div>{renderContentWithLinks(task.description)}</div>
           <Tags tags={task.tags} displayAll={true} />
         </div>
-        <div className="w-fit flex-center gap-16 max-md:text-sm">
+        <div className="w-fit flex-center max-md:flex-col gap-16 max-md:text-sm">
           <div className="flex gap-2 items-center">
             <div>Priority:</div>
             <div

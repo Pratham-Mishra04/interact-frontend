@@ -6,6 +6,7 @@ import { ORG_MANAGER } from '@/config/constants';
 import { SERVER_ERROR } from '@/config/errors';
 import { ORG_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
+import { useOrgAccess } from '@/hooks/use-org-access';
 import EditChat from '@/sections/organization/chats/edit_chat';
 import NewChat from '@/sections/organization/chats/new_chat';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
@@ -33,6 +34,8 @@ const Chats = () => {
   const [clickedEditChat, setClickedEditChat] = useState(initialChat);
 
   const currentOrgID = useSelector(currentOrgIDSelector);
+
+  const isManager = useOrgAccess(ORG_MANAGER);
 
   const fetchChats = async () => {
     const URL = `${ORG_URL}/${currentOrgID}/chats`;
@@ -64,7 +67,7 @@ const Chats = () => {
           <div className="w-full flex justify-between items-center p-base_padding">
             <div className="text-6xl max-md:text-4xl font-semibold dark:text-white font-primary">Chats</div>
             <div className="flex items-center gap-2">
-              {checkOrgAccess(ORG_MANAGER) && (
+              {isManager && (
                 <Plus
                   onClick={() => setClickedOnNewChat(true)}
                   size={42}

@@ -24,6 +24,7 @@ import Tags from '@/components/form/tags';
 import Links from '@/components/form/links';
 import { getFormattedTime } from '@/utils/funcs/time';
 import Checkbox from '@/components/form/checkbox';
+import EditorInput from '@/components/form/editor-input';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -297,7 +298,7 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
                     <Time label="End Time" val={endTime} setVal={setEndTime} required={true} />
                   </div>
                 </div>
-                <TextArea label="Event Description" val={description} setVal={setDescription} maxLength={2500} />
+                <EditorInput label="Event Description" val={description} setVal={setDescription} maxLength={2500} />
                 <Tags label="Event Tags" tags={tags} setTags={setTags} maxTags={10} required={true} />
                 <Links label="Event Links" links={links} setLinks={setLinks} maxLinks={3} />
               </div>

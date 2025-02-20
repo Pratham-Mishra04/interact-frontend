@@ -39,6 +39,9 @@ import Link from 'next/link';
 import ResourceFileView from './resource_file_view';
 import renderContentWithLinks from '@/utils/funcs/render_content_with_links';
 import { getResourcesAccessList } from '@/utils/funcs/misc';
+import { useSelector } from 'react-redux';
+import { userSelector } from '@/slices/userSlice';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -150,6 +153,8 @@ const ResourceView = ({
 
   useEffect(() => getResourceBucketFiles(), [resourceBucket]);
 
+  const user = useSelector(userSelector);
+
   const getUserIcon = (viewAccess: string) => {
     switch (viewAccess) {
       case ORG_MEMBER:
@@ -169,9 +174,11 @@ const ResourceView = ({
     }
   };
 
+  const isOrgSenior = useOrgAccess(ORG_SENIOR);
+
   const checkBucketEditAccess = () => {
-    if (resourceType == 'org') return checkOrgAccess(ORG_SENIOR);
-    return checkProjectAccess(PROJECT_EDITOR, resourceParentID);
+    if (resourceType == 'org') return isOrgSenior;
+    return checkProjectAccess(user, PROJECT_EDITOR, resourceParentID);
   };
 
   return (

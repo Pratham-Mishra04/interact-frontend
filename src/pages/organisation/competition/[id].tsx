@@ -511,7 +511,7 @@ const EditHackathon: React.FC<Props> = ({ id }) => {
             tags={hackathon.tags || []}
             links={hackathon.links || []}
             isRestricted={hackathon.isRestricted}
-            entryPassword={hackathon.entryPassword || ''}
+            // entryPassword={hackathon.entryPassword || ''}
             onSave={handleSave}
             coverPic={hackathon.coverPic}
             setCoverPic={setImage}

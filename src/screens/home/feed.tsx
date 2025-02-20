@@ -20,6 +20,8 @@ import { initialOrganization } from '@/types/initials';
 import AnnouncementCard from '@/components/organization/announcement_card';
 import moment from 'moment';
 import Openings from '@/sections/home/openings';
+import { checkParticularOrgAccess } from '@/utils/funcs/access';
+import { ORG_SENIOR } from '@/config/constants';
 
 const Feed = () => {
   const [feed, setFeed] = useState<(Post | Announcement | Poll)[]>([]);
@@ -123,6 +125,7 @@ const Feed = () => {
                     organisation={item.organization || initialOrganization}
                     setPolls={setFeed}
                     hoverShadow={false}
+                    isSenior={checkParticularOrgAccess(ORG_SENIOR, item.organization)}
                   />
                 );
               } else return <AnnouncementCard key={item.id} announcement={item} />;

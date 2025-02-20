@@ -75,12 +75,14 @@ const EditMember = ({ setShow, membership, setOrganization }: Props) => {
     setMutex(false);
   };
 
-  const canEditRoles =
-    org.userID == user.id
-      ? [ORG_MANAGER, ORG_SENIOR, ORG_MEMBER]
-      : orgMemberShip.role == ORG_MANAGER
-      ? [ORG_SENIOR, ORG_MEMBER]
-      : [];
+  // const canEditRoles =
+  //   org.userID == user.id
+  //     ? [ORG_MANAGER, ORG_SENIOR, ORG_MEMBER]
+  //     : orgMemberShip.role == ORG_MANAGER
+  //     ? [ORG_SENIOR, ORG_MEMBER]
+  //     : [];
+
+  const canEditRoles = [ORG_MANAGER, ORG_SENIOR, ORG_MEMBER];
 
   return (
     <>

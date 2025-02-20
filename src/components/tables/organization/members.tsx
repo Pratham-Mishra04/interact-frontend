@@ -6,6 +6,7 @@ import { SERVER_ERROR } from '@/config/errors';
 import { ORG_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import deleteHandler from '@/handlers/delete_handler';
 import getHandler from '@/handlers/get_handler';
+import { useOrgAccess } from '@/hooks/use-org-access';
 import EditMember from '@/sections/organization/members/edit_member';
 import AddMemberToTeam from '@/sections/organization/teams/add_member_dropdown';
 import TeamsDropdown from '@/sections/organization/teams/teams_dropdown';
@@ -40,6 +41,8 @@ const OrgMembersTable = ({ memberships, organization, setOrganization }: Props) 
 
   const user = useSelector(userSelector);
   const currentOrg = useSelector(currentOrgSelector);
+
+  const isManager = useOrgAccess(ORG_MANAGER);
 
   const dispatch = useDispatch();
 
@@ -124,7 +127,7 @@ const OrgMembersTable = ({ memberships, organization, setOrganization }: Props) 
         <div className="w-[20%] max-md:hidden flex-center">Teams</div>
         <div className="w-[10%] max-md:w-[15%] flex-center">Role</div>
         <div className="w-[10%] max-md:hidden flex-center">Joined On</div>
-        {checkOrgAccess(ORG_MANAGER) && <div className="w-[10%] max-md:w-[15%] flex-center"></div>}
+        {isManager && <div className="w-[10%] max-md:w-[15%] flex-center"></div>}
       </div>
       {memberships.map(membership => (
         <div
@@ -194,7 +197,7 @@ const OrgMembersTable = ({ memberships, organization, setOrganization }: Props) 
           <div className="w-[10%] max-md:hidden flex-center">
             {moment(membership.createdAt).format('DD MMMM, YYYY')}
           </div>
-          {checkOrgAccess(ORG_MANAGER) ? (
+          {isManager ? (
             <div className="w-[10%] max-md:w-[15%] flex-center gap-4 max-md:gap-1">
               {user.id != membership.userID && (
                 <Pen

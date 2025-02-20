@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { COMMUNITY_ADMIN, COMMUNITY_MEMBER, COMMUNITY_MODERATOR } from '@/config/constants';
 import postHandler from '@/handlers/post_handler';
 import { checkCommunityAccess } from '@/utils/funcs/access';
+import { userSelector } from '@/slices/userSlice';
+import { useSelector } from 'react-redux';
 
 interface Props {
   community: Community;
@@ -33,6 +35,8 @@ const ViewPermissions = ({ community, permissionConfig, setPermissionConfig }: P
       else Toaster.error(SERVER_ERROR, 'error_toaster');
     }
   };
+
+  const user = useSelector(userSelector);
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -57,7 +61,7 @@ const ViewPermissions = ({ community, permissionConfig, setPermissionConfig }: P
                 <TableRow key={action}>
                   <TableCell className="capitalize">{action.replace('_', ' ')}</TableCell>
                   <TableCell className="w-full flex justify-end text-right">
-                    {checkCommunityAccess(community.id, 'manage_permissions', permissionConfig) ? (
+                    {checkCommunityAccess(user, community.id, 'manage_permissions', permissionConfig) ? (
                       <Select
                         defaultValue={role}
                         onValueChange={value => handleChangeRole(action, value as CommunityRole)}

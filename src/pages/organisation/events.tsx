@@ -10,8 +10,7 @@ import { EXPLORE_URL, ORG_URL } from '@/config/routes';
 import OrgMembersOnlyAndProtect from '@/utils/wrappers/org_members_only';
 import { useSelector } from 'react-redux';
 import { currentOrgSelector } from '@/slices/orgSlice';
-import checkOrgAccess from '@/utils/funcs/access';
-import { ORG_SENIOR } from '@/config/constants';
+import { ORG_MANAGER, ORG_SENIOR } from '@/config/constants';
 import Loader from '@/components/common/loader';
 import { Event } from '@/types';
 import NewEvent from '@/sections/organization/events/new_event';
@@ -30,6 +29,7 @@ import NoEvents from '@/components/fillers/events';
 import EditHackathonCoordinators from '@/sections/organization/hackathons/edit_hackathon_coordinators';
 import EditHackathonJudges from '@/sections/organization/hackathons/edit_hackathon_judges';
 import EventCard from '@/components/organization/event_card';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 const Events = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -54,14 +54,18 @@ const Events = () => {
 
   const currentOrg = useSelector(currentOrgSelector);
 
+  const isSenior = useOrgAccess(ORG_SENIOR);
+  const isManager = useOrgAccess(ORG_MANAGER);
+
   const getEvents = () => {
-    const URL = checkOrgAccess(ORG_SENIOR)
-      ? `${ORG_URL}/${currentOrg.id}/events`
-      : `${EXPLORE_URL}/events/org/${currentOrg.id}`;
+    const URL = isSenior ? `${ORG_URL}/${currentOrg.id}/events` : `${EXPLORE_URL}/events/org/${currentOrg.id}`;
     getHandler(URL + `?page=${page}&limit=${10}`)
       .then(res => {
         if (res.statusCode === 200) {
-          const addEvents = [...events, ...(res.data.events || [])];
+          let newEvents: Event[] = res.data.events || [];
+          newEvents = newEvents.filter(event => event.hackathonID != null);
+
+          const addEvents = [...events, ...newEvents];
           if (addEvents.length === events.length) setHasMore(false);
           setEvents(addEvents);
           if (page == 1) {
@@ -120,7 +124,7 @@ const Events = () => {
 
   useEffect(() => {
     getEvents();
-    if (checkOrgAccess(ORG_SENIOR)) fetchUnreadInvitations();
+    if (isSenior) fetchUnreadInvitations();
   }, []);
 
   return (
@@ -131,7 +135,7 @@ const Events = () => {
           <div className="w-full flex justify-between items-center">
             <div className="w-fit text-6xl max-md:text-4xl font-semibold dark:text-white font-primary pl-6">Events</div>
             <div className="flex items-center gap-2">
-              {checkOrgAccess(ORG_SENIOR) && (
+              {isSenior && (
                 <>
                   <Code
                     onClick={() => window.location.assign('/organisation/competition')}
@@ -139,12 +143,12 @@ const Events = () => {
                     className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
                     weight="regular"
                   />
-                  <Plus
+                  {/* <Plus
                     onClick={() => setClickedOnNewEvent(true)}
                     size={42}
                     className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
                     weight="regular"
-                  />
+                  /> */}
                   <div className="w-fit h-fit relative">
                     {unreadInvitations > 0 && (
                       <div className="absolute top-1 right-1 translate-x-1/4 -translate-y-1/4 w-4 h-4 flex-center text-xxs border-[1px] border-gray-500 rounded-full">
@@ -175,7 +179,11 @@ const Events = () => {
             {clickedOnViewInvitations && <ViewInvitations setShow={setClickedOnViewInvitations} />}
             {clickedOnViewHistory &&
               (clickedEditEvent.hackathonID ? (
-                <HackathonHistories hackathonID={clickedEditEvent.hackathonID} setShow={setClickedOnViewHistory} />
+                <HackathonHistories
+                  hackathonID={clickedEditEvent.hackathonID}
+                  show={clickedOnViewHistory}
+                  setShow={setClickedOnViewHistory}
+                />
               ) : (
                 <EventHistory eventID={clickedEditEvent.id} setShow={setClickedOnViewHistory} />
               ))}
@@ -226,7 +234,8 @@ const Events = () => {
                       <EventCard
                         key={event.id}
                         event={event}
-                        org={true}
+                        isSenior={isSenior}
+                        isManager={isManager}
                         setClickedOnViewHistory={setClickedOnViewHistory}
                         setClickedOnEditEvent={setClickedOnEditEvent}
                         setClickedOnEditCollaborators={setClickedOnEditCollaborators}

@@ -11,6 +11,7 @@ import getHandler from '@/handlers/get_handler';
 import NewTask from '@/sections/tasks/new_task';
 import TaskView from '@/sections/workspace/task_view';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
+import { userSelector } from '@/slices/userSlice';
 import { Project, Task, User } from '@/types';
 import { initialProject } from '@/types/initials';
 import { checkProjectAccess } from '@/utils/funcs/access';
@@ -125,6 +126,8 @@ const ProjectTasks = ({ slug, org = false }: Props) => {
     getProject();
   }, []);
 
+  const user = useSelector(userSelector);
+
   return (
     <MainWrapper>
       <div className="w-full flex flex-col">
@@ -164,7 +167,7 @@ const ProjectTasks = ({ slug, org = false }: Props) => {
             </div>
           </div>
 
-          {checkProjectAccess(PROJECT_MANAGER, project.id) && <NewTask project={project} setTasks={setTasks} />}
+          {checkProjectAccess(user, PROJECT_MANAGER, project.id) && <NewTask project={project} setTasks={setTasks} />}
         </div>
 
         <div className="w-full flex flex-col gap-6 px-2 py-2">

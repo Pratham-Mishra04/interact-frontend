@@ -2,6 +2,7 @@ import { ORG_SENIOR } from '@/config/constants';
 import { SERVER_ERROR } from '@/config/errors';
 import { APPLICATION_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import deleteHandler from '@/handlers/delete_handler';
+import { useOrgAccess } from '@/hooks/use-org-access';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
 import { Meeting } from '@/types';
 import checkOrgAccess from '@/utils/funcs/access';
@@ -54,6 +55,8 @@ const ParticipantsList = ({
     }
   };
 
+  const isSenior = useOrgAccess(ORG_SENIOR);
+
   return (
     <ModalWrapper setShow={setShow} width={'1/3'} top={'1/3'}>
       <div className="text-2xl flex-center gap-2 font-semibold">
@@ -65,7 +68,7 @@ const ParticipantsList = ({
           <div
             key={user.id}
             className={`w-full h-12 px-4 bg-white ${
-              checkOrgAccess(ORG_SENIOR) && 'hover:bg-slate-100'
+              isSenior && 'hover:bg-slate-100'
             } rounded-xl border-gray-400 flex items-center text-sm text-primary_black transition-ease-300`}
           >
             <div className="grow flex items-center gap-1">
@@ -84,7 +87,7 @@ const ParticipantsList = ({
                 <div className="text-xs">@{user.username}</div>
               </div>
             </div>
-            {(applicationID || checkOrgAccess(ORG_SENIOR)) && (
+            {(applicationID || isSenior) && (
               <XCircle onClick={() => handleRemove(user.id)} className="cursor-pointer" />
             )}
           </div>

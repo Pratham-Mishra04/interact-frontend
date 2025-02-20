@@ -17,6 +17,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import Checkbox from '@/components/form/checkbox';
 import Editor from '@/components/editor';
+import { useLocalDraft } from '@/hooks/use-local-draft';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -28,6 +29,8 @@ interface Props {
 const NewPost = ({ setShow, setFeed, org = false, initialCommunityID = '' }: Props) => {
   const [content, setContent] = useState<string>('');
   const [images, setImages] = useState<File[]>([]);
+
+  const { draft: postDraft, clearDraft} = useLocalDraft("post-draft", content);
 
   const user = useSelector(userSelector);
   const currentOrg = useSelector(currentOrgSelector);
@@ -73,6 +76,7 @@ const NewPost = ({ setShow, setFeed, org = false, initialCommunityID = '' }: Pro
       setContent('');
       setImages([]);
       setShow(false);
+      clearDraft();
       if (setFeed) setFeed(prev => [res.data.post, ...prev]);
       Toaster.stopLoad(toaster, 'Posted!', 1);
       setShow(false);
@@ -177,6 +181,7 @@ const NewPost = ({ setShow, setFeed, org = false, initialCommunityID = '' }: Pro
                   </div>
                   <Editor
                     editable
+                    content={postDraft}
                     setContent={setContent}
                     placeholder="Start a conversation..."
                     limit={2000}

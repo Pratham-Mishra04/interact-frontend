@@ -37,8 +37,7 @@ const History = ({ project, org = false }: Props) => {
 
       setLoading(false);
     } else {
-      if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
-      else Toaster.error(SERVER_ERROR, 'error_toaster');
+      Toaster.error(res.data.message || SERVER_ERROR, 'error_toaster');
     }
   };
 

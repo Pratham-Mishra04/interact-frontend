@@ -30,6 +30,7 @@ import deleteHandler from '@/handlers/delete_handler';
 import getInvitationStatus, { getInvitationStatusColor } from '@/utils/funcs/invitation';
 import { getRoleColor } from '@/utils/funcs/membership';
 import EditCollaborator from './manage_project/edit_collaborator';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 const ManageMemberships = ({
   project,
@@ -88,6 +89,8 @@ const ManageMemberships = ({
 
   const user = useSelector(userSelector);
 
+  const isManager = useOrgAccess(ORG_MANAGER);
+
   const ManageMembers = () => (
     <Table>
       <TableHeader>
@@ -131,12 +134,12 @@ const ManageMemberships = ({
             <TableCell className="flex items-center justify-end gap-4">
               {user.id != membership.userID && (
                 <>
-                  {checkProjectAccess(PROJECT_MANAGER, project.id) && membership.role != PROJECT_MANAGER && (
+                  {checkProjectAccess(user, PROJECT_MANAGER, project.id) && membership.role != PROJECT_MANAGER && (
                     <EditCollaborator membership={membership} project={project} setProject={setProject} org={org} />
                   )}
-                  {(checkProjectAccess(PROJECT_OWNER, project.id) ||
-                    (checkProjectAccess(PROJECT_MANAGER, project.id) && membership.role != PROJECT_MANAGER) ||
-                    (org && checkOrgAccess(ORG_MANAGER))) && (
+                  {(checkProjectAccess(user, PROJECT_OWNER, project.id) ||
+                    (checkProjectAccess(user, PROJECT_MANAGER, project.id) && membership.role != PROJECT_MANAGER) ||
+                    (org && isManager)) && (
                     <AlertDialog>
                       <AlertDialogTrigger>
                         <X size={20} />
@@ -222,7 +225,7 @@ const ManageMemberships = ({
             </TableCell>
             <TableCell>{moment(invitation.createdAt).format('DD MMMM, YYYY')}</TableCell>
             <TableCell className="flex items-center justify-end gap-4">
-              {checkProjectAccess(PROJECT_MANAGER, project.id) && (
+              {checkProjectAccess(user, PROJECT_MANAGER, project.id) && (
                 <AlertDialog>
                   <AlertDialogTrigger>
                     <X size={20} />

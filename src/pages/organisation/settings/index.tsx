@@ -9,7 +9,6 @@ import OrgOnlyAndProtect from '@/utils/wrappers/org_only';
 import Github from '@/sections/settings/github';
 import Email from '@/sections/settings/email';
 import Theme from '@/sections/settings/theme';
-import Resume from '@/sections/settings/resume';
 import PhoneNumber from '@/sections/settings/phone_number';
 import Password from '@/sections/settings/password';
 import Verify from '@/sections/settings/verify';
@@ -29,7 +28,6 @@ const Settings = () => {
               <div className="w-4/5 max-md:w-full flex flex-col gap-6">
                 <Theme />
                 <Email />
-                <Resume />
                 <PhoneNumber />
                 <Password />
                 <Verify />

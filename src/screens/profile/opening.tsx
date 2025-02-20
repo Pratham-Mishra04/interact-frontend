@@ -14,6 +14,7 @@ import Loader from '@/components/common/loader';
 import Mascot from '@/components/fillers/mascot';
 import { EXPLORE_URL } from '@/config/routes';
 import { useWindowWidth } from '@react-hook/window-size';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 interface Props {
   orgID: string;
@@ -63,9 +64,12 @@ export default function Openings({ orgID }: Props) {
   useEffect(() => {
     fetchOpenings();
   }, []);
+
+  const isManger = useOrgAccess(ORG_MANAGER);
+
   return (
     <>
-      {clickedOnNewOpening && checkOrgAccess(ORG_MANAGER) && (
+      {clickedOnNewOpening && isManger && (
         <NewOpening setShow={setClickedOnNewOpening} openings={openings} setOpenings={setOpenings} />
       )}
       <div className="w-full flex justify-between">
