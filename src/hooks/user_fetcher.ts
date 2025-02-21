@@ -24,6 +24,7 @@ import {
   setFetchedProjectBookmarks,
   setFetchedProjects,
   setLastFetchedCommunityMemberships,
+  setLastFetchedCredits,
   setLastFetchedOrganizationMemberships,
   setLastFetchedRegisteredEvents,
   setLastFetchedUnreadChats,
@@ -37,9 +38,11 @@ import {
   setApplications,
   setChats,
   setCommunityMemberships,
+  setCredits,
   setDisLikes,
   setEditorProjects,
   setEventBookmarks,
+  setFeaturesBought,
   setFollowing,
   setLikes,
   setManagerProjects,
@@ -374,6 +377,24 @@ const useUserStateFetcher = (initialLogin = false) => {
       });
   };
 
+  const fetchCreditsData = () => {
+    if (moment().utc().diff(config.lastFetchedCredits, 'minute') < 3 && !initialLogin) return;
+    const URL = `${USER_URL}/me/credits`;
+    getHandler(URL)
+      .then(res => {
+        if (res.statusCode === 200) {
+          const credits: number = res.data.credits;
+          const featuresBought: string[] = res.data.features;
+          dispatch(setCredits(credits));
+          dispatch(setFeaturesBought(featuresBought));
+          dispatch(setLastFetchedCredits(new Date().toUTCString()));
+        } else Toaster.error(res.data.message, 'error_toaster');
+      })
+      .catch(err => {
+        Toaster.error(SERVER_ERROR, 'error_toaster');
+      });
+  };
+
   const fetchUserState = () => {
     fetchFollowing();
     fetchLikes();
@@ -389,6 +410,7 @@ const useUserStateFetcher = (initialLogin = false) => {
     fetchCommunityMemberships();
     fetchVotedOptions();
     fetchRegisteredEvents();
+    fetchCreditsData();
   };
 
   return fetchUserState;

@@ -29,6 +29,7 @@ const configPersistConfig = {
     'lastFetchedUnreadNotifications',
     'lastFetchedUnreadInvitations',
     'lastFetchedCommunityMemberships',
+    'lastFetchedCredits',
   ],
 };
 

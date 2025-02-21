@@ -297,8 +297,14 @@ export const userSlice = createSlice({
     setCredits: (state, action: PayloadAction<number>) => {
       state.credits = action.payload;
     },
+    addCredits: (state, action: PayloadAction<number>) => {
+      state.credits += action.payload;
+    },
     setFeaturesBought: (state, action: PayloadAction<string[]>) => {
       state.featuresBought = action.payload;
+    },
+    appendFeatureBought: (state, action: PayloadAction<string>) => {
+      state.featuresBought.push(action.payload);
     },
   },
 });
@@ -339,6 +345,11 @@ export const {
   setVotedOptions,
   setRegisteredEvents,
   setGithubUsername,
+  setSubscription,
+  setCredits,
+  setFeaturesBought,
+  addCredits,
+  appendFeatureBought,
 } = userSlice.actions;
 
 export default userSlice.reducer;

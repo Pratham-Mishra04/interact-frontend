@@ -23,6 +23,7 @@ interface ConfigState {
   lastFetchedCommunityMemberships: string;
   lastFetchedVotedOptions: string;
   lastFetchedRegisteredEvents: string;
+  lastFetchedCredits: string;
 }
 
 const getInitialDate = (): string => {
@@ -64,6 +65,7 @@ const initialState: ConfigState = {
   lastFetchedCommunityMemberships: getInitialDate(),
   lastFetchedVotedOptions: getInitialDate(),
   lastFetchedRegisteredEvents: getInitialDate(),
+  lastFetchedCredits: getInitialInvitationDate(),
 };
 
 export const configSlice = createSlice({
@@ -92,6 +94,7 @@ export const configSlice = createSlice({
       state.lastFetchedCommunityMemberships = getInitialDate();
       state.lastFetchedVotedOptions = getInitialDate();
       state.lastFetchedRegisteredEvents = getInitialDate();
+      state.lastFetchedCredits = getInitialInvitationDate();
     },
     setUpdatingFollowing: (state, action: PayloadAction<boolean>) => {
       state.updatingFollowing = action.payload;
@@ -121,6 +124,7 @@ export const configSlice = createSlice({
       state.lastFetchedCommunityMemberships = new Date().toUTCString();
       state.lastFetchedVotedOptions = new Date().toUTCString();
       state.lastFetchedRegisteredEvents = new Date().toUTCString();
+      state.lastFetchedCredits = new Date().toUTCString();
     },
     setFetchedFollowing: (state, action: PayloadAction<string>) => {
       state.lastFetchedFollowing = action.payload;
@@ -173,6 +177,9 @@ export const configSlice = createSlice({
     setLastFetchedRegisteredEvents: (state, action: PayloadAction<string>) => {
       state.lastFetchedRegisteredEvents = action.payload;
     },
+    setLastFetchedCredits: (state, action: PayloadAction<string>) => {
+      state.lastFetchedCredits = action.payload;
+    },
   },
 });
 
@@ -200,6 +207,7 @@ export const {
   setLastFetchedCommunityMemberships,
   setLastFetchedVotedOptions,
   setLastFetchedRegisteredEvents,
+  setLastFetchedCredits,
 } = configSlice.actions;
 
 export default configSlice.reducer;

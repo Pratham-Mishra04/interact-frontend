@@ -1,4 +1,4 @@
-import RazorpayButton from '@/components/buttons/rzp_btn';
+import { RazorpaySubscriptionButton } from '@/components/buttons/rzp_btn';
 import Sidebar from '@/components/common/sidebar';
 import { userSelector } from '@/slices/userSlice';
 import NonOrgOnlyAndProtect from '@/utils/wrappers/non_org_only';
@@ -60,7 +60,10 @@ const SubscriptionCard = ({ title, description, amount, subscription }: Props) =
 
       {amount != 0 && (
         <div className="w-full flex-center">
-          <RazorpayButton title={user.subscription == subscription ? 'Renew' : 'Buy Now'} subscription={subscription} />
+          <RazorpaySubscriptionButton
+            title={user.subscription == subscription ? 'Renew' : 'Buy Now'}
+            subscription={subscription}
+          />
         </div>
       )}
     </div>
