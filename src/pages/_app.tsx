@@ -13,7 +13,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import NProgressConfig from '@/config/nprogress';
 import socketService from '@/config/ws';
-import { Inter, Fraunces, Parisienne, Great_Vibes } from 'next/font/google';
+import { Inter, Fraunces, Great_Vibes } from 'next/font/google';
 import ThemeCheck from '@/config/theme';
 import Head from 'next/head';
 import ThemeProvider from '@/components/ui/theme-provider';
@@ -31,12 +31,6 @@ const inter = Inter({
 const fraunces = Fraunces({
   subsets: ['latin'],
   variable: '--fraunces-font',
-});
-
-const parisienne = Parisienne({
-  weight: '400',
-  subsets: ['latin'],
-  variable: '--parisienne-font',
 });
 
 const great_vibes = Great_Vibes({
@@ -70,7 +64,7 @@ export default function App({ Component, pageProps }: AppProps) {
       `}
       </Script> */}
 
-      <main className={`${inter.variable} ${fraunces.variable} ${parisienne.variable} ${great_vibes.variable}`}>
+      <main className={`${inter.variable} ${fraunces.variable} ${great_vibes.variable}`}>
         <NextSeo {...SEO()} />
         <Head>
           <link rel="preconnect" href="https://storage.googleapis.com" crossOrigin="use-credentials" />
