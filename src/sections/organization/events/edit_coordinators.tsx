@@ -158,7 +158,7 @@ const EditCoordinators = ({ event, setShow, setEvents }: Props) => {
 
   return (
     <>
-      <div className="fixed top-10 max-lg:top-0 w-1/2 max-lg:w-screen h-[90%] max-lg:h-screen backdrop-blur-2xl bg-white dark:bg-[#ffe1fc22] flex flex-col justify-between rounded-lg px-12 py-8 max-md:p-4 gap-8 max-lg:gap-4 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 shadow-2xl animate-fade_third z-50">
+      <div className="fixed top-10 max-lg:top-0 w-1/2 max-lg:w-screen h-[90%] max-lg:h-screen backdrop-blur-2xl bg-white dark:bg-dark_primary_comp flex flex-col justify-between rounded-lg px-12 py-8 max-md:p-4 gap-8 max-lg:gap-4 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 shadow-2xl animate-fade_third z-50">
         <X onClick={() => setShow(false)} className="fixed top-5 right-2" size={24} weight="bold" />
         {step == 0 ? (
           <div className="w-full flex flex-col items-center gap-4 ">

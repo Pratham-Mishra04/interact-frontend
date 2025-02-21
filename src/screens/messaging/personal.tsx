@@ -80,7 +80,7 @@ const Personal = ({ requests = false, setUnreadChatCounts }: Props) => {
   }, [window.location.search]);
 
   return (
-    <div className="w-full flex flex-col gap-2 p-2">
+    <div className="w-full flex flex-col gap-2 p-2 max-md:p-0">
       {loading ? (
         <Loader />
       ) : !new URLSearchParams(window.location.search).get('search') ? (

@@ -89,7 +89,9 @@ const EditOpening = ({ opening, project, setProject, org = false }: Props) => {
             caption="setting it to inactive will automatically reject all pending applications"
           />
         </div>
-        <Button onClick={handleSubmit}>Edit Opening</Button>
+        <Button onClick={handleSubmit} variant="outline">
+          Edit Opening
+        </Button>
       </DialogContent>
     </Dialog>
   );

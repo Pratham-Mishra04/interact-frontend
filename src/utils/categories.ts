@@ -20,6 +20,22 @@ const categories = [
   'Manufacturing and Industrial',
   'Agriculture and Farming',
   'Media and Publishing',
+  'Other',
+];
+
+export const communityCategories = [
+  'Academic and Study Support',
+  'Career and Professional Development',
+  'Technology and Innovation',
+  'Arts and Creativity',
+  'Hobbies and Interests',
+  'Wellness and Lifestyle',
+  'Community Service and Volunteering',
+  'Cultural and Language Exchange',
+  'Networking and Socializing',
+  'Fun and Entertainment',
+  'Special Interest Groups',
+  'Other',
 ];
 
 export default categories;

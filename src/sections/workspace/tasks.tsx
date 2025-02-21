@@ -12,6 +12,9 @@ import { checkProjectAccess } from '@/utils/funcs/access';
 import { PROJECT_MANAGER } from '@/config/constants';
 import PictureList from '@/components/common/picture_list';
 import { SidePrimeWrapper } from '@/wrappers/side';
+import NewTask from '../tasks/new_task';
+import { useSelector } from 'react-redux';
+import { userSelector } from '@/slices/userSlice';
 
 interface Props {
   project: Project;
@@ -47,34 +50,40 @@ const Tasks = ({ project, org = false }: Props) => {
     getTasks();
   }, []);
 
+  const user = useSelector(userSelector);
+
   return (
     <SidePrimeWrapper>
       <div className="flex gap-2 items-center">
         <Gavel className="max-md:hidden" size={24} weight="duotone" />
         <div className="grow flex justify-between items-center text-lg font-medium">
           Tasks
-          <Link href={`/${org ? 'organisation/projects' : 'workspace'}/tasks/${project.slug}`} target="_blank">
-            <div className="text-xs hover:underline underline-offset-2 cursor-pointer">view all</div>
-          </Link>
+          {tasks.length > 0 && (
+            <Link href={`/${org ? 'organisation/projects' : 'workspace'}/tasks/${project.slug}`}>
+              <div className="text-xs hover:underline underline-offset-2 cursor-pointer">view all</div>
+            </Link>
+          )}
         </div>
       </div>
       {loading ? (
         <TasksLoader />
       ) : tasks.length == 0 ? (
-        checkProjectAccess(PROJECT_MANAGER, project.id) ? (
+        checkProjectAccess(user, PROJECT_MANAGER, project.id) ? (
           <>
-            <div className="text-lg max-md:text-base">
-              <span className="text-2xl max-md:text-xl text-gradient font-semibold">Empty Here! </span>The to-do list 📝
-              is your canvas, time to paint it with tasks and turn this project into a masterpiece!
+            <div className="text-center my-2">
+              <span className="text-xl text-gradient font-semibold">Empty Here! </span>The to-do list 📝 is your canvas,
+              time to paint it with tasks and turn this project into a masterpiece!
             </div>
-            <div
-              // onClick={() => {
-              //   setClickedOnNewTask(true);
-              // }}
-              className="mx-auto text-xl text-gradient font-medium hover-underline-animation after:bg-dark_primary_btn cursor-pointer"
-            >
-              Add a Task
-            </div>
+            <NewTask
+              org={false}
+              project={project}
+              setTasks={setTasks}
+              trigger={
+                <div className="w-fit mx-auto text-xl text-gradient font-medium hover-underline-animation after:bg-dark_primary_btn cursor-pointer">
+                  Add a Task
+                </div>
+              }
+            />
           </>
         ) : (
           <div className="text-lg max-md:text-base">

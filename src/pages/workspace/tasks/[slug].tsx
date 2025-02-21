@@ -12,7 +12,7 @@ interface Props {
 const Tasks = ({ slug }: Props) => {
   return (
     <BaseWrapper title="Tasks">
-      <Sidebar index={3} />
+      <Sidebar index={2} />
       <ProjectTasks slug={slug} />
     </BaseWrapper>
   );

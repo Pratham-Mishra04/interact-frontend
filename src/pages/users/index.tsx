@@ -3,7 +3,7 @@ import Sidebar from '@/components/common/sidebar';
 import BaseWrapper from '@/wrappers/base';
 import MainWrapper from '@/wrappers/main';
 import PrimeWrapper from '@/wrappers/prime';
-import ExploreUsers from '@/screens/explore/users';
+import ExploreUsers from '@/screens/users/explore';
 
 const Users = () => {
   return (

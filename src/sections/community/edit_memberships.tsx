@@ -286,9 +286,7 @@ const EditMemberships = ({ community }: { community: Community }) => {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" onClick={() => setIsDialogOpen(true)}>
-          Manage Community
-        </Button>
+        <Button onClick={() => setIsDialogOpen(true)}>Manage Community</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md min-w-[60%]">
         <DialogHeader>

@@ -56,7 +56,7 @@ const CommentComponent = ({ comment, setComments, setNoComments }: Props) => {
           />
         </Link>
         <div
-          className={`h-full w-[1px] bg-black rounded-lg ${
+          className={`h-full w-[1px] bg-black dark:bg-dark_primary_btn rounded-lg ${
             clickedOnReply ? 'opacity-25' : 'opacity-5'
           } transition-ease-300`}
         ></div>

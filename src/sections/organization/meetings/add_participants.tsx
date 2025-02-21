@@ -1,4 +1,4 @@
-import { ORG_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
+import { APPLICATION_URL, ORG_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import postHandler from '@/handlers/post_handler';
 import { Meeting, OrganizationMembership, Team, User } from '@/types';
 import Toaster from '@/utils/toaster';
@@ -18,9 +18,10 @@ interface Props {
   meeting: Meeting;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   setMeeting: React.Dispatch<React.SetStateAction<Meeting>>;
+  applicationID?: string;
 }
 
-const AddMeetingParticipants = ({ meeting, setShow, setMeeting }: Props) => {
+const AddMeetingParticipants = ({ meeting, setShow, setMeeting, applicationID }: Props) => {
   const [users, setUsers] = useState<User[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
@@ -33,11 +34,15 @@ const AddMeetingParticipants = ({ meeting, setShow, setMeeting }: Props) => {
 
   const fetchUsers = async (search: string, abortController?: AbortController) => {
     setLoading(true);
-    const URL = `${ORG_URL}/${currentOrg.id}/meetings/non-participants/?search=${search}&limit=${10}&isOpenForMembers=${
-      meeting.isOpenForMembers
-    }&allowExternalParticipants=${meeting.allowExternalParticipants}&meetingID=${meeting.id}`;
+    const URL =
+      (applicationID
+        ? `${APPLICATION_URL}/meeting/non-participants/${applicationID}`
+        : `${ORG_URL}/${currentOrg.id}/meetings/non-participants/`) +
+      `?search=${search}&limit=${10}&isOpenForMembers=${meeting.isOpenForMembers}&allowExternalParticipants=${
+        meeting.allowExternalParticipants
+      }&meetingID=${meeting.id}`;
 
-    const res = await getHandler(URL, abortController?.signal);
+    const res = await getHandler(URL, abortController?.signal, true);
     if (res.statusCode == 200) {
       const userData: User[] = res.data.users || [];
       setUsers(userData.filter(u => u.id != userID));
@@ -88,7 +93,9 @@ const AddMeetingParticipants = ({ meeting, setShow, setMeeting }: Props) => {
   const handleSubmit = async () => {
     const toaster = Toaster.startLoad('Adding Participants');
 
-    const URL = `${ORG_URL}/${currentOrg.id}/meetings/participants/${meeting.id}`;
+    const URL = applicationID
+      ? `${APPLICATION_URL}/meeting/participants/${applicationID}`
+      : `${ORG_URL}/${currentOrg.id}/meetings/participants/${meeting.id}`;
 
     const formData = {
       userIDs: selectedUsers.map(u => u.id),
@@ -120,9 +127,9 @@ const AddMeetingParticipants = ({ meeting, setShow, setMeeting }: Props) => {
 
   return (
     <>
-      <div className="fixed top-12 max-md:top-20 w-[640px] max-md:w-5/6 backdrop-blur-2xl bg-white flex flex-col gap-6 rounded-lg px-2 py-10 max-md:p-5 font-primary border-[1px] border-primary_btn right-1/2 translate-x-1/2 animate-fade_third z-50">
+      <div className="fixed top-1/2 -translate-y-1/2 max-md:top-20 w-[640px] max-md:w-5/6 backdrop-blur-2xl bg-white dark:bg-dark_primary_comp flex flex-col gap-6 rounded-lg px-2 py-10 max-md:p-5 font-primary border-[1px] border-primary_btn right-1/2 translate-x-1/2 animate-fade_third z-50">
         <div className="text-3xl max-md:text-xl font-semibold px-8 max-md:px-0">Add Participants</div>
-        <div className="w-full max-h-[540px] overflow-y-auto flex flex-col gap-4 px-8 max-md:px-0">
+        <div className="w-full max-h-[480px] overflow-y-auto flex flex-col gap-4 px-8 max-md:px-0">
           <div className="w-full h-12 flex items-center px-4 max-md:px-0 gap-4 dark:bg-dark_primary_comp_hover rounded-md">
             <MagnifyingGlass size={24} />
             <input

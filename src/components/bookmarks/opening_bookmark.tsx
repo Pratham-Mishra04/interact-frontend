@@ -17,7 +17,6 @@ export const openingBookmarkConfig = {
   itemTitleKey: 'title',
   itemCountLabel: 'Opening',
   getImageSrc: (item: any) => {
-    console.log(item);
     if (item.opening.projectID) return getProjectPicURL(item.opening.project);
     return `${USER_PROFILE_PIC_URL}/${item.opening.organization?.user?.profilePic || ''}`;
   },

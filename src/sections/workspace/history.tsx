@@ -37,8 +37,7 @@ const History = ({ project, org = false }: Props) => {
 
       setLoading(false);
     } else {
-      if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
-      else Toaster.error(SERVER_ERROR, 'error_toaster');
+      Toaster.error(res.data.message || SERVER_ERROR, 'error_toaster');
     }
   };
 
@@ -91,7 +90,7 @@ const History = ({ project, org = false }: Props) => {
               hasMore && (
                 <div
                   onClick={fetchHistory}
-                  className="w-fit mx-auto pt-4 text-xs text-gray-700 font-medium hover-underline-animation after:bg-gray-700 cursor-pointer"
+                  className="w-fit mx-auto pt-4 text-xs text-gray-700 dark:text-white font-medium hover-underline-animation after:bg-gray-700 cursor-pointer"
                 >
                   Load More
                 </div>

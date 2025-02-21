@@ -37,7 +37,7 @@ const EditCommunity = ({
   const [tagline, setTagline] = useState(community.tagline);
   const [category, setCategory] = useState(community.category);
   const [access, setAccess] = useState(community.access as string);
-  const [tags, setTags] = useState(community.tags);
+  const [tags, setTags] = useState(community.tags || []);
   const [isOpen, setIsOpen] = useState(community.isOpen);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -62,7 +62,7 @@ const EditCommunity = ({
     if (title != community.title) formData.append('title', title);
     if (description != community.description) formData.append('description', description);
     if (tagline != community.tagline) formData.append('tagline', tagline);
-    if (isArrEdited(tags, community.tags, true)) tags.forEach(tag => formData.append('tags', tag));
+    if (isArrEdited(tags, community.tags, true)) tags?.forEach(tag => formData.append('tags', tag));
     if (category != community.category) formData.append('category', category);
     if (access != community.access) formData.append('access', access);
     if (isOpen != community.isOpen) formData.append('isOpen', String(isOpen));
@@ -93,20 +93,14 @@ const EditCommunity = ({
     } else if (res.statusCode === 413) {
       Toaster.stopLoad(toaster, 'Image too large', 0);
     } else {
-      if (res.data.message) {
-        Toaster.stopLoad(toaster, res.data.message, 0);
-      } else {
-        Toaster.stopLoad(toaster, SERVER_ERROR, 0);
-      }
+      Toaster.stopLoad(toaster, res.data.message || SERVER_ERROR, 0);
     }
   };
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" onClick={() => setIsDialogOpen(true)}>
-          Edit Community
-        </Button>
+        <Button onClick={() => setIsDialogOpen(true)}>Edit Community</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md min-w-[30%]">
         <DialogHeader>
@@ -196,7 +190,7 @@ const EditCommunity = ({
           <TextArea label="Community Description" val={description} setVal={setDescription} maxLength={1000} />
           <Tags label="Community Tags" tags={tags} setTags={setTags} maxTags={10} />
           <Checkbox
-            label="Is the community open?"
+            label="Is the community public?"
             val={isOpen}
             setVal={setIsOpen}
             caption={

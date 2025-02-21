@@ -1,30 +1,24 @@
 import moment from 'moment';
 
-const getDisplayTime = (date: Date, space: boolean = true): string => {
-  var str = '';
-  var fromNow = moment(date).fromNow(true);
-
-  var index = 0;
-  for (index = 0; index < fromNow.length; index++) if (fromNow.charAt(index) == ' ') break;
-
-  var first = fromNow.substring(0, index);
-  var second = fromNow.substring(index);
-  if (first) {
-    if (first == 'a') str += '1';
-    else if (first == 'an') str += '1';
-    else str += first;
+const getDisplayTime = (date: Date, space: boolean = true, wider: boolean = false): string => {
+  if (wider) {
+    return moment(date).fromNow();
   }
-  if (space) str += ' ';
-  if (second) {
-    if (second.includes('second')) str += 'S';
-    else if (second.includes('minute')) str += 'Min';
-    else if (second.includes('hour')) str += 'H';
-    else if (second.includes('day')) str += 'D';
-    else if (second.includes('week')) str += 'W';
-    else if (second.includes('month')) str += 'M';
-    else if (second.includes('year')) str += 'Y';
-  }
-  return str;
+
+  const fromNow = moment(date).fromNow(true);
+  const [quantity, unit] = fromNow.split(' ');
+  let formattedQuantity = quantity === 'a' || quantity === 'an' ? '1' : quantity;
+  let formattedUnit = '';
+
+  if (unit?.includes('second')) formattedUnit = 'S';
+  else if (unit?.includes('minute')) formattedUnit = 'Min';
+  else if (unit?.includes('hour')) formattedUnit = 'H';
+  else if (unit?.includes('day')) formattedUnit = 'D';
+  else if (unit?.includes('week')) formattedUnit = 'W';
+  else if (unit?.includes('month')) formattedUnit = 'M';
+  else if (unit?.includes('year')) formattedUnit = 'Y';
+
+  return `${formattedQuantity}${space ? ' ' : ''}${formattedUnit}`;
 };
 
 export default getDisplayTime;

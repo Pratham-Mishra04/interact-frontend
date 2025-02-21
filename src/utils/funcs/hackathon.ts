@@ -27,35 +27,58 @@ export const formatHackathonDate = (input: string | Date): string => {
 export function getHackathonStatus(hackathon: Hackathon): string {
   const now = moment();
 
+  // Case 1: Hackathon has ended
   if (hackathon.isEnded) {
     return 'This hackathon has ended.';
   }
 
+  // Case 2: Hackathon has not started yet
   if (now.isBefore(moment(hackathon.startTime))) {
-    return 'Event has not Started.';
+    return 'Event has not started yet.';
   }
 
+  // Case 3: Participation phase
   if (now.isBefore(moment(hackathon.teamFormationStartTime))) {
-    return 'Event participation is Live.';
+    return 'Event participation is live.';
   }
 
+  // Case 4: Team formation phase
   if (now.isBetween(moment(hackathon.teamFormationStartTime), moment(hackathon.teamFormationEndTime), null, '[)')) {
-    return 'Team formation is Live.';
+    return 'Team formation is live.';
   }
 
+  // Case 5: After team formation but before Round 1
+  if (
+    hackathon.rounds.length > 0 &&
+    now.isAfter(moment(hackathon.teamFormationEndTime)) &&
+    now.isBefore(moment(hackathon.rounds[0].startTime))
+  ) {
+    return 'Team formation has ended.';
+  }
+
+  // Case 6: During Rounds
   for (let i = 0; i < hackathon.rounds.length; i++) {
     const round = hackathon.rounds[i];
     if (now.isBetween(moment(round.startTime), moment(round.endTime), null, '[)')) {
-      return `Round ${i + 1} is Live.`;
+      return `Round ${i + 1} is live.`;
+    }
+
+    // Case 7: Between rounds
+    if (
+      i < hackathon.rounds.length - 1 &&
+      now.isAfter(moment(round.endTime)) &&
+      now.isBefore(moment(hackathon.rounds[i + 1].startTime))
+    ) {
+      return `Round ${i + 1} has ended,`;
     }
   }
 
-  if (
-    now.isAfter(moment(hackathon.rounds[hackathon.rounds.length - 1].endTime)) &&
-    now.isBefore(moment(hackathon.endTime))
-  ) {
-    return 'All Rounds are completed.';
+  // Case 8: Post-rounds but before hackathon end
+  const lastRoundEndTime = moment(hackathon.rounds[hackathon.rounds.length - 1]?.endTime);
+  if (lastRoundEndTime.isValid() && now.isAfter(lastRoundEndTime) && now.isBefore(moment(hackathon.endTime))) {
+    return 'All rounds are completed.';
   }
 
-  return 'All Rounds are completed.';
+  // Default: Hackathon has ended or unexpected state
+  return 'This hackathon has ended.';
 }

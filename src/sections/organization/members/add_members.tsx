@@ -48,7 +48,7 @@ const AddMembers = ({ setShow, setOrganization }: Props) => {
   const fetchUsers = async (key: string, abortController: AbortController) => {
     setLoading(true);
     const URL = `${ORG_URL}/${currentOrgID}/membership/non_members?search=${key}&invitations=exclude`;
-    const res = await getHandler(URL, abortController.signal);
+    const res = await getHandler(URL, abortController.signal, true);
     if (res.statusCode == 200) {
       setUsers(res.data.users || []);
       setLoading(false);
@@ -105,7 +105,7 @@ const AddMembers = ({ setShow, setOrganization }: Props) => {
     invitationSlices.forEach(async invitation => {
       const formData = {
         ...invitation,
-        title: invitation.title.trim() === '' ? '-' : invitation.title.trim()
+        title: invitation.title.trim() === '' ? '-' : invitation.title.trim(),
       };
       const res = await postHandler(URL, formData);
       attemptedCount++;
@@ -151,7 +151,7 @@ const AddMembers = ({ setShow, setOrganization }: Props) => {
 
   return (
     <>
-      <div className="fixed top-24 max-md:top-20 w-[640px] max-md:w-5/6 backdrop-blur-2xl bg-gray-100 dark:bg-[#ffe1fc22] flex flex-col gap-4 rounded-lg p-10 max-md:p-5 dark:text-white font-primary border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 animate-fade_third z-30">
+      <div className="fixed top-24 max-md:top-20 w-[640px] max-md:w-5/6 backdrop-blur-2xl bg-gray-100 dark:bg-dark_primary_comp flex flex-col gap-4 rounded-lg p-10 max-md:p-5 dark:text-white font-primary border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 animate-fade_third z-30">
         <div className="text-3xl max-md:text-xl font-semibold">
           {status == 0 ? 'Select Users' : 'Confirm Invitations'}
         </div>

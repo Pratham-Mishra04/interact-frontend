@@ -1,4 +1,4 @@
-import { EXPLORE_URL, MESSAGING_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
+import { MESSAGING_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import postHandler from '@/handlers/post_handler';
 import { Chat, User } from '@/types';
 import Toaster from '@/utils/toaster';
@@ -8,18 +8,20 @@ import { MagnifyingGlass } from '@phosphor-icons/react';
 import { SERVER_ERROR } from '@/config/errors';
 import getHandler from '@/handlers/get_handler';
 import Loader from '@/components/common/loader';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Plus } from '@phosphor-icons/react';
 
 interface Props {
-  setShow: React.Dispatch<React.SetStateAction<boolean>>;
   chat: Chat;
   setChat?: React.Dispatch<React.SetStateAction<Chat>>;
   setChats?: React.Dispatch<React.SetStateAction<Chat[]>>;
 }
 
-const AddGroupMembers = ({ setShow, chat, setChat, setChats }: Props) => {
+const AddGroupMembers = ({ chat, setChat, setChats }: Props) => {
   const [users, setUsers] = useState<User[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const [mutex, setMutex] = useState(false);
 
@@ -38,7 +40,7 @@ const AddGroupMembers = ({ setShow, chat, setChat, setChats }: Props) => {
   const fetchUsers = async (key: string, abortController: AbortController) => {
     setLoading(true);
     const URL = `${MESSAGING_URL}/group/non_members/${chat.id}?search=${key}`;
-    const res = await getHandler(URL, abortController.signal);
+    const res = await getHandler(URL, abortController.signal, true);
     if (res.statusCode == 200) {
       setUsers(res.data.users || []);
       setLoading(false);
@@ -99,7 +101,7 @@ const AddGroupMembers = ({ setShow, chat, setChat, setChats }: Props) => {
             };
           });
       }
-      setShow(false);
+      setIsDialogOpen(false);
       Toaster.stopLoad(toaster, chat.projectID || chat.organizationID ? 'Members Added' : 'Invitations Sent!', 1);
     } else {
       if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
@@ -112,9 +114,17 @@ const AddGroupMembers = ({ setShow, chat, setChat, setChats }: Props) => {
   };
 
   return (
-    <>
-      <div className="fixed top-24 max-lg:top-20 w-[640px] max-lg:w-5/6 backdrop-blur-2xl bg-white dark:bg-[#ffe1fc22] flex flex-col gap-4 rounded-lg p-10 max-lg:p-5 dark:text-white font-primary border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 animate-fade_third z-50">
-        <div className="text-3xl max-lg:text-xl font-semibold">Select Users</div>
+    <Dialog open={isDialogOpen} onOpenChange={val => setIsDialogOpen(val)}>
+      <DialogTrigger>
+        <div className="w-full h-12 p-4 bg-primary_comp_hover dark:bg-dark_primary_comp_hover rounded-md flex items-center justify-between cursor-pointer">
+          <div className="">Add Members</div>
+          <Plus size={24} />
+        </div>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Select Users</DialogTitle>
+        </DialogHeader>
         <div className="w-full h-[420px] overflow-y-auto flex flex-col gap-4">
           <div className="w-full h-12 flex items-center px-4 gap-4 dark:bg-dark_primary_comp_hover rounded-md">
             <MagnifyingGlass size={24} />
@@ -173,13 +183,8 @@ const AddGroupMembers = ({ setShow, chat, setChat, setChats }: Props) => {
             Invite
           </div>
         </div>
-      </div>
-
-      <div
-        onClick={() => setShow(false)}
-        className="bg-backdrop w-screen h-screen fixed top-0 left-0 animate-fade_third z-20"
-      ></div>
-    </>
+      </DialogContent>
+    </Dialog>
   );
 };
 

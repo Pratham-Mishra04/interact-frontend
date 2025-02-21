@@ -7,7 +7,7 @@ import getDomainName from '@/utils/funcs/get_domain_name';
 
 interface Props {
   links: string[];
-  setLinks: React.Dispatch<React.SetStateAction<string[]>>;
+  setLinks: React.Dispatch<React.SetStateAction<string[]>> | ((val: string[]) => void);
   showTitle?: boolean;
   maxLinks?: number;
   title?: string;
@@ -44,7 +44,7 @@ const Links = ({ links, showTitle = false, setLinks, maxLinks = 5, title = 'Link
         formattedLink = formattedLink.replace(/(^\w+:|^)\/\//, 'https://www.');
       }
 
-      setLinks(prev => [...prev, formattedLink]);
+      setLinks([...links, formattedLink]);
       setNewLink('');
     } else {
       Toaster.error('Enter a valid URL');

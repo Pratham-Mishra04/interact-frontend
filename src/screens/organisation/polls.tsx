@@ -5,11 +5,11 @@ import { ORG_SENIOR } from '@/config/constants';
 import { SERVER_ERROR } from '@/config/errors';
 import { ORG_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
+import { useOrgAccess } from '@/hooks/use-org-access';
 import NewPoll from '@/sections/organization/polls/new_poll';
 import { currentOrgSelector } from '@/slices/orgSlice';
 import { Poll } from '@/types';
 import { initialOrganization } from '@/types/initials';
-import checkOrgAccess from '@/utils/funcs/access';
 import Toaster from '@/utils/toaster';
 import { Plus } from '@phosphor-icons/react';
 import React, { useEffect, useState } from 'react';
@@ -48,12 +48,14 @@ const Polls = () => {
     getPolls();
   }, []);
 
+  const isSenior = useOrgAccess(ORG_SENIOR);
+
   return (
     <div className="w-full py-4">
       {clickedOnNewPoll && (
         <NewPoll orgID={currentOrg.id} setPolls={setPolls} organisation={organisation} setShow={setClickedOnNewPoll} />
       )}
-      {checkOrgAccess(ORG_SENIOR) && !clickedOnNewPoll && (
+      {isSenior && !clickedOnNewPoll && (
         <div
           className="fixed z-10 bottom-28 right-2 lg:bottom-12 lg:right-12 flex-center text-sm bg-primary_text text-white px-4 py-3 rounded-full flex gap-2 shadow-lg hover:shadow-2xl font-medium cursor-pointer animate-fade_third transition-ease-300"
           onClick={() => setClickedOnNewPoll(true)}
@@ -66,13 +68,15 @@ const Polls = () => {
       ) : (
         <div className="w-4/5 max-md:w-full mx-auto pb-base_padding flex flex-col gap-4">
           {polls?.length > 0 ? (
-            polls.map(poll => <PollCard key={poll.id} poll={poll} setPolls={setPolls} organisation={organisation} />)
+            polls.map(poll => (
+              <PollCard key={poll.id} poll={poll} setPolls={setPolls} organisation={organisation} isSenior={isSenior} />
+            ))
           ) : (
             <Mascot
               message={
                 <div className="flex flex-col items-center">
                   <div>There are no polls available at the moment.</div>
-                  {checkOrgAccess(ORG_SENIOR) && (
+                  {isSenior && (
                     <div className="text-sm">Add a Poll now to gather feedback or to ask a fun question!</div>
                   )}
                 </div>

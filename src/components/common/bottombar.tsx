@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import BottomBarItem from './bottombar_item';
-import { HouseLine, RocketLaunch, Wrench, Envelope, BookmarkSimple, Buildings } from '@phosphor-icons/react';
+import {
+  HouseLine,
+  RocketLaunch,
+  Wrench,
+  Envelope,
+  BookmarkSimple,
+  Buildings,
+  CalendarDots,
+  ReadCvLogo,
+} from '@phosphor-icons/react';
 import { useSelector } from 'react-redux';
 import { userSelector } from '@/slices/userSlice';
 
@@ -18,37 +27,20 @@ const BottomBar = ({ index }: Props) => {
       <BottomBarItem index={1} title="Home" icon={<HouseLine size={32} />} active={active} setActive={setActive} />
       <BottomBarItem
         index={2}
-        title="Explore"
+        title="Projects"
         icon={<RocketLaunch size={32} />}
         active={active}
         setActive={setActive}
       />
-      <BottomBarItem index={3} title="Workspace" icon={<Wrench size={32} />} active={active} setActive={setActive} />
-      {user.id != '' && user.organizationMemberships && user.organizationMemberships.length > 0 && (
-        <div className="w-fit flex flex-col gap-2">
-          <BottomBarItem
-            index={10}
-            title="Organisations"
-            icon={<Buildings size={24} />}
-            active={active}
-            setActive={setActive}
-          />
-        </div>
-      )}
+      <BottomBarItem index={3} title="Events" icon={<CalendarDots size={32} />} active={active} setActive={setActive} />
       <BottomBarItem
-        index={5}
-        title="Invitations"
-        icon={<Envelope size={32} />}
+        index={4}
+        title="Organisations"
+        icon={<Buildings size={32} />}
         active={active}
         setActive={setActive}
       />
-      <BottomBarItem
-        index={6}
-        title="Bookmarks"
-        icon={<BookmarkSimple size={32} />}
-        active={active}
-        setActive={setActive}
-      />
+      <BottomBarItem index={5} title="Openings" icon={<ReadCvLogo size={32} />} active={active} setActive={setActive} />
     </div>
   );
 };

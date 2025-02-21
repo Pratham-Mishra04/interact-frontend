@@ -97,7 +97,7 @@ const LowerAnnouncement = ({ announcement, setFeed }: Props) => {
               else likeHandler();
             }}
             className={`cursor-pointer max-md:w-6 max-md:h-6 ${
-              liked ? 'text-heart_filled' : 'text-black opacity-60'
+              liked ? 'text-heart_filled' : 'text-black dark:text-white opacity-60'
             } transition-ease-300`}
             size={24}
             weight={liked ? 'fill' : 'regular'}
@@ -134,7 +134,7 @@ const LowerAnnouncement = ({ announcement, setFeed }: Props) => {
             </div>
           </div>
 
-          <div className="text-sm font-medium flex-center gap-1">
+          <div className="text-sm max-md:text-xs font-medium flex-center gap-1">
             {announcement.isOpen ? (
               <>
                 <LockOpen /> <div>Open</div>

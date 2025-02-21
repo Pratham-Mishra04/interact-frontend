@@ -3,13 +3,17 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/h
 import Image from 'next/image';
 import { USER_PROFILE_PIC_URL } from '@/config/routes';
 import { User } from '@/types';
+import Link from 'next/link';
 
 const UserHoverCard = ({ trigger, user }: { trigger: ReactNode; user: User }) => {
   return (
     <HoverCard>
       <HoverCardTrigger>{trigger}</HoverCardTrigger>
       <HoverCardContent className="w-80">
-        <div className="flex justify-between space-x-4">
+        <Link
+          href={`/${user.isOrganization ? 'organisations' : 'users'}/${user.username}`}
+          className="flex justify-between space-x-4"
+        >
           <Image
             crossOrigin="anonymous"
             width={100}
@@ -28,7 +32,7 @@ const UserHoverCard = ({ trigger, user }: { trigger: ReactNode; user: User }) =>
               {user.noFollowers} Follower{user.noFollowers !== 1 && 's'}
             </div>
           </div>
-        </div>
+        </Link>
       </HoverCardContent>
     </HoverCard>
   );

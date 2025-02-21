@@ -6,6 +6,7 @@ import {
   SendMessageReadEvent,
   SendNotificationEvent,
   SendUpdateMembership,
+  UpdateHackathonEvent,
   WSEvent,
   getWSEvent,
   routeChatListEvents,
@@ -16,7 +17,7 @@ import {
 } from '@/helpers/ws';
 import { incrementUnreadNotifications, setUnreadChats } from '@/slices/feedSlice';
 import { store } from '@/store';
-import { Chat, Message, TypingStatus, User } from '@/types';
+import { Chat, Hackathon, Message, TypingStatus, User } from '@/types';
 import { messageToastSettings } from '@/utils/toaster';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
@@ -78,6 +79,13 @@ class SocketService {
     }
   }
 
+  public reconnect(): void {
+    if (this.socket) {
+      this.disconnect();
+      this.connect();
+    }
+  }
+
   public setupChats(chats?: string[]): void {
     if (this.socket) {
       if (!chats) {
@@ -126,6 +134,13 @@ class SocketService {
     if (this.socket) {
       const outgoingNotificationEvent = new SendUpdateMembership(userID, organizationID, role);
       sendEvent('send_update_membership', outgoingNotificationEvent, this.socket);
+    }
+  }
+
+  public sendUpdateHackathon(hackathon: Hackathon) {
+    if (this.socket) {
+      const outgoingMessageEvent = new UpdateHackathonEvent(hackathon);
+      sendEvent('send_hackathon_update', outgoingMessageEvent, this.socket);
     }
   }
 

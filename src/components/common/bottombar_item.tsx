@@ -17,7 +17,7 @@ const BottomBarItem = ({ title, icon, active, setActive, index, org = false }: P
       onClick={() => setActive(index)}
       className={`w-16 h-14 p-2 flex-center rounded-xl ${
         active == index
-          ? 'bg-primary_comp_hover dark:bg-[#d9c4e656] text-primary_text dark:text-[#ffffffbc]'
+          ? 'bg-primary_comp_hover dark:bg-dark_primary_comp text-primary_text dark:text-[#ffffffbc]'
           : 'hover:bg-primary_comp dark:hover:bg-[#6e6e6e2b] text-gray-500 dark:text-[#ffffffbc]'
       } relative items-center transition-ease-500`}
     >

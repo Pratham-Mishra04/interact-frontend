@@ -11,11 +11,13 @@ import NoUserItems from '@/components/fillers/user_items';
 import { useSelector, useDispatch } from 'react-redux';
 import { userSelector } from '@/slices/userSlice';
 import NewReview from '@/sections/organization/reviews/new_review';
-import { Star, Plus } from '@phosphor-icons/react';
+import { Plus } from '@phosphor-icons/react';
 import StarRating from '@/components/organization/star_rating';
 import { reviewModalOpenSelector, setReviewModalOpen } from '@/slices/feedSlice';
 import Masonry from 'react-masonry-css';
 import Mascot from '@/components/fillers/mascot';
+import { useTheme } from 'next-themes';
+
 interface Props {
   orgID: string;
 }
@@ -43,7 +45,7 @@ const Reviews = ({ orgID }: Props) => {
 
   const getReviews = () => {
     const URL = `${ORG_URL}/${orgID}/reviews?page=${page}&limit=${10}`;
-    getHandler(URL)
+    getHandler(URL, undefined, true)
       .then(res => {
         if (res.statusCode === 200) {
           const addReviews = [...reviews, ...(res.data.reviews || [])];
@@ -65,7 +67,7 @@ const Reviews = ({ orgID }: Props) => {
 
   const getReviewData = () => {
     const URL = `${ORG_URL}/${orgID}/reviews/data`;
-    getHandler(URL)
+    getHandler(URL, undefined, true)
       .then(res => {
         if (res.statusCode === 200) {
           setReviewData(res.data.reviewData);
@@ -92,6 +94,8 @@ const Reviews = ({ orgID }: Props) => {
   const dispatch = useDispatch();
   const reviewModalOpen = useSelector(reviewModalOpenSelector);
 
+  const isDarkMode = (useTheme().theme || '') === 'dark';
+
   interface ReviewBarProps {
     index: number;
   }
@@ -105,7 +109,7 @@ const Reviews = ({ orgID }: Props) => {
         <div className="grow h-3 border-dark_primary_btn border-2 rounded-lg">
           <div
             style={{ width: `${barWidth}%` }}
-            className={`h-full bg-dark_primary_btn rounded-lg ${barWidth != 100 ? 'rounded-r-none' : ''}`}
+            className={`h-full bg-dark_primary_btn dark:bg-white rounded-lg ${barWidth != 100 ? 'rounded-r-none' : ''}`}
           ></div>
         </div>
       </div>
@@ -113,15 +117,15 @@ const Reviews = ({ orgID }: Props) => {
   };
 
   const ReviewSummary = () => (
-    <div className="w-full bg-white mx-auto flex justify-between items-center rounded-xl p-6 gap-8">
+    <div className="w-full bg-white dark:bg-dark_primary_comp_hover mx-auto flex justify-between items-center rounded-xl p-6 gap-8">
       <div className="flex flex-col items-center gap-2">
         <div className="relative flex-center">
-          <div className=" text-dark_primary_btn font-bold text-5xl flex flex-col items-center gap-2">
+          <div className=" text-dark_primary_btn dark:text-white font-bold text-5xl flex flex-col items-center gap-2">
             {reviewData.average}
             <StarRating
               defaultRating={Math.floor(reviewData.average)}
-              color={'#9275b9ba'}
-              strokeColor={'#633267'}
+              color={isDarkMode ? '#478EE1' : '#9275b9ba'}
+              strokeColor={isDarkMode ? '#478eeb86' : '#633267'}
               size={15}
               fixRating={true}
             />

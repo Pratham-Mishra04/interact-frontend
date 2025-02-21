@@ -1,11 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import type React from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { EVENT_PIC_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import type { Event, Hackathon, User } from '@/types';
-import Loader from '@/components/common/loader';
 import Link from 'next/link';
-import getIcon from '@/utils/funcs/get_icon';
-import getDomainName from '@/utils/funcs/get_domain_name';
 import UserHoverCard from '@/components/common/user_hover_card';
 import FollowBtn from '@/components/common/follow_btn';
 import { useSelector } from 'react-redux';
@@ -15,16 +13,31 @@ import { setCurrentChatID } from '@/slices/messagingSlice';
 import SendMessage from '@/sections/explore/send_message';
 import Report from '@/components/common/report';
 import SignUp from '@/components/common/signup_box';
-import { formatHackathonDate, getHackathonStatus } from '@/utils/funcs/hackathon';
+import { getHackathonStatus } from '@/utils/funcs/hackathon';
 import moment from 'moment';
 import SecondaryButton from '@/components/buttons/secondary_btn';
 import LowerEvent from '@/components/lowers/lower_event';
-import DisplayTracks from '@/sections/explore/tracks_modal';
-import DisplayPrizes from '@/sections/explore/prizes_modal';
+import Tags from '@/components/common/tags';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import Editor from '@/components/editor';
+import Links from '@/components/explore/show_links';
+import { formatPrice } from '@/utils/funcs/misc';
+import { EVENT_PIC_HASH_DEFAULT } from '@/config/constants';
+import HackathonTimeline from '@/components/explore/hackathon_timeline';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import Input from '@/components/form/input';
+import { Button } from '@/components/ui/button';
 
 interface HackathonProps {
   event: Event;
-  handleRegister: () => void;
+  handleRegister: (pass?: string) => void;
 }
 
 const ProgressBar: React.FC<{ hackathon: Hackathon }> = ({ hackathon }) => {
@@ -62,14 +75,50 @@ const ProgressBar: React.FC<{ hackathon: Hackathon }> = ({ hackathon }) => {
 };
 
 const Hackathon: React.FC<HackathonProps> = ({ event, handleRegister }) => {
-  const [loading, setLoading] = useState(false);
   const [clickedOnChat, setClickedOnChat] = useState(false);
   const [clickedOnReport, setClickedOnReport] = useState(false);
-  const [eventLikes, setEventLikes] = useState(0);
-  const [showTracks, setShowTracks] = useState(false);
-  const [showPrizes, setShowPrizes] = useState(false);
+  const [eventLikes, setEventLikes] = useState(event.noLikes);
 
   const hackathon = useMemo(() => event.hackathon, [event]);
+
+  const timeline = useMemo(() => {
+    if (!hackathon) return [];
+
+    return [
+      {
+        title: 'Participant Registration Starts',
+        timestamp: moment(hackathon.startTime),
+      },
+      {
+        title: 'Team Registration Starts',
+        timestamp: moment(hackathon.teamFormationStartTime),
+      },
+      {
+        title: 'Team Registration Ends',
+        timestamp: moment(hackathon.teamFormationEndTime),
+      },
+      ...hackathon.rounds
+        ?.map(round => [
+          {
+            title: `Round ${round.index + 1} Starts`,
+            timestamp: moment(round.startTime),
+          },
+          {
+            title: `Judging Round ${round.index + 1} Starts`,
+            timestamp: moment(round.judgingStartTime),
+          },
+          {
+            title: `Round ${round.index + 1} Ends`,
+            timestamp: moment(round.endTime),
+          },
+        ])
+        .flat(),
+      {
+        title: 'Hackathon Ends',
+        timestamp: moment(hackathon.endTime),
+      },
+    ];
+  }, [hackathon]);
 
   const user = useSelector(userSelector);
 
@@ -91,14 +140,6 @@ const Hackathon: React.FC<HackathonProps> = ({ event, handleRegister }) => {
       dispatch(setCurrentChatID(chatID));
       window.location.assign('/messaging');
     } else setClickedOnChat(true);
-  };
-
-  const handleTracksClick = () => {
-    setShowTracks(!showTracks);
-  };
-
-  const handlePrizeClick = () => {
-    setShowPrizes(!showPrizes);
   };
 
   interface UserProps {
@@ -129,16 +170,24 @@ const Hackathon: React.FC<HackathonProps> = ({ event, handleRegister }) => {
     </div>
   );
 
-  const AboutHosts = () => (
-    <div className="w-full bg-white rounded-xl max-md:w-full shadow-lg">
+  const AboutHosts = ({ sticky }: { sticky: boolean }) => (
+    <div
+      className={`w-full bg-white dark:bg-dark_primary_comp_hover rounded-xl max-md:w-full ${
+        sticky && 'shadow-lg sticky top-24'
+      }`}
+    >
       <div className="w-full flex flex-col gap-6 p-4">
         <div className="w-full flex flex-col gap-4">
-          <div className="text-sm font-medium text-gray-500 border-b-2 border-gray-300 pb-2">HOSTED BY</div>
+          <div className="text-sm font-medium text-gray-500 dark:text-white border-b-2 border-gray-300 pb-2">
+            HOSTED BY
+          </div>
           <AboutUser user={event.organization.user} host={true} />
         </div>
         {hackathon?.coordinators && hackathon.coordinators.length > 0 && (
           <div className="w-full flex flex-col gap-4">
-            <div className="text-sm font-medium text-gray-500 border-b-2 border-gray-300 pb-2">COORDINATORS</div>
+            <div className="text-sm font-medium text-gray-500 dark:text-white border-b-2 border-gray-300 pb-2">
+              COORDINATORS
+            </div>
             <div className="flex flex-col gap-2">
               {hackathon.coordinators.map(user => (
                 <AboutUser key={user.id} user={user} />
@@ -148,28 +197,22 @@ const Hackathon: React.FC<HackathonProps> = ({ event, handleRegister }) => {
         )}
         {event.links && event.links.length > 0 && (
           <div className="w-full flex flex-col gap-4">
-            <div className="text-sm font-medium text-gray-500 border-b-2 border-gray-300 pb-2">
+            <div className="text-sm font-medium text-gray-500 dark:text-white border-b-2 border-gray-300 pb-2">
               MORE ABOUT THE EVENT
             </div>
-            <div className="w-full flex flex-wrap gap-4">
-              {event.links?.map(link => (
-                <Link key={link} href={link} target="_blank">
-                  {getIcon(getDomainName(link), 22, 'regular')}
-                </Link>
-              ))}
-            </div>{' '}
+            <Links links={event.links} excludeTitle />
           </div>
         )}
         <div className="w-full flex flex-col gap-1 text-sm">
           <div
             onClick={handleChat}
-            className="w-fit font-medium text-primary_black hover:text-gray-600 transition-ease-300 cursor-pointer"
+            className="w-fit font-medium hover:text-gray-600 transition-ease-300 cursor-pointer"
           >
             Message the Host
           </div>
           <div
             onClick={() => setClickedOnReport(true)}
-            className="w-fit font-medium text-primary_black hover:text-primary_danger transition-ease-300 cursor-pointer"
+            className="w-fit font-medium hover:text-primary_danger transition-ease-300 cursor-pointer"
           >
             Report Event
           </div>
@@ -179,6 +222,9 @@ const Hackathon: React.FC<HackathonProps> = ({ event, handleRegister }) => {
   );
 
   const RegisterButton = () => {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [password, setPassword] = useState('');
+
     const isRegistered = user.registeredEvents?.includes(event.id);
     const isLive = !hackathon?.isEnded;
     const startTime = moment(hackathon?.startTime).utcOffset('+05:30');
@@ -205,30 +251,58 @@ const Hackathon: React.FC<HackathonProps> = ({ event, handleRegister }) => {
       window.location.assign(`${process.env.NEXT_PUBLIC_HACKATHONS_URL}?action=sync`);
     };
 
+    const handlePreRegister = () => {
+      if (!hackathon?.isRestricted) handleRegister();
+      else setIsDialogOpen(true);
+    };
+
     return (
-      <div className="w-full flex flex-col gap-2">
-        <div className="text-xs font-semibold text-gray-500">This event is happening on Interact!</div>
-        {user.organizationMemberships.map(membership => membership.organizationID).includes(event.organizationID) ? (
+      <div className="w-full flex flex-col gap-2 items-center justify-center">
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>This event is Restricted.</DialogTitle>
+              <DialogDescription>
+                To register for this event, you need a password. Please enter the password below.
+              </DialogDescription>
+            </DialogHeader>
+            <Input val={password} setVal={setPassword} placeholder="Enter Password" maxLength={25} />
+            <Button
+              onClick={() => {
+                handleRegister(password);
+                setIsDialogOpen(false);
+              }}
+              className="w-full mt-4"
+              variant="outline"
+            >
+              Submit
+            </Button>
+          </DialogContent>
+        </Dialog>
+
+        <div className="text-xs font-semibold text-gray-500 dark:text-white">This event is happening on Interact!</div>
+        {user.organizationMemberships.map(membership => membership.organizationID).includes(event.organizationID) ||
+        hackathon?.judges.map(u => u.id).includes(user.id) ? (
           <SecondaryButton label="Go to Dashboard" onClick={handleRedirect} />
         ) : isRegistered ? (
           isLive || now.isBetween(startTime, endTime) ? (
             <SecondaryButton label="Go to Dashboard" onClick={handleRedirect} />
           ) : isBeforeStart ? (
-            <div className="w-full relative p-2 text-center bg-yellow-200 text-gray-700 rounded-lg font-medium cursor-default">
+            <div className="w-full relative p-2 text-center bg-yellow-200 text-gray-700 dark:text-white rounded-lg font-medium cursor-default">
               Event starts in {timeUntilStart}!
             </div>
           ) : (
             <button
               type="submit"
-              className="w-full relative p-2 bg-priority_high text-gray-700 rounded-lg cursor-default"
+              className="w-full relative p-2 bg-priority_high text-gray-700 dark:text-white rounded-lg cursor-default"
             >
               Event has Ended
             </button>
           )
         ) : now.isBefore(teamFormationEndTime) ? (
-          <SecondaryButton label="Register Now!" onClick={handleRegister} />
+          <SecondaryButton label="Register Now!" onClick={handlePreRegister} />
         ) : (
-          <div className="w-full relative p-2 text-center bg-priority_high text-gray-700 rounded-lg font-medium cursor-default">
+          <div className="w-full relative p-2 text-center bg-priority_high text-gray-700 dark:text-white rounded-lg font-medium cursor-default">
             Registrations Closed
           </div>
         )}
@@ -236,160 +310,139 @@ const Hackathon: React.FC<HackathonProps> = ({ event, handleRegister }) => {
     );
   };
 
-  return loading ? (
-    <Loader />
-  ) : (
+  return (
     <>
-      {showTracks && hackathon && <DisplayTracks setShow={setShowTracks} tracks={hackathon.tracks} />}
-      {showPrizes && hackathon && <DisplayPrizes setShow={setShowPrizes} prizes={hackathon.prizes} />}
+      {clickedOnChat &&
+        (user.id !== '' ? (
+          <SendMessage user={event.organization.user} setShow={setClickedOnChat} />
+        ) : (
+          <SignUp setShow={setClickedOnChat} />
+        ))}
+      {clickedOnReport &&
+        (user.id !== '' ? (
+          <Report eventID={event.id} setShow={setClickedOnReport} />
+        ) : (
+          <SignUp setShow={setClickedOnReport} />
+        ))}
       {hackathon && (
-        <div className="flex items-start justify-start p-8 flex-col">
-          {clickedOnChat &&
-            (user.id !== '' ? (
-              <SendMessage user={event.organization.user} setShow={setClickedOnChat} />
-            ) : (
-              <SignUp setShow={setClickedOnChat} />
-            ))}
-          {clickedOnReport &&
-            (user.id !== '' ? (
-              <Report eventID={event.id} setShow={setClickedOnReport} />
-            ) : (
-              <SignUp setShow={setClickedOnReport} />
-            ))}
-          <div className="w-full h-90 max-md:h-fit relative">
-            <Image
-              width={500}
-              height={280}
-              src={`${EVENT_PIC_URL}/${hackathon.coverPic}`}
-              alt="Event Picture"
-              className="w-full h-full max-md:h-52 rounded-xl"
-              placeholder="blur"
-              blurDataURL={hackathon.blurHash || 'no-hash'}
-            />
-            <div className="w-full absolute top-0 flex flex-col gap-4 max-md:gap-2 md:items-end p-4">
-              <div className="flex flex-col space-y-4">
-                <div className="flex-1 bg-white bg-opacity-25 backdrop-blur-sm px-6 max-md:px-4 py-2 rounded-lg max-md:text-sm font-medium">
-                  <span className="block font-semibold">Starts:</span>
-                  <span>{moment(hackathon.startTime).format('dddd, MMMM Do YYYY, h:mm A')}</span>
+        <div className="flex flex-col md:flex-row gap-8">
+          <div className="w-full md:w-2/3 space-y-6">
+            <div className="bg-white dark:bg-dark_primary_comp_hover rounded-xl p-4 space-y-4 w-full">
+              <div className="space-y-2">
+                <Image
+                  src={`${EVENT_PIC_URL}/${hackathon.coverPic}`}
+                  width={400}
+                  height={100}
+                  alt="Event Picture"
+                  className="w-full h-full rounded-xl object-cover"
+                  placeholder="blur"
+                  blurDataURL={
+                    hackathon.blurHash
+                      ? hackathon.blurHash === 'no-hash'
+                        ? EVENT_PIC_HASH_DEFAULT
+                        : hackathon.blurHash
+                      : EVENT_PIC_HASH_DEFAULT
+                  }
+                />
+                <LowerEvent event={event} numLikes={eventLikes} setNumLikes={setEventLikes} />
+              </div>
+              <div className="md:hidden">
+                <RegisterButton />
+              </div>
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <h1 className="text-5xl font-primary font-bold break-words">{hackathon.title}</h1>
+                  <h3 className="text-xl font-semibold break-words">{hackathon.tagline}</h3>
                 </div>
-                <div className="flex-1 bg-white bg-opacity-25 backdrop-blur-sm px-6 max-md:px-4 py-2 rounded-lg max-md:text-sm font-medium">
-                  <span className="block font-semibold">Ends:</span>
-                  <span>{moment(hackathon.endTime).format('dddd, MMMM Do YYYY, h:mm A')}</span>
-                </div>
+                <Tags tags={hackathon?.tags || []} displayAll />
+                {hackathon.description && <Editor content={hackathon.description} editable={false} />}
               </div>
             </div>
-            <div className="w-full absolute max-md:static bottom-0 flex gap-8 max-md:gap-2 justify-end p-4 max-md:px-0">
-              <div
-                className="max-md:w-1/3 max-md:text-center bg-white bg-opacity-25 backdrop-blur-sm px-6 max-md:px-4 py-2 rounded-lg max-md:text-sm font-medium cursor-pointer"
-                onClick={handleTracksClick}
-              >
-                View Tracks
-              </div>
-              <div
-                className="max-md:w-1/3 max-md:text-center bg-white bg-opacity-25 backdrop-blur-sm px-6 max-md:px-4 py-2 rounded-lg max-md:text-sm font-medium cursor-pointer"
-                onClick={handlePrizeClick}
-              >
-                View Prizes
-              </div>
-            </div>
-          </div>
 
-          <div className="flex max-lg:flex-col py-8 max-md:py-0 gap-4 justify-center items-center md:justify-start md:items-start w-full">
-            <div className="w-2/3 max-md:w-full flex justify-center items-start flex-col">
-              <div className="w-full flex flex-col gap-6 items-start justify-center lg:mb-0">
-                <h1 className="text-5xl font-primary font-bold">{hackathon.title}</h1>
-                <h3 className="text-xl font-semibold">{hackathon.tagline}</h3>
-                {hackathon.description && (
-                  <div className="w-full flex flex-col gap-2">
-                    <div className="text-sm font-medium text-gray-500">ABOUT THE EVENT</div>
-                    <div className="text-lg">{hackathon.description}</div>
+            {hackathon.prizes && hackathon.prizes.length > 0 && (
+              <Section title="Prizes">
+                <div className="w-full bg-white dark:bg-dark_primary_comp_hover border-[1px] border-gray-200 dark:border-dark_primary_btn rounded-xl py-12 flex-center flex-col gap-1 shadow-sm">
+                  <div className="text-5xl font-semibold">
+                    ₹
+                    {formatPrice(
+                      hackathon.prizes.reduce((acc, prize) => {
+                        acc = acc + prize.amount;
+                        return acc;
+                      }, 0)
+                    )}{' '}
                   </div>
-                )}
-                {hackathon.tags && hackathon.tags.length > 0 && (
-                  <div className="w-full flex flex-col gap-2">
-                    <div className="text-sm font-medium text-gray-500">TAGS</div>
-                    <div className="flex flex-wrap gap-2">
-                      {hackathon.tags.map(tag => (
-                        <Link
-                          key={tag}
-                          href={'/explore?search=' + tag}
-                          target="_blank"
-                          className="flex-center bg-gray-100 px-2 py-1 border-[1px] border-dashed border-gray-400 text-xs rounded-lg"
-                        >
-                          {tag}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="mt-6 flex flex-col lg:flex-row justify-center items-center space-y-8 lg:space-y-0 lg:space-x-12 w-full">
-                <div className="w-full lg:w-1/2">
-                  {hackathon.sponsors.map((sponsor, index) => (
+                  <div>Total Prize Pool</div>
+                </div>
+                <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {hackathon.prizes.map((prize, index) => (
                     <div
                       key={index}
-                      className="flex items-start p-4 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 mb-6"
+                      className="w-full p-3 bg-white dark:bg-dark_primary_comp_hover border-[1px] border-gray-200 dark:border-dark_primary_btn rounded-xl shadow-sm"
                     >
-                      <div className="flex justify-center items-start flex-col">
-                        <h3 className="text-3xl font-bold font-primary">{sponsor.name}</h3>
-                        <p className="text-lg text-gray-700">{sponsor.description}</p>
-                      </div>
+                      <div className="text-xl font-medium break-words">{prize.title}</div>
+                      <div className="break-words">₹{formatPrice(prize.amount)}</div>
                     </div>
                   ))}
                 </div>
-                <div className="hidden lg:block w-px h-64 bg-gray-300"></div>
-                <div className="w-full lg:w-1/2 flex flex-col items-center space-y-8">
-                  {hackathon.rounds.map((round, index) => (
-                    <div key={index} className="flex flex-col items-center mb-8">
-                      <div className="relative flex flex-col items-center mb-4">
-                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
-                          {index + 1}
-                        </div>
-                        {index < hackathon.rounds.length - 1 && (
-                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-px h-16 bg-gray-300"></div>
-                        )}
-                      </div>
-                      <div className="flex flex-col items-center w-48 p-4 bg-white border rounded-lg shadow-lg">
-                        <div className="flex flex-col items-center">
-                          <p className="font-primary text-lg font-semibold mt-4">
-                            {formatHackathonDate(round.startTime)}
-                          </p>
-                          <p className="font-primary text-sm text-gray-600">
-                            {new Date(round.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          </p>
-                        </div>
-                        <div className="my-4">
-                          <span className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600">
-                            to
-                          </span>
-                        </div>
-                        <div className="flex flex-col items-center">
-                          <p className="font-primary text-lg font-semibold">{formatHackathonDate(round.endTime)}</p>
-                          <p className="font-primary text-sm text-gray-600">
-                            {new Date(round.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+              </Section>
+            )}
 
-            <div className="w-1/3 max-lg:w-full flex flex-col gap-2">
-              <LowerEvent event={event} numLikes={eventLikes} setNumLikes={setEventLikes} />
-              <div className="w-full flex flex-col gap-4 mb-2">
+            <Section title="Timeline">
+              <HackathonTimeline timeline={timeline} />
+            </Section>
+
+            {hackathon.sponsors && hackathon.sponsors.length > 0 && (
+              <Section title="Sponsors">
+                <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {hackathon.sponsors.map((sponsor, index) => (
+                    <Link
+                      href={sponsor.link || '/'}
+                      key={index}
+                      className="w-full p-3 bg-white dark:bg-dark_primary_comp_hover border-[1px] border-gray-200 dark:border-dark_primary_btn rounded-xl shadow-sm hover:shadow-lg transition-ease-300"
+                    >
+                      <div className="text-xl font-medium break-words">{sponsor.title}</div>
+                      <div className="break-words">{sponsor.description}</div>
+                    </Link>
+                  ))}
+                </div>
+              </Section>
+            )}
+          </div>
+
+          <div className="w-full md:w-1/3 flex flex-col gap-2">
+            <div className="w-full space-y-4 mb-2">
+              <div className="max-md:hidden">
                 <RegisterButton />
-                <h1 className="text-2xl font-semibold">{getHackathonStatus(hackathon)}</h1>
-                <ProgressBar hackathon={hackathon} />
               </div>
-              <AboutHosts />
+              <h1 className="text-2xl font-semibold">{getHackathonStatus(hackathon)}</h1>
+              <ProgressBar hackathon={hackathon} />
             </div>
+            <AboutHosts sticky={!hackathon.faqs || hackathon.faqs.length == 0} />
+            {hackathon.faqs && hackathon.faqs.length > 0 && (
+              <div className="w-full bg-white dark:bg-dark_primary_comp_hover p-4 rounded-xl space-y-2 sticky top-24 mt-2">
+                <h1 className="text-3xl font-primary font-semibold text-primary_black dark:text-white">FAQs</h1>
+                <Accordion type="single" collapsible>
+                  {hackathon.faqs.map((faq, index) => (
+                    <AccordionItem key={index} value={faq.id}>
+                      <AccordionTrigger>{faq.question}</AccordionTrigger>
+                      <AccordionContent>{faq.answer}</AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </div>
+            )}
           </div>
         </div>
       )}
     </>
   );
 };
+
+const Section = ({ children, title }: { children: React.ReactNode; title: string }) => (
+  <div className="w-full bg-white dark:bg-dark_primary_comp_hover p-4 rounded-xl space-y-4">
+    <h1 className="text-4xl font-primary font-semibold text-primary_black dark:text-white">{title}</h1>
+    {children}
+  </div>
+);
 
 export default Hackathon;

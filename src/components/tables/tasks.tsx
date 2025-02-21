@@ -42,7 +42,7 @@ const TasksTable = ({ tasks, fetcher, hasMore, setClickedOnTask, setClickedTaskI
               setClickedTaskID(index);
               setClickedOnTask(true);
             }}
-            className="w-full h-12 bg-white dark:bg-dark_primary_comp_hover hover:bg-slate-100 dark:hover:bg-dark_primary_comp_active rounded-xl border-gray-400 dark:border-dark_primary_btn flex text-sm text-primary_black dark:text-white transition-ease-300 cursor-pointer"
+            className="w-full h-12 bg-white dark:bg-dark_primary_comp_hover dark:hover:bg-dark_primary_comp_hover dark:hover:bg-dark_primary_comp_active rounded-xl border-gray-400 dark:border-dark_primary_btn flex text-sm text-primary_black dark:text-white transition-ease-300 cursor-pointer"
           >
             <div className="w-[35%] flex-center font-medium max-md:text-sm">{task.title}</div>
             <div className="w-[20%] max-md:w-[25%] flex-center">

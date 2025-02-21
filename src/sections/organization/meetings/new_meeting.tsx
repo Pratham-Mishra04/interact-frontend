@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { MagnifyingGlass } from '@phosphor-icons/react';
 import { SERVER_ERROR } from '@/config/errors';
 import moment from 'moment';
-import { currentOrgIDSelector, currentOrgSelector } from '@/slices/orgSlice';
+import { currentOrgSelector } from '@/slices/orgSlice';
 import { useSelector } from 'react-redux';
 import PrimaryButton from '@/components/buttons/primary_btn';
 import Input from '@/components/form/input';
@@ -62,7 +62,7 @@ const NewMeeting = ({ setShow, setMeetings }: Props) => {
       currentOrg.id
     }/meetings/non-participants/?search=${search}&limit=${10}&isOpenForMembers=${isOpenForMembers}&allowExternalParticipants=${allowExternalParticipants}`;
 
-    const res = await getHandler(URL, abortController?.signal);
+    const res = await getHandler(URL, abortController?.signal, true);
     if (res.statusCode == 200) {
       const userData: User[] = res.data.users || [];
       setUsers(userData.filter(u => u.id != userID));
@@ -241,7 +241,7 @@ const NewMeeting = ({ setShow, setMeetings }: Props) => {
 
   return (
     <>
-      <div className="fixed top-12 max-md:top-20 w-[640px] max-md:w-5/6 backdrop-blur-2xl bg-white flex flex-col gap-6 rounded-lg px-2 py-10 max-md:p-5 font-primary border-[1px] border-primary_btn right-1/2 translate-x-1/2 animate-fade_third z-50">
+      <div className="fixed top-12 max-md:top-20 w-[640px] max-md:w-5/6 backdrop-blur-2xl bg-white dark:bg-dark_primary_comp flex flex-col gap-6 rounded-lg px-2 py-10 max-md:p-5 font-primary border-[1px] border-primary_btn right-1/2 translate-x-1/2 animate-fade_third z-50">
         <div className="text-3xl max-md:text-xl font-semibold px-8 max-md:px-0">
           {status == 0 ? 'Meeting Details' : status == 1 ? 'Select Users' : 'Review Details'}
         </div>

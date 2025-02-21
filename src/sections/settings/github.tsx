@@ -50,7 +50,7 @@ const Github = () => {
   }, []);
 
   return (
-    <div className="w-full flex flex-col gap-2 pt-4 border-t-[1px] border-gray-400 text-primary_black">
+    <div className="w-full flex flex-col gap-2 pt-4 border-t-[1px] border-gray-400 text-primary_black dark:text-white">
       {clickedOnViewRepositories && <GithubRepos setShow={setClickedOnViewRepositories} />}
       <div className="text-xl font-semibold">Connect Interact to your Github!</div>
       <div className="w-full flex max-md:flex-col md:items-center justify-between gap-4">
@@ -94,7 +94,7 @@ const Github = () => {
       </div>
       <div className="w-full flex flex-col gap-1">
         <div className="text-lg font-medium">Why Connect Your GitHub Account to Interact?</div>
-        <ul className="list-disc ml-4 flex flex-col gap-4 text-gray-700 mt-2">
+        <ul className="list-disc ml-4 flex flex-col gap-4 text-gray-700 dark:text-white mt-2">
           <li>
             By connecting Interact with your GitHub account, updates from pull requests (PRs) on your repositories will
             be automatically linked to the relevant tasks. To link a task to a PR, simply include the Task ID from your

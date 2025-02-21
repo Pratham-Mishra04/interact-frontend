@@ -1,5 +1,5 @@
 import { SERVER_ERROR } from '@/config/errors';
-import { EXPLORE_URL, ORG_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
+import { ORG_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import postHandler from '@/handlers/post_handler';
 import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
@@ -8,8 +8,7 @@ import { useSelector } from 'react-redux';
 import NewPostHelper from '@/components/home/new_post_helper';
 import { Announcement, Organization, User } from '@/types';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
-import getHandler from '@/handlers/get_handler';
-import TagUserUtils from '@/utils/funcs/tag_users';
+import Editor from '@/components/editor';
 
 interface Props {
   organisation: Organization;
@@ -21,11 +20,6 @@ const NewAnnouncement = ({ organisation, setShow, setAnnouncements }: Props) => 
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [isOpen, setIsOpen] = useState(true);
-  const [showTipsModal, setShowTipsModal] = useState<boolean>(false);
-  const [taggedUsernames, setTaggedUsernames] = useState<string[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
-  const [showUsers, setShowUsers] = useState(false);
-  const [cursorPosition, setCursorPosition] = useState<number | null>(null);
 
   useEffect(() => {
     document.documentElement.style.overflowY = 'hidden';
@@ -36,47 +30,6 @@ const NewAnnouncement = ({ organisation, setShow, setAnnouncements }: Props) => 
       document.documentElement.style.height = 'auto';
     };
   }, []);
-
-  const fetchUsers = async (search: string) => {
-    const URL = `${EXPLORE_URL}/users?search=${search}&order=trending&limit=${10}`;
-    const res = await getHandler(URL);
-    if (res.statusCode == 200) {
-      setUsers(res.data.users || []);
-    } else {
-      if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
-      else Toaster.error(SERVER_ERROR, 'error_toaster');
-    }
-  };
-
-  const tagsUserUtils = new TagUserUtils(
-    cursorPosition,
-    content,
-    showUsers,
-    taggedUsernames,
-    setCursorPosition,
-    setContent,
-    fetchUsers,
-    setShowUsers,
-    setTaggedUsernames
-  );
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'b' && (event.ctrlKey || event.metaKey)) {
-      event.preventDefault();
-      wrapSelectedText('**', '**');
-    }
-  };
-
-  const wrapSelectedText = (prefix: string, suffix: string) => {
-    const textarea = document.getElementById('textarea_id') as HTMLTextAreaElement;
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = content.substring(start, end);
-    const newText = content.substring(0, start) + prefix + selectedText + suffix + content.substring(end);
-    setContent(newText);
-    textarea.focus();
-    textarea.setSelectionRange(start + prefix.length, end + prefix.length);
-  };
 
   const currentOrgID = useSelector(currentOrgIDSelector);
 
@@ -96,7 +49,6 @@ const NewAnnouncement = ({ organisation, setShow, setAnnouncements }: Props) => 
       title,
       content: content.replace(/\n{3,}/g, '\n\n'),
       isOpen,
-      taggedUsernames,
     };
 
     const URL = `${ORG_URL}/${currentOrgID}/announcements`;
@@ -112,17 +64,13 @@ const NewAnnouncement = ({ organisation, setShow, setAnnouncements }: Props) => 
       Toaster.stopLoad(toaster, 'Announcement Added!', 1);
       setShow(false);
     } else {
-      if (res.data.message) {
-        Toaster.stopLoad(toaster, res.data.message, 0);
-      } else {
-        Toaster.stopLoad(toaster, SERVER_ERROR, 0);
-      }
+      Toaster.stopLoad(toaster, res.data.message || SERVER_ERROR, 0);
     }
   };
 
   return (
     <>
-      <div className="fixed top-24 max-md:top-[calc(50%-75px)] w-[953px] max-lg:w-5/6 h-[560px] max-md:h-2/3 shadow-2xl dark:shadow-none backdrop-blur-xl bg-[#ffffff] dark:bg-[#ffe1fc22] flex flex-col gap-8 justify-between max-md:items-end p-8 max-md:p-6 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg right-1/2 translate-x-1/2 max-md:-translate-y-1/2 animate-fade_third z-30">
+      <div className="fixed top-24 max-md:top-[calc(50%-75px)] w-[953px] max-lg:w-5/6 h-[560px] max-md:h-2/3 shadow-2xl dark:shadow-none backdrop-blur-xl bg-[#ffffff] dark:bg-dark_primary_comp flex flex-col gap-8 justify-between max-md:items-end p-8 max-md:p-6 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg right-1/2 translate-x-1/2 max-md:-translate-y-1/2 animate-fade_third z-30">
         <div className="flex gap-4 max-md:w-full">
           <Image
             crossOrigin="anonymous"
@@ -148,25 +96,23 @@ const NewAnnouncement = ({ organisation, setShow, setAnnouncements }: Props) => 
 
             <div className="w-full flex flex-col gap-4 relative">
               <div className="w-full flex gap-4">
-                <NewPostHelper setShow={setShowTipsModal} show={showTipsModal} announcement={true} />
+                <NewPostHelper />
               </div>
               <input
                 type="text"
                 value={title}
                 maxLength={50}
                 onChange={el => setTitle(el.target.value)}
-                className="w-full text-lg font-medium border-[2px] border-dashed p-2 rounded-lg focus:outline-none"
+                className="w-full text-lg font-medium border-[1px] border-dashed p-2 rounded-lg focus:outline-none"
                 placeholder="Announcement Title"
               />
-              <textarea
-                id="textarea_id"
-                className="w-full border-[2px] border-dashed p-2 rounded-lg dark:text-white dark:bg-dark_primary_comp focus:outline-none min-h-[16rem] max-h-64 max-md:w-full"
-                value={content}
-                onChange={tagsUserUtils.handleContentChange}
-                onKeyDown={handleKeyDown}
-                maxLength={1000}
-                placeholder="What's the announcement?"
-              ></textarea>
+              <Editor
+                editable
+                setContent={setContent}
+                placeholder="What the announcement?"
+                limit={2000}
+                className="min-h-[350px]"
+              />
               <div className="w-fit flex-center gap-4">
                 <label className="w-fit flex cursor-pointer select-none items-center text-sm gap-2">
                   <div className="font-semibold">Open for All</div>
@@ -200,31 +146,6 @@ const NewAnnouncement = ({ organisation, setShow, setAnnouncements }: Props) => 
             </div>
           </div>
         </div>
-
-        {showUsers && users.length > 0 && (
-          <div className="w-full pl-16 flex flex-wrap justify-center gap-4">
-            {users.map(user => (
-              <div
-                key={user.id}
-                onClick={() => tagsUserUtils.handleTagUser(user.username)}
-                className="w-1/4 hover:scale-105 flex items-center gap-2 rounded-md border-[1px] border-primary_btn p-2 hover:bg-primary_comp cursor-pointer transition-ease-300"
-              >
-                <Image
-                  crossOrigin="anonymous"
-                  width={50}
-                  height={50}
-                  alt={'User Pic'}
-                  src={`${USER_PROFILE_PIC_URL}/${user.profilePic}`}
-                  className="rounded-full w-12 h-12"
-                />
-                <div className="">
-                  <div className="text-sm font-semibold line-clamp-1">{user.name}</div>
-                  <div className="text-xs text-gray-500">@{user.username}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
       <div
         onClick={() => setShow(false)}

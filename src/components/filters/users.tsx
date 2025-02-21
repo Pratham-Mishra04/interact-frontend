@@ -65,7 +65,7 @@ const Users = ({ fieldName, users, selectedUsers, setSelectedUsers }: Props) => 
         setShow={setShow}
       />
       {show && (
-        <div className="w-80 h-fit p-3 bg-white flex flex-col gap-2 absolute -bottom-2 left-0 translate-y-full rounded-md border-[1px] border-gray-200 shadow-md animate-fade_third">
+        <div className="w-80 h-fit p-3 bg-white dark:bg-dark_primary_comp dark:border-dark_primary_btn flex flex-col gap-2 absolute -bottom-2 left-0 translate-y-full rounded-md border-[1px] border-gray-200 shadow-md animate-fade_third">
           <div className="w-full flex justify-between items-center">
             <div className="text-xl font-medium">{fieldName}</div>
             <Backspace
@@ -91,8 +91,10 @@ const Users = ({ fieldName, users, selectedUsers, setSelectedUsers }: Props) => 
                 key={index}
                 onClick={() => handleClickUser(user)}
                 className={`w-full p-2 ${
-                  selectedUsers.map(u => u.id).includes(user.id) ? 'bg-primary_comp_hover' : 'hover:bg-primary_comp'
-                }  rounded-xl border-gray-400 flex text-primary_black transition-ease-300 cursor-pointer`}
+                  selectedUsers.map(u => u.id).includes(user.id)
+                    ? 'bg-primary_comp_hover dark:bg-dark_primary_comp_active'
+                    : 'hover:bg-primary_comp dark:hover:bg-dark_primary_comp_hover'
+                }  rounded-xl border-gray-400 flex text-primary_black dark:text-white transition-ease-300 cursor-pointer`}
               >
                 <div className="w-full flex items-center gap-1">
                   <Image

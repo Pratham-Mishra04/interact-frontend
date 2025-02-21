@@ -34,9 +34,9 @@ const RegisteredEvents = () => {
       {loading ? (
         <Loader />
       ) : events.length > 0 ? (
-        <div className="w-full px-2 gap-4 flex flex-wrap justify-center">
+        <div className="w-full grid grid-cols-3 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1">
           {events.map(event => {
-            return <EventCard key={event.id} event={event} size={84} />;
+            return <EventCard key={event.id} event={event} />;
           })}
         </div>
       ) : (

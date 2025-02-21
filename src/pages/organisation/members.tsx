@@ -20,6 +20,7 @@ import OrgMembersTable from '@/components/tables/organization/members';
 import Mascot from '@/components/fillers/mascot';
 import OrgInvitationsTable from '@/components/tables/organization/invitations';
 import TeamsView from '@/sections/organization/teams/teams_view';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 const Members = () => {
   const [organization, setOrganization] = useState(initialOrganization);
@@ -48,6 +49,8 @@ const Members = () => {
   const [clickedOnInfo, setClickedOnInfo] = useState(false);
   const [clickedOnTeams, setClickedOnTeams] = useState(false);
 
+  const isManager = useOrgAccess(ORG_MANAGER);
+
   return (
     <BaseWrapper title={`Memberships | ${currentOrg.title}`}>
       <OrgSidebar index={6} />
@@ -71,7 +74,7 @@ const Members = () => {
                 className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer max-md:hidden"
                 weight="regular"
               />
-              {checkOrgAccess(ORG_MANAGER) && (
+              {isManager && (
                 <Plus
                   onClick={() => setClickedOnAddMember(true)}
                   size={42}

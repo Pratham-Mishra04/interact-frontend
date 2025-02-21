@@ -24,6 +24,7 @@ import Tags from '@/components/form/tags';
 import Links from '@/components/form/links';
 import { getFormattedTime } from '@/utils/funcs/time';
 import Checkbox from '@/components/form/checkbox';
+import EditorInput from '@/components/form/editor-input';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -78,7 +79,7 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
   const getOrganizations = async () => {
     var URL = `${EXPLORE_URL}/orgs?page=1&limit=${10}`;
     if (orgSearch != '') URL += `&search=${orgSearch}`;
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode == 200) {
       let orgUsers: User[] = res.data.users || [];
       orgUsers = orgUsers.filter(u => u.id != currentOrg.userID);
@@ -206,11 +207,7 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
     } else if (res.statusCode == 413) {
       Toaster.stopLoad(toaster, 'Image too large', 0);
     } else {
-      if (res.data.message) {
-        Toaster.stopLoad(toaster, res.data.message, 0);
-      } else {
-        Toaster.stopLoad(toaster, SERVER_ERROR, 0);
-      }
+      Toaster.stopLoad(toaster, res.data.message || SERVER_ERROR, 0);
     }
     setMutex(false);
   };
@@ -267,7 +264,7 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
 
   return (
     <>
-      <div className="fixed top-10 max-lg:top-0 w-1/2 max-lg:w-screen h-[90%] max-lg:h-screen backdrop-blur-2xl bg-white dark:bg-[#ffe1fc22] flex flex-col justify-between rounded-lg p-8 gap-8 max-lg:gap-4 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 shadow-2xl animate-fade_third z-50">
+      <div className="fixed top-10 max-lg:top-0 w-1/2 max-lg:w-screen h-[90%] max-lg:h-screen backdrop-blur-2xl bg-white dark:bg-dark_primary_comp flex flex-col justify-between rounded-lg p-8 gap-8 max-lg:gap-4 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 shadow-2xl animate-fade_third z-50">
         <X onClick={() => setShow(false)} className="fixed top-5 right-2" size={24} weight="bold" />
         {step == 0 ? (
           <div className="w-full flex flex-col gap-8 max-lg:gap-4 ">
@@ -301,7 +298,7 @@ const NewEvent = ({ setShow, setEvents }: Props) => {
                     <Time label="End Time" val={endTime} setVal={setEndTime} required={true} />
                   </div>
                 </div>
-                <TextArea label="Event Description" val={description} setVal={setDescription} maxLength={2500} />
+                <EditorInput label="Event Description" val={description} setVal={setDescription} maxLength={2500} />
                 <Tags label="Event Tags" tags={tags} setTags={setTags} maxTags={10} required={true} />
                 <Links label="Event Links" links={links} setLinks={setLinks} maxLinks={3} />
               </div>

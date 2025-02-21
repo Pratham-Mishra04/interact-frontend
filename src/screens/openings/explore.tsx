@@ -12,6 +12,8 @@ import { useWindowWidth } from '@react-hook/window-size';
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import OrderMenu from '@/components/common/order_menu';
+import { useSelector } from 'react-redux';
+import { userIDSelector } from '@/slices/userSlice';
 
 const Openings = () => {
   const [openings, setOpenings] = useState<Opening[]>([]);
@@ -25,15 +27,18 @@ const Openings = () => {
 
   const windowWidth = useWindowWidth();
 
-  const fetchOpenings = async (search: string | null, initialPage?: number) => {
+  const fetchOpenings = async (search: string | null, cid: string | null, initialPage?: number) => {
     let URL = `${EXPLORE_URL}/openings?page=${initialPage ? initialPage : page}&limit=${10}&order=${
       order == 'last_searched' ? 'last_viewed' : order
-    }${search ? `&search=${search}` : ''}`;
+    }${search ? `&search=${search}` : ''}${cid ? `&cid=${cid}` : ''}`;
 
     const projectSlug = new URLSearchParams(window.location.search).get('pid');
-    if (projectSlug) URL = `${EXPLORE_URL}/openings/${projectSlug}`;
+    if (projectSlug) {
+      URL = `${EXPLORE_URL}/openings/${projectSlug}`;
+      setHasMore(false);
+    }
 
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode == 200) {
       if (initialPage == 1) {
         const openingData = res.data.openings || [];
@@ -80,7 +85,7 @@ const Openings = () => {
     setLoading(true);
     const URL = `${OPENING_URL}/${id}`;
 
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode == 200) {
       setOpenings([res.data.opening]);
 
@@ -103,13 +108,20 @@ const Openings = () => {
     setLoading(true);
     const oid = new URLSearchParams(window.location.search).get('oid');
     if (oid && oid != '') fetchOpening(oid);
-    else fetchOpenings(new URLSearchParams(window.location.search).get('search'), 1);
+    else
+      fetchOpenings(
+        new URLSearchParams(window.location.search).get('search'),
+        new URLSearchParams(window.location.search).get('cid'),
+        1
+      );
   }, [window.location.search, order]);
 
   const isOrg = (opening: Opening): boolean => {
     if (opening.organizationID) return true;
     return false;
   };
+
+  const userID = useSelector(userIDSelector);
 
   return (
     <div className="w-full flex flex-col gap-6">
@@ -120,13 +132,18 @@ const Openings = () => {
           <InfiniteScroll
             className={`${clickedOnOpening ? 'w-[480px]' : 'w-[720px]'} max-lg:w-full flex flex-col gap-4`}
             dataLength={openings.length}
-            next={() => fetchOpenings(new URLSearchParams(window.location.search).get('search'))}
+            next={() =>
+              fetchOpenings(
+                new URLSearchParams(window.location.search).get('search'),
+                new URLSearchParams(window.location.search).get('cid')
+              )
+            }
             hasMore={hasMore}
             loader={<Loader />}
           >
             {(openings.length > 0 || order == 'last_searched') && (
               <OrderMenu
-                orders={['trending', 'most_viewed', 'latest', 'last_searched']}
+                orders={['trending', 'most_viewed', 'latest', ...(userID ? ['last_searched'] : [])]}
                 current={order}
                 setState={setOrder}
               />

@@ -21,7 +21,7 @@ interface OrganizationMembershipSlice {
   title: string;
 }
 
-interface OrgState {
+export interface OrgState {
   currentOrg: OrgSlice;
   currentOrgMembership: OrganizationMembershipSlice;
 }
@@ -94,6 +94,7 @@ export const { setCurrentOrg, setCurrentOrgRole, setCurrentOrgTeams, setCurrentO
 
 export default orgSlice.reducer;
 
+export const orgSelector = (state: RootState) => state.organization;
 export const currentOrgIDSelector = (state: RootState) => state.organization.currentOrg.id;
 export const currentOrgSelector = (state: RootState) => state.organization.currentOrg;
 export const currentOrgMembershipSelector = (state: RootState) => state.organization.currentOrgMembership;

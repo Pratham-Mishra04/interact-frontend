@@ -34,11 +34,7 @@ const EventInvitationCard = ({ invitation, setInvitations }: Props) => {
         );
       Toaster.stopLoad(toaster, 'Invitation Accepted', 1);
     } else {
-      if (res.data.message) {
-        Toaster.stopLoad(toaster, res.data.message, 0);
-      } else {
-        Toaster.stopLoad(toaster, SERVER_ERROR, 0);
-      }
+      Toaster.stopLoad(toaster, res.data.message || SERVER_ERROR, 0);
     }
 
     setMutex(false);
@@ -94,7 +90,7 @@ const EventInvitationCard = ({ invitation, setInvitations }: Props) => {
           <Link
             target="_blank"
             href={`/organisations/${invitation.event?.organization.user.username}`}
-            className="font-medium hover-underline-animation after:bg-black"
+            className="font-medium hover-underline-animation after:bg-black dark:after:bg-white"
           >
             Hosted by {invitation.event?.organization.title}
           </Link>

@@ -8,19 +8,21 @@ import { SERVER_ERROR } from '@/config/errors';
 import Loader from '@/components/common/loader';
 import CommunityCard from '@/components/explore/community_card';
 import NoSearch from '@/components/fillers/search';
+import OrderMenu from '@/components/common/order_menu';
 
 const Communities = () => {
   const [communities, setCommunities] = useState<Community[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [order, setOrder] = useState('trending');
 
   const fetchCommunities = async (search: string | null, initialPage?: number) => {
-    const URL = `${EXPLORE_URL}/communities?page=${initialPage ? initialPage : page}&limit=${10}${
+    const URL = `${EXPLORE_URL}/communities?page=${initialPage ? initialPage : page}&limit=${10}&order=${order}${
       search ? `&search=${search}` : ''
     }`;
 
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode == 200) {
       if (initialPage == 1) {
         setCommunities(res.data.communities || []);
@@ -44,15 +46,18 @@ const Communities = () => {
     setHasMore(true);
     setLoading(true);
     fetchCommunities(new URLSearchParams(window.location.search).get('search'), 1);
-  }, [window.location.search]);
+  }, [window.location.search, order]);
 
   return (
     <div className="w-full flex flex-col gap-2">
+      {communities.length > 0 && (
+        <OrderMenu orders={['trending', 'most_viewed', 'latest']} current={order} setState={setOrder} />
+      )}
       {loading ? (
         <Loader />
       ) : communities.length > 0 ? (
         <InfiniteScroll
-          className="w-full grid grid-cols-2 gap-1"
+          className="w-full grid grid-cols-2 max-md:grid-cols-1 gap-2 pt-4"
           dataLength={communities.length}
           next={() => fetchCommunities(new URLSearchParams(window.location.search).get('search'))}
           hasMore={hasMore}

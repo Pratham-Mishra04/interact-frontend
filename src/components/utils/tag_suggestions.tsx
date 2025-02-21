@@ -6,7 +6,7 @@ interface Props {
   match?: string;
   setMatch?: React.Dispatch<React.SetStateAction<string>>;
   tags: string[];
-  setTags: React.Dispatch<React.SetStateAction<string[]>>;
+  setTags: React.Dispatch<React.SetStateAction<string[]>> | ((val: string[]) => void);
   maxTags?: number;
 }
 
@@ -60,7 +60,7 @@ const TagSuggestions = ({ match = '', setMatch, tags, setTags, maxTags = 5 }: Pr
               key={suggestion}
               onClick={() => {
                 if (setMatch) setMatch('');
-                setTags(prev => [...prev, suggestion]);
+                setTags([...tags, suggestion]);
               }}
               className="border-[1px] border-primary_black rounded-lg px-2 py-1 text-xs cursor-pointer"
             >

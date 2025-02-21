@@ -10,6 +10,7 @@ import Toaster from '@/utils/toaster';
 import patchHandler from '@/handlers/patch_handler';
 import { SERVER_ERROR } from '@/config/errors';
 import UserHoverCard from '@/components/common/user_hover_card';
+import Tags from '@/components/common/tags';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -78,7 +79,7 @@ const SubTaskView = ({
 
   return (
     <>
-      <div className="fixed top-[15%] max-lg:top-20 w-[640px] max-lg:w-5/6 max-h-[70%] overflow-y-auto bg-white flex flex-col gap-4 rounded-lg p-6 font-primary border-[1px] border-primary_btn right-1/2 translate-x-1/2 animate-fade_third z-50 max-lg:z-[60]">
+      <div className="fixed top-[15%] max-lg:top-20 w-[640px] max-lg:w-5/6 max-h-[70%] overflow-y-auto bg-white dark:bg-dark_primary_comp flex flex-col gap-4 rounded-lg p-6 font-primary border-[1px] border-primary_btn right-1/2 translate-x-1/2 animate-fade_third z-50 max-lg:z-[60]">
         <div className="w-full flex flex-col gap-2">
           {/* <ArrowArcLeft
             className="cursor-pointer"
@@ -113,16 +114,7 @@ const SubTaskView = ({
         </div>
         <div className="w-full flex flex-col gap-4">
           <div className="text-lg whitespace-pre-wrap">{subTask.description}</div>
-          <div className="w-full flex flex-wrap gap-2">
-            {subTask.tags &&
-              subTask.tags.map(tag => {
-                return (
-                  <div key={tag} className="text-xs border-black border-[1px] px-2 py-1 rounded-lg">
-                    {tag}
-                  </div>
-                );
-              })}
-          </div>
+          {subTask.tags && <Tags tags={subTask.tags} displayAll={true} />}
         </div>
         <div className="flex gap-2 items-center">
           <div>Deadline:</div>
@@ -136,7 +128,7 @@ const SubTaskView = ({
               backgroundColor:
                 subTask.priority == 'high' ? '#fbbebe' : subTask.priority == 'medium' ? '#fbf9be' : '#bffbbe',
             }}
-            className="uppercase px-3 py-1 rounded-lg text-sm font-medium"
+            className="uppercase px-3 py-1 rounded-lg text-sm font-medium dark:text-primary_black"
           >
             {subTask.priority}
           </div>
@@ -149,7 +141,7 @@ const SubTaskView = ({
                 return (
                   <div
                     key={user.id}
-                    className="w-full relative group flex gap-2 cursor-pointer p-1 rounded-lg hover:bg-slate-100 transition-ease-500"
+                    className="w-full relative group flex gap-2 cursor-pointer p-1 rounded-lg dark:hover:bg-dark_primary_comp_hover dark:hover:bg-dark_primary_comp_hover transition-ease-500"
                   >
                     <UserHoverCard user={user} scaleTransition={true} title={getUserTitle(user.id)} />
                     <Image

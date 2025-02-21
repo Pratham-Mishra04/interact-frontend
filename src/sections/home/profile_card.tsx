@@ -51,7 +51,7 @@ const ProfileCard = () => {
           <div className="relative">
             <div className="relative">
               <Link
-                href={`/${user.isOrganization ? 'organisation/' : ''}profile?action=edit&tag=coverPic`}
+                href={`/${user.isOrganization ? 'organisations/' : 'users/'}${user.username}?action=edit&tag=coverPic`}
                 className="w-full h-full absolute top-0 right-0 rounded-t-lg flex-center pb-12 bg-white transition-ease-200 cursor-pointer opacity-0 hover:opacity-50"
               >
                 <PencilSimple color="black" size={24} />
@@ -70,7 +70,9 @@ const ProfileCard = () => {
 
             <div className="absolute translate-x-1/2 -translate-y-1/2 right-1/2">
               <Link
-                href={`/${user.isOrganization ? 'organisation/' : ''}profile?action=edit&tag=profilePic`}
+                href={`/${user.isOrganization ? 'organisations/' : 'users/'}${
+                  user.username
+                }?action=edit&tag=profilePic`}
                 className="w-28 h-28 absolute top-0 right-0 rounded-full flex-center bg-white transition-ease-200 cursor-pointer opacity-0 hover:opacity-50"
               >
                 <PencilSimple color="black" size={24} />
@@ -89,7 +91,7 @@ const ProfileCard = () => {
           </div>
           <div className="w-full flex flex-col items-center pt-14">
             <Link
-              href={`/${user.isOrganization ? 'organisation/' : ''}profile?action=edit&tag=name`}
+              href={`/${user.isOrganization ? 'organisations/' : 'users/'}${user.username}?action=edit&tag=name`}
               className="w-fit relative group rounded-lg flex-center px-8 py-1 hover:bg-primary_comp cursor-pointer transition-ease-300"
             >
               <PencilSimple className="absolute opacity-0 group-hover:opacity-100 top-1/2 right-2 -translate-y-1/2 transition-ease-300" />

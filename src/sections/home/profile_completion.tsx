@@ -61,7 +61,7 @@ const ProfileCompletion = () => {
           : 'w-[64px] h-[64px] pb-0 gap-0 pt-16 px-0 bottom-4 right-4 hover:shadow-lg '
       } ${
         hide ? 'hidden' : ''
-      } rounded-xl shadow-md transition-ease-500 max-md:h-fit fixed overflow-y-hidden overflow-x-hidden max-md:mx-auto font-primary flex flex-col dark:text-white items-center bg-white dark:bg-[#84478023] backdrop-blur-md border-[1px] border-gray-400 dark:border-dark_primary_btn max-md:hidden max-md:bg-transparent z-20`}
+      } rounded-xl shadow-md transition-ease-500 max-md:h-fit fixed overflow-y-hidden overflow-x-hidden max-md:mx-auto font-primary flex flex-col dark:text-white items-center bg-white dark:bg-dark_primary_comp backdrop-blur-md border-[1px] border-gray-400 dark:border-dark_primary_btn max-md:hidden max-md:bg-transparent z-20`}
     >
       <div
         onClick={() => dispatch(setProfileCompletionOpen(!open))}
@@ -109,7 +109,7 @@ const ProfileCompletion = () => {
         <div className="text-gradient font-bold text-5xl">Complete Profile </div>
         <Link
           href={`/users/${user.username}`}
-          className="w-fit flex items-center gap-1 hover-underline-animation after:bg-black dark:after:bg-dark_primary_btn"
+          className="w-fit flex items-center gap-1 hover-underline-animation after:bg-black dark:after:bg-white"
         >
           <div>to increase your Reach!</div>
           <ArrowUpRight weight="bold" />
@@ -128,7 +128,7 @@ const ProfileCompletion = () => {
             <Link
               href={'/workspace?action=new_project'}
               onClick={() => dispatch(setProfileCompletionOpen(false))}
-              className="hover-underline-animation after:bg-black dark:after:bg-dark_primary_btn"
+              className="hover-underline-animation after:bg-black dark:after:bg-white"
             >
               Create a Project
             </Link>
@@ -142,7 +142,7 @@ const ProfileCompletion = () => {
             <Link
               href={`/users/${user.username}?action=edit&tag=links`}
               onClick={() => dispatch(setProfileCompletionOpen(false))}
-              className="hover-underline-animation after:bg-black dark:after:bg-dark_primary_btn"
+              className="hover-underline-animation after:bg-black dark:after:bg-white"
             >
               Add Links to your social media
             </Link>
@@ -154,9 +154,9 @@ const ProfileCompletion = () => {
             <div className="cursor-default">Follow at least 3 Profiles</div>
           ) : (
             <Link
-              href={'/explore?tab=users'}
+              href={'/users'}
               onClick={() => dispatch(setProfileCompletionOpen(false))}
-              className="hover-underline-animation after:bg-black dark:after:bg-dark_primary_btn"
+              className="hover-underline-animation after:bg-black dark:after:bg-white"
             >
               Follow at least 3 Profiles
             </Link>
@@ -170,7 +170,7 @@ const ProfileCompletion = () => {
             <Link
               href={`/users/${user.username}?action=edit&tag=tagline`}
               onClick={() => dispatch(setProfileCompletionOpen(false))}
-              className="hover-underline-animation after:bg-black dark:after:bg-dark_primary_btn"
+              className="hover-underline-animation after:bg-black dark:after:bg-white"
             >
               Add a Tagline
             </Link>

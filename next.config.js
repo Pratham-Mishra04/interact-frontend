@@ -10,6 +10,10 @@ const nextConfig = {
             port: '',
             pathname: `/${process.env.NEXT_PUBLIC_GCP_BUCKET}/**`,
         },
+        {
+          protocol: 'https',
+          hostname: 'avatar.vercel.sh',
+      },
     ],
   },
   optimizeFonts:true,

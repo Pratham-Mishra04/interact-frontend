@@ -29,7 +29,7 @@ const Comment = ({ notification, short = true }: Props) => {
       case 2:
         return '/explore/post/' + notification.postID;
       case 4:
-        return '/projects?pid=' + notification.project.slug;
+        return '/projects/' + notification.project.slug;
       case 13:
         return '/events/' + notification.eventID;
       case 19:
@@ -43,7 +43,7 @@ const Comment = ({ notification, short = true }: Props) => {
       notification={notification}
       extended={
         !short && (
-          <div className="w-fit max-w-[50%] text-xs rounded-md px-2 pt-1 bg-white line-clamp-2">
+          <div className="w-fit max-w-[50%] text-xs rounded-md px-2 pt-1 bg-white dark:bg-dark_primary_comp_hover line-clamp-2">
             {notification.comment.content.replace(/\*\*|\^\^|```/g, '')}
           </div>
         )

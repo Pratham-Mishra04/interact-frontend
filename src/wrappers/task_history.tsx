@@ -23,7 +23,7 @@ const TaskHistoryWrapper: React.FC<WrapperProps> = ({ children, history }) => {
             className={'rounded-full w-4 h-4 cursor-default border-[1px] border-black'}
           />
           <div className="font-semibold">{history.user.name}</div>
-          <div className="text-gray-600">{children}</div>
+          <div className="text-gray-600 dark:text-white">{children}</div>
         </div>
         <div className="text-xxs">{getDisplayTime(history.createdAt, false)}</div>
       </div>

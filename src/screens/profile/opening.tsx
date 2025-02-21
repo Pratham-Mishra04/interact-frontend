@@ -14,6 +14,7 @@ import Loader from '@/components/common/loader';
 import Mascot from '@/components/fillers/mascot';
 import { EXPLORE_URL } from '@/config/routes';
 import { useWindowWidth } from '@react-hook/window-size';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 interface Props {
   orgID: string;
@@ -33,7 +34,7 @@ export default function Openings({ orgID }: Props) {
 
   const fetchOpenings = async () => {
     const URL = `${EXPLORE_URL}/openings/org/${orgID}?page=${page}&limit=${10}`;
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode === 200) {
       const addedOpenings = [...openings, ...(res.data.openings || [])];
       if (addedOpenings.length === openings.length) setHasMore(false);
@@ -63,16 +64,19 @@ export default function Openings({ orgID }: Props) {
   useEffect(() => {
     fetchOpenings();
   }, []);
+
+  const isManger = useOrgAccess(ORG_MANAGER);
+
   return (
     <>
-      {clickedOnNewOpening && checkOrgAccess(ORG_MANAGER) && (
+      {clickedOnNewOpening && isManger && (
         <NewOpening setShow={setClickedOnNewOpening} openings={openings} setOpenings={setOpenings} />
       )}
-      <div className="w-full flex justify-evenly gap-4 px-4 pb-base_padding">
+      <div className="w-full flex justify-between">
         {openings.length > 0 ? (
           <>
             <InfiniteScroll
-              className={`${clickedOnOpening ? 'w-full' : 'w-[720px]'} max-lg:w-full flex flex-col gap-4`}
+              className={`${clickedOnOpening ? 'w-[480px]' : 'w-[720px]'} max-lg:w-full flex flex-col gap-4`}
               dataLength={openings.length}
               next={fetchOpenings}
               hasMore={hasMore}

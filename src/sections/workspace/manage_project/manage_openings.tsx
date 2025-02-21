@@ -138,7 +138,7 @@ const ManageOpenings = ({
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Remove from Project?</AlertDialogTitle>
+                        <AlertDialogTitle>Delete Opening?</AlertDialogTitle>
                         <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>

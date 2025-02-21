@@ -1,11 +1,9 @@
+# *
 User-agent: *
-Disallow: /
-Allow: /login
-Allow: /signup
-Allow: /home
-Allow: /projects
-Allow: /openings
-Allow: /users
-Allow: /events
+Allow: /
 
-sitemap: https://interactnow.in/sitemap.xml
+# Host
+Host: http://localhost:3000
+
+# Sitemaps
+Sitemap: http://localhost:3000/sitemap.xml

@@ -14,15 +14,15 @@ import Toaster from '@/utils/toaster';
 import patchHandler from '@/handlers/patch_handler';
 import { SERVER_ERROR } from '@/config/errors';
 import ConfirmDelete from '../common/confirm_delete';
-import renderContentWithLinks from '@/utils/funcs/render_content_with_links';
 import Report from '../common/report';
 import SignUp from '../common/signup_box';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
-import checkOrgAccess from '@/utils/funcs/access';
 import { ORG_SENIOR } from '@/config/constants';
 import { Buildings } from '@phosphor-icons/react';
 import isArrEdited from '@/utils/funcs/check_array_edited';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import Editor from '@/components/editor';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 interface Props {
   post: Post;
@@ -57,6 +57,8 @@ const PostComponent = ({
 
   const userID = useSelector(userIDSelector) || '';
 
+  const isSenior = useOrgAccess(ORG_SENIOR, post.userID, true);
+
   const handleDelete = async () => {
     const toaster = Toaster.startLoad('Deleting your post...');
 
@@ -72,24 +74,6 @@ const PostComponent = ({
       if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
       else Toaster.stopLoad(toaster, SERVER_ERROR, 0);
     }
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'b' && (event.ctrlKey || event.metaKey)) {
-      event.preventDefault();
-      wrapSelectedText('**', '**');
-    }
-  };
-
-  const wrapSelectedText = (prefix: string, suffix: string) => {
-    const textarea = document.getElementById('textarea_id') as HTMLTextAreaElement;
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = caption.substring(start, end);
-    const newText = caption.substring(0, start) + prefix + selectedText + suffix + caption.substring(end);
-    setCaption(newText);
-    textarea.focus();
-    textarea.setSelectionRange(start + prefix.length, end + prefix.length);
   };
 
   const currentOrgID = useSelector(currentOrgIDSelector);
@@ -130,19 +114,15 @@ const PostComponent = ({
   return (
     <div
       className={`w-full relative bg-white dark:bg-transparent font-primary flex gap-1 ${
-        !isRepost ? 'border-b-[1px] py-4' : 'rounded-lg border-[1px] p-2 my-2'
-      } border-gray-300 animate-fade_third`}
+        !isRepost ? 'border-b-[1px] py-4' : 'rounded-lg border-[1px] p-2'
+      } border-gray-300 dark:border-dark_primary_btn animate-fade_third`}
     >
       {noUserClick && <SignUp setShow={setNoUserClick} />}
       {clickedOnDelete && <ConfirmDelete setShow={setClickedOnDelete} handleDelete={handleDelete} />}
       {clickedOnReport && <Report postID={post.id} setShow={setClickedOnReport} />}
       <div className="h-full">
         <Link
-          href={`${
-            post.user.username != loggedInUser.username
-              ? `/users/${post.user.isOrganization ? 'organisation/' : ''}${post.user.username}`
-              : `/${post.user.isOrganization ? 'organisation/' : ''}profile`
-          }`}
+          href={`/users/${post.user.isOrganization ? 'organisations/' : ''}${post.user.username}`}
           className="rounded-full"
         >
           <Image
@@ -160,7 +140,7 @@ const PostComponent = ({
       <div className="w-[calc(100%-32px)] flex flex-col gap-1">
         <div className="w-full h-fit flex justify-between">
           <Link
-            href={`${post.user.isOrganization ? 'organisations' : 'users'}/${post.user.username}`}
+            href={`/${post.user.isOrganization ? 'organisations' : 'users'}/${post.user.username}`}
             className="font-medium flex items-center gap-1"
           >
             {post.user.name}
@@ -174,14 +154,15 @@ const PostComponent = ({
               <></>
             ) : (
               showLowerPost && (
-                <Popover open={isDialogOpen} onOpenChange={val => setIsDialogOpen(val)}>
+                <Popover open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                   <PopoverTrigger>
                     <div className="text-xxs cursor-pointer">•••</div>
                   </PopoverTrigger>
-                  <PopoverContent className="w-40 p-2 text-sm">
-                    {(post.userID == loggedInUser.id || checkOrgAccess(ORG_SENIOR)) && (
+                  <PopoverContent className="w-40 p-2 text-sm" align="end">
+                    {(post.userID == loggedInUser.id || isSenior) && (
                       <div
-                        onClick={() => {
+                        onClick={e => {
+                          e.stopPropagation();
                           setClickedOnEdit(true);
                           setIsDialogOpen(false);
                         }}
@@ -190,7 +171,7 @@ const PostComponent = ({
                         Edit
                       </div>
                     )}
-                    {(post.userID == loggedInUser.id || checkOrgAccess(ORG_SENIOR)) && (
+                    {(post.userID == loggedInUser.id || isSenior) && (
                       <div
                         onClick={el => {
                           el.stopPropagation();
@@ -263,42 +244,36 @@ const PostComponent = ({
           </CarouselProvider>
         )}
         {clickedOnEdit ? (
-          <div className="relative">
-            <textarea
-              id="textarea_id"
-              maxLength={2000}
-              value={caption}
-              autoFocus={true}
-              onChange={el => setCaption(el.target.value)}
-              onKeyDown={handleKeyDown}
-              className="w-full text-sm whitespace-pre-wrap rounded-md focus:outline-none dark:bg-dark_primary_comp p-2 my-2 max-h-72"
+          <>
+            <Editor
+              className="w-full min-h-[150px] text-sm mb-2"
+              content={caption}
+              setContent={setCaption}
+              limit={2000}
+              editable
             />
-
-            <div className="dark:text-white flex items-center gap-4 max-md:gap-1 absolute -bottom-8 right-0">
+            <div className="w-full dark:text-white flex items-center justify-end gap-2 max-md:gap-1">
               <div
-                onClick={() => setClickedOnEdit(false)}
-                className="border-[1px] border-primary_black flex-center rounded-full w-20 max-md:w-12 max-md:text-xxs p-1 cursor-pointer"
+                onClick={e => {
+                  e.stopPropagation();
+                  setClickedOnEdit(false);
+                }}
+                className="border-[1px] border-primary_black flex-center rounded-full w-16 max-md:w-12 text-xs max-md:text-xxs p-1 cursor-pointer"
               >
                 cancel
               </div>
-              {caption == post.content ? (
-                <div className="bg-primary_black bg-opacity-50 text-white flex-center rounded-full w-16 max-md:w-12 max-md:text-xxs p-1 cursor-default">
-                  save
-                </div>
-              ) : (
-                <div
-                  onClick={handleEdit}
-                  className="bg-primary_black text-white flex-center rounded-full w-16 max-md:w-12 max-md:text-xxs p-1 cursor-pointer"
-                >
-                  save
-                </div>
-              )}
+              <div
+                onClick={caption !== post.content ? handleEdit : undefined}
+                className={`bg-primary_black ${
+                  caption === post.content ? 'bg-opacity-50 cursor-default' : 'cursor-pointer'
+                } text-white flex-center rounded-full w-16 max-md:w-12 text-xs max-md:text-xxs p-1`}
+              >
+                save
+              </div>
             </div>
-          </div>
+          </>
         ) : (
-          <div className={`w-full text-sm  whitespace-pre-wrap mb-2 ${clamp && 'line-clamp-6'}`}>
-            {renderContentWithLinks(post.content, post.taggedUsers)}
-          </div>
+          <Editor className="w-full text-sm mb-2" content={post.content} editable={false} />
         )}
         {showLowerPost && (
           <LowerPost

@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { OpeningBookmark } from '@/types';
 import SignUp from '../common/signup_box';
+import TooltipIcon from '../common/tooltip_icon';
 
 interface Props {
   opening: Opening;
@@ -104,17 +105,23 @@ const OpeningBookmarkIcon = ({ opening }: Props) => {
           opening={opening}
           setBookmark={setBookmark}
         />
-        <BookmarkSimple
-          className="cursor-pointer max-md:w-[32px] max-md:h-[32px]"
-          onClick={() => {
-            if (userID == '') setNoUserClick(true);
-            else {
-              if (bookmarkStatus.isBookmarked) removeBookmarkItemHandler();
-              else setClickedOnBookmark(prev => !prev);
-            }
-          }}
-          size={24}
-          weight={bookmarkStatus.isBookmarked ? 'duotone' : 'light'}
+        <TooltipIcon
+          label="Bookmark"
+          icon={
+            <BookmarkSimple
+              className="cursor-pointer max-md:w-[32px] max-md:h-[32px]"
+              onClick={() => {
+                if (userID == '') setNoUserClick(true);
+                else {
+                  if (bookmarkStatus.isBookmarked) removeBookmarkItemHandler();
+                  else setClickedOnBookmark(prev => !prev);
+                }
+              }}
+              size={32}
+              weight={bookmarkStatus.isBookmarked ? 'duotone' : 'light'}
+            />
+          }
+          excludeHoverEffect
         />
       </div>
     </>

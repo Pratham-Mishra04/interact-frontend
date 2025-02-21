@@ -56,6 +56,8 @@ const Login = () => {
           user.phoneNo = res.data.phoneNo || '';
           Cookies.set('token', res.data.token, {
             expires: Number(process.env.NEXT_PUBLIC_COOKIE_EXPIRATION_TIME),
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict',
           });
           Cookies.set('id', user.id, {
             expires: Number(process.env.NEXT_PUBLIC_COOKIE_EXPIRATION_TIME),
@@ -100,11 +102,16 @@ const Login = () => {
           content="Log into Interact! Interact is a groundbreaking web platform designed for college-going students, freelancers, professionals, and creatives."
         />
       </Head>
-      <div className="h-full flex">
+      <div className="h-full flex dark:bg-dark_primary_comp">
         <div className="w-[55%] max-lg:hidden min-h-screen bg-onboarding bg-cover"></div>
         <div className="w-[45%] max-lg:w-full h-full min-h-screen font-primary py-8 px-8 flex flex-col justify-between items-center">
           <div className="w-full flex justify-between items-center">
-            <ReactSVG src="/onboarding_logo.svg" />
+            <Link href="/" className="hidden dark:flex">
+              <ReactSVG src="/onboarding_logo_dark.svg" />
+            </Link>
+            <Link href="/" className="static dark:hidden">
+              <ReactSVG src="/onboarding_logo.svg" />
+            </Link>
             <Link
               href={`/login`}
               className="w-12 hover:w-24 h-12 group overflow-clip relative rounded-full border-[1px] border-primary_black hover:shadow-xl transition-ease-300"
@@ -125,7 +132,7 @@ const Login = () => {
             </div>
             <div
               onClick={handleGoogleLogin}
-              className="w-full flex gap-4 justify-center cursor-pointer shadow-md  border-[#D4D9E1] hover:bg-[#F2F2F2] active:bg-[#EDEDED] border-2 rounded-xl px-4 py-2"
+              className="w-full flex gap-4 justify-center cursor-pointer shadow-md  border-[#D4D9E1] hover:bg-[#F2F2F2] dark:hover:bg-dark_primary_comp_hover active:bg-[#EDEDED] dark:active:bg-dark_primary_comp_active border-2 rounded-xl px-4 py-2"
             >
               <div>
                 <ReactSVG src="/assets/google.svg" />
@@ -216,4 +223,4 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
   };
 };
 
-export default WidthCheck(Login);
+export default Login;

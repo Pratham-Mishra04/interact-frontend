@@ -2,7 +2,7 @@ import React from 'react';
 
 const ProfileCardLoader = () => {
   return (
-    <div className="w-full overflow-y-auto overflow-x-hidden pb-4 max-lg:mx-auto font-primary mt-base_padding max-lg:mb-12 ml-base_padding h-base_md max-lg:h-fit flex flex-col gap-4 dark:text-white items-center pt-12 max-lg:pb-8 max-lg:pt-4 px-4 shadow-md dark:shadow-none bg-[#ffffff2d] dark:bg-[#84478023] backdrop-blur-md border-[1px] border-gray-300 dark:border-dark_primary_btn sticky max-lg:static top-[90px] max-lg:bg-transparent rounded-md z-10">
+    <div className="w-full overflow-y-auto overflow-x-hidden pb-4 max-lg:mx-auto font-primary mt-base_padding max-lg:mb-12 ml-base_padding h-fit flex flex-col gap-4 dark:text-white items-center pt-12 max-lg:pb-8 max-lg:pt-4 px-4 shadow-md dark:shadow-none bg-[#ffffff2d] dark:bg-dark_primary_comp backdrop-blur-md border-[1px] border-gray-300 dark:border-dark_primary_btn sticky max-lg:static top-[90px] max-lg:bg-transparent rounded-md z-10">
       <div
         className={
           'animate-pulse delay-0 rounded-full max-lg:mx-auto bg-white dark:bg-dark_primary_comp_hover w-48 h-48 cursor-default'

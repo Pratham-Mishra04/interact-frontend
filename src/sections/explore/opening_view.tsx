@@ -86,15 +86,15 @@ const OpeningView = ({ opening, setShow, setOpening, org = false, showBack = fal
                 <Link
                   href={`/organisations/${opening.organization?.user.username}`}
                   target="_blank"
-                  className="flex-center gap-1 hover-underline-animation after:bg-black font-semibold text-lg"
+                  className="flex-center gap-1 hover-underline-animation after:bg-black dark:after:bg-white font-semibold text-lg"
                 >
                   {opening.organization?.title} <Buildings />
                 </Link>
               ) : (
                 <Link
-                  href={`/explore?pid=${opening.project?.slug}`}
+                  href={`/projects/${opening.project?.slug}`}
                   target="_blank"
-                  className="hover-underline-animation after:bg-black font-semibold text-lg"
+                  className="hover-underline-animation after:bg-black dark:after:bg-white font-semibold text-lg"
                 >
                   {opening.project?.title}
                 </Link>
@@ -123,7 +123,7 @@ const OpeningView = ({ opening, setShow, setOpening, org = false, showBack = fal
                 opening.tags.map(tag => {
                   return (
                     <Link
-                      href={'/explore?search=' + tag}
+                      href={'/openings?search=' + tag}
                       target="_blank"
                       key={tag}
                       className="flex-center p-2 font-primary text-xs dark:text-white border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-xl"

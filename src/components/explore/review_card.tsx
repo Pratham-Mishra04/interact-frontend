@@ -15,6 +15,7 @@ import { ORG_MANAGER } from '@/config/constants';
 import StarRating from '../organization/star_rating';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
 import Report from '../common/report';
+import { useTheme } from 'next-themes';
 
 interface Props {
   review: Review;
@@ -53,13 +54,15 @@ const ReviewCard = ({ review, setReviews }: Props) => {
     setMutex(false);
   };
 
+  const isDarkMode = (useTheme().theme || '') === 'dark';
+
   return (
     <>
       {clickedOnDelete && <ConfirmDelete setShow={setClickedOnDelete} handleDelete={handleDelete} />}
       {clickedOnReport && <Report setShow={setClickedOnReport} reviewID={review.id} />}
       <div
         key={review.id}
-        className="w-full flex flex-col gap-4 bg-white relative group hover:shadow-xl p-6 rounded-xl transition-ease-300 animate-fade_third"
+        className="w-full flex flex-col gap-4 bg-white dark:bg-dark_primary_comp_hover relative group hover:shadow-xl p-6 rounded-xl transition-ease-300 animate-fade_third"
       >
         {user.id == review.userID ? (
           <div
@@ -109,14 +112,14 @@ const ReviewCard = ({ review, setReviews }: Props) => {
             <StarRating
               fixRating={true}
               defaultRating={Math.floor(review.rating)}
-              color={'#9275b9ba'}
-              strokeColor={'#633267'}
+              color={isDarkMode ? '#478EE1' : '#9275b9ba'}
+              strokeColor={isDarkMode ? '#478eeb86' : '#633267'}
               size={25}
             />
           </div>
         </div>
 
-        <div className="text-primary_black text-sm">{review.content}</div>
+        <div className="text-primary_black dark:text-white text-sm">{review.content}</div>
       </div>
     </>
   );

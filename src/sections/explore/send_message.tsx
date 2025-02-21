@@ -76,8 +76,8 @@ const SendMessage = ({ user, setShow }: Props) => {
 
   return (
     <>
-      <div className="w-1/2 max-md:w-5/6 fixed backdrop-blur-lg bg-white dark:bg-[#ffe1fc22] dark:max-md:bg-[#2a192eea] dark:text-white z-30 translate-x-1/2 -translate-y-1/4 top-64 max-lg:top-1/4 max-md:top-56 right-1/2 flex flex-col px-8 py-8 gap-6 border-2 border-primary_btn  dark:border-dark_primary_btn rounded-xl animate-fade_third">
-        <div className="text-4xl text-center text-primary_black  font-bold">Message</div>
+      <div className="w-1/2 max-md:w-5/6 fixed backdrop-blur-lg bg-white dark:bg-dark_primary_comp dark:max-md:bg-[#2a192eea] dark:text-white z-30 translate-x-1/2 -translate-y-1/4 top-64 max-lg:top-1/4 max-md:top-56 right-1/2 flex flex-col px-8 py-8 gap-6 border-2 border-primary_btn  dark:border-dark_primary_btn rounded-xl animate-fade_third">
+        <div className="text-4xl text-center text-primary_black dark:text-white font-bold">Message</div>
         <div className="w-full flex max-md:flex-col gap-4 items-center">
           <div className="w-1/2 max-md:w-full">
             <UserCard user={user} />
@@ -85,14 +85,14 @@ const SendMessage = ({ user, setShow }: Props) => {
           <div className="w-1/2 max-md:w-full h-full max-h-base_md overflow-auto flex flex-col gap-2">
             <form onSubmit={el => handleSubmit(el)} className="w-full flex flex-col gap-1">
               <textarea
-                className="bg-primary_comp text-sm focus:outline-none p-2 rounded-xl min-h-[12rem] max-h-64"
+                className="bg-primary_comp dark:bg-dark_primary_comp_hover text-sm focus:outline-none p-2 rounded-xl min-h-[16rem] max-h-64"
                 placeholder="Add a message"
                 value={message}
                 onChange={el => setMessage(el.target.value)}
               />
               <button
                 type="submit"
-                className="w-full text-center py-2 rounded-lg border-[1px] border-primary_btn dark:border-[#ffe1fc10] bg-primary_comp dark:bg-transparent hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-[#ffe1fc10] dark:active:bg-dark_primary_comp_active cursor-pointer transition-ease-200"
+                className="w-full text-center py-2 rounded-lg border-[1px] border-primary_btn dark:border-dark_primary_btn bg-primary_comp dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active cursor-pointer transition-ease-200"
               >
                 Send Message
               </button>

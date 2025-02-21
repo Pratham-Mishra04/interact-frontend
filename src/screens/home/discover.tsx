@@ -9,17 +9,19 @@ import { EXPLORE_URL } from '@/config/routes';
 import { SERVER_ERROR } from '@/config/errors';
 import PostsLoader from '@/components/loaders/posts';
 import OrderMenu from '@/components/common/order_menu';
+import { useSelector } from 'react-redux';
+import { userIDSelector } from '@/slices/userSlice';
 
 const Discover = () => {
   const [feed, setFeed] = useState<Post[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [order, setOrder] = useState('recommended');
+  const [order, setOrder] = useState('trending');
 
   const getFeed = (initialPage?: number) => {
     const URL = `${EXPLORE_URL}/posts?order=${order}&page=${initialPage ? initialPage : page}&limit=${10}`;
-    getHandler(URL)
+    getHandler(URL, undefined, true)
       .then(res => {
         if (res.statusCode === 200) {
           if (initialPage == 1) {
@@ -51,9 +53,15 @@ const Discover = () => {
     getFeed(1);
   }, [order]);
 
+  const userID = useSelector(userIDSelector);
+
   return (
     <div className="w-full">
-      <OrderMenu orders={['recommended', 'trending', 'most_liked', 'latest']} current={order} setState={setOrder} />
+      <OrderMenu
+        orders={['trending', ...(userID ? ['recommended'] : []), 'most_liked', 'latest']}
+        current={order}
+        setState={setOrder}
+      />
       {loading ? (
         <PostsLoader />
       ) : feed.length === 0 ? (
@@ -67,9 +75,9 @@ const Discover = () => {
           hasMore={hasMore}
           loader={<PostsLoader />}
         >
-          {feed.map(post => {
-            if (post.rePost) return <RePostComponent key={post.id} post={post} />;
-            else return <PostComponent key={post.id} post={post} />;
+          {feed.map((post, index) => {
+            if (post.rePost) return <RePostComponent key={index} post={post} />;
+            else return <PostComponent key={index} post={post} />;
           })}
         </InfiniteScroll>
       )}

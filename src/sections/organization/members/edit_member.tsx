@@ -46,10 +46,10 @@ const EditMember = ({ setShow, membership, setOrganization }: Props) => {
     const URL = `${ORG_URL}/${org.id}/membership/${membership.id}`;
 
     const res = await patchHandler(URL, formData);
-    
+
     if (res.statusCode === 200) {
-      if(membership.role != role){
-        socketService.sendUpdateMembership(membership.userID, membership.organizationID, role)
+      if (membership.role != role) {
+        socketService.sendUpdateMembership(membership.userID, membership.organizationID, role);
       }
       if (setOrganization)
         setOrganization(prev => {
@@ -75,16 +75,18 @@ const EditMember = ({ setShow, membership, setOrganization }: Props) => {
     setMutex(false);
   };
 
-  const canEditRoles =
-    org.userID == user.id
-      ? [ORG_MANAGER, ORG_SENIOR, ORG_MEMBER]
-      : orgMemberShip.role == ORG_MANAGER
-      ? [ORG_SENIOR, ORG_MEMBER]
-      : [];
+  // const canEditRoles =
+  //   org.userID == user.id
+  //     ? [ORG_MANAGER, ORG_SENIOR, ORG_MEMBER]
+  //     : orgMemberShip.role == ORG_MANAGER
+  //     ? [ORG_SENIOR, ORG_MEMBER]
+  //     : [];
+
+  const canEditRoles = [ORG_MANAGER, ORG_SENIOR, ORG_MEMBER];
 
   return (
     <>
-      <div className="fixed top-56 w-[560px] max-md:w-5/6 h-fit backdrop-blur-2xl bg-white dark:bg-[#ffe1fc22] flex flex-col gap-4 rounded-lg p-10 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 animate-fade_third z-30">
+      <div className="fixed top-56 w-[560px] max-md:w-5/6 h-fit backdrop-blur-2xl bg-white dark:bg-dark_primary_comp flex flex-col gap-4 rounded-lg p-10 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 animate-fade_third z-30">
         <div className="w-full flex max-md:flex-col max-md:gap-4 max-md:items-start items-center justify-between">
           <div className="w-full flex gap-2">
             <Image
@@ -106,11 +108,11 @@ const EditMember = ({ setShow, membership, setOrganization }: Props) => {
           <select
             onChange={el => setRole(el.target.value)}
             value={role}
-            className="w-fit h-12 border-[1px] border-primary_btn dark:border-dark_primary_btn dark:text-white bg-primary_comp dark:bg-[#10013b30] focus:outline-none text-sm rounded-lg block p-2"
+            className="w-fit h-12 border-[1px] border-primary_btn dark:border-dark_primary_btn dark:text-white bg-primary_comp dark:bg-dark_primary_comp focus:outline-none text-sm rounded-lg block p-2"
           >
             {canEditRoles.map((c, i) => {
               return (
-                <option className="bg-primary_comp_hover dark:bg-[#10013b30]" key={i} value={c}>
+                <option className="bg-primary_comp_hover dark:bg-dark_primary_comp" key={i} value={c}>
                   {c}
                 </option>
               );

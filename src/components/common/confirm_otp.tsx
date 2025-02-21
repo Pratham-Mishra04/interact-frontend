@@ -11,6 +11,7 @@ interface Props {
   title?: string;
   subtitle?: string;
   confirmText?: string;
+  email?: string;
 }
 
 const ConfirmOTP = ({
@@ -19,6 +20,7 @@ const ConfirmOTP = ({
   title = "Verify it's You",
   subtitle = 'Enter the One Time Password (OTP) sent to - ',
   confirmText = 'Confirm',
+  email,
 }: Props) => {
   const [OTP, setOTP] = useState('');
 
@@ -43,7 +45,7 @@ const ConfirmOTP = ({
           <div className="w-full flex flex-col gap-4">
             <div className="font-bold text-5xl text-gray-800 dark:text-white">{title}</div>
             <div className="font-medium text-sm">
-              {subtitle} <span className="font-semibold">{user.email}</span>
+              {subtitle} <span className="font-semibold">{email ?? user.email}</span>
             </div>
           </div>
 

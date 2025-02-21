@@ -10,18 +10,15 @@ import { EXPLORE_URL, ORG_URL } from '@/config/routes';
 import OrgMembersOnlyAndProtect from '@/utils/wrappers/org_members_only';
 import { useSelector } from 'react-redux';
 import { currentOrgSelector } from '@/slices/orgSlice';
-import checkOrgAccess from '@/utils/funcs/access';
-import { ORG_SENIOR } from '@/config/constants';
+import { ORG_MANAGER, ORG_SENIOR } from '@/config/constants';
 import Loader from '@/components/common/loader';
 import { Event } from '@/types';
 import NewEvent from '@/sections/organization/events/new_event';
-import EventCard from '@/components/organization/event_card';
 import { initialEvent } from '@/types/initials';
 import EditEvent from '@/sections/organization/events/edit_event';
 import ConfirmDelete from '@/components/common/confirm_delete';
 import deleteHandler from '@/handlers/delete_handler';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { navbarOpenSelector } from '@/slices/feedSlice';
 import EditCoordinators from '@/sections/organization/events/edit_coordinators';
 import AccessTree from '@/components/organization/access_tree';
 import ViewInvitations from '@/sections/organization/events/view_invitations';
@@ -29,14 +26,14 @@ import EditCoHosts from '@/sections/organization/events/edit_cohosts';
 import EventHistory from '@/sections/organization/events/history';
 import HackathonHistories from '@/sections/organization/hackathons/history';
 import NoEvents from '@/components/fillers/events';
-import NewHackathon from '@/sections/organization/hackathons/new_hackathon';
 import EditHackathonCoordinators from '@/sections/organization/hackathons/edit_hackathon_coordinators';
 import EditHackathonJudges from '@/sections/organization/hackathons/edit_hackathon_judges';
+import EventCard from '@/components/organization/event_card';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 const Events = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [clickedOnNewEvent, setClickedOnNewEvent] = useState(false);
-  const [clickedOnNewHackathon, setClickedOnNewHackathon] = useState(false);
   const [clickedOnViewInvitations, setClickedOnViewInvitations] = useState(false);
   const [clickedOnViewHistory, setClickedOnViewHistory] = useState(false);
   const [clickedOnEditEvent, setClickedOnEditEvent] = useState(false);
@@ -57,14 +54,18 @@ const Events = () => {
 
   const currentOrg = useSelector(currentOrgSelector);
 
+  const isSenior = useOrgAccess(ORG_SENIOR);
+  const isManager = useOrgAccess(ORG_MANAGER);
+
   const getEvents = () => {
-    const URL = checkOrgAccess(ORG_SENIOR)
-      ? `${ORG_URL}/${currentOrg.id}/events`
-      : `${EXPLORE_URL}/events/org/${currentOrg.id}`;
+    const URL = isSenior ? `${ORG_URL}/${currentOrg.id}/events` : `${EXPLORE_URL}/events/org/${currentOrg.id}`;
     getHandler(URL + `?page=${page}&limit=${10}`)
       .then(res => {
         if (res.statusCode === 200) {
-          const addEvents = [...events, ...(res.data.events || [])];
+          let newEvents: Event[] = res.data.events || [];
+          newEvents = newEvents.filter(event => event.hackathonID != null);
+
+          const addEvents = [...events, ...newEvents];
           if (addEvents.length === events.length) setHasMore(false);
           setEvents(addEvents);
           if (page == 1) {
@@ -123,10 +124,8 @@ const Events = () => {
 
   useEffect(() => {
     getEvents();
-    if (checkOrgAccess(ORG_SENIOR)) fetchUnreadInvitations();
+    if (isSenior) fetchUnreadInvitations();
   }, []);
-
-  const open = useSelector(navbarOpenSelector);
 
   return (
     <BaseWrapper title={`Events | ${currentOrg.title}`}>
@@ -136,20 +135,20 @@ const Events = () => {
           <div className="w-full flex justify-between items-center">
             <div className="w-fit text-6xl max-md:text-4xl font-semibold dark:text-white font-primary pl-6">Events</div>
             <div className="flex items-center gap-2">
-              {checkOrgAccess(ORG_SENIOR) && (
+              {isSenior && (
                 <>
                   <Code
-                    onClick={() => setClickedOnNewHackathon(true)}
+                    onClick={() => window.location.assign('/organisation/competition')}
                     size={42}
                     className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
                     weight="regular"
                   />
-                  <Plus
+                  {/* <Plus
                     onClick={() => setClickedOnNewEvent(true)}
                     size={42}
                     className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
                     weight="regular"
-                  />
+                  /> */}
                   <div className="w-fit h-fit relative">
                     {unreadInvitations > 0 && (
                       <div className="absolute top-1 right-1 translate-x-1/4 -translate-y-1/4 w-4 h-4 flex-center text-xxs border-[1px] border-gray-500 rounded-full">
@@ -176,16 +175,18 @@ const Events = () => {
 
           <div className="w-full max-md:w-full mx-auto flex flex-col items-center gap-4">
             {clickedOnInfo && <AccessTree type="event" setShow={setClickedOnInfo} />}
-            {clickedOnNewHackathon && <NewHackathon setEvents={setEvents} setShow={setClickedOnNewHackathon} />}
             {clickedOnNewEvent && <NewEvent setEvents={setEvents} setShow={setClickedOnNewEvent} />}
             {clickedOnViewInvitations && <ViewInvitations setShow={setClickedOnViewInvitations} />}
-            {clickedOnViewHistory && (
-            clickedEditEvent.hackathonID ? (
-            <HackathonHistories hackathonID={clickedEditEvent.hackathonID} setShow={setClickedOnViewHistory} />
-            ) : (
-            <EventHistory eventID={clickedEditEvent.id} setShow={setClickedOnViewHistory} />
-           )
-          )}
+            {clickedOnViewHistory &&
+              (clickedEditEvent.hackathonID ? (
+                <HackathonHistories
+                  hackathonID={clickedEditEvent.hackathonID}
+                  show={clickedOnViewHistory}
+                  setShow={setClickedOnViewHistory}
+                />
+              ) : (
+                <EventHistory eventID={clickedEditEvent.id} setShow={setClickedOnViewHistory} />
+              ))}
             {clickedOnEditEvent && (
               <EditEvent event={clickedEditEvent} setEvents={setEvents} setShow={setClickedOnEditEvent} />
             )}
@@ -227,13 +228,14 @@ const Events = () => {
                     next={getEvents}
                     hasMore={hasMore}
                     loader={<Loader />}
-                    className="w-full pl-6 max-md:pl-0 pb-12 mx-auto flex flex-wrap gap-8 justify-center"
+                    className="w-full grid grid-cols-3 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1"
                   >
                     {events.map(event => (
                       <EventCard
                         key={event.id}
                         event={event}
-                        org={true}
+                        isSenior={isSenior}
+                        isManager={isManager}
                         setClickedOnViewHistory={setClickedOnViewHistory}
                         setClickedOnEditEvent={setClickedOnEditEvent}
                         setClickedOnEditCollaborators={setClickedOnEditCollaborators}
@@ -242,7 +244,6 @@ const Events = () => {
                         setClickedDeleteEvent={setClickedDeleteEvent}
                         setClickedOnEditCoHosts={setClickedOnEditCoHosts}
                         setClickedOnEditJudges={setClickedOnEditJudges}
-                        size={open ? '[22rem]' : 96}
                       />
                     ))}
                   </InfiniteScroll>

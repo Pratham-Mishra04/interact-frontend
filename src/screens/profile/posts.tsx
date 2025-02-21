@@ -34,7 +34,7 @@ const Posts = ({ userID, org = false }: Props) => {
       user.id == userID
         ? `${POST_URL}/me?page=${page}&limit=${10}`
         : `${EXPLORE_URL}/users/posts/${userID}?page=${page}&limit=${10}`;
-    getHandler(URL)
+    getHandler(URL, undefined, true)
       .then(res => {
         if (res.statusCode === 200) {
           const addedPosts = [...posts, ...(res.data.posts || [])];
@@ -63,27 +63,21 @@ const Posts = ({ userID, org = false }: Props) => {
   ) : org ? (
     posts.length > 0 ? (
       <InfiniteScroll
-        className="w-5/6 max-md:w-full mx-auto pb-base_padding max-md:px-2"
+        className="w-full max-md:px-2"
         dataLength={posts.length}
         next={getPosts}
         hasMore={hasMore}
         loader={<Loader />}
       >
-        <Masonry
-          breakpointCols={{ default: posts.length == 1 ? 1 : 2, 768: 1 }}
-          className="masonry-grid"
-          columnClassName="masonry-grid_column"
-        >
-          {posts.map((post, index) => (
-            <div key={post.id} className={`${index != 0 && index != 1 && 'mt-4'} ${index == 0 && 'max-md:mb-4'}`}>
-              {post.rePost ? (
-                <RePostComponent key={post.id} setFeed={setPosts} post={post} org={true} />
-              ) : (
-                <PostComponent key={post.id} setFeed={setPosts} post={post} org={true} />
-              )}
-            </div>
-          ))}
-        </Masonry>
+        {posts.map((post, index) => (
+          <div key={post.id} className={`${index != 0 && index != 1 && 'mt-4'} ${index == 0 && 'max-md:mb-4'}`}>
+            {post.rePost ? (
+              <RePostComponent key={post.id} setFeed={setPosts} post={post} org={true} />
+            ) : (
+              <PostComponent key={post.id} setFeed={setPosts} post={post} org={true} />
+            )}
+          </div>
+        ))}
       </InfiniteScroll>
     ) : (
       <div className="w-5/6 mx-auto pb-base_padding">
@@ -102,8 +96,8 @@ const Posts = ({ userID, org = false }: Props) => {
         <NoUserItems />
       ) : (
         posts.map(post => {
-          if (post.rePost) return <RePostComponent key={post.id} post={post} />;
-          else return <PostComponent key={post.id} post={post} />;
+          if (post.rePost) return <RePostComponent key={post.id} post={post} setFeed={setPosts} />;
+          else return <PostComponent key={post.id} post={post} setFeed={setPosts} />;
         })
       )}
     </InfiniteScroll>

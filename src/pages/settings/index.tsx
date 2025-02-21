@@ -27,7 +27,7 @@ const Settings = () => {
           <div className="w-full flex flex-col gap-4">
             <div className="w-full flex max-md:flex-col gap-4">
               <div className="w-4/5 max-md:w-full flex flex-col gap-6">
-                {/* <Theme /> */}
+                <Theme />
                 <Email />
                 <Resume />
                 <PhoneNumber />
@@ -37,11 +37,13 @@ const Settings = () => {
               <div className="w-1/5 max-md:w-full flex flex-col gap-4 md:border-l-[1px] max-md:border-t-[1px] border-gray-400 md:pl-4 max-md:pt-4">
                 <div>
                   <div className="font-semibold">Your username</div>
-                  <div className="text-gray-800 text-sm">@{user.username}</div>
+                  <div className="text-gray-800 dark:text-white text-sm">@{user.username}</div>
                 </div>
                 <div>
                   <div className="font-semibold">Date Joined</div>
-                  <div className="text-gray-800 text-sm">{moment(user.createdAt).format('DD-MM-YYYY')}</div>
+                  <div className="text-gray-800 dark:text-white text-sm">
+                    {moment(user.createdAt).format('DD-MM-YYYY')}
+                  </div>
                 </div>
                 {process.env.NODE_ENV == 'development' && (
                   <Link

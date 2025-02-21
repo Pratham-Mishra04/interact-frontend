@@ -115,7 +115,7 @@ const NewSubTask = ({ setShow, task, setTasks, byOrgManager = false }: Props) =>
 
   return (
     <>
-      <div className="fixed top-24 max-md:top-20 w-[640px] max-md:w-5/6 backdrop-blur-2xl bg-white dark:bg-[#ffe1fc22] flex flex-col gap-4 rounded-lg p-10 max-md:p-5 dark:text-white font-primary border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 animate-fade_third z-50 max-md:z-[60]">
+      <div className="fixed top-24 max-md:top-20 w-[640px] max-md:w-5/6 backdrop-blur-2xl bg-white dark:bg-dark_primary_comp flex flex-col gap-4 rounded-lg p-10 max-md:p-5 dark:text-white font-primary border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 animate-fade_third z-50 max-md:z-[60]">
         <div className="text-3xl max-md:text-xl font-semibold">
           {status == 0 ? 'Sub Task Info' : status == 1 ? 'Select Users' : 'Review Sub Task Details'}
         </div>

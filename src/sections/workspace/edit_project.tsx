@@ -3,7 +3,6 @@ import Input from '@/components/form/input';
 import Links from '@/components/form/links';
 import Select from '@/components/form/select';
 import Tags from '@/components/form/tags';
-import TextArea from '@/components/form/textarea';
 import { SERVER_ERROR } from '@/config/errors';
 import { ORG_URL, PROJECT_URL } from '@/config/routes';
 import patchHandler from '@/handlers/patch_handler';
@@ -17,6 +16,7 @@ import { useSelector } from 'react-redux';
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogHeader, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { PencilSimple } from '@phosphor-icons/react/dist/ssr';
+import EditorInput from '@/components/form/editor-input';
 
 interface Props {
   project: Project;
@@ -33,7 +33,6 @@ const EditProject = ({ project, setProject, setProjects, org = false }: Props) =
   const [tags, setTags] = useState<string[]>(project.tags || []);
   const [links, setLinks] = useState<string[]>(project.links || []);
   const [privateLinks, setPrivateLinks] = useState<string[]>(project.privateLinks || []);
-  const [image, setImage] = useState<File>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const [mutex, setMutex] = useState(false);
@@ -77,7 +76,6 @@ const EditProject = ({ project, setProject, setProjects, org = false }: Props) =
     privateLinks?.forEach(link => formData.append('privateLinks', link));
     if (category != project.category) formData.append('category', category);
     formData.append('isPrivate', String(isPrivate));
-    if (image) formData.append('coverPic', image);
 
     const URL = org ? `${ORG_URL}/${currentOrgID}/projects/${project.slug}` : `${PROJECT_URL}/${project.slug}`;
 
@@ -113,11 +111,8 @@ const EditProject = ({ project, setProject, setProjects, org = false }: Props) =
       setDescription('');
       setTags([]);
       setLinks([]);
-      setImage(undefined);
       setIsDialogOpen(false);
-    } else if (res.statusCode == 413) Toaster.stopLoad(toaster, 'Image too large', 0);
-    else if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
-    else Toaster.stopLoad(toaster, SERVER_ERROR, 0);
+    } else Toaster.stopLoad(toaster, res.data.message || SERVER_ERROR, 0);
 
     setMutex(false);
   };
@@ -125,7 +120,10 @@ const EditProject = ({ project, setProject, setProjects, org = false }: Props) =
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <PencilSimple className="cursor-pointer" size={32} />
+        <div className="w-full p-2 flex items-center gap-2 hover:bg-primary_comp dark:hover:bg-dark_primary_comp_hover rounded-lg cursor-pointer transition-ease-300">
+          <PencilSimple className="cursor-pointer max-lg:w-6 max-lg:h-6" size={20} weight="regular" />
+          Edit
+        </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md min-w-[40%]">
         <DialogHeader>
@@ -134,8 +132,8 @@ const EditProject = ({ project, setProject, setProjects, org = false }: Props) =
         <div className="w-full h-fit flex flex-col max-lg:items-center gap-4 max-lg:gap-6 max-lg:pb-4">
           <Select label="Project Category" val={category} setVal={setCategory} options={categories} required={true} />
           <Input label="Project Tagline" val={tagline} setVal={setTagline} maxLength={50} required={true} />
-          <TextArea label="Project Description" val={description} setVal={setDescription} maxLength={1000} />
-          <Tags label="Project Tags" tags={tags} setTags={setTags} maxTags={10} required={true} />
+          <EditorInput label="Project Description" val={description} setVal={setDescription} maxLength={1000} />
+          <Tags label="Project Tags" tags={tags} setTags={setTags} maxTags={10} suggestions required />
           <Links label="Project Links" links={links} setLinks={setLinks} maxLinks={5} />
           <Checkbox label="Keep this Project Private" val={isPrivate} setVal={setIsPrivate} />
         </div>

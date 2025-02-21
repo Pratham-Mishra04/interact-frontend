@@ -11,6 +11,8 @@ import { SERVER_ERROR } from '@/config/errors';
 import CommentsLoader from '../loaders/comments';
 import CommentComponent from './comment';
 import CommentInput from './input';
+import { Lock } from '@phosphor-icons/react';
+import Link from 'next/link';
 
 interface Props {
   type: string;
@@ -32,13 +34,13 @@ const CommentBox = ({ type, item, setNoComments, userFetchURL }: Props) => {
   const limit = 10;
 
   useEffect(() => {
-    getComments();
+    if (loggedInUser.id) getComments();
   }, [item.id]);
 
   const getComments = async () => {
     setLoading(true);
     const URL = `${COMMENT_URL}/${type}/${item.id}?page=${page}&limit=${limit}`;
-    getHandler(URL)
+    getHandler(URL, undefined, true)
       .then(res => {
         if (res.statusCode == 200) {
           const newComments = [...comments, ...res.data.comments];
@@ -48,10 +50,7 @@ const CommentBox = ({ type, item, setNoComments, userFetchURL }: Props) => {
 
           setLoading(false);
         } else {
-          if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
-          else {
-            Toaster.error(SERVER_ERROR, 'error_toaster');
-          }
+          Toaster.error(res.data.message || SERVER_ERROR, 'error_toaster');
         }
       })
       .catch(err => {
@@ -130,7 +129,16 @@ const CommentBox = ({ type, item, setNoComments, userFetchURL }: Props) => {
         handleSubmit={submitHandler}
         userFetchURL={userFetchURL}
       />
-      {loading && page == 1 ? (
+      {!loggedInUser.id ? (
+        <div className="w-full h-48 flex-center flex-col gap-1 backdrop-blur-sm rounded-lg z-10">
+          <div className="bg-white dark:bg-dark_primary_comp flex-center gap-1 border-primary_black border-[1px] rounded-lg px-2 py-1">
+            <Lock /> Locked
+          </div>
+          <Link href={'/login'} className="font-medium hover-underline-animation after:bg-black dark:after:bg-white">
+            Sign up to see what&apos;s here
+          </Link>
+        </div>
+      ) : loading && page == 1 ? (
         <CommentsLoader />
       ) : comments.length > 0 ? (
         <div className="w-full flex flex-col gap-4 px-3">
@@ -147,7 +155,7 @@ const CommentBox = ({ type, item, setNoComments, userFetchURL }: Props) => {
           ) : comments.length % limit == 0 && hasMore ? (
             <div
               onClick={getComments}
-              className="w-fit mx-auto pt-4 text-xs text-gray-700 font-medium hover-underline-animation after:bg-gray-700 cursor-pointer"
+              className="w-fit mx-auto pt-4 text-xs text-gray-700 dark:text-white font-medium hover-underline-animation after:bg-gray-700 cursor-pointer"
             >
               Load More
             </div>

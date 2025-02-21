@@ -92,7 +92,9 @@ const AddOpening = ({ project, setProject, org = false }: Props) => {
           <TextArea label="Opening Description" val={description} setVal={setDescription} required maxLength={1000} />
           <Tags label="Opening Tags" tags={tags} setTags={setTags} maxTags={10} />
         </div>
-        <Button onClick={handleSubmit}>Add Opening</Button>
+        <Button onClick={handleSubmit} variant="outline">
+          Add Opening
+        </Button>
       </DialogContent>
     </Dialog>
   );

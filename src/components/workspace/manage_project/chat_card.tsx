@@ -5,21 +5,16 @@ import { GROUP_CHAT_PIC_URL } from '@/config/routes';
 
 interface Props {
   chat: Chat;
-  setClickedOnEditChat: React.Dispatch<React.SetStateAction<boolean>>;
-  clickedEditChat: Chat;
+  clickedChat: Chat;
   setClickedEditChat: React.Dispatch<React.SetStateAction<Chat>>;
 }
 
-const ChatCard = ({ chat, setClickedOnEditChat, clickedEditChat, setClickedEditChat }: Props) => {
-  const handleClick = () => {
-    setClickedEditChat(chat);
-    setClickedOnEditChat(true);
-  };
+const ChatCard = ({ chat, clickedChat, setClickedEditChat }: Props) => {
   return (
     <div
-      onClick={handleClick}
+      onClick={() => setClickedEditChat(chat)}
       className={`w-full font-primary dark:text-white ${
-        chat.id == clickedEditChat.id
+        chat.id == clickedChat.id
           ? 'bg-primary_comp_hover dark:bg-dark_primary_comp_hover'
           : 'bg-white hover:bg-primary_comp dark:bg-transparent dark:hover:bg-dark_primary_comp'
       } border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg flex gap-4 px-5 py-4 cursor-pointer transition-ease-300`}

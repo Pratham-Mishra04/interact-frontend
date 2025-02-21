@@ -7,19 +7,52 @@ import {
   PROJECT_MEMBER,
   PROJECT_OWNER,
 } from '@/config/constants';
+import { OrgState } from '@/slices/orgSlice';
+import { UserState } from '@/slices/userSlice';
 import { store } from '@/store';
 import { Organization, PermissionConfig, Project } from '@/types';
-import { initialOrganization, initialOrganizationMembership } from '@/types/initials';
+import { initialOrganization, initialOrganizationMembership, initialUser } from '@/types/initials';
 
-const user = store.getState().user;
-const org = store.getState().organization.currentOrg || initialOrganization;
-const membership = store.getState().organization.currentOrgMembership || initialOrganizationMembership;
+interface OrgAccessState {
+  user: UserState;
+  organization: OrgState;
+}
 
-const checkOrgAccess = (accessRole: string) => {
-  if (org.id == '') return false;
+const checkOrgAccess = (state: OrgAccessState, accessRole: string, orgID?: string) => {
+  const user = state.user || initialUser;
+  const org = state.organization?.currentOrg || initialOrganization;
+  const membership = state.organization?.currentOrgMembership || initialOrganizationMembership;
+
+  if (user.id == '' || org.id == '') return false;
 
   if (user.id == org.userID) return true;
   if (membership.id == '' || org.id != membership.organizationID) return false;
+
+  if (orgID && orgID != org.id) return false;
+
+  switch (accessRole) {
+    case ORG_MANAGER:
+      return membership.role == ORG_MANAGER;
+    case ORG_SENIOR:
+      return membership.role == ORG_MANAGER || membership.role == ORG_SENIOR;
+    case ORG_MEMBER:
+      return true;
+    default:
+      return false;
+  }
+};
+
+export const checkOrgAccessByOrgUserID = (state: OrgAccessState, accessRole: string, orgUserID: string) => {
+  const user = state.user || initialUser;
+  const org = state.organization.currentOrg || initialOrganization;
+  const membership = state.organization.currentOrgMembership || initialOrganizationMembership;
+
+  if (user.id == '' || org.id == '') return false;
+
+  if (user.id == org.userID) return true;
+  if (membership.id == '' || org.id != membership.organizationID) return false;
+
+  if (orgUserID != org.userID) return false;
 
   switch (accessRole) {
     case ORG_MANAGER:
@@ -34,8 +67,10 @@ const checkOrgAccess = (accessRole: string) => {
 };
 
 export const checkParticularOrgAccess = (accessRole: string, checkOrg: Organization | null) => {
+  const user = store.getState().user || initialUser;
+
   if (!checkOrg) return false;
-  if (checkOrg.id == '') return false;
+  if (user.id == '' || checkOrg.id == '') return false;
 
   if (user.id == checkOrg.userID) return true;
 
@@ -61,11 +96,15 @@ export const checkParticularOrgAccess = (accessRole: string, checkOrg: Organizat
   }
 };
 
-export const checkProjectAccess = (role: string, projectID: string, project?: Project) => {
+export const checkProjectAccess = (user: UserState, role: string, projectID?: string, project?: Project) => {
+  if (!user) return false;
+
   const ownerProjects = user.ownerProjects;
   const managerProjects = user.managerProjects;
   const editorProjects = user.editorProjects;
   const memberProjects = user.memberProjects;
+
+  if (!projectID) return false;
 
   const isOwner = ownerProjects.includes(projectID) || project?.userID == user.id;
   const isManager = managerProjects.includes(projectID);
@@ -88,19 +127,32 @@ export const checkProjectAccess = (role: string, projectID: string, project?: Pr
 
 //TODO take orgID from project
 export const checkOrgProjectAccess = (
+  state: OrgAccessState,
   projectRole: string,
   projectID: string,
   orgRole: string,
-  org?: Organization | null
+  org?: Organization | null,
+  isOrgProject: boolean = false
 ) => {
-  const projectAccess = checkProjectAccess(projectRole, projectID);
-  const orgAccess = org ? checkParticularOrgAccess(orgRole, org) : checkOrgAccess(orgRole);
+  const projectAccess = checkProjectAccess(state.user, projectRole, projectID);
+  const orgAccess = org
+    ? checkParticularOrgAccess(orgRole, org)
+    : isOrgProject
+    ? checkOrgAccess(state, orgRole)
+    : false;
 
   return projectAccess || orgAccess;
 };
 
-export const checkCommunityAccess = (communityID: string, action: string, config?: PermissionConfig) => {
-  const membership = user.communityMemberships?.filter(m => m.communityID == communityID)[0];
+export const checkCommunityAccess = (
+  user: UserState,
+  communityID: string,
+  action: string,
+  config?: PermissionConfig
+) => {
+  if (!user) return false;
+
+  const membership = user?.communityMemberships?.filter(m => m.communityID == communityID)[0];
 
   if (membership) {
     const requiredRole = config ? config[action] : undefined;
@@ -113,8 +165,10 @@ export const checkCommunityAccess = (communityID: string, action: string, config
   return false;
 };
 
-export const checkCommunityStaticAccess = (communityID: string, requiredRole: string) => {
-  const membership = user.communityMemberships?.filter(m => m.communityID == communityID)[0];
+export const checkCommunityStaticAccess = (user: UserState, communityID: string, requiredRole: string) => {
+  if (!user) return false;
+
+  const membership = user?.communityMemberships?.filter(m => m.communityID == communityID)[0];
 
   if (membership) return compareRoleLevel(membership.role, requiredRole);
   return false;

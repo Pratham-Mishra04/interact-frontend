@@ -18,6 +18,7 @@ import Connections from '../explore/connections_view';
 import { SERVER_ERROR } from '@/config/errors';
 import CopyClipboardButton from '@/components/buttons/copy_clipboard_btn';
 import { SidePrimeWrapper } from '@/wrappers/side';
+import TooltipIcon from '@/components/common/tooltip_icon';
 
 interface Props {
   user: User;
@@ -161,7 +162,11 @@ const ProfileCard = ({ user, setUser }: Props) => {
       <SidePrimeWrapper stickTop>
         <div className="w-full flex-center flex-col gap-4 py-2">
           <div className="absolute group top-4 right-4">
-            <CopyClipboardButton url={`users/${user.username}?external=true`} iconOnly={true} />
+            <TooltipIcon
+              label="Copy Profile Link"
+              icon={<CopyClipboardButton url={`/users/${user.username}?external=true`} iconOnly />}
+              includeBorder
+            />
           </div>
           <input
             type="file"
@@ -182,7 +187,7 @@ const ProfileCard = ({ user, setUser }: Props) => {
           />
           {clickedOnProfilePic ? (
             <div className="relative">
-              <div className="w-56 h-56 border-2 border-dashed border-primary_black max-md:w-40 max-md:h-40 absolute -top-4 -right-4 animate-spin rounded-full"></div>
+              <div className="w-56 h-56 border-2 border-dashed border-primary_black dark:border-gray-400 max-md:w-40 max-md:h-40 absolute -top-4 -right-4 animate-spin rounded-full"></div>
               <div
                 onClick={() => handleSubmit('userPic')}
                 className="w-48 h-24 max-md:w-32 max-md:h-32 absolute border-b-2 border-black top-0 right-0 rounded-tl-full rounded-tr-full flex-center bg-white transition-ease-200 cursor-pointer opacity-0 hover:opacity-50"

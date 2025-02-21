@@ -22,6 +22,7 @@ import AccessTree from '@/components/organization/access_tree';
 import ProjectCard from '@/components/workspace/project_card';
 import ProjectView from '@/sections/workspace/project_view';
 import { initialOrganization } from '@/types/initials';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 const Projects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -35,7 +36,6 @@ const Projects = () => {
 
   const [fadeIn, setFadeIn] = useState(true);
 
-  const navbarOpen = useSelector(navbarOpenSelector);
   const user = useSelector(userSelector);
 
   const currentOrg = useSelector(currentOrgSelector);
@@ -84,6 +84,8 @@ const Projects = () => {
     getProjects();
   }, []);
 
+  const isManager = useOrgAccess(ORG_MANAGER);
+
   return (
     <BaseWrapper title={`Projects | ${currentOrg.title}`}>
       <OrgSidebar index={3} />
@@ -93,7 +95,7 @@ const Projects = () => {
             <div className="w-fit text-6xl max-md:text-4xl font-semibold dark:text-white font-primary">Projects</div>
 
             <div className="flex items-center gap-2">
-              {checkOrgAccess(ORG_MANAGER) && (
+              {isManager && (
                 <Plus
                   onClick={() => setClickedOnNewProject(true)}
                   size={42}
@@ -141,7 +143,7 @@ const Projects = () => {
               })}
             </div>
           ) : (
-            <NoProjects setClickedOnNewProject={setClickedOnNewProject} />
+            <NoProjects />
           )}
         </div>
       </MainWrapper>

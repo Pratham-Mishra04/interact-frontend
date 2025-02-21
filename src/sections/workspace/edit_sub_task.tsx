@@ -18,8 +18,6 @@ import Select from '@/components/form/select';
 import Time from '@/components/form/time';
 import Tags from '@/components/form/tags';
 import { getFormattedTime, getInputFieldFormatTime } from '@/utils/funcs/time';
-// import ReactMarkdown from 'react-markdown';
-// import remarkGfm from 'remark-gfm';
 
 interface Props {
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -109,10 +107,10 @@ const EditSubTask = ({ setShow, subTask, task, setTasks }: Props) => {
       if (
         isArrEdited(
           userIDs,
-          subTask.users.map(user => user.id)
+          subTask.users?.map(user => user.id)
         )
       ) {
-        const oldUserIDs = subTask.users.map(user => user.id);
+        const oldUserIDs = subTask.users?.map(user => user.id);
         let addusersuccess = true;
         let removeusersuccess = true;
 
@@ -227,7 +225,7 @@ const EditSubTask = ({ setShow, subTask, task, setTasks }: Props) => {
 
   return (
     <>
-      <div className="fixed top-24 max-lg:top-20 w-[640px] max-lg:w-5/6 backdrop-blur-2xl bg-white dark:bg-[#ffe1fc22] flex flex-col gap-4 rounded-lg p-10 max-lg:p-5 dark:text-white font-primary border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 animate-fade_third z-50 max-lg:z-[60]">
+      <div className="fixed top-24 max-lg:top-20 w-[640px] max-lg:w-5/6 backdrop-blur-2xl bg-white dark:bg-dark_primary_comp flex flex-col gap-4 rounded-lg p-10 max-lg:p-5 dark:text-white font-primary border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 animate-fade_third z-50 max-lg:z-[60]">
         <div className="text-3xl max-lg:text-xl font-semibold">
           {status == 0 ? 'Sub Task Info' : status == 1 ? 'Select Users' : 'Review Sub Task Details'}
         </div>

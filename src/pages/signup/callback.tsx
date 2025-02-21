@@ -64,11 +64,14 @@ const SignUpCallback = ({ token }: Props) => {
           Toaster.stopLoad(toaster, 'Account Created!', 1);
           const user: User = res.data.user;
           user.email = res.data.email;
+          user.secondaryEmail = res.data.secondaryEmail;
           user.phoneNo = res.data.phoneNo || '';
           user.resume = res.data.resume || '';
           user.createdAt = res.data.createdAt || new Date();
           Cookies.set('token', res.data.token, {
             expires: Number(process.env.NEXT_PUBLIC_COOKIE_EXPIRATION_TIME),
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict',
           });
           Cookies.set('id', user.id, {
             expires: Number(process.env.NEXT_PUBLIC_COOKIE_EXPIRATION_TIME),

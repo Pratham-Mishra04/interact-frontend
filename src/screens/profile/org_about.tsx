@@ -30,7 +30,7 @@ const About = ({ profile, organisation }: Props) => {
 
   const fetchMemberships = () => {
     const URL = `${ORG_URL}/${organisation.id}/explore_memberships?limit=12`;
-    getHandler(URL)
+    getHandler(URL, undefined, true)
       .then(res => {
         if (res.statusCode === 200) {
           setMemberships(res.data.memberships);
@@ -81,7 +81,7 @@ const About = ({ profile, organisation }: Props) => {
   );
 
   return (
-    <div className="w-5/6 max-md:w-full mx-auto flex max-md:flex-col gap-4 pb-base_padding max-md:px-2 animate-fade_third">
+    <div className="w-5/6 max-md:w-full mx-auto flex max-md:flex-col gap-4 max-md:px-2 animate-fade_third">
       {clickedOnViewAllMembers && (
         <Connections
           type="members"
@@ -91,7 +91,7 @@ const About = ({ profile, organisation }: Props) => {
           orgID={organisation.id}
         />
       )}
-      <div className="w-1/3 max-md:w-full h-fit flex flex-col gap-2 bg-white border-gray-300 border-[1px] rounded-lg p-4">
+      <div className="w-1/3 max-md:w-full h-fit flex flex-col gap-2 bg-white dark:bg-dark_primary_comp border-gray-300 dark:border-dark_primary_btn border-[1px] rounded-lg p-4">
         <div className="font-medium">Members of {organisation.title}</div>
         <div className="border-t-[1px] border-gray-200"></div>
         {loading ? (
@@ -100,10 +100,13 @@ const About = ({ profile, organisation }: Props) => {
           <div className={`w-full flex flex-col gap-3 relative ${user.id == '' && 'p-2'}`}>
             {user.id == '' && (
               <div className="w-full h-full flex-center flex-col gap-1 absolute top-0 right-0 backdrop-blur-sm z-10">
-                <div className="bg-white flex-center gap-1 border-primary_black border-[1px] rounded-lg px-2 py-1">
+                <div className="bg-white dark:bg-dark_primary_comp flex-center gap-1 border-primary_black border-[1px] rounded-lg px-2 py-1">
                   <Lock /> Locked
                 </div>
-                <Link href={'/login'} className="font-medium hover-underline-animation after:bg-black">
+                <Link
+                  href={'/login'}
+                  className="font-medium hover-underline-animation after:bg-black dark:after:bg-white"
+                >
                   Sign up to see who&apos;s here
                 </Link>
               </div>
@@ -137,21 +140,23 @@ const About = ({ profile, organisation }: Props) => {
       </div>
 
       <div className="w-2/3 max-md:w-full flex flex-col gap-4">
-        <div className="w-full h-fit flex flex-col gap-2 bg-white border-gray-300 border-[1px] rounded-lg p-4">
+        <div className="w-full h-fit flex flex-col gap-2 bg-white dark:bg-dark_primary_comp border-gray-300 dark:border-dark_primary_btn border-[1px] rounded-lg p-4">
           <div className="font-medium">About {organisation.title}</div>
           <div className="border-t-[1px] border-gray-200"></div>
           {profile.description || organisation.user?.tags || profile.email || profile.phoneNo ? (
             <div className="w-full flex flex-col gap-4">
               {profile.description && (
-                <div className="whitespace-pre-wrap text-sm"> {renderContentWithLinks(profile.description)}</div>
+                <div className="w-full whitespace-pre-wrap text-sm break-words">
+                  {renderContentWithLinks(profile.description)}
+                </div>
               )}
               <div className="flex flex-wrap gap-2">
                 {organisation.user?.tags?.map(tag => (
                   <Link
                     key={tag}
-                    href={'/explore?search=' + tag}
+                    href={'/organisations?search=' + tag}
                     target="_blank"
-                    className="flex-center bg-gray-100 px-2 py-1 border-[1px] border-dashed border-gray-400 text-xs rounded-lg"
+                    className="flex-center bg-gray-100 px-2 py-1 border-[1px] border-dashed dark:bg-dark_primary_comp border-gray-400 dark:border-dark_primary_btn text-xs rounded-lg"
                   >
                     {tag}
                   </Link>
@@ -184,7 +189,7 @@ const About = ({ profile, organisation }: Props) => {
         {(profile.areasOfCollaboration || profile.hobbies) && (
           <div className="w-full flex gap-4">
             {profile.areasOfCollaboration && (
-              <div className="w-1/2 h-fit flex flex-col gap-2 bg-white border-gray-300 border-[1px] rounded-lg p-4">
+              <div className="w-1/2 h-fit flex flex-col gap-2 bg-white dark:bg-dark_primary_comp border-gray-300 dark:border-dark_primary_btn border-[1px] rounded-lg p-4">
                 <div className="font-medium">Areas of Work</div>
                 <div className="border-t-[1px] border-gray-200"></div>
                 <div className="w-full flex flex-wrap gap-2">
@@ -200,7 +205,7 @@ const About = ({ profile, organisation }: Props) => {
               </div>
             )}
             {profile.hobbies && (
-              <div className="w-1/2 h-fit flex flex-col gap-2 bg-white border-gray-300 border-[1px] rounded-lg p-4">
+              <div className="w-1/2 h-fit flex flex-col gap-2 bg-white dark:bg-dark_primary_comp border-gray-300 dark:border-dark_primary_btn border-[1px] rounded-lg p-4">
                 <div className="font-medium">Message Board</div>
                 <div className="border-t-[1px] border-gray-200"></div>
                 <div className="w-full flex flex-wrap">

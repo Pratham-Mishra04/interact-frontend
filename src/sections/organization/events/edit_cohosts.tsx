@@ -68,7 +68,7 @@ const EditCoHosts = ({ event, setShow, setEvents }: Props) => {
   const getOrganizations = async () => {
     var URL = `${EXPLORE_URL}/orgs?page=1&limit=${10}`;
     if (orgSearch != '') URL += `&search=${orgSearch}`;
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode == 200) {
       let orgUsers: User[] = res.data.users || [];
       orgUsers = orgUsers.filter(u => u.id != currentOrg.userID);
@@ -193,7 +193,7 @@ const EditCoHosts = ({ event, setShow, setEvents }: Props) => {
 
   return (
     <>
-      <div className="fixed top-10 max-lg:top-0 w-1/2 max-lg:w-screen h-[80%] max-lg:h-screen backdrop-blur-2xl bg-white dark:bg-[#ffe1fc22] flex flex-col justify-between rounded-lg px-12 max-md:px-4 py-8 gap-8 max-lg:gap-4 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 shadow-2xl animate-fade_third z-50">
+      <div className="fixed top-10 max-lg:top-0 w-1/2 max-lg:w-screen h-[80%] max-lg:h-screen backdrop-blur-2xl bg-white dark:bg-dark_primary_comp flex flex-col justify-between rounded-lg px-12 max-md:px-4 py-8 gap-8 max-lg:gap-4 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 shadow-2xl animate-fade_third z-50">
         <X
           onClick={() => setShow(false)}
           className="lg:hidden absolute top-2 right-2 cursor-pointer"

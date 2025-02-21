@@ -145,7 +145,7 @@ const LowerComment = ({ comment, clickedOnReply, setClickedOnReply }: Props) => 
                   else likeHandler();
                 }}
                 className={`cursor-pointer max-md:w-4 max-md:h-4 ${
-                  liked ? 'text-heart_filled' : 'text-black opacity-60'
+                  liked ? 'text-heart_filled' : 'text-black dark:text-white opacity-60'
                 } transition-ease-300`}
                 size={18}
                 weight={liked ? 'fill' : 'regular'}
@@ -160,7 +160,7 @@ const LowerComment = ({ comment, clickedOnReply, setClickedOnReply }: Props) => 
                     else setClickedOnReply(prev => !prev);
                   }}
                   className={`cursor-pointer max-md:w-4 max-md:h-4 ${
-                    clickedOnReply ? 'text-blue-500' : 'text-black opacity-60'
+                    clickedOnReply ? 'text-blue-500' : 'text-black dark:text-white opacity-60'
                   } transition-ease-300`}
                   size={18}
                   weight={clickedOnReply ? 'duotone' : 'regular'}
@@ -195,7 +195,7 @@ const LowerComment = ({ comment, clickedOnReply, setClickedOnReply }: Props) => 
                 {replies.length % limit == 0 && hasMore ? (
                   <div
                     onClick={getReplies}
-                    className="w-fit mx-auto pt-4 text-xs text-gray-700 font-medium hover-underline-animation after:bg-gray-700 cursor-pointer"
+                    className="w-fit mx-auto pt-4 text-xs text-gray-700 dark:text-white font-medium hover-underline-animation after:bg-gray-700 cursor-pointer"
                   >
                     Load More
                   </div>

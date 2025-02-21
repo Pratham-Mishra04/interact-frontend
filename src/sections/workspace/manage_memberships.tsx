@@ -30,6 +30,7 @@ import deleteHandler from '@/handlers/delete_handler';
 import getInvitationStatus, { getInvitationStatusColor } from '@/utils/funcs/invitation';
 import { getRoleColor } from '@/utils/funcs/membership';
 import EditCollaborator from './manage_project/edit_collaborator';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 const ManageMemberships = ({
   project,
@@ -40,9 +41,6 @@ const ManageMemberships = ({
   setProject: React.Dispatch<React.SetStateAction<Project>>;
   org?: boolean;
 }) => {
-  const [clickedMembershipID, setClickedMembershipID] = useState<string | null>(null);
-  const [clickedMembershipTitle, setClickedMembershipTitle] = useState<string>('');
-  const [clickedMembershipRole, setClickedMembershipRole] = useState<string | null>(null);
   const currentOrgID = useSelector(currentOrgSelector).id;
 
   const handleRemoveMember = async (membershipID: string) => {
@@ -63,8 +61,7 @@ const ManageMemberships = ({
       });
       Toaster.stopLoad(toaster, 'Collaborator Removed', 1);
     } else {
-      if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
-      else Toaster.stopLoad(toaster, SERVER_ERROR, 0);
+      Toaster.stopLoad(toaster, res.data.message || SERVER_ERROR, 0);
     }
   };
 
@@ -86,12 +83,13 @@ const ManageMemberships = ({
       // setClickedOnWithdraw(false);
       Toaster.stopLoad(toaster, 'Invitation Withdrawn', 1);
     } else {
-      if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
-      else Toaster.stopLoad(toaster, SERVER_ERROR, 0);
+      Toaster.stopLoad(toaster, res.data.message || SERVER_ERROR, 0);
     }
   };
 
   const user = useSelector(userSelector);
+
+  const isManager = useOrgAccess(ORG_MANAGER);
 
   const ManageMembers = () => (
     <Table>
@@ -136,12 +134,12 @@ const ManageMemberships = ({
             <TableCell className="flex items-center justify-end gap-4">
               {user.id != membership.userID && (
                 <>
-                  {checkProjectAccess(PROJECT_MANAGER, project.id) && membership.role != PROJECT_MANAGER && (
+                  {checkProjectAccess(user, PROJECT_MANAGER, project.id) && membership.role != PROJECT_MANAGER && (
                     <EditCollaborator membership={membership} project={project} setProject={setProject} org={org} />
                   )}
-                  {(checkProjectAccess(PROJECT_OWNER, project.id) ||
-                    (checkProjectAccess(PROJECT_MANAGER, project.id) && membership.role != PROJECT_MANAGER) ||
-                    (org && checkOrgAccess(ORG_MANAGER))) && (
+                  {(checkProjectAccess(user, PROJECT_OWNER, project.id) ||
+                    (checkProjectAccess(user, PROJECT_MANAGER, project.id) && membership.role != PROJECT_MANAGER) ||
+                    (org && isManager)) && (
                     <AlertDialog>
                       <AlertDialogTrigger>
                         <X size={20} />
@@ -227,7 +225,7 @@ const ManageMemberships = ({
             </TableCell>
             <TableCell>{moment(invitation.createdAt).format('DD MMMM, YYYY')}</TableCell>
             <TableCell className="flex items-center justify-end gap-4">
-              {checkProjectAccess(PROJECT_MANAGER, project.id) && (
+              {checkProjectAccess(user, PROJECT_MANAGER, project.id) && (
                 <AlertDialog>
                   <AlertDialogTrigger>
                     <X size={20} />

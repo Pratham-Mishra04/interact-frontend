@@ -2,8 +2,8 @@ import BaseWrapper from '@/wrappers/base';
 import MainWrapper from '@/wrappers/main';
 import Sidebar from '@/components/common/sidebar';
 import React, { useEffect, useState } from 'react';
-import { initialProfile, initialUser } from '@/types/initials';
-import { EXPLORE_URL, USER_COVER_PIC_URL, USER_URL } from '@/config/routes';
+import { initialProfile, initialUser as initialUserObj } from '@/types/initials';
+import { BACKEND_URL, EXPLORE_URL, USER_COVER_PIC_URL, USER_PROFILE_PIC_URL, USER_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import Toaster from '@/utils/toaster';
 import Image from 'next/image';
@@ -16,7 +16,6 @@ import MyProfileCard from '@/sections/profile/profile_card';
 import ProfileCardLoader from '@/components/loaders/profile_card';
 import { SERVER_ERROR } from '@/config/errors';
 import Loader from '@/components/common/loader';
-import PostsLoader from '@/components/loaders/posts';
 import About from '@/screens/profile/about';
 import MyAbout from '@/screens/profile/my_about';
 import { setReduxTagline, userSelector } from '@/slices/userSlice';
@@ -28,35 +27,42 @@ import { useDispatch } from 'react-redux';
 import { resizeImage } from '@/utils/resize_image';
 import { Check, ImageSquare, PencilSimple, X } from '@phosphor-icons/react';
 import SaveButton from '@/components/buttons/save_btn';
+import axios from 'axios';
+import { User } from '@/types';
+import { generateSEOProps } from '@/lib/seo';
+import { NextSeoProps } from 'next-seo';
 
 interface Props {
-  username: string;
+  initialUser: User | null;
+  err: string | null;
+  seoProps: NextSeoProps;
 }
 
-const User = ({ username }: Props) => {
+const UserComponent = ({ initialUser, err, seoProps }: Props) => {
   const [active, setActive] = useState(0);
-  const [user, setUser] = useState(initialUser);
+  const [user, setUser] = useState(initialUser || initialUserObj);
   const [loading, setLoading] = useState(true);
   const [organizations, setOrganizations] = useState([]);
 
   const [tagline, setTagline] = useState('');
   const [coverPic, setCoverPic] = useState<File>();
-  const [coverPicView, setCoverPicView] = useState(`${USER_COVER_PIC_URL}/${user.coverPic}`);
+  const [coverPicView, setCoverPicView] = useState(`${USER_COVER_PIC_URL}/${user?.coverPic}`);
 
   const loggedInUser = useSelector(userSelector);
 
   const [clickedOnTagline, setClickedOnTagline] = useState(false);
   const [clickedOnCoverPic, setClickedOnCoverPic] = useState(false);
 
-  const getUser = () => {
-    const URL = username == loggedInUser.username ? `${USER_URL}/me` : `${EXPLORE_URL}/users/${username}`;
+  const getUser = (user: User) => {
+    setLoading(true);
+    const URL = user.username == loggedInUser.username ? `${USER_URL}/me` : `${EXPLORE_URL}/users/${user.username}`;
     getHandler(URL)
       .then(res => {
         if (res.statusCode === 200) {
           setUser(res.data.user);
           setOrganizations(res.data.organizations);
 
-          if (username == loggedInUser.username) {
+          if (user.username == loggedInUser.username) {
             setTagline(res.data.user.tagline);
             setCoverPicView(`${USER_COVER_PIC_URL}/${res.data.user.coverPic}`);
           }
@@ -75,11 +81,12 @@ const User = ({ username }: Props) => {
   };
 
   useEffect(() => {
-    getUser();
-  }, [username]);
+    if (err) Toaster.error(err, 'error_toaster');
+    else if (initialUser) getUser(initialUser);
+  }, [initialUser]);
 
   useEffect(() => {
-    if (user.isOrganization) window.location.replace(`/organisations/${username}`);
+    if (user.isOrganization) window.location.replace(`/organisations/${user.username}`);
   }, [user]);
 
   const dispatch = useDispatch();
@@ -145,11 +152,11 @@ const User = ({ username }: Props) => {
   );
 
   return (
-    <BaseWrapper title={`${user.name}`}>
+    <BaseWrapper title={`${user.name}`} seoProps={seoProps}>
       <Sidebar index={-1} />
       <MainWrapper restrictWidth sidebarLayout>
-        <div className="w-2/3 relative">
-          {username == loggedInUser.username ? (
+        <div className="w-2/3 max-md:w-full relative">
+          {user.username == loggedInUser.username ? (
             <>
               <input
                 type="file"
@@ -205,8 +212,8 @@ const User = ({ username }: Props) => {
             <CoverPhoto src={`${USER_COVER_PIC_URL}/${user.coverPic}`} blurDataURL={user.coverPicBlurHash} />
           )}
 
-          <div className="w-full h-24 my-12 font-bold text-5xl max-lg:text-3xl flex-center text-center dark:text-white">
-            {username == loggedInUser.username ? (
+          <div className="w-full h-24 md:my-12 font-bold text-5xl max-lg:text-3xl flex-center text-center dark:text-white">
+            {user.username == loggedInUser.username ? (
               clickedOnTagline ? (
                 <div className="w-[90%] mx-auto z-50">
                   <div className="text-xs ml-1 font-medium uppercase text-gray-500">
@@ -261,7 +268,7 @@ const User = ({ username }: Props) => {
             <PrimeWrapper index={0} maxIndex={2}>
               {loading ? (
                 <Loader />
-              ) : username == loggedInUser.username ? (
+              ) : user.username == loggedInUser.username ? (
                 <MyAbout profile={user.profile ? user.profile : initialProfile} setUser={setUser} />
               ) : (
                 <About profile={user.profile || initialProfile} organizations={organizations} />
@@ -269,11 +276,11 @@ const User = ({ username }: Props) => {
             </PrimeWrapper>
           ) : active == 1 ? (
             <PrimeWrapper index={1} maxIndex={2}>
-              {loading ? <PostsLoader /> : <Posts userID={user.id} />}
+              {loading ? <Loader /> : <Posts userID={user.id} />}
             </PrimeWrapper>
           ) : active == 2 ? (
             <PrimeWrapper index={2} maxIndex={2}>
-              {loading ? <Loader /> : <Projects userID={user.id} />}
+              {loading ? <Loader /> : <Projects userID={user.id} displayOnProfile={user.id == loggedInUser.id} />}
             </PrimeWrapper>
           ) : (
             active == 3 && (
@@ -284,9 +291,9 @@ const User = ({ username }: Props) => {
           )}
         </div>
         <SideBarWrapper>
-          {loading ? (
+          {err ? (
             <ProfileCardLoader />
-          ) : username == loggedInUser.username ? (
+          ) : user.username == loggedInUser.username ? (
             <MyProfileCard user={user} setUser={setUser} />
           ) : (
             <ProfileCard user={user} />
@@ -297,12 +304,45 @@ const User = ({ username }: Props) => {
   );
 };
 
-export default User;
+export default UserComponent;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { username } = context.query;
 
-  return {
-    props: { username },
-  };
+  try {
+    const response = await axios.get(`${BACKEND_URL}${EXPLORE_URL}/quick/item?username=${username}`, {
+      headers: {
+        'X-API-KEY': process.env.API_TOKEN,
+      },
+    });
+
+    const user: User = response.data.user || initialUserObj;
+    const seoProps: NextSeoProps = generateSEOProps(
+      {
+        id: user.username,
+        title: user.name,
+        description: user.profile?.description || 'Interact User',
+        createdAt: new Date(user.createdAt) || new Date(),
+        imageUrl: `${USER_PROFILE_PIC_URL}/${user.profilePic}`,
+      },
+      'user'
+    );
+
+    return {
+      props: {
+        initialUser: response.data.user,
+        err: response.data.message || null,
+        seoProps,
+      },
+    };
+  } catch (error: any) {
+    //TODO token expired error
+    return {
+      props: {
+        initialUser: null,
+        err: error?.response.data.message || null,
+        seoProps: {},
+      },
+    };
+  }
 }

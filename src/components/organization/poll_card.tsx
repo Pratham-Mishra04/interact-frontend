@@ -20,9 +20,10 @@ interface Props {
   organisation: Organization;
   setPolls?: React.Dispatch<React.SetStateAction<any[]>>;
   hoverShadow?: boolean;
+  isSenior: boolean;
 }
 
-const PollCard = ({ poll, setPolls, organisation, hoverShadow = true }: Props) => {
+const PollCard = ({ poll, setPolls, organisation, hoverShadow = true, isSenior }: Props) => {
   const [clickedOnDelete, setClickedOnDelete] = useState(false);
   const user = useSelector(userSelector);
 
@@ -47,12 +48,12 @@ const PollCard = ({ poll, setPolls, organisation, hoverShadow = true }: Props) =
     <>
       {clickedOnDelete && <ConfirmDelete handleDelete={handleDelete} setShow={setClickedOnDelete} />}
       <div
-        className={`w-full mx-auto bg-white flex gap-1 p-4 border-[1px] border-gray-300 rounded-xl ${
+        className={`w-full mx-auto bg-white dark:bg-dark_primary_comp flex gap-1 py-4 border-b-[1px] border-gray-300 ${
           hoverShadow ? 'hover:shadow-xl' : ''
         } transition-ease-300 z-[1] animate-fade_third`}
       >
         <Link
-          href={`/organisations/${organisation.user.username}`}
+          href={`/organisations/${organisation?.user?.username}`}
           target="_blank"
           className="h-full flex items-center gap-2"
         >
@@ -61,9 +62,9 @@ const PollCard = ({ poll, setPolls, organisation, hoverShadow = true }: Props) =
             width={100}
             height={100}
             alt={'User Pic'}
-            src={`${USER_PROFILE_PIC_URL}/${organisation.user.profilePic}`}
+            src={`${USER_PROFILE_PIC_URL}/${organisation?.user?.profilePic}`}
             placeholder="blur"
-            blurDataURL={organisation.user.profilePicBlurHash || 'no-hash'}
+            blurDataURL={organisation?.user?.profilePicBlurHash || 'no-hash'}
             className="rounded-full w-8 h-8"
           />
         </Link>
@@ -72,16 +73,16 @@ const PollCard = ({ poll, setPolls, organisation, hoverShadow = true }: Props) =
           <div className="w-full flex justify-between items-center">
             <Link
               href={
-                user.id == organisation.userID
+                user.id == organisation?.userID
                   ? '/organisation/profile'
-                  : `/organisations/${organisation.user.username}`
+                  : `/organisations/${organisation?.user?.username}`
               }
               target="_blank"
               className="flex max-md:flex-col md:items-center gap-2 max-md:gap-0 font-medium"
             >
-              {organisation.user.name}
+              {organisation?.user?.name}
               <div className="text-xs max-md:text-xxs font-normal text-gray-500">
-                @{organisation.user.username}
+                @{organisation?.user?.username}
               </div>{' '}
             </Link>
             <div className="text-gray-400 text-xs">{moment(poll.createdAt).fromNow()}</div>
@@ -103,19 +104,19 @@ const PollCard = ({ poll, setPolls, organisation, hoverShadow = true }: Props) =
             ))}
           </div>
 
-          <div className="w-full flex max-md:flex-col justify-between md:items-center">
+          <div className="w-full flex max-md:flex-col gap-4 justify-between md:items-center">
             <div className="flex justify-between gap-4">
-              <div className="text-sm text-gray-400 font-medium">
+              <div className="text-sm text-gray-400 dark:text-gray-300 font-medium">
                 {poll.totalVotes} Vote{poll.totalVotes != 1 ? 's' : ''}
               </div>
 
-              {checkOrgAccess(ORG_SENIOR) && (
+              {isSenior && (
                 <div onClick={() => setClickedOnDelete(true)} className="text-sm text-primary_danger cursor-pointer">
                   Delete
                 </div>
               )}
             </div>
-            <div className="flex justify-end max-md:justify-between items-center gap-4 text-sm text-gray-400 font-medium">
+            <div className="flex justify-end max-md:justify-between items-center gap-4 text-sm max-md:text-xs text-gray-400 font-medium">
               <div className="flex-center gap-1">
                 {poll.isOpen ? (
                   <>

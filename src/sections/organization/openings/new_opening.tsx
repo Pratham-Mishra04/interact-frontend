@@ -64,7 +64,7 @@ const NewOpening = ({ setShow, openings, setOpenings }: Props) => {
 
   return (
     <>
-      <div className="fixed top-24 max-lg:top-20 w-[953px] max-lg:w-5/6 h-[540px] max-lg:h-3/4 bg-white dark:bg-[#ffe1fc22] flex flex-col justify-between rounded-lg p-10 max-lg:p-6 dark:text-white font-primary overflow-y-auto border-[1px] border-gray-400  dark:border-dark_primary_btn right-1/2 translate-x-1/2 animate-fade_third z-30">
+      <div className="fixed top-24 max-lg:top-20 w-[953px] max-lg:w-5/6 h-[540px] max-lg:h-3/4 bg-white dark:bg-dark_primary_comp flex flex-col justify-between rounded-lg p-10 max-lg:p-6 dark:text-white font-primary overflow-y-auto border-[1px] border-gray-400  dark:border-dark_primary_btn right-1/2 translate-x-1/2 animate-fade_third z-30">
         <div className="w-full flex flex-col gap-12">
           <div className="w-full flex max-lg:flex-col gap-12 max-lg:gap-6 items-start max-md:items-center">
             <Image

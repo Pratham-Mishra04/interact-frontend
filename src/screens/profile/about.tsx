@@ -43,7 +43,9 @@ const About = ({ profile, org = false, organizations }: Props) => {
                         height={24}
                         className="rounded-full"
                       />
-                      <div className="font-medium hover-underline-animation after:bg-gray-700">{org.title}</div>
+                      <div className="font-medium hover-underline-animation after:bg-gray-700 dark:after:bg-white">
+                        {org.title}
+                      </div>
                       {i < organizations.length - 1 && <span>,</span>}
                     </Link>
                   ))}
@@ -105,7 +107,7 @@ const About = ({ profile, org = false, organizations }: Props) => {
       )}
       {hasDescription && (
         <>
-          <div className="whitespace-pre-wrap">{renderContentWithLinks(profile.description)}</div>
+          <div className="w-full whitespace-pre-wrap break-words">{renderContentWithLinks(profile.description)}</div>
           <div className="w-full h-[1px] border-t-[1px] border-gray-400 border-dashed"></div>
         </>
       )}

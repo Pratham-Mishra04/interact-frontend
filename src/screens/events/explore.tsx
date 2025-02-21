@@ -5,10 +5,12 @@ import { Event } from '@/types';
 import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import Loader from '@/components/common/loader';
-import EventCard from '@/components/organization/event_card';
 import NoSearch from '@/components/fillers/search';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import OrderMenu from '@/components/common/order_menu';
+import { userIDSelector } from '@/slices/userSlice';
+import { useSelector } from 'react-redux';
+import EventCard from '@/components/explore/event_card';
 
 const Events = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -22,7 +24,7 @@ const Events = () => {
       search ? `&search=${search}` : ''
     }`;
 
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode == 200) {
       if (initialPage == 1) {
         setEvents(res.data.events || []);
@@ -48,21 +50,27 @@ const Events = () => {
     fetchEvents(new URLSearchParams(window.location.search).get('search'), 1);
   }, [window.location.search, order]);
 
+  const userID = useSelector(userIDSelector);
+
   return (
     <div className="w-full flex flex-col gap-6">
-      <OrderMenu orders={['trending', 'most_liked', 'most_viewed', 'latest']} current={order} setState={setOrder} />
+      <OrderMenu
+        orders={['trending', 'most_liked', 'most_viewed', ...(userID ? ['latest'] : [])]}
+        current={order}
+        setState={setOrder}
+      />
       {loading ? (
         <Loader />
       ) : events.length > 0 ? (
         <InfiniteScroll
-          className="w-full px-2 gap-4 flex flex-wrap justify-center"
+          className="w-full grid grid-cols-3 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1"
           dataLength={events.length}
           next={() => fetchEvents(new URLSearchParams(window.location.search).get('search'))}
           hasMore={hasMore}
           loader={<Loader />}
         >
           {events.map(event => {
-            return <EventCard key={event.id} event={event} size={84} />;
+            return <EventCard key={event.id} event={event} />;
           })}
         </InfiniteScroll>
       ) : (

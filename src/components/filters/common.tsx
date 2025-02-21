@@ -39,8 +39,8 @@ export const DropdownOption = ({ option, isOptionSelected, onClick }: DropdownOp
       onClick={onClick}
       className={`w-full ${
         isOptionSelected
-          ? 'bg-primary_comp_hover text-primary_text font-medium'
-          : 'hover:bg-primary_comp text-primary_black'
+          ? 'bg-primary_comp_hover dark:bg-dark_primary_comp_active text-primary_text font-medium'
+          : 'hover:bg-primary_comp hover:bg-dark_primary_comp_hover text-primary_black dark:text-white'
       } text-sm rounded-md p-2 flex items-center capitalize transition-ease-300 cursor-pointer`}
     >
       {option.replaceAll('_', ' ')}

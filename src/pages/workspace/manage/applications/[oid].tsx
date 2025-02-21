@@ -81,8 +81,7 @@ const Applications = ({ oid }: Props) => {
 
   return (
     <BaseWrapper title="Applications">
-      {user.isOrganization ? <OrgSidebar index={3} /> : <Sidebar index={3} />}
-
+      {user.isOrganization ? <OrgSidebar index={2} /> : <Sidebar index={2} />}
       <MainWrapper>
         <div className="w-full flex flex-col gap-2">
           <div className="w-full flex justify-between p-base_padding">

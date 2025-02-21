@@ -29,12 +29,12 @@ const MeetingCard = ({ meeting }: Props) => {
   return (
     <Link
       href={'/organisation/meetings/' + meeting.id}
-      className="w-full flex gap-1 bg-white py-4 rounded-lg hover:shadow-xl transition-ease-out-500 animate-fade_third p-2"
+      className="w-full flex gap-1 bg-white dark:bg-dark_primary_comp py-4 rounded-lg hover:shadow-xl transition-ease-out-500 animate-fade_third p-2"
     >
       <div className="w-1/6 max-md:w-1/3 line-clamp-1 flex-center max-md:text-sm">{meeting.title}</div>
       <div className="w-1/6 max-md:w-1/3 flex-center">
         <div
-          className={`text-xs px-2 py-1 ${
+          className={`text-xs px-2 py-1 dark:text-primary_black ${
             status == 'Live' ? 'bg-priority_low' : status == 'Ended' ? 'bg-priority_high' : 'bg-priority_mid'
           } rounded-full `}
         >
@@ -46,7 +46,7 @@ const MeetingCard = ({ meeting }: Props) => {
       </div>
       <div className="w-1/6 max-md:hidden flex-center">
         <div
-          className={`text-xs px-2 py-1 ${
+          className={`text-xs px-2 py-1 dark:text-primary_black ${
             meeting.frequency == 'none' ? 'bg-blue-200' : 'bg-priority_mid'
           } rounded-full capitalize`}
         >
@@ -55,7 +55,7 @@ const MeetingCard = ({ meeting }: Props) => {
       </div>
       <div className="w-1/6 max-md:w-1/3 flex-center">
         <div
-          className={`text-xs px-2 py-1 ${
+          className={`text-xs px-2 py-1 dark:text-primary_black ${
             meeting.isOpenForMembers ? 'bg-priority_low' : 'bg-priority_high'
           } rounded-full `}
         >

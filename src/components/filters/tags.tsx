@@ -42,7 +42,7 @@ const Tags = ({ selectedTags, setSelectedTags, maxLength = 5 }: Props) => {
         setShow={setShow}
       />
       {show && (
-        <div className="w-48 h-fit p-3 bg-white flex flex-col gap-2 absolute -bottom-2 left-0 translate-y-full rounded-md border-[1px] border-gray-200 shadow-md animate-fade_third">
+        <div className="w-48 h-fit p-3 bg-white dark:bg-dark_primary_comp dark:border-dark_primary_btn flex flex-col gap-2 absolute -bottom-2 left-0 translate-y-full rounded-md border-[1px] border-gray-200 shadow-md animate-fade_third">
           <div className="w-full flex justify-between items-center">
             <div className="text-xl font-medium">Tags</div>
             <Backspace

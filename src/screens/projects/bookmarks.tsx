@@ -3,7 +3,7 @@ import Loader from '@/components/common/loader';
 import { SERVER_ERROR } from '@/config/errors';
 import { BOOKMARK_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
-import { ProjectBookmark } from '@/types';
+import { Project, ProjectBookmark } from '@/types';
 import { initialProjectBookmark } from '@/types/initials';
 import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
@@ -12,11 +12,14 @@ import deleteHandler from '@/handlers/delete_handler';
 import { userSelector, setProjectBookmarks } from '@/slices/userSlice';
 import { useSelector, useDispatch } from 'react-redux';
 import { configSelector } from '@/slices/configSlice';
-import { navbarOpenSelector } from '@/slices/feedSlice';
 import patchHandler from '@/handlers/patch_handler';
 import NoProjectBookmarks from '@/components/fillers/project_bookmarks';
 
-const Projects = () => {
+const Projects = ({
+  setClickedProject,
+}: {
+  setClickedProject?: React.Dispatch<React.SetStateAction<Project | null>>;
+}) => {
   const [bookmarks, setBookmarks] = useState<ProjectBookmark[]>([]);
   const [clickedOnBookmark, setClickedOnBookmark] = useState(false);
   const [clickedBookmark, setClickedBookmark] = useState<ProjectBookmark>(initialProjectBookmark);
@@ -24,7 +27,6 @@ const Projects = () => {
 
   const [mutex, setMutex] = useState(false);
 
-  const open = useSelector(navbarOpenSelector);
   const bookmarksRedux = useSelector(userSelector).projectBookmarks;
   const updateBookmark = useSelector(configSelector).updateBookmark;
 
@@ -115,15 +117,12 @@ const Projects = () => {
           bookmark={clickedBookmark}
           setClick={setClickedOnBookmark}
           fetchBookmarks={checkAndFetchBookmarks}
+          setClickedProject={setClickedProject}
         />
       ) : loading ? (
         <Loader />
       ) : bookmarks.length > 0 ? (
-        <div
-          className={`w-full mx-auto justify-center grid grid-cols-2 ${
-            open ? 'gap-x-4' : 'gap-x-12'
-          } max-md:grid-cols-1  transition-ease-out-500`}
-        >
+        <div className="w-full flex flex-wrap justify-center gap-6">
           {bookmarks.map(bookmark => {
             return (
               <Bookmark

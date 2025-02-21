@@ -7,7 +7,7 @@ import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Image from 'next/image';
-import { MagnifyingGlass, X } from '@phosphor-icons/react';
+import { MagnifyingGlass, Plus, X } from '@phosphor-icons/react';
 import patchHandler from '@/handlers/patch_handler';
 
 interface Props {
@@ -19,6 +19,7 @@ interface Props {
 const EditHackathonCoordinators = ({ event, setShow, setEvents }: Props) => {
   const [memberships, setMemberships] = useState<OrganizationMembership[]>([]);
   const [coordinatorIDs, setCoordinatorIDs] = useState(event.hackathon?.coordinators?.map(u => u.id));
+  const [mutex, setMutex] = useState(false);
 
   const [search, setSearch] = useState('');
   const [users, setUsers] = useState<User[]>([]);
@@ -27,7 +28,7 @@ const EditHackathonCoordinators = ({ event, setShow, setEvents }: Props) => {
 
   const getMemberships = async () => {
     const URL = `${ORG_URL}/${currentOrg.id}/membership`;
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
 
     if (res.statusCode === 200) {
       const membershipData: OrganizationMembership[] = res.data.organization?.memberships || [];
@@ -42,6 +43,9 @@ const EditHackathonCoordinators = ({ event, setShow, setEvents }: Props) => {
   };
 
   const handleToggleCoordinator = async (user: User) => {
+    if (mutex) return;
+    setMutex(true);
+
     const URL = `${ORG_URL}/${currentOrg.id}/hackathons/coordinator`;
     const formData = { userID: user.id, hackathonID: event.hackathonID };
 
@@ -61,6 +65,8 @@ const EditHackathonCoordinators = ({ event, setShow, setEvents }: Props) => {
       if (res.data?.message) Toaster.error(res.data.message, 'error_toaster');
       else Toaster.error(SERVER_ERROR, 'error_toaster');
     }
+
+    setMutex(false);
   };
 
   const fetchUsers = async (key: string) => {
@@ -91,7 +97,7 @@ const EditHackathonCoordinators = ({ event, setShow, setEvents }: Props) => {
 
   return (
     <>
-      <div className="fixed top-10 max-lg:top-0 w-1/2 max-lg:w-screen h-[90%] max-lg:h-screen backdrop-blur-2xl bg-white dark:bg-[#ffe1fc22] flex flex-col justify-between rounded-lg px-12 py-8 max-md:p-4 gap-8 max-lg:gap-4 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 shadow-2xl animate-fade_third z-50">
+      <div className="fixed top-10 max-lg:top-0 w-1/2 max-lg:w-screen h-[90%] max-lg:h-screen backdrop-blur-2xl bg-white dark:bg-dark_primary_comp flex flex-col justify-between rounded-lg px-12 py-8 max-md:p-4 gap-8 max-lg:gap-4 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 shadow-2xl animate-fade_third z-50">
         <X onClick={() => setShow(false)} className="fixed top-5 right-2" size={24} weight="bold" />
         <div className="w-full flex flex-col items-center gap-4 ">
           <div className="w-full text-3xl max-md:text-xl font-semibold">Select Coordinators</div>
@@ -134,7 +140,7 @@ const EditHackathonCoordinators = ({ event, setShow, setEvents }: Props) => {
                           {user.tagline && user.tagline != '' && <div className="text-sm mt-2">{user.tagline}</div>}
                         </div>
                         <div onClick={() => handleToggleCoordinator(user)} className="px-4 py-2 text-sm cursor-pointer">
-                          {coordinatorIDs?.includes(user.id) ? 'Remove' : 'Add'}
+                          {coordinatorIDs?.includes(user.id) ? <X className="text-primary_danger" /> : <Plus />}
                         </div>
                       </div>
                     </div>

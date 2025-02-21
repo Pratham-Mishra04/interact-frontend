@@ -250,7 +250,7 @@ const EditTask = ({
 
   return (
     <>
-      <div className="fixed top-[10%] max-h-[80%] max-md:top-20 w-[640px] overflow-y-auto max-md:w-5/6 backdrop-blur-2xl bg-white flex flex-col gap-4 rounded-lg p-10 max-md:p-5 font-primary border-[1px] border-primary_btn right-1/2 translate-x-1/2 animate-fade_third z-50">
+      <div className="fixed top-[10%] max-h-[80%] max-md:top-20 w-[640px] overflow-y-auto max-md:w-5/6 backdrop-blur-2xl bg-white dark:bg-dark_primary_comp flex flex-col gap-4 rounded-lg p-10 max-md:p-5 font-primary border-[1px] border-primary_btn right-1/2 translate-x-1/2 animate-fade_third z-50">
         <div className="text-3xl max-lg:text-xl font-semibold">
           {status == 0 ? 'Task Info' : status == 1 ? 'Select Users' : 'Review Details'}
         </div>

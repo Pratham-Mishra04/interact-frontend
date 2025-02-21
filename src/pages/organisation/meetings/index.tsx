@@ -4,9 +4,8 @@ import MainWrapper from '@/wrappers/main';
 import getHandler from '@/handlers/get_handler';
 import { useSelector } from 'react-redux';
 import { currentOrgSelector } from '@/slices/orgSlice';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import NewMeeting from '@/sections/organization/meetings/new_meeting';
-import checkOrgAccess from '@/utils/funcs/access';
 import { ArrowCounterClockwise, Info, LockOpen, Plus, SortAscending } from '@phosphor-icons/react';
 import { ORG_SENIOR } from '@/config/constants';
 // import NoMeetings from '@/components/fillers/meetings';
@@ -22,6 +21,7 @@ import Mascot from '@/components/fillers/mascot';
 import Select from '@/components/filters/select';
 import Order from '@/components/filters/order';
 import Tags from '@/components/filters/tags';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 const Meetings = () => {
   const [loading, setLoading] = useState(true);
@@ -40,13 +40,15 @@ const Meetings = () => {
 
   const currentOrg = useSelector(currentOrgSelector);
 
+  const isSenior = useOrgAccess(ORG_SENIOR);
+
   const getMeetings = async (initialPage: number | null) => {
     const URL = `/org/${currentOrg.id}/meetings?page=${
       initialPage ? initialPage : page
     }&limit=${10}&order=${order}&frequency=${frequency == 'one_time' ? 'none' : frequency}&tags=${tags.join(
       ','
     )}&is_open_for_members=${status == '' ? status : status == 'open'}`;
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode === 200) {
       if (initialPage == 1) {
         setMeetings(res.data.meetings || []);
@@ -109,7 +111,7 @@ const Meetings = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {checkOrgAccess(ORG_SENIOR) && (
+            {isSenior && (
               <Plus
                 onClick={() => setClickedOnNewMeeting(prev => !prev)}
                 size={42}
@@ -126,7 +128,10 @@ const Meetings = () => {
           </div>
         </div>
 
-        <div className="w-[calc(100%-48px)] h-16 max-md:h-12 bg-white rounded-xl mx-auto border-gray-400 flex font-semibold text-primary_black mb-2">
+        <div
+          className="w-[calc(100%-48px)] h-16 max-md:h-12 bg-white dark:bg-dark_primary_comp rounded-xl mx-auto border-gray-400 dark:border-dark_primary_btn flex font-semibold text-primary_black dark:text-white
+         mb-2"
+        >
           <div className="w-1/6 max-md:w-1/3 flex-center">Title</div>
           <div className="w-1/6 max-md:w-1/3 flex-center">Status</div>
           <div className="w-1/6 max-md:hidden flex-center">Tags</div>

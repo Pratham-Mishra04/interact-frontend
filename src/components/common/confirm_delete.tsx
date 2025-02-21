@@ -28,6 +28,7 @@ const ConfirmDelete = ({
     };
   }, []);
   const variants = ['text-xl', 'text-2xl', 'text-3xl', 'text-4xl', 'text-5xl', 'text-6xl', 'text-7xl'];
+
   return (
     <ModalWrapper setShow={setShow} width="1/3" height="1/4" blur={true} modalStyles={{ top: '40%' }}>
       <div className="w-full h-full flex flex-col gap-2 max-lg:gap-0 rounded-lg dark:text-white font-primary max-lg:z-[60]">

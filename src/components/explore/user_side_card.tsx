@@ -13,9 +13,9 @@ interface Props {
 const UserSideCard = ({ user }: Props) => {
   return (
     <Link
-      href={`${`/${user.isOrganization ? 'organisation' : 'user'}/${user.username}`}`}
+      href={`${`/${user.isOrganization ? 'organisations' : 'users'}/${user.username}`}`}
       target="_blank"
-      className="w-full flex items-center gap-4 hover:bg-primary_comp_hover dark:hover:bg-dark_primary_comp_active rounded-md p-2 transition-ease-out-500 animate-fade_third"
+      className="w-full flex items-center gap-2 hover:bg-primary_comp_hover dark:hover:bg-dark_primary_comp_active rounded-md p-2 transition-ease-out-500 animate-fade_third"
     >
       <div className="w-11 h-11 relative rounded-full">
         <Image

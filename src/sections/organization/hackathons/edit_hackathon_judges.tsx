@@ -2,13 +2,14 @@ import { SERVER_ERROR } from '@/config/errors';
 import { ORG_URL, USER_PROFILE_PIC_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import { currentOrgSelector } from '@/slices/orgSlice';
-import { User, OrganizationMembership, Event } from '@/types';
+import { User, Event } from '@/types';
 import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Image from 'next/image';
-import { MagnifyingGlass, X } from '@phosphor-icons/react';
+import { MagnifyingGlass, Plus, X } from '@phosphor-icons/react';
 import patchHandler from '@/handlers/patch_handler';
+import Loader from '@/components/common/loader';
 
 interface Props {
   event: Event;
@@ -20,6 +21,7 @@ const EditHackathonJudges = ({ event, setShow, setEvents }: Props) => {
   const [users, setUsers] = useState<User[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
+  const [mutex, setMutex] = useState(false);
 
   const [judgeIDs, setJudgeIDs] = useState(event.hackathon?.judges?.map(u => u.id));
 
@@ -36,7 +38,7 @@ const EditHackathonJudges = ({ event, setShow, setEvents }: Props) => {
   const fetchUsers = async (key: string, abortController: AbortController) => {
     setLoading(true);
     const URL = `${ORG_URL}/${currentOrg.id}/membership/non_members?search=${key}`;
-    const res = await getHandler(URL, abortController.signal);
+    const res = await getHandler(URL, abortController.signal, true);
     if (res.statusCode == 200) {
       setUsers(res.data.users || []);
       setLoading(false);
@@ -47,6 +49,9 @@ const EditHackathonJudges = ({ event, setShow, setEvents }: Props) => {
   };
 
   const handleToggleCoordinator = async (user: User) => {
+    if (mutex) return;
+    setMutex(true);
+
     const URL = `${ORG_URL}/${currentOrg.id}/hackathons/judge`;
     const formData = { userID: user.id, hackathonID: event.hackathonID };
 
@@ -66,6 +71,8 @@ const EditHackathonJudges = ({ event, setShow, setEvents }: Props) => {
       if (res.data?.message) Toaster.error(res.data.message, 'error_toaster');
       else Toaster.error(SERVER_ERROR, 'error_toaster');
     }
+
+    setMutex(false);
   };
 
   let oldAbortController: AbortController | null = null;
@@ -86,7 +93,7 @@ const EditHackathonJudges = ({ event, setShow, setEvents }: Props) => {
 
   return (
     <>
-      <div className="fixed top-10 max-lg:top-0 w-1/2 max-lg:w-screen h-[90%] max-lg:h-screen backdrop-blur-2xl bg-white dark:bg-[#ffe1fc22] flex flex-col justify-between rounded-lg px-12 py-8 max-md:p-4 gap-8 max-lg:gap-4 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 shadow-2xl animate-fade_third z-50">
+      <div className="fixed top-10 max-lg:top-0 w-1/2 max-lg:w-screen h-[90%] max-lg:h-screen backdrop-blur-2xl bg-white dark:bg-dark_primary_comp flex flex-col justify-between rounded-lg px-12 py-8 max-md:p-4 gap-8 max-lg:gap-4 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 shadow-2xl animate-fade_third z-50">
         <X onClick={() => setShow(false)} className="fixed top-5 right-2" size={24} weight="bold" />
         <div className="w-full flex flex-col items-center gap-4 ">
           <div className="w-full text-3xl max-md:text-xl font-semibold">Select Judges</div>
@@ -104,37 +111,44 @@ const EditHackathonJudges = ({ event, setShow, setEvents }: Props) => {
               <div className="h-64 text-xl flex-center">No other user in the Organisation :(</div>
             ) : (
               <div className="w-full flex-1 flex flex-col gap-2 overflow-y-auto">
-                {users.map(user => {
-                  return (
-                    <div
-                      key={user.id}
-                      className={`w-full flex gap-2 rounded-lg p-2 ${
-                        judgeIDs?.includes(user.id)
-                          ? 'bg-primary_comp_hover dark:bg-dark_primary_comp_active'
-                          : 'dark:bg-dark_primary_comp'
-                      } transition-ease-200`}
-                    >
-                      <Image
-                        crossOrigin="anonymous"
-                        width={50}
-                        height={50}
-                        alt={'User Pic'}
-                        src={`${USER_PROFILE_PIC_URL}/${user.profilePic}`}
-                        className={'rounded-full w-12 h-12 cursor-pointer border-[1px] border-black'}
-                      />
-                      <div className="w-[calc(100%-48px)] flex items-center justify-end">
-                        <div className="w-full flex flex-col">
-                          <div className="text-lg font-bold">{user.name}</div>
-                          <div className="text-sm dark:text-gray-200">@{user.username}</div>
-                          {user.tagline && user.tagline != '' && <div className="text-sm mt-2">{user.tagline}</div>}
-                        </div>
-                        <div onClick={() => handleToggleCoordinator(user)} className="px-4 py-2 text-sm cursor-pointer">
-                          {judgeIDs?.includes(user.id) ? 'Remove' : 'Add'}
+                {loading ? (
+                  <Loader />
+                ) : (
+                  users.map(user => {
+                    return (
+                      <div
+                        key={user.id}
+                        className={`w-full flex gap-2 rounded-lg p-2 ${
+                          judgeIDs?.includes(user.id)
+                            ? 'bg-primary_comp_hover dark:bg-dark_primary_comp_active'
+                            : 'dark:bg-dark_primary_comp'
+                        } transition-ease-200`}
+                      >
+                        <Image
+                          crossOrigin="anonymous"
+                          width={50}
+                          height={50}
+                          alt={'User Pic'}
+                          src={`${USER_PROFILE_PIC_URL}/${user.profilePic}`}
+                          className={'rounded-full w-12 h-12 cursor-pointer border-[1px] border-black'}
+                        />
+                        <div className="w-[calc(100%-48px)] flex items-center justify-end">
+                          <div className="w-full flex flex-col">
+                            <div className="text-lg font-bold">{user.name}</div>
+                            <div className="text-sm dark:text-gray-200">@{user.username}</div>
+                            {user.tagline && user.tagline != '' && <div className="text-sm mt-2">{user.tagline}</div>}
+                          </div>
+                          <div
+                            onClick={() => handleToggleCoordinator(user)}
+                            className="px-4 py-2 text-sm cursor-pointer"
+                          >
+                            {judgeIDs?.includes(user.id) ? <X className="text-primary_danger" /> : <Plus />}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })
+                )}
               </div>
             )}
           </div>

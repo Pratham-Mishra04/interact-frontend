@@ -1,41 +1,60 @@
 import BaseWrapper from '@/wrappers/base';
 import MainWrapper from '@/wrappers/main';
-import React, { useState } from 'react';
-import OrgSidebar from '@/components/common/org_sidebar';
-import { Phone, Password, SmileyXEyes } from '@phosphor-icons/react';
+import React from 'react';
+import { SmileyXEyes } from '@phosphor-icons/react';
+import Link from 'next/link';
 import { useSelector } from 'react-redux';
-import OrgOnlyAndProtect from '@/utils/wrappers/org_only';
 import { userSelector } from '@/slices/userSlice';
+import OrgOnlyAndProtect from '@/utils/wrappers/org_only';
+import Github from '@/sections/settings/github';
+import Email from '@/sections/settings/email';
+import Theme from '@/sections/settings/theme';
+import PhoneNumber from '@/sections/settings/phone_number';
+import Password from '@/sections/settings/password';
+import Verify from '@/sections/settings/verify';
+import moment from 'moment';
+import OrgSidebar from '@/components/common/org_sidebar';
 
 const Settings = () => {
-  //TODO Delete Organization
-  const [clickedOnChangePhoneNo, setClickedOnChangePhoneNo] = useState(false);
-  const [clickedOnChangePassword, setClickedOnChangePassword] = useState(false);
-
   const user = useSelector(userSelector);
   return (
-    <BaseWrapper title={`Settings | ${user.name}`}>
-      <OrgSidebar index={11} />
+    <BaseWrapper title="Settings">
+      <OrgSidebar index={17} />
       <MainWrapper>
-        <div className="w-full flex flex-col items-center gap-6 max-md:px-2 p-base_padding">
-          <div className="w-full text-6xl max-md:text-4xl font-semibold dark:text-white font-primary">Settings</div>
-          <div
-            onClick={() => setClickedOnChangePhoneNo(true)}
-            className="w-full h-16 text-xl flex-center gap-4 dark:bg-dark_primary_comp hover:bg-primary_comp active:bg-primary_comp_hover dark:hover:bg-dark_primary_comp dark:active:bg-dark_primary_comp_hover px-6 rounded-md text-center cursor-pointer transition-ease-300"
-          >
-            <div>{user.phoneNo ? 'Update Phone Number' : 'Add Phone Number'}</div>
-            <Phone size={40} weight="duotone" />
-          </div>
-          <div
-            onClick={() => setClickedOnChangePassword(true)}
-            className="w-full h-16 text-xl flex-center gap-4 dark:bg-dark_primary_comp hover:bg-primary_comp active:bg-primary_comp_hover dark:hover:bg-dark_primary_comp dark:active:bg-dark_primary_comp_hover px-6 rounded-md text-center cursor-pointer transition-ease-300"
-          >
-            <div>Update Your Password</div>
-            <Password size={40} weight="duotone" />
-          </div>
-          <div className="w-full h-16 text-xl flex-center gap-4 dark:bg-dark_primary_comp hover:bg-primary_comp active:bg-primary_comp_hover dark:hover:bg-dark_primary_comp dark:active:bg-dark_primary_comp_hover px-6 rounded-md text-center cursor-pointer transition-ease-300">
-            <div>Delete Organization</div>
-            <SmileyXEyes size={40} weight="duotone" />
+        <div className="w-full dark:text-white flex flex-col gap-4 px-8 max-md:px-4 py-6 font-primary relative transition-ease-out-500">
+          <div className="w-fit text-5xl font-extrabold text-gradient pb-2">Settings</div>
+          <div className="w-full flex flex-col gap-4">
+            <div className="w-full flex max-md:flex-col gap-4">
+              <div className="w-4/5 max-md:w-full flex flex-col gap-6">
+                <Theme />
+                <Email />
+                <PhoneNumber />
+                <Password />
+                <Verify />
+              </div>
+              <div className="w-1/5 max-md:w-full flex flex-col gap-4 md:border-l-[1px] max-md:border-t-[1px] border-gray-400 md:pl-4 max-md:pt-4">
+                <div>
+                  <div className="font-semibold">Your username</div>
+                  <div className="text-gray-800 dark:text-white text-sm">@{user.username}</div>
+                </div>
+                <div>
+                  <div className="font-semibold">Date Joined</div>
+                  <div className="text-gray-800 dark:text-white text-sm">
+                    {moment(user.createdAt).format('DD-MM-YYYY')}
+                  </div>
+                </div>
+                {process.env.NODE_ENV == 'development' && (
+                  <Link
+                    href={'/settings/deactivate_account'}
+                    className="w-fit flex-center gap-1 text-sm font-medium hover:text-primary_danger transition-ease-300"
+                  >
+                    Deactivate Account
+                    <SmileyXEyes size={20} weight="duotone" />
+                  </Link>
+                )}
+              </div>
+            </div>
+            {!user.isOrganization && <Github />}
           </div>
         </div>
       </MainWrapper>

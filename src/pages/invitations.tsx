@@ -61,7 +61,7 @@ const Invitations = () => {
   }, []);
   return (
     <BaseWrapper title="Invitations">
-      <Sidebar index={5} />
+      <Sidebar index={10} />
       <MainWrapper>
         <div
           className={`w-full max-lg:w-full flex flex-col items-center gap-4 transition-ease-out-500 pt-20 pb-base_padding`}

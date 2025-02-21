@@ -22,7 +22,7 @@ const NotificationWrapper: React.FC<WrapperProps> = ({
   extended = <></>,
 }) => {
   return (
-    <div className="w-full relative p-3 hover:bg-gray-100 rounded-xl font-primary transition-ease-200">
+    <div className="w-full relative p-3 hover:bg-gray-100 dark:hover:bg-dark_primary_comp_hover rounded-xl font-primary transition-ease-200">
       {/* {!notification.isRead ? <CircleDashed size={16} className="absolute top-0 right-0" weight="duotone" /> : <></>} */}
       <div className="w-full flex items-center justify-between gap-2">
         <div className="w-[calc(100%-16px)] flex items-center gap-2">

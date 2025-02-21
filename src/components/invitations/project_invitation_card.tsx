@@ -55,11 +55,7 @@ const ProjectInvitationCard = ({ invitation, setInvitations }: Props) => {
         `${user.name} accepted the invitation to join ${invitation.project.title}`
       );
     } else {
-      if (res.data.message) {
-        Toaster.stopLoad(toaster, res.data.message, 0);
-      } else {
-        Toaster.stopLoad(toaster, SERVER_ERROR, 0);
-      }
+      Toaster.stopLoad(toaster, res.data.message || SERVER_ERROR, 0);
     }
 
     setMutex(false);
@@ -104,7 +100,7 @@ const ProjectInvitationCard = ({ invitation, setInvitations }: Props) => {
       {clickedOnReject && (
         <ConfirmDelete setShow={setClickedOnReject} handleDelete={handleReject} title="Confirm Reject?" />
       )}
-      <Link target="_blank" href={`/projects?pid=${invitation.project.slug}`}>
+      <Link target="_blank" href={`/projects/${invitation.project.slug}`}>
         <Image
           crossOrigin="anonymous"
           width={100}

@@ -34,7 +34,7 @@ const Share = ({ item, itemType, itemID, clipboardURL, setShow }: Props) => {
     }
 
     const URL = `${MESSAGING_URL}/me`;
-    getHandler(URL)
+    getHandler(URL, undefined, true)
       .then(res => {
         if (res.statusCode === 200) {
           const chatsData: Chat[] = res.data.chats;
@@ -131,17 +131,19 @@ const Share = ({ item, itemType, itemID, clipboardURL, setShow }: Props) => {
 
   return (
     <>
-      <div className="w-1/2 max-h-[75%] max-md:h-4/5 overflow-y-auto max-lg:w-5/6 fixed backdrop-blur-lg bg-[#ffffff] dark:bg-[#ffe1fc22] z-50 translate-x-1/2 -translate-y-1/4 top-64 right-1/2 flex flex-col px-8 py-8 gap-2 border-2 border-primary_btn dark:border-dark_primary_btn rounded-xl animate-fade_third">
+      <div className="w-1/2 max-h-[75%] max-md:h-4/5 overflow-y-auto max-lg:w-5/6 fixed backdrop-blur-lg bg-[#ffffff] dark:bg-dark_primary_comp z-50 translate-x-1/2 -translate-y-1/4 max-md:-translate-y-1/2 top-64 max-md:top-1/2 right-1/2 flex flex-col px-8 py-8 gap-2 border-2 border-primary_btn dark:border-dark_primary_btn rounded-xl animate-fade_third">
         <div onClick={() => setShow(false)} className="md:hidden absolute top-2 right-2">
           <X size={24} weight="bold" />
         </div>
-        <div className="text-3xl capitalize text-center text-gray-900 font-bold">Share this {itemType}</div>
+        <div className="text-3xl capitalize text-center text-gray-900 dark:text-white font-bold">
+          Share this {itemType}
+        </div>
         <div className="w-full flex max-md:flex-col mt-4 gap-4">
-          <div className="w-1/2 flex flex-col gap-2">
+          <div className="w-1/2 max-md:w-full flex flex-col gap-2">
             {item}
             <CopyClipboardButton url={clipboardURL} />
           </div>
-          <div className="w-1/2 max-h-[400px] overflow-y-auto flex flex-col justify-between gap-2">
+          <div className="w-1/2 max-md:w-full md:max-h-[400px] overflow-y-auto flex flex-col justify-between gap-2">
             {loading ? (
               <Loader />
             ) : chats.length > 0 ? (
@@ -156,13 +158,12 @@ const Share = ({ item, itemType, itemID, clipboardURL, setShow }: Props) => {
                         }}
                         className={`w-full flex-center gap-2 rounded-lg py-2 px-2 cursor-pointer ${
                           selectedChats.includes(chat.id)
-                            ? 'bg-primary_comp_hover dark:bg-[#ffe1fc22]'
-                            : 'hover:bg-primary_comp dark:hover:bg-[#ffe1fc10]'
+                            ? 'bg-primary_comp_hover dark:bg-dark_primary_comp_active'
+                            : 'hover:bg-primary_comp dark:hover:bg-dark_primary_comp_hover'
                         } transition-all ease-in-out duration-200`}
                       >
                         {chat.isGroup ? (
                           <>
-                            {' '}
                             <Image
                               crossOrigin="anonymous"
                               width={50}
@@ -204,14 +205,14 @@ const Share = ({ item, itemType, itemID, clipboardURL, setShow }: Props) => {
                 </div>
                 <div className="w-full flex flex-col gap-1">
                   <textarea
-                    className="bg-primary_comp dark:bg-[#ffe1fc22] text-sm focus:outline-none p-2 rounded-xl min-h-[6rem] max-h-64"
+                    className="bg-primary_comp dark:bg-dark_primary_comp_hover text-sm focus:outline-none p-2 rounded-xl min-h-[6rem] max-h-64"
                     placeholder="Add a message"
                     value={message}
                     onChange={el => setMessage(el.target.value)}
                   />
                   <div
                     onClick={handleSubmit}
-                    className="w-full text-center py-2 rounded-lg border-[1px] bg-primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active border-[#ffe1fc10] dark:hover:bg-[#ffe1fc10] cursor-pointer transition-ease-200"
+                    className="w-full text-center py-2 rounded-lg border-[1px] bg-primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active border-[#ffe1fc10] dark:border-dark_primary_btn dark:bg-dark_primary_comp dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active cursor-pointer transition-ease-200"
                   >
                     Send Message
                   </div>

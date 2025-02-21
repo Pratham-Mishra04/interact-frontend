@@ -7,11 +7,7 @@ interface Props {
   steps?: string[];
 }
 
-const ProgressBar = ({
-  step,
-  setStep,
-  steps = ['Name', 'Tagline', 'Bio', 'Skills', 'Pictures', 'Socials', 'Location', 'College'],
-}: Props) => {
+const ProgressBar = ({ step, setStep, steps = ['Details', 'Skills', 'Socials', 'Location'] }: Props) => {
   return (
     <div className="w-full flex flex-col animate-fade_half">
       <div className="w-full h-full relative">
@@ -37,7 +33,9 @@ const ProgressBar = ({
                   weight="bold"
                 />
               </div>
-              <div className="w-fit absolute -bottom-4 translate-y-1/2 text-sm max-md:text-xs font-medium">{title}</div>
+              <div className="w-fit text-center absolute -bottom-4 translate-y-1/2 text-sm max-md:text-xs font-medium">
+                {title}
+              </div>
             </div>
           ))}
         </div>

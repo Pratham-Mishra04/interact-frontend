@@ -38,3 +38,5 @@ export const APPLICATION_RESUME_URL = `${GC_API}/${BUCKET}/users/resumes`;
 export const RESOURCE_URL = `${GC_API}/${BUCKET}/resources`;
 export const COMMUNITY_PROFILE_PIC_URL = `${GC_API}/${BUCKET}/communities/profilePics`;
 export const COMMUNITY_COVER_PIC_URL = `${GC_API}/${BUCKET}/communities/coverPics`;
+
+export const LANDING_RESOURCE_URL = `${GC_API}/${BUCKET}/landing`;

@@ -13,6 +13,11 @@ import {
   Event,
   EventBookmark,
   Hackathon,
+  HackathonFAQ,
+  HackathonPrize,
+  HackathonRound,
+  HackathonSponsor,
+  HackathonTrack,
   Invitation,
   Meeting,
   Membership,
@@ -69,9 +74,9 @@ export const initialUser: User = {
   email: '',
   name: '',
   resume: '',
-  profilePic: '',
+  profilePic: 'default.jpg',
   profilePicBlurHash: 'no-hash',
-  coverPic: '',
+  coverPic: 'default.jpg',
   coverPicBlurHash: 'no-hash',
   username: '',
   phoneNo: '',
@@ -115,6 +120,7 @@ export const initialProject: Project = {
   user: initialUser,
   likedBy: [],
   comments: [],
+  noOpenings: 0,
   noLikes: 0,
   noShares: 0,
   noComments: 0,
@@ -127,6 +133,7 @@ export const initialProject: Project = {
   openings: [],
   chats: [],
   isPrivate: false,
+  isFlagged: false,
   views: 0,
   totalNoViews: 0,
   privateLinks: [],
@@ -173,6 +180,8 @@ export const initialPost: Post = {
   rePostID: '',
   rePost: null,
   userID: '',
+  communityID: null,
+  community: null,
   images: [],
   content: '',
   user: initialUser,
@@ -564,6 +573,7 @@ export const initialHackathon: Hackathon = {
   sponsors: [],
   rounds: [],
   faqs: [],
+  isRestricted: false,
 };
 
 export const initialCommunity: Community = {
@@ -604,4 +614,47 @@ export const initialCommunityMembershipRequest: CommunityMembershipRequest = {
   userID: '',
   user: initialUser,
   createdAt: new Date(),
+};
+
+export const initialHackathonTrack: HackathonTrack = {
+  id: '',
+  hackathonID: '',
+  title: '',
+  description: '',
+};
+
+export const initialHackathonSponsor: HackathonSponsor = {
+  id: '',
+  hackathonID: '',
+  coverPic: '',
+  blurHash: '',
+  name: '',
+  link: '',
+  title: '',
+  description: '',
+};
+
+export const initialHackathonRound: HackathonRound = {
+  id: '',
+  hackathonID: '',
+  index: 0,
+  startTime: new Date(),
+  endTime: new Date(),
+  judgingStartTime: new Date(),
+  metrics: [],
+};
+
+export const initialHackathonPrize: HackathonPrize = {
+  id: '',
+  hackathonID: '',
+  title: '',
+  description: '',
+  amount: 0,
+};
+
+export const initialHackathonFAQ: HackathonFAQ = {
+  id: '',
+  hackathonID: '',
+  question: '',
+  answer: '',
 };

@@ -1,7 +1,7 @@
 import configuredAxios from '@/config/axios';
 import { GenericAbortSignal } from 'axios';
 
-const getHandler = async (URL: string, signal?: GenericAbortSignal) => {
+const getHandler = async (URL: string, signal?: GenericAbortSignal, cache = false) => {
   const headers = {
     'Content-Type': 'application/json',
   };
@@ -12,7 +12,7 @@ const getHandler = async (URL: string, signal?: GenericAbortSignal) => {
     statusCode: 500,
   };
   await configuredAxios
-    .get(URL, { headers, signal })
+    .get(URL, { headers, signal, cache: cache ? { ttl: 3 * 60 * 1000 } : false })
     .then(res => {
       response.status = 1;
       response.data = res.data;

@@ -6,6 +6,7 @@ import {
   ChatTeardrop,
   ClockCounterClockwise,
   DoorOpen,
+  Gear,
   HouseLine,
   IdentificationCard,
   Newspaper,
@@ -183,15 +184,14 @@ const OrgSidebar = ({ index }: Props) => {
                 active={active}
                 setActive={setActive}
               />
-              {/* <SidebarItem
-                index={11}
+              <SidebarItem
+                index={17}
                 org={true}
                 title="Settings"
                 icon={<Gear size={24} />}
                 active={active}
                 setActive={setActive}
-               
-              /> */}
+              />
             </>
           ) : (
             <>

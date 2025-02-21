@@ -13,30 +13,32 @@ const Created = ({ history }: Props) => {
     case -1:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">Organisation was created! 🎉</div>
+          <div className="w-fit bg-priority_low px-1 rounded-md inline-flex items-center gap-1">
+            <span>Organisation was created! 🎉</span>
+          </div>
         </OrganizationHistoryWrapper>
       );
     case 0:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
-            Created an Event:{' '}
+          <div className="w-fit bg-priority_low px-1 rounded-md inline-flex items-center gap-1">
+            <span>Created an Event:</span>
             <Link target="_blank" href={'/events/' + history.event?.id} className="font-semibold">
               {history.event?.title}
-            </Link>{' '}
-            🎉
+            </Link>
+            <span>🎉</span>
           </div>
         </OrganizationHistoryWrapper>
       );
     case 3:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
-            Invited a User :
+          <div className="w-fit bg-priority_low px-1 rounded-md inline-flex items-center gap-1">
+            <span>Invited a User:</span>
             <Link target="_blank" href={'/users/' + history.invitation?.user?.username} className="font-semibold">
               {history.invitation?.user.username}
-            </Link>{' '}
-            🎉
+            </Link>
+            <span>🎉</span>
           </div>
         </OrganizationHistoryWrapper>
       );
@@ -46,9 +48,9 @@ const Created = ({ history }: Props) => {
           <Link
             target="_blank"
             href={'/explore/post/' + history.post?.id}
-            className="w-fit bg-priority_low px-1 rounded-md flex-center gap-2"
+            className="w-fit bg-priority_low px-1 rounded-md flex-center gap-2 inline-flex items-center"
           >
-            Created a New Post!
+            <span>Created a New Post!</span>
             <ArrowUpRight weight="bold" />
           </Link>
         </OrganizationHistoryWrapper>
@@ -56,124 +58,124 @@ const Created = ({ history }: Props) => {
     case 9:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
-            Created a Project:{' '}
+          <div className="w-fit bg-priority_low px-1 rounded-md inline-flex items-center gap-1">
+            <span>Created a Project:</span>
             <Link target="_blank" href={'/projects/' + history.project?.slug} className="font-semibold">
               {history.project?.title}
-            </Link>{' '}
-            🎉
+            </Link>
+            <span>🎉</span>
           </div>
         </OrganizationHistoryWrapper>
       );
     case 12:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
-            Added a Task:{' '}
+          <div className="w-fit bg-priority_low px-1 rounded-md inline-flex items-center gap-1">
+            <span>Added a Task:</span>
             <Link target="_blank" href={'/organisation/tasks/'} className="font-semibold">
               {history.task?.title}
-            </Link>{' '}
-            🎉
+            </Link>
+            <span>🎉</span>
           </div>
         </OrganizationHistoryWrapper>
       );
     case 18:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
-            Added a Poll:{' '}
+          <div className="w-fit bg-priority_low px-1 rounded-md inline-flex items-center gap-1">
+            <span>Added a Poll:</span>
             <Link target="_blank" href={'/organisation/news/'} className="font-semibold">
               {history.poll?.title}
-            </Link>{' '}
-            🎉
+            </Link>
+            <span>🎉</span>
           </div>
         </OrganizationHistoryWrapper>
       );
     case 21:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
-            Added an Announcement:{' '}
+          <div className="w-fit bg-priority_low px-1 rounded-md inline-flex items-center gap-1">
+            <span>Added an Announcement:</span>
             <Link target="_blank" href={'/explore/announcement/' + history.announcementID} className="font-semibold">
               {history.announcement?.title}
-            </Link>{' '}
-            🎉
+            </Link>
+            <span>🎉</span>
           </div>
         </OrganizationHistoryWrapper>
       );
     case 24:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
-            Added an Opening:{' '}
+          <div className="w-fit bg-priority_low px-1 rounded-md inline-flex items-center gap-1">
+            <span>Added an Opening:</span>
             <Link target="_blank" href={'/openings?oid=' + history.openingID} className="font-semibold">
               {history.opening?.title}
-            </Link>{' '}
-            🎉
+            </Link>
+            <span>🎉</span>
           </div>
         </OrganizationHistoryWrapper>
       );
     case 27:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
-            Accepted the Application of :{' '}
+          <div className="w-fit bg-priority_low px-1 rounded-md inline-flex items-center gap-1">
+            <span>Accepted the Application of:</span>
             <Link target="_blank" href={'/users/' + history.application?.user.username} className="font-semibold">
               {history.application?.user.name}
-            </Link>{' '}
-            🎉
+            </Link>
+            <span>🎉</span>
           </div>
         </OrganizationHistoryWrapper>
       );
     case 31:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
-            Added a Resource Bucket:{' '}
+          <div className="w-fit bg-priority_low px-1 rounded-md inline-flex items-center gap-1">
+            <span>Added a Resource Bucket:</span>
             <Link target="_blank" href={'/organisation/resources'} className="font-semibold">
               {history.resourceBucket?.title}
-            </Link>{' '}
-            🎉
+            </Link>
+            <span>🎉</span>
           </div>
         </OrganizationHistoryWrapper>
       );
     case 34:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
-            Added a Team:{' '}
+          <div className="w-fit bg-priority_low px-1 rounded-md inline-flex items-center gap-1">
+            <span>Added a Team:</span>
             <Link target="_blank" href={'/organisation/members'} className="font-semibold">
               {history.team?.title}
-            </Link>{' '}
-            🎉
+            </Link>
+            <span>🎉</span>
           </div>
         </OrganizationHistoryWrapper>
       );
     case 37:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
-            Added{' '}
+          <div className="w-fit bg-priority_low px-1 rounded-md inline-flex items-center gap-1">
+            <span>Added </span>
             <Link target="_blank" href={'/users/' + history.membership?.user.username} className="font-semibold">
               {history.membership?.user.name}
-            </Link>{' '}
-            to team:{' '}
+            </Link>
+            <span> to team:</span>
             <Link target="_blank" href={'/organisation/members'} className="font-semibold">
               {history.team?.title}
-            </Link>{' '}
-            🎉
+            </Link>
+            <span> 🎉</span>
           </div>
         </OrganizationHistoryWrapper>
       );
     case 39:
       return (
         <OrganizationHistoryWrapper history={history}>
-          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
-            Added a Meeting:{' '}
+          <div className="w-fit bg-priority_low px-1 rounded-md inline-flex items-center gap-1">
+            <span>Added a Meeting:</span>
             <Link target="_blank" href={'/organisation/meetings/' + history.meeting?.id} className="font-semibold">
               {history.meeting?.title}
-            </Link>{' '}
-            🎉
+            </Link>
+            <span> 🎉</span>
           </div>
         </OrganizationHistoryWrapper>
       );

@@ -46,6 +46,11 @@ const CommunityJoinBtn = ({
   const dispatch = useDispatch();
 
   const handleJoin = async () => {
+    if (!user.id) {
+      Toaster.error('You are Not Logged In.');
+      return;
+    }
+
     const toaster = Toaster.startLoad('Joining Community');
 
     const URL = `${COMMUNITY_URL}/${communityID}/join`;
@@ -60,11 +65,7 @@ const CommunityJoinBtn = ({
 
       setDialogOpen(false);
     } else {
-      if (res.data.message) {
-        Toaster.stopLoad(toaster, res.data.message, 0);
-      } else {
-        Toaster.stopLoad(toaster, SERVER_ERROR, 0);
-      }
+      Toaster.stopLoad(toaster, res.data.message || SERVER_ERROR, 0);
     }
   };
 
@@ -79,11 +80,7 @@ const CommunityJoinBtn = ({
       Toaster.stopLoad(toaster, 'Left the Community', 1);
       setDialogOpen(false);
     } else {
-      if (res.data.message) {
-        Toaster.stopLoad(toaster, res.data.message, 0);
-      } else {
-        Toaster.stopLoad(toaster, SERVER_ERROR, 0);
-      }
+      Toaster.stopLoad(toaster, res.data.message || SERVER_ERROR, 0);
     }
   };
 
@@ -116,7 +113,9 @@ const CommunityJoinBtn = ({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleLeave}>Continue</AlertDialogAction>
+          <Button onClick={handleLeave} variant="destructive">
+            Continue
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -131,7 +130,7 @@ const CommunityJoinBtn = ({
         </div>
       ) : (
         <Button onClick={handleClick} disabled={communityAccess == 'closed'}>
-          {communityAccess == 'open' ? 'Join' : communityAccess == 'restricted' ? 'Request' : 'Closed'}
+          {communityAccess == 'open' ? 'Join' : communityAccess == 'restricted' ? 'Request to Join' : 'Closed'}
         </Button>
       )}
 
@@ -140,7 +139,7 @@ const CommunityJoinBtn = ({
           <DialogTitle className="text-3xl">Join Community</DialogTitle>
           <DialogDescription>This community is {communityAccess}.</DialogDescription>
         </DialogHeader>
-        <div className="w-2/3 mx-auto text-primary_black text-center">
+        <div className="w-4/5 mx-auto text-primary_black dark:text-white text-center">
           You need to request to join, and the moderators will review your request
         </div>
         <DialogFooter className="w-full flex-center">

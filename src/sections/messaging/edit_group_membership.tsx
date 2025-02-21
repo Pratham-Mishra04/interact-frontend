@@ -9,15 +9,24 @@ import { SERVER_ERROR } from '@/config/errors';
 import moment from 'moment';
 import Link from 'next/link';
 import patchHandler from '@/handlers/patch_handler';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
 
 interface Props {
   membership: ChatMembership;
-  setShow: React.Dispatch<React.SetStateAction<boolean>>;
   setChat?: React.Dispatch<React.SetStateAction<Chat>>;
   setChats?: React.Dispatch<React.SetStateAction<Chat[]>>;
+  trigger?: React.ReactNode;
 }
 
-const EditMembership = ({ setShow, membership, setChat, setChats }: Props) => {
+const EditMembership = ({ membership, setChat, setChats, trigger }: Props) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [mutex, setMutex] = useState(false);
 
   const handleChangeRole = async () => {
@@ -60,7 +69,7 @@ const EditMembership = ({ setShow, membership, setChat, setChats }: Props) => {
             } else return chat;
           })
         );
-      setShow(false);
+      setIsDialogOpen(false);
       Toaster.stopLoad(toaster, 'Role Changed of the User', 1);
     } else {
       if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
@@ -104,7 +113,7 @@ const EditMembership = ({ setShow, membership, setChat, setChats }: Props) => {
             } else return chat;
           })
         );
-      setShow(false);
+      setIsDialogOpen(false);
       Toaster.stopLoad(toaster, 'Member Removed from Group', 1);
     } else {
       if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
@@ -117,8 +126,9 @@ const EditMembership = ({ setShow, membership, setChat, setChats }: Props) => {
   };
 
   return (
-    <>
-      <div className="absolute bottom-0 w-full backdrop-blur-2xl bg-white flex flex-col gap-6 rounded-md p-10 max-lg:p-5 dark:text-white font-primary border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 animate-fade_third z-50">
+    <Drawer open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <DrawerTrigger>{trigger}</DrawerTrigger>
+      <DrawerContent className="p-4 space-y-4">
         <div className="w-full flex items-center gap-4">
           <Image
             crossOrigin="anonymous"
@@ -128,22 +138,19 @@ const EditMembership = ({ setShow, membership, setChat, setChats }: Props) => {
             src={`${USER_PROFILE_PIC_URL}/${membership.user.profilePic}`}
             className="rounded-full w-14 h-14 dark:bg-dark_primary_comp_hover"
           />
-          <div className="grow flex items-center justify-between">
-            <div className="flex flex-col">
-              <div className="text-xl font-medium">{membership.user.name}</div>
-              <div className="text-sm">Joined {moment(membership.createdAt).format('DD MMM YYYY')}</div>
-            </div>
-            <X onClick={() => setShow(false)} className="cursor-pointer" size={24} />
+          <div className="flex flex-col">
+            <div className="text-xl font-medium">{membership.user.name}</div>
+            <div className="text-sm">Joined {moment(membership.createdAt).format('DD MMM YYYY')}</div>
           </div>
         </div>
         <div className="w-full flex flex-col gap-2">
           <div className="w-full flex flex-col gap-1">
-            <Link
+            {/* <Link
               href={`/users/${membership.user.username}`}
               className="w-full py-4 text-center dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active rounded-lg transition-ease-300"
             >
               Info
-            </Link>
+            </Link> */}
             <div
               onClick={handleChangeRole}
               className="w-full py-4 text-center dark:bg-dark_primary_comp hover:bg-primary_comp_hover active:bg-primary_comp_active dark:hover:bg-dark_primary_comp_hover dark:active:bg-dark_primary_comp_active rounded-lg cursor-pointer transition-ease-300"
@@ -158,13 +165,8 @@ const EditMembership = ({ setShow, membership, setChat, setChats }: Props) => {
             Remove From Group
           </div>
         </div>
-      </div>
-
-      <div
-        onClick={() => setShow(false)}
-        className="bg-backdrop w-screen h-screen fixed top-0 left-0 animate-fade_third z-20"
-      ></div>
-    </>
+      </DrawerContent>
+    </Drawer>
   );
 };
 

@@ -10,6 +10,7 @@ import { X } from '@phosphor-icons/react';
 import { Review, ReviewCounts, ReviewData } from '@/types';
 import StarRating from '@/components/organization/star_rating';
 import { reviewModalOpenSelector, setReviewModalOpen } from '@/slices/feedSlice';
+import { useTheme } from 'next-themes';
 
 interface Props {
   orgID: string;
@@ -75,13 +76,17 @@ const NewReview = ({ orgID, setReviews, setReviewData }: Props) => {
     setMutex(false);
   };
   const dispatch = useDispatch();
+
+  const isDarkMode = (useTheme().theme || '') === 'dark';
+
   const open = useSelector(reviewModalOpenSelector);
   if (!open) {
     return <></>;
   }
+
   return (
     <>
-      <div className="w-[90%] lg:w-[40%] flex flex-col items-center gap-4  fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-[100] bg-navbar rounded-xl py-6 px-8 shadow-xl animate-fade_third">
+      <div className="w-[90%] lg:w-[40%] flex flex-col items-center gap-4  fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-[100] bg-navbar dark:bg-dark_primary_comp rounded-xl py-6 px-8 shadow-xl animate-fade_third">
         <X
           size={20}
           className="absolute top-4 right-4 cursor-pointer"
@@ -104,7 +109,7 @@ const NewReview = ({ orgID, setReviews, setReviewData }: Props) => {
             onKeyDown={el => {
               if (el.key === 'Enter') submitHandler();
             }}
-            className="w-[calc(100%-32px)]  max-md:text-sm border-[2px] border-dashed p-2  rounded-lg dark:text-white dark:bg-dark_primary_comp focus:outline-none min-h-[4rem] max-h-64 max-md:w-full"
+            className="w-[calc(100%-32px)]  max-md:text-sm border-[2px] border-dashed p-2 dark:border-dark_primary_btn rounded-lg dark:text-white dark:bg-dark_primary_comp focus:outline-none min-h-[4rem] max-h-64 max-md:w-full"
             placeholder="Add a Review (500 characters)"
           />
         </div>
@@ -112,7 +117,12 @@ const NewReview = ({ orgID, setReviews, setReviewData }: Props) => {
         <div className="w-full flex flex-col gap-4 lg:flex-row justify-between items-center">
           <div className="w-full lg:w-fit flex flex-col gap-2">
             <div className="w-fit flex gap-1">
-              <StarRating size={30} color={'#9275b9ba'} strokeColor={'#633267'} onSetRating={setRating} />
+              <StarRating
+                size={30}
+                color={isDarkMode ? '#478EE1' : '#9275b9ba'}
+                strokeColor={isDarkMode ? '#478eeb86' : '#633267'}
+                onSetRating={setRating}
+              />
             </div>
             <label className="flex w-fit cursor-pointer select-none items-center text-sm gap-2">
               <div className="font-semibold">Make this Anonymous</div>
@@ -148,7 +158,7 @@ const NewReview = ({ orgID, setReviews, setReviewData }: Props) => {
         </div>
       </div>
       <div
-        className="overlay w-full h-full fixed top-0 left-0 bg-backdrop z-[80] animate-fade_third"
+        className="overlay w-full h-full fixed top-0 left-0 bg-backdrop backdrop-blur-sm z-[80] animate-fade_third"
         onClick={() => dispatch(setReviewModalOpen(!open))}
       ></div>
     </>

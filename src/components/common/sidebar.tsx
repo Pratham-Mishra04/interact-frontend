@@ -5,6 +5,7 @@ import {
   Bell,
   Buildings,
   CalendarDots,
+  Envelope,
   Gear,
   HouseLine,
   ReadCvLogo,
@@ -109,21 +110,23 @@ const Sidebar = ({ index }: Props) => {
             <SidebarItem
               index={7}
               title="Profile"
+              url={`/users/${user.username}`}
               icon={<UserCircle size={24} />}
               active={active}
               setActive={setActive}
             />
             <SidebarItem
-              index={8}
-              title="Notifications"
-              icon={<Bell size={24} />}
+              index={10}
+              title="Invitations"
+              icon={<Envelope size={24} />}
               active={active}
               setActive={setActive}
             />
             <SidebarItem index={9} title="Settings" icon={<Gear size={24} />} active={active} setActive={setActive} />
-            {open && <Theme />}
+            {/* {open && <Theme />} */}
           </div>
         )}
+
         <ArrowLineLeft
           onClick={() => dispatch(toggleNavbarOpen())}
           className={`cursor-pointer ml-2 mt-2 ${
@@ -131,6 +134,8 @@ const Sidebar = ({ index }: Props) => {
           } text-gray-500 dark:text-white transition-ease-500`}
           size={24}
         />
+
+        {/* <Profile /> */}
       </div>
       <BottomBar index={index} />
     </>
@@ -138,6 +143,51 @@ const Sidebar = ({ index }: Props) => {
 };
 
 export default Sidebar;
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
+const Profile = () => {
+  const open = useSelector(navbarOpenSelector);
+  const user = useSelector(userSelector);
+  return (
+    <div className="w-[220px]">
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <div
+            className={`${
+              open ? 'w-[220px]' : 'w-10 '
+            } h-10 p-[8.5px] rounded-lg hover:bg-primary_comp dark:hover:bg-dark_primary_comp_hover text-gray-500 dark:text-white relative font-primary font-medium items-center transition-ease-out-500`}
+          >
+            {
+              <div
+                className={`absolute top-1/2 -translate-y-1/2 ${
+                  open ? 'opacity-100 left-[64px]' : 'opacity-0 left-[0px] animate-shrink'
+                } transition-ease-500`}
+              >
+                {user.name}
+              </div>
+            }
+          </div>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-[220px] -right-10">
+          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>Profile</DropdownMenuItem>
+          <DropdownMenuItem>Billing</DropdownMenuItem>
+          <DropdownMenuItem>Team</DropdownMenuItem>
+          <DropdownMenuItem>Subscription</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+};
 
 const Organisations = () => {
   const navbarOpen = useSelector(navbarOpenSelector);

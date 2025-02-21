@@ -64,7 +64,7 @@ const PhoneNumber = () => {
               }}
               maxLength={10}
               type="text"
-              className="w-full bg-white focus:outline-none rounded-lg p-2"
+              className="w-full bg-white dark:bg-dark_primary_comp focus:outline-none rounded-lg p-2"
             />
             <div className="w-fit h-fit flex text-sm justify-end gap-2">
               <div
@@ -97,7 +97,7 @@ const PhoneNumber = () => {
       {!clickedOnChange && (
         <div
           onClick={() => setClickedOnChange(true)}
-          className="bg-white h-fit flex-center text-sm font-medium px-3 py-1 rounded-xl border-[1px] cursor-pointer"
+          className="bg-white dark:bg-dark_primary_comp h-fit flex-center text-sm font-medium px-3 py-1 rounded-xl border-[1px] cursor-pointer"
         >
           {user.phoneNo ? 'Update' : 'Add'}
         </div>

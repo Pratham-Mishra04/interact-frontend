@@ -20,9 +20,9 @@ const Application = ({ notification }: Props) => {
   const getRedirectURL = () => {
     switch (notification.notificationType) {
       case 20:
-        return '/workspace/manage/applications/' + notification.opening.id;
+        return `/organisations?oid=${notification.opening.organizationID}&redirect_url=/openings`;
       default:
-        return '';
+        return '/workspace/manage/applications/' + notification.opening.id;
     }
   };
 

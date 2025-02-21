@@ -76,7 +76,6 @@ const Applications = ({ oid }: Props) => {
   return (
     <BaseWrapper title={`Applications | ${currentOrg.title}`}>
       <OrgSidebar index={15}></OrgSidebar>
-
       <MainWrapper>
         <div className="w-full flex flex-col gap-4">
           <div className="w-full flex justify-between p-base_padding max-md:px-4">

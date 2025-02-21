@@ -1,4 +1,4 @@
-import { ORG_URL } from '@/config/routes';
+import { APPLICATION_URL, ORG_URL } from '@/config/routes';
 import { Meeting } from '@/types';
 import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
@@ -13,21 +13,22 @@ import Tags from '@/components/form/tags';
 import Time from '@/components/form/time';
 import Checkbox from '@/components/form/checkbox';
 import Select from '@/components/form/select';
-import { getFormattedTime } from '@/utils/funcs/time';
+import { getFormattedTime, getInputFieldFormatTime } from '@/utils/funcs/time';
 import patchHandler from '@/handlers/patch_handler';
 
 interface Props {
   meeting: Meeting;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
   setMeeting: React.Dispatch<React.SetStateAction<Meeting>>;
+  applicationID?: string;
 }
 
-const EditMeeting = ({ meeting, setShow, setMeeting }: Props) => {
+const EditMeeting = ({ meeting, setShow, setMeeting, applicationID }: Props) => {
   const [title, setTitle] = useState(meeting.title);
   const [description, setDescription] = useState(meeting.description);
   const [tags, setTags] = useState<string[]>(meeting.tags);
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
+  const [startTime, setStartTime] = useState(getInputFieldFormatTime(meeting.startTime));
+  const [endTime, setEndTime] = useState(getInputFieldFormatTime(meeting.endTime));
   const [isOnline, setIsOnline] = useState(true);
   const [isOpenForMembers, setIsOpenForMembers] = useState(meeting.isOpenForMembers);
   const [allowExternalParticipants, setAllowExternalParticipants] = useState(meeting.allowExternalParticipants);
@@ -76,7 +77,7 @@ const EditMeeting = ({ meeting, setShow, setMeeting }: Props) => {
       return;
     }
 
-    if (tags.length == 0) {
+    if (!applicationID && tags.length == 0) {
       Toaster.error('Tags cannot be empty');
       return;
     }
@@ -86,7 +87,9 @@ const EditMeeting = ({ meeting, setShow, setMeeting }: Props) => {
 
     const toaster = Toaster.startLoad('Creating a new meeting');
 
-    const URL = `${ORG_URL}/${currentOrgID}/meetings/${meeting.id}`;
+    const URL = applicationID
+      ? `${APPLICATION_URL}/meeting/${applicationID}`
+      : `${ORG_URL}/${currentOrgID}/meetings/${meeting.id}`;
 
     const formData = {
       title,
@@ -146,14 +149,18 @@ const EditMeeting = ({ meeting, setShow, setMeeting }: Props) => {
 
   return (
     <>
-      <div className="fixed top-12 max-md:top-20 w-[640px] max-md:w-5/6 backdrop-blur-2xl bg-white flex flex-col gap-6 rounded-lg px-2 py-10 max-md:p-5 font-primary border-[1px] border-primary_btn right-1/2 translate-x-1/2 animate-fade_third z-50">
+      <div className="fixed top-1/2 -translate-y-1/2 max-md:top-20 w-[640px] max-md:w-5/6 backdrop-blur-2xl bg-white dark:bg-dark_primary_comp flex flex-col gap-6 rounded-lg px-2 py-10 max-md:p-5 font-primary border-[1px] border-primary_btn right-1/2 translate-x-1/2 animate-fade_third z-50">
         <div className="text-3xl max-md:text-xl font-semibold px-8 max-md:px-0">Meeting Details</div>
         <div className="w-full max-h-[540px] overflow-y-auto flex flex-col gap-4 px-8 max-md:px-0">
           <div className="w-full flex flex-col gap-4">
             <Input label="Meeting Title" val={title} setVal={setTitle} maxLength={50} required={true} />
             <TextArea label="Meeting Description" val={description} setVal={setDescription} maxLength={500} />
-            <Tags label="Meeting Tags" tags={tags} setTags={setTags} maxTags={5} required={true} />
-            <Checkbox label="Is the Meeting Reoccurring?" val={isReoccurring} setVal={setIsReoccurring} />
+            {!applicationID && (
+              <>
+                <Tags label="Meeting Tags" tags={tags} setTags={setTags} maxTags={5} required={true} />
+                <Checkbox label="Is the Meeting Reoccurring?" val={isReoccurring} setVal={setIsReoccurring} />
+              </>
+            )}
             {isReoccurring && (
               <Select
                 label="Frequency"
@@ -206,11 +213,13 @@ const EditMeeting = ({ meeting, setShow, setMeeting }: Props) => {
                   val={isOpenForMembers}
                   setVal={setIsOpenForMembers}
                 />
-                <Checkbox
-                  label="Do you want to allow External Participants?"
-                  val={allowExternalParticipants}
-                  setVal={setAllowExternalParticipants}
-                />
+                {!applicationID && (
+                  <Checkbox
+                    label="Do you want to allow External Participants?"
+                    val={allowExternalParticipants}
+                    setVal={setAllowExternalParticipants}
+                  />
+                )}
               </>
             )}
           </div>

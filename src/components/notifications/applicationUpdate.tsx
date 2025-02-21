@@ -25,7 +25,7 @@ const ApplicationUpdate = ({ notification, status }: Props) => {
       case 20:
         return `/organisations/${notification.opening.organizationID}`;
       default:
-        return `/project?pid=${notification.opening.projectID}`;
+        return `/projects?id=${notification.opening.projectID}`;
     }
   };
 

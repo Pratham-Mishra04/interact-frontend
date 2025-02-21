@@ -19,7 +19,7 @@ const OrgCard = ({ user }: Props) => {
     <Link
       href={`/organisations/${user.username}`}
       target="_blank"
-      className="w-72 max-md:w-4/5 flex flex-col gap-2 rounded-xl bg-white font-primary hover:shadow-xl transition-ease-300 animate-fade_third"
+      className="w-72 max-md:w-full flex flex-col gap-2 rounded-xl bg-slate-50 dark:bg-dark_primary_comp font-primary shadow-sm hover:shadow-xl dark:shadow-dark_primary_comp_hover transition-ease-300 animate-fade_third"
     >
       <div className="w-full relative">
         <Image
@@ -54,12 +54,14 @@ const OrgCard = ({ user }: Props) => {
       <div className="w-full h-full flex flex-col justify-between gap-4 p-4 pt-12">
         <div className="w-full flex flex-col gap-4">
           <div className="w-full flex flex-col items-center">
-            <div className="w-full text-center text-2xl font-semibold line-clamp-1">{user.name}</div>
-            <div className="text-sm text-gray-500 font-medium">@{user.username}</div>
+            <div className="w-full text-center text-primary_black dark:text-white text-2xl font-semibold line-clamp-1">
+              {user.name}
+            </div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">@{user.username}</div>
           </div>
 
-          <div className="w-full flex flex-col gap-2 px-2 font-medium text-xs text-gray-700">
-            <div className="w-full flex justify-between flex-wrap gap-2 font-medium text-xs text-gray-700">
+          <div className="w-full flex flex-col gap-2 px-2 font-medium text-xs">
+            <div className="w-full flex justify-between flex-wrap gap-2 font-medium text-xs text-gray-700 dark:text-white">
               <div className="flex gap-1 items-center">
                 <Users />{' '}
                 <div>
@@ -70,7 +72,7 @@ const OrgCard = ({ user }: Props) => {
                 <div>{user.noImpressions}</div> <Eye />
               </div>
             </div>
-            <div className="w-full flex justify-between flex-wrap gap-2 font-medium text-xs text-gray-700">
+            <div className="w-full flex justify-between flex-wrap gap-2 font-medium text-xs text-gray-700 dark:text-white">
               {user.organization && (
                 <div className="flex gap-1 items-center">
                   <IdentificationBadge />
@@ -90,7 +92,9 @@ const OrgCard = ({ user }: Props) => {
 
           <div className="border-t-[1px] border-gray-500 border-dashed"></div>
 
-          {user.tagline != '' && <div className="text-sm text-gray-600 text-center">{user.tagline}</div>}
+          {user.tagline != '' && (
+            <div className="text-sm text-gray-600 dark:text-white text-center">{user.tagline}</div>
+          )}
         </div>
         {loggedInUser.id != '' && (
           <div

@@ -13,14 +13,14 @@ import Toaster from '@/utils/toaster';
 import patchHandler from '@/handlers/patch_handler';
 import { SERVER_ERROR } from '@/config/errors';
 import ConfirmDelete from '../common/confirm_delete';
-import renderContentWithLinks from '@/utils/funcs/render_content_with_links';
 import Report from '../common/report';
 import SignUp from '../common/signup_box';
 import { currentOrgIDSelector } from '@/slices/orgSlice';
-import checkOrgAccess from '@/utils/funcs/access';
 import { ORG_SENIOR } from '@/config/constants';
 import { Buildings } from '@phosphor-icons/react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import Editor from '../editor';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 interface Props {
   post: Post;
@@ -36,10 +36,13 @@ const RePost = ({ post, showLowerPost = true, setFeed, org = false }: Props) => 
   const [clickedOnReport, setClickedOnReport] = useState(false);
 
   const [noUserClick, setNoUserClick] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const [caption, setCaption] = useState(post.content);
 
   const userID = useSelector(userIDSelector) || '';
+
+  const isSenior = useOrgAccess(ORG_SENIOR, post.userID, true);
 
   const handleDelete = async () => {
     const toaster = Toaster.startLoad('Deleting your post...');
@@ -56,24 +59,6 @@ const RePost = ({ post, showLowerPost = true, setFeed, org = false }: Props) => 
       if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
       else Toaster.stopLoad(toaster, SERVER_ERROR, 0);
     }
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'b' && (event.ctrlKey || event.metaKey)) {
-      event.preventDefault();
-      wrapSelectedText('**', '**');
-    }
-  };
-
-  const wrapSelectedText = (prefix: string, suffix: string) => {
-    const textarea = document.getElementById('textarea_id') as HTMLTextAreaElement;
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = caption.substring(start, end);
-    const newText = caption.substring(0, start) + prefix + selectedText + suffix + caption.substring(end);
-    setCaption(newText);
-    textarea.focus();
-    textarea.setSelectionRange(start + prefix.length, end + prefix.length);
   };
 
   const currentOrgID = useSelector(currentOrgIDSelector);
@@ -109,17 +94,13 @@ const RePost = ({ post, showLowerPost = true, setFeed, org = false }: Props) => 
   };
 
   return (
-    <div className="w-full relative overflow-clip bg-white dark:bg-transparent font-primary flex gap-1 border-b-[1px] border-gray-300 py-4 animate-fade_third">
+    <div className="w-full relative overflow-clip bg-white dark:bg-transparent font-primary flex gap-1 border-b-[1px] border-gray-300 dark:border-dark_primary_btn py-4 animate-fade_third">
       {noUserClick && <SignUp setShow={setNoUserClick} />}
       {clickedOnDelete && <ConfirmDelete setShow={setClickedOnDelete} handleDelete={handleDelete} />}
       {clickedOnReport && <Report postID={post.id} setShow={setClickedOnReport} />}
       <div className="h-full">
         <Link
-          href={`${
-            post.user.username != loggedInUser.username
-              ? `/users/${post.user.isOrganization ? 'organisation/' : ''}${post.user.username}`
-              : `/${post.user.isOrganization ? 'organisation/' : ''}profile`
-          }`}
+          href={`/users/${post.user.isOrganization ? 'organisations/' : ''}${post.user.username}`}
           className="rounded-full"
         >
           <Image
@@ -147,24 +128,28 @@ const RePost = ({ post, showLowerPost = true, setFeed, org = false }: Props) => 
           <div className="flex gap-2 text-xs text-gray-400">
             <div>{moment(post.postedAt).fromNow()}</div>
             {!clickedOnEdit && showLowerPost && (
-              <Popover>
+              <Popover open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <PopoverTrigger>
                   <div className="text-xxs cursor-pointer">•••</div>
                 </PopoverTrigger>
-                <PopoverContent className="w-40 p-2 text-sm">
-                  {(post.userID == loggedInUser.id || checkOrgAccess(ORG_SENIOR)) && (
+                <PopoverContent className="w-40 p-2 text-sm" align="end">
+                  {(post.userID == loggedInUser.id || isSenior) && (
                     <div
-                      onClick={() => setClickedOnEdit(true)}
+                      onClick={() => {
+                        setIsDialogOpen(false);
+                        setClickedOnEdit(true);
+                      }}
                       className="w-full px-4 py-2 max-md:p-1 max-md:text-center hover:bg-primary_comp dark:hover:bg-dark_primary_comp_hover rounded-lg cursor-pointer transition-ease-300"
                     >
                       Edit
                     </div>
                   )}
-                  {(post.userID == loggedInUser.id || checkOrgAccess(ORG_SENIOR)) && (
+                  {(post.userID == loggedInUser.id || isSenior) && (
                     <div
                       onClick={el => {
                         el.stopPropagation();
                         setClickedOnDelete(true);
+                        setIsDialogOpen(false);
                       }}
                       className="w-full px-4 py-2 max-md:p-1 max-md:text-center hover:bg-primary_comp dark:hover:bg-dark_primary_comp_hover hover:text-primary_danger rounded-lg cursor-pointer transition-ease-100 "
                     >
@@ -190,44 +175,44 @@ const RePost = ({ post, showLowerPost = true, setFeed, org = false }: Props) => 
         </div>
 
         {post.isRePost && post.rePost ? (
-          <PostComponent post={post.rePost} isRepost={true} />
+          <PostComponent post={post.rePost} isRepost={true} key={post.id} />
         ) : (
           <div className="border-[1px] rounded-lg p-2 text-sm font-medium">* This post has been deleted *</div>
         )}
 
         {clickedOnEdit ? (
-          <div className="relative">
-            <textarea
-              id="textarea_id"
-              maxLength={2000}
-              value={caption}
-              autoFocus={true}
-              onChange={el => setCaption(el.target.value)}
-              onKeyDown={handleKeyDown}
-              className="w-full text-sm whitespace-pre-wrap rounded-md focus:outline-none dark:bg-dark_primary_comp p-2 my-2 max-h-72"
+          <>
+            <Editor
+              className="w-full min-h-[150px] text-sm mb-2"
+              content={caption}
+              setContent={setCaption}
+              limit={2000}
+              editable
             />
-
-            <div className="dark:text-white flex items-center gap-4 absolute -bottom-8 right-0">
+            <div className="w-full dark:text-white flex items-center justify-end gap-2 max-md:gap-1">
               <div
-                onClick={() => setClickedOnEdit(false)}
-                className="text-sm hover-underline-animation after:bg-black dark:after:bg-white cursor-pointer"
+                onClick={e => {
+                  e.stopPropagation();
+                  setClickedOnEdit(false);
+                }}
+                className="border-[1px] border-primary_black flex-center rounded-full w-16 max-md:w-12 text-xs max-md:text-xxs p-1 cursor-pointer"
               >
                 cancel
               </div>
               <div
-                onClick={handleEdit}
-                className="text-sm hover:text-primary_text dark:hover:text-dark_primary_btn cursor-pointer transition-ease-200"
+                onClick={caption !== post.content ? handleEdit : undefined}
+                className={`bg-primary_black ${
+                  caption === post.content ? 'bg-opacity-50 cursor-default' : 'cursor-pointer'
+                } text-white flex-center rounded-full w-16 max-md:w-12 text-xs max-md:text-xxs p-1`}
               >
                 save
               </div>
             </div>
-          </div>
+          </>
         ) : (
-          <div className="w-full text-sm whitespace-pre-wrap mb-2">
-            {renderContentWithLinks(post.content, post.taggedUsers)}
-          </div>
+          post.content && <Editor className="w-full text-sm mb-2" content={post.content} editable={false} />
         )}
-        {showLowerPost && <LowerPost post={post} />}
+        {showLowerPost && post.content != '' && <LowerPost post={post} />}
       </div>
     </div>
   );

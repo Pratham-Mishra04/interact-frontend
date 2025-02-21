@@ -84,7 +84,7 @@ const Resume = () => {
       />
 
       <label className="w-fit" htmlFor="resume">
-        <div className="bg-white h-fit flex-center text-sm font-medium px-3 py-1 rounded-xl border-[1px] cursor-pointer">
+        <div className="bg-white dark:bg-dark_primary_comp h-fit flex-center text-sm font-medium px-3 py-1 rounded-xl border-[1px] cursor-pointer">
           {mutex ? 'Uploading' : user.resume ? 'Update' : 'Upload'}
         </div>
       </label>

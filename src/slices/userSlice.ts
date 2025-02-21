@@ -54,6 +54,9 @@ export interface UserState {
   githubUsername: string;
   subscription: string;
   createdAt: string;
+  secondaryEmail: string;
+  credits: number;
+  featuresBought: string[];
 }
 
 const initialState: UserState = {
@@ -94,6 +97,9 @@ const initialState: UserState = {
   githubUsername: '',
   subscription: SUBSCRIPTIONS.USER_FREE,
   createdAt: '',
+  secondaryEmail: '',
+  credits: 0,
+  featuresBought: [],
 };
 
 export const userSlice = createSlice({
@@ -136,8 +142,11 @@ export const userSlice = createSlice({
       state.votedOptions = [];
       state.registeredEvents = [];
       state.githubUsername = action.payload.githubUsername;
-      state.subscription = action.payload.subscriptionType;
+      state.subscription = action.payload.subscriptionType || '';
       state.createdAt = action.payload.createdAt;
+      state.secondaryEmail = action.payload.secondaryEmail || '';
+      state.credits = action.payload?.credits || 0;
+      state.featuresBought = action.payload?.featuresBought || [];
     },
     resetUser: state => {
       state.id = '';
@@ -176,6 +185,9 @@ export const userSlice = createSlice({
       state.registeredEvents = [];
       state.githubUsername = '';
       state.createdAt = '';
+      state.secondaryEmail = '';
+      state.credits = 0;
+      state.featuresBought = [];
     },
     setReduxName: (state, action: PayloadAction<string>) => {
       state.name = action.payload;
@@ -279,6 +291,15 @@ export const userSlice = createSlice({
     setSubscription: (state, action: PayloadAction<string>) => {
       state.subscription = action.payload;
     },
+    setSecondaryEmail: (state, action: PayloadAction<string>) => {
+      state.secondaryEmail = action.payload;
+    },
+    setCredits: (state, action: PayloadAction<number>) => {
+      state.credits = action.payload;
+    },
+    setFeaturesBought: (state, action: PayloadAction<string[]>) => {
+      state.featuresBought = action.payload;
+    },
   },
 });
 
@@ -318,7 +339,6 @@ export const {
   setVotedOptions,
   setRegisteredEvents,
   setGithubUsername,
-  setSubscription,
 } = userSlice.actions;
 
 export default userSlice.reducer;

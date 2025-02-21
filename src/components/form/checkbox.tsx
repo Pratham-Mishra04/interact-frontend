@@ -3,7 +3,7 @@ import React from 'react';
 interface Props {
   label?: string;
   val: boolean;
-  setVal: React.Dispatch<React.SetStateAction<boolean>>;
+  setVal: React.Dispatch<React.SetStateAction<boolean>> | ((val: boolean) => void);
   required?: boolean;
   disabled?: boolean;
   border?: boolean;
@@ -12,7 +12,7 @@ interface Props {
 
 const Checkbox = ({ label, val, setVal, required = false, disabled = false, border = true, caption }: Props) => {
   return (
-    <div>
+    <div className="w-full">
       <label
         className={`w-full flex justify-between  select-none items-center text-sm gap-2 ${
           border && 'border-[1px] border-gray-400 dark:border-dark_primary_btn p-2'
@@ -24,13 +24,7 @@ const Checkbox = ({ label, val, setVal, required = false, disabled = false, bord
           </div>
         )}
         <div className="relative">
-          <input
-            type="checkbox"
-            checked={val}
-            onChange={() => setVal(prev => !prev)}
-            className="sr-only"
-            disabled={disabled}
-          />
+          <input type="checkbox" checked={val} onChange={() => setVal(!val)} className="sr-only" disabled={disabled} />
           <div
             className={`box block h-6 w-10 rounded-full ${
               val ? 'bg-blue-300' : `bg-black ${disabled && 'opacity-50'}`

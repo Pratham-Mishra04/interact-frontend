@@ -19,11 +19,12 @@ import WidthCheck from '@/utils/wrappers/widthCheck';
 import About from '@/screens/profile/about';
 import MyAbout from '@/screens/profile/my_about';
 import OrgSidebar from '@/components/common/org_sidebar';
-import { currentOrgIDSelector, currentOrgSelector } from '@/slices/orgSlice';
+import { currentOrgSelector } from '@/slices/orgSlice';
 import OrgMembersOnlyAndProtect from '@/utils/wrappers/org_members_only';
 import checkOrgAccess from '@/utils/funcs/access';
 import { ORG_SENIOR } from '@/config/constants';
 import OrgCard from '@/sections/profile/org_card';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 const Profile = () => {
   const [user, setUser] = useState(initialUser);
@@ -38,6 +39,8 @@ const Profile = () => {
   const [clickedOnCoverPic, setClickedOnCoverPic] = useState(false);
 
   const currentOrg = useSelector(currentOrgSelector);
+
+  const isSenior = useOrgAccess(ORG_SENIOR);
 
   const getUser = () => {
     const URL = `${ORG_URL}/${currentOrg.id}`;
@@ -169,7 +172,7 @@ const Profile = () => {
             }}
           />
 
-          {!loading && clickedOnCoverPic && checkOrgAccess(ORG_SENIOR) ? (
+          {!loading && clickedOnCoverPic && isSenior ? (
             <div>
               <div
                 onClick={() => handleSubmit('coverPic')}
@@ -200,7 +203,7 @@ const Profile = () => {
             </div>
           ) : (
             <div>
-              {checkOrgAccess(ORG_SENIOR) && (
+              {isSenior && (
                 <label
                   htmlFor="coverPic"
                   className="w-12 h-12 absolute top-1 right-4 mt-navbar rounded-full z-10 flex-center bg-white transition-ease-200 cursor-pointer opacity-50 hover:opacity-75"
@@ -231,7 +234,7 @@ const Profile = () => {
           )}
 
           <div className={`grow flex flex-col gap-12 pt-12 max-lg:pt-0`}>
-            {clickedOnTagline && checkOrgAccess(ORG_SENIOR) ? (
+            {clickedOnTagline && isSenior ? (
               <div className="w-[90%] mx-auto z-50">
                 <div className="text-xs ml-1 font-medium uppercase text-gray-500">
                   Tagline ({tagline.trim().length}/25)
@@ -251,10 +254,10 @@ const Profile = () => {
                   if (!clickedOnCoverPic) setClickedOnTagline(true);
                 }}
                 className={`w-[90%] mx-auto relative group rounded-lg flex-center p-4 ${
-                  checkOrgAccess(ORG_SENIOR) ? (!clickedOnCoverPic ? 'hover:bg-[#ffffff81] cursor-pointer' : '') : ''
+                  isSenior ? (!clickedOnCoverPic ? 'hover:bg-[#ffffff81] cursor-pointer' : '') : ''
                 } transition-ease-300`}
               >
-                {checkOrgAccess(ORG_SENIOR) && (
+                {isSenior && (
                   <PencilSimple
                     className={`absolute opacity-0 ${
                       !clickedOnCoverPic ? 'group-hover:opacity-100' : ''
@@ -274,7 +277,7 @@ const Profile = () => {
 
             {loading ? (
               <Loader />
-            ) : checkOrgAccess(ORG_SENIOR) ? (
+            ) : isSenior ? (
               <MyAbout profile={user.profile ? user.profile : initialProfile} setUser={setUser} org={true} />
             ) : (
               <About profile={user.profile ? user.profile : initialProfile} org={true} />

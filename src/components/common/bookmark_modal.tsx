@@ -25,7 +25,7 @@ const BookmarkModal = ({
     <>
       <Popover open={isDialogOpen} onOpenChange={val => setIsDialogOpen(val)}>
         <PopoverTrigger></PopoverTrigger>
-        <PopoverContent className="flex flex-col gap-2 text-sm w-48 p-3">
+        <PopoverContent className="flex flex-col gap-2 text-sm w-48 p-3" align="end">
           {bookmarks.length > 0 && (
             <div className="w-full flex flex-col gap-2">
               {bookmarks.map((bookmark, index: number) => {
@@ -47,10 +47,10 @@ const BookmarkModal = ({
             <input
               className={`w-full h-10 px-4 ${
                 bookmarkTitle == '' ? 'text-center text-xs' : ''
-              } flex-center rounded-md bg-transparent border-[1px] border-primary_btn  dark:border-dark_primary_btn focus:outline-none`}
+              } flex-center rounded-md bg-transparent focus:outline-none`}
               value={bookmarkTitle}
               onChange={el => setBookmarkTitle(el.target.value)}
-              placeholder="New Bookmark"
+              placeholder="Create New Bookmark"
             />
           </form>
         </PopoverContent>

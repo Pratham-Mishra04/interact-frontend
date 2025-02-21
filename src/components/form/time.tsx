@@ -3,7 +3,7 @@ import React from 'react';
 interface Props {
   label?: string;
   val: string;
-  setVal: React.Dispatch<React.SetStateAction<string>>;
+  setVal: React.Dispatch<React.SetStateAction<string>> | ((val: string) => void);
   required?: boolean;
   styles?: React.CSSProperties;
   onChange?: (el: React.ChangeEvent<HTMLInputElement>) => void;

@@ -2,7 +2,6 @@ import Input from '@/components/form/input';
 import Links from '@/components/form/links';
 import Select from '@/components/form/select';
 import Tags from '@/components/form/tags';
-import TextArea from '@/components/form/textarea';
 import { SERVER_ERROR } from '@/config/errors';
 import { PROJECT_URL } from '@/config/routes';
 import postHandler from '@/handlers/post_handler';
@@ -17,12 +16,15 @@ import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogHeader, Dialog
 import { Plus } from '@phosphor-icons/react';
 import Checkbox from '@/components/form/checkbox';
 import { Button } from '@/components/ui/button';
+import EditorInput from '@/components/form/editor-input';
 
 interface Props {
   setProjects?: React.Dispatch<React.SetStateAction<Project[]>>;
+  setTriggerReload?: React.Dispatch<React.SetStateAction<boolean>>;
+  setActiveTab?: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const NewProject = ({ setProjects }: Props) => {
+const NewProject = ({ setProjects, setTriggerReload, setActiveTab }: Props) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [tagline, setTagline] = useState('');
@@ -82,8 +84,10 @@ const NewProject = ({ setProjects }: Props) => {
     if (res.statusCode === 201) {
       const project = res.data.project;
       project.user = user;
+
       if (setProjects) setProjects(prev => [project, ...prev]);
-      Toaster.stopLoad(toaster, 'Project Added', 1);
+      if (setTriggerReload) setTriggerReload(prev => !prev);
+
       setTitle('');
       setTagline('');
       setDescription('');
@@ -91,34 +95,29 @@ const NewProject = ({ setProjects }: Props) => {
       setLinks([]);
       setIsDialogOpen(false);
       dispatch(setOwnerProjects([...(user.ownerProjects || []), project.id]));
+
+      if (setActiveTab) setActiveTab(1);
+
+      Toaster.stopLoad(toaster, 'Project Added', 1);
     } else if (res.statusCode == 413) {
       Toaster.stopLoad(toaster, 'Image too large', 0);
     } else {
-      if (res.data.message) {
-        Toaster.stopLoad(toaster, res.data.message, 0);
-      } else {
-        Toaster.stopLoad(toaster, SERVER_ERROR, 0);
-      }
+      Toaster.stopLoad(toaster, res.data.message || SERVER_ERROR, 0);
     }
     setMutex(false);
   };
 
   useEffect(() => {
-    document.documentElement.style.overflowY = 'hidden';
-    document.documentElement.style.height = '100vh';
-
-    return () => {
-      document.documentElement.style.overflowY = 'auto';
-      document.documentElement.style.height = 'auto';
-    };
+    const action = new URLSearchParams(window.location.search).get('action');
+    if (action && action == 'new_project') setIsDialogOpen(true);
   }, []);
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <div className="flex-center gap-2 cursor-pointer">
+        <Button className="w-full dark:bg-dark_primary_comp_hover dark:hover:bg-dark_primary_comp_active">
           Create a New Project <Plus size={20} />
-        </div>
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md min-w-[40%]">
         <DialogHeader>
@@ -128,8 +127,8 @@ const NewProject = ({ setProjects }: Props) => {
           <Input label="Project Title" val={title} setVal={setTitle} maxLength={25} required={true} />
           <Select label="Project Category" val={category} setVal={setCategory} options={categories} required={true} />
           <Input label="Project Tagline" val={tagline} setVal={setTagline} maxLength={50} required={true} />
-          <TextArea label="Project Description" val={description} setVal={setDescription} maxLength={1000} />
-          <Tags label="Project Tags" tags={tags} setTags={setTags} maxTags={10} required={true} />
+          <EditorInput label="Project Description" val={description} setVal={setDescription} maxLength={1000} />
+          <Tags label="Project Tags" tags={tags} setTags={setTags} maxTags={10} suggestions required />
           <Links label="Project Links" links={links} setLinks={setLinks} maxLinks={5} />
           <Checkbox label="Keep this Project Private" val={isPrivate} setVal={setIsPrivate} />
         </div>

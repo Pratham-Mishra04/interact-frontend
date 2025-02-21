@@ -75,7 +75,10 @@ const ScrollWrapper: React.FC<ScrollWrapperProps> = ({
   }, [children, isAtBottom, previousScrollHeight, currentPage]); // Trigger scroll adjustment when messages change
 
   return (
-    <div ref={containerRef} className="w-full h-[calc(100%-140px)] thin_scrollbar flex flex-col gap-6 overflow-y-auto">
+    <div
+      ref={containerRef}
+      className="w-full h-[calc(100%-140px)] max-md:h-[calc(100%-100px)] thin_scrollbar flex flex-col gap-6 overflow-y-auto"
+    >
       {isFetching && (
         <div className="w-full flex-center gap-2 pt-8">
           <div className="w-2 h-2 rounded-full bg-primary_comp_active animate-bounce"></div>

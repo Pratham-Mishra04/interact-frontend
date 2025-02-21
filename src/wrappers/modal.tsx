@@ -25,9 +25,9 @@ const ModalWrapper = ({
   blur = false,
   border = false,
 }: Props) => {
-  const z_variants = ['z-10', 'z-20', 'z-30', 'z-40', 'z-50'];
+  const z_variants = ['z-10', 'z-20', 'z-30', 'z-40', 'z-50', 'z-60', 'z-70', 'z-80'];
   const top_variants = ['top-32', 'top-56', 'top-1/2', 'top-1/3'];
-  const w_variants = ['w-2/3', 'w-1/2', 'w-2/5', 'w-1/3', 'w-1/4', 'w-fit'];
+  const w_variants = ['w-4/5', 'w-2/3', 'w-1/2', 'w-2/5', 'w-1/3', 'w-1/4', 'w-fit'];
   const h_variants = ['h-4/5', 'h-2/3', 'h-1/2', 'h-1/3', 'h-1/4', 'h-fit'];
 
   const handleKeyDown = (event: KeyboardEvent) => {

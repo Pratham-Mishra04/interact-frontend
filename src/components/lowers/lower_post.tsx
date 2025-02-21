@@ -16,6 +16,7 @@ import socketService from '@/config/ws';
 import SignUp from '../common/signup_box';
 import Share from '@/sections/lowers/share';
 import PostCard from '../cards/post';
+import Link from 'next/link';
 
 interface Props {
   post: Post;
@@ -42,7 +43,6 @@ const LowerPost = ({ post, setFeed, isRepost = false, initialCommentShowState = 
   const [clickedOnComment, setClickedOnComment] = useState(initialCommentShowState);
   const [clickedOnShare, setClickedOnShare] = useState(false);
   const [clickedOnBookmark, setClickedOnBookmark] = useState(false);
-  const [clickedOnRePost, setClickedOnRePost] = useState(false);
   const [mutex, setMutex] = useState(false);
 
   const [noUserClick, setNoUserClick] = useState(false);
@@ -164,7 +164,6 @@ const LowerPost = ({ post, setFeed, isRepost = false, initialCommentShowState = 
           item={<PostCard post={post} />}
         />
       )}
-      {clickedOnRePost && <RePost setFeed={setFeed} setShow={setClickedOnRePost} post={post} />}
       <div className={`w-full flex flex-col gap-1 ${isRepost ? 'justify-start' : ''}`}>
         <div className={`flex gap-3 max-md:gap-3 ${isRepost ? 'w-fit scale-100' : ''}`}>
           <HeartStraight
@@ -187,17 +186,18 @@ const LowerPost = ({ post, setFeed, isRepost = false, initialCommentShowState = 
             size={24}
             weight="regular"
           />
-          {post.userID != user.id && !post.rePost && (
-            <Repeat
-              onClick={() => {
-                if (userID == '') setNoUserClick(true);
-                else setClickedOnRePost(true);
-              }}
-              className="cursor-pointer max-md:w-6 max-md:h-6 opacity-60"
-              size={24}
-              weight="regular"
-            />
-          )}
+          {post.userID != user.id &&
+            !post.rePost &&
+            (user.id ? (
+              <RePost post={post} setFeed={setFeed} />
+            ) : (
+              <Repeat
+                onClick={() => setNoUserClick(true)}
+                className="cursor-pointer max-md:w-6 max-md:h-6 opacity-60"
+                size={24}
+                weight="regular"
+              />
+            ))}
           <Export
             onClick={() => {
               if (userID == '') setNoUserClick(true);
@@ -225,18 +225,31 @@ const LowerPost = ({ post, setFeed, isRepost = false, initialCommentShowState = 
         </div>
 
         <div
-          className={`flex items-center font-primary text-sm gap-2 text-gray-400 dark:text-[#ffffffb6] ${
+          className={`flex items-end justify-between font-primary text-sm gap-2 text-gray-400 dark:text-[#ffffffb6] ${
             isRepost ? 'w-fit scale-100' : 'w-full '
           }`}
         >
-          <div onClick={likeHandler} className="cursor-pointer">
-            {numLikes} like{numLikes == 1 ? '' : 's'}
+          <div className="w-fit flex-center gap-2">
+            <div onClick={likeHandler} className="cursor-pointer">
+              {numLikes} like{numLikes == 1 ? '' : 's'}
+            </div>
+            <div className="text-xs">•</div>
+            <div onClick={() => setClickedOnComment(true)} className="cursor-pointer">
+              {numComments} comment{numComments == 1 ? '' : 's'}
+            </div>
           </div>
-          <div className="text-xs">•</div>
-          <div onClick={() => setClickedOnComment(true)} className="cursor-pointer">
-            {' '}
-            {numComments} comment{numComments == 1 ? '' : 's'}
-          </div>
+          {post.communityID && post.community && post.community.title && (
+            <div className="text-xs max-md:text-xxs">
+              <span className="max-md:hidden">Posted in </span>
+              <Link
+                href={`/community/${post.community.id}`}
+                className="font-semibold hover:text-primary_text transition-ease-200"
+                target="_blank"
+              >
+                {post.community.title}
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </>

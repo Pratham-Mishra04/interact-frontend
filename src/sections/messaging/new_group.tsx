@@ -15,21 +15,23 @@ import { setChats, userSelector } from '@/slices/userSlice';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import socketService from '@/config/ws';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Plus } from '@phosphor-icons/react';
 
 interface Props {
   userFetchURL: string;
   userFetchURLQuery?: string;
   submitURL: string;
-  setShow: React.Dispatch<React.SetStateAction<boolean>>;
   setStateChats?: React.Dispatch<React.SetStateAction<Chat[]>>;
 }
 
-const NewGroup = ({ userFetchURL, submitURL, userFetchURLQuery, setShow, setStateChats }: Props) => {
+const NewGroup = ({ userFetchURL, submitURL, userFetchURLQuery, setStateChats }: Props) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [users, setUsers] = useState<User[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const [status, setStatus] = useState(0);
   const [mutex, setMutex] = useState(false);
@@ -56,7 +58,7 @@ const NewGroup = ({ userFetchURL, submitURL, userFetchURLQuery, setShow, setStat
     setLoading(true);
     let URL = `${userFetchURL}?search=${key}`;
     if (userFetchURLQuery) URL += userFetchURLQuery;
-    const res = await getHandler(URL, abortController.signal);
+    const res = await getHandler(URL, abortController.signal, true);
     if (res.statusCode == 200) {
       setUsers(res.data.users || []);
       setLoading(false);
@@ -90,7 +92,7 @@ const NewGroup = ({ userFetchURL, submitURL, userFetchURLQuery, setShow, setStat
     if (mutex) return;
     setMutex(true);
 
-    const toaster = Toaster.startLoad('Sending Invitations');
+    const toaster = Toaster.startLoad('Creating Group');
 
     const URL = submitURL;
 
@@ -110,7 +112,7 @@ const NewGroup = ({ userFetchURL, submitURL, userFetchURLQuery, setShow, setStat
         socketService.setupChats([...user.chats, res.data.chat.id]);
       }
       setGroupPic(undefined);
-      setShow(false);
+      setIsDialogOpen(false);
       Toaster.stopLoad(toaster, 'New Group Created!', 1);
     } else {
       if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
@@ -132,10 +134,20 @@ const NewGroup = ({ userFetchURL, submitURL, userFetchURLQuery, setShow, setStat
   };
 
   return (
-    <>
-      <div className="fixed top-24 max-lg:top-20 w-[640px] max-lg:w-5/6 backdrop-blur-2xl bg-white dark:bg-[#ffe1fc22] flex flex-col gap-4 rounded-lg p-10 max-lg:p-5 dark:text-white font-primary border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 translate-x-1/2 animate-fade_third z-50">
-        <div className="text-3xl max-lg:text-xl font-semibold">{status == 0 ? 'Select Users' : 'Group Info'}</div>
-        <div className="w-full h-[420px] overflow-y-auto flex flex-col gap-4">
+    <Dialog open={isDialogOpen} onOpenChange={val => setIsDialogOpen(val)}>
+      <DialogTrigger>
+        {/* <Plus className="cursor-pointer" size={20} /> */}
+        <Plus
+          size={36}
+          className="dark:text-gray-200 flex-center rounded-full hover:bg-primary_comp_hover dark:hover:bg-[#e9e9e933] p-2 transition-ease-300"
+          weight="regular"
+        />
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{status == 0 ? 'Select Users' : 'Group Info'}</DialogTitle>
+        </DialogHeader>
+        <div className="w-full flex flex-col gap-4">
           {status == 0 ? (
             <>
               <div className="w-full h-12 flex items-center px-4 gap-4 dark:bg-dark_primary_comp_hover rounded-md">
@@ -253,7 +265,7 @@ const NewGroup = ({ userFetchURL, submitURL, userFetchURLQuery, setShow, setStat
         </div>
         <div className={`w-full flex ${status == 0 ? 'justify-end' : 'justify-between'}`}>
           {status == 0 ? (
-            <PrimaryButton onClick={() => setStatus(1)} label="Next" animateIn={true} />
+            selectedUsers.length > 0 && <PrimaryButton onClick={() => setStatus(1)} label="Next" animateIn={true} />
           ) : (
             <>
               <PrimaryButton onClick={() => setStatus(0)} label="Prev" animateIn={true} />
@@ -261,13 +273,8 @@ const NewGroup = ({ userFetchURL, submitURL, userFetchURLQuery, setShow, setStat
             </>
           )}
         </div>
-      </div>
-
-      <div
-        onClick={() => setShow(false)}
-        className="bg-backdrop w-screen h-screen fixed top-0 left-0 animate-fade_third z-[41]"
-      ></div>
-    </>
+      </DialogContent>
+    </Dialog>
   );
 };
 

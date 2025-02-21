@@ -25,7 +25,7 @@ const Events = ({ orgID, displayOnProfile = false }: Props) => {
 
   const getEvents = () => {
     const URL = `${EXPLORE_URL}/events/org/${orgID}?page=${page}&limit=${10}`;
-    getHandler(URL)
+    getHandler(URL, undefined, true)
       .then(res => {
         if (res.statusCode === 200) {
           const addEvents = [...events, ...(res.data.events || [])];
@@ -50,24 +50,7 @@ const Events = ({ orgID, displayOnProfile = false }: Props) => {
   }, []);
 
   return (
-    <div className="w-full mx-auto pb-base_padding z-50">
-      {/* {displayOnProfile && (
-        <>
-          {clickedOnNewProject ? <NewProject setShow={setClickedOnNewProject} setProjects={setProjects} /> : <></>}
-          <div
-            onClick={() => setClickedOnNewProject(true)}
-            className={`mb-8 w-108 max-md:w-5/6 h-24 max-md:hover:scale-105 hover:scale-125 group relative overflow-clip bg-white hover:bg-[#f3f3f3] mx-auto border-[1px] pattern1 rounded-lg cursor-pointer flex-center flex-col transition-ease-300`}
-          >
-            <div className="backdrop-blur-md opacity-0 group-hover:opacity-60 w-2/3 h-2/3 rounded-xl transition-ease-out-300"></div>
-            <div className="font-extrabold text-xl group-hover:text-2xl text-gradient absolute translate-y-0 group-hover:-translate-y-2 transition-ease-out-300">
-              Create a new Project!
-            </div>
-            <div className="text-xs font-semibold text-primary_black absolute translate-x-0 translate-y-16 group-hover:translate-y-4 transition-ease-out-300">
-              Woohooh! New Project! Who Dis?
-            </div>
-          </div>
-        </>
-      )} */}
+    <div className="w-5/6 max-md:w-full mx-auto">
       {loading ? (
         <Loader />
       ) : events.length > 0 ? (
@@ -76,13 +59,11 @@ const Events = ({ orgID, displayOnProfile = false }: Props) => {
           next={getEvents}
           hasMore={hasMore}
           loader={<Loader />}
-          className="w-full flex flex-wrap justify-center px-4 max-md:px-2 gap-6"
+          className="w-full grid grid-cols-3 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1"
         >
-          {events.length > 0 ? (
-            events.map(event => <EventCard key={event.id} event={event} size={80} />)
-          ) : (
-            <>{!displayOnProfile ? <NoUserItems /> : <></>}</>
-          )}
+          {events.length > 0
+            ? events.map(event => <EventCard key={event.id} event={event} smaller />)
+            : !displayOnProfile && <NoUserItems />}
         </InfiniteScroll>
       ) : (
         <div className="w-5/6 mx-auto">

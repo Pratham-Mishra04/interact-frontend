@@ -13,7 +13,7 @@ import { resizeImage } from '@/utils/resize_image';
 import Image from 'next/image';
 import postHandler from '@/handlers/post_handler';
 import { X } from '@phosphor-icons/react';
-import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
+// import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 
 interface Props {
   project: Project;
@@ -75,8 +75,7 @@ const EditProjectImages = ({ project, setProject, isDialogOpen, setIsDialogOpen,
 
       Toaster.stopLoad(toaster, 'New Project Image Added', 1);
     } else if (res.statusCode == 413) Toaster.stopLoad(toaster, 'Image too large', 0);
-    else if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
-    else Toaster.stopLoad(toaster, SERVER_ERROR, 0);
+    else Toaster.stopLoad(toaster, res.data.message || SERVER_ERROR, 0);
 
     setMutex(false);
   };
@@ -118,8 +117,7 @@ const EditProjectImages = ({ project, setProject, isDialogOpen, setIsDialogOpen,
 
       Toaster.stopLoad(toaster, 'Project Image Delete', 1);
     } else if (res.statusCode == 413) Toaster.stopLoad(toaster, 'Image too large', 0);
-    else if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
-    else Toaster.stopLoad(toaster, SERVER_ERROR, 0);
+    else Toaster.stopLoad(toaster, res.data.message || SERVER_ERROR, 0);
 
     setMutex(false);
   };
@@ -160,20 +158,19 @@ const EditProjectImages = ({ project, setProject, isDialogOpen, setIsDialogOpen,
       setStage(0);
       Toaster.stopLoad(toaster, 'Project Edited', 1);
     } else if (res.statusCode == 413) Toaster.stopLoad(toaster, 'Image too large', 0);
-    else if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
-    else Toaster.stopLoad(toaster, SERVER_ERROR, 0);
+    else Toaster.stopLoad(toaster, res.data.message || SERVER_ERROR, 0);
 
     setMutex(false);
   };
 
-  const onDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
+  // const onDragEnd = (result: DropResult) => {
+  //   if (!result.destination) return;
 
-    const newItems = [...images];
-    const [removed] = newItems.splice(result.source.index, 1);
-    newItems.splice(result.destination.index, 0, removed);
-    setImages(newItems);
-  };
+  //   const newItems = [...images];
+  //   const [removed] = newItems.splice(result.source.index, 1);
+  //   newItems.splice(result.destination.index, 0, removed);
+  //   setImages(newItems);
+  // };
 
   useEffect(() => {
     setImages(project.images || []);
@@ -224,21 +221,21 @@ const EditProjectImages = ({ project, setProject, isDialogOpen, setIsDialogOpen,
                 <CarouselItem className="w-full rounded-lg">
                   {newImageUrl ? (
                     <div className="w-full relative">
-                      <div className="w-full h-full absolute top-0 right-0 flex z-10">
+                      <div className="w-full h-full absolute top-0 right-0 flex text-lg font-medium z-10">
                         <div
                           onClick={handleAddNewImage}
-                          className="w-1/2 h-full flex-center hover:bg-[#ffffff4e] opacity-0 hover:opacity-100 rounded-l-lg transition-ease-300 cursor-pointer"
+                          className="w-1/2 h-full flex-center hover:bg-[#7fb06e4e] opacity-0 hover:opacity-100 rounded-l-lg transition-ease-300 cursor-pointer"
                         >
-                          Yes
+                          Confirm
                         </div>
                         <div
                           onClick={() => {
                             setNewImage(undefined);
                             setNewImageUrl('');
                           }}
-                          className="w-1/2 h-full flex-center hover:bg-[#ffffff4e] opacity-0 hover:opacity-100 rounded-r-lg transition-ease-300 cursor-pointer"
+                          className="w-1/2 h-full flex-center hover:bg-[#9960604e] opacity-0 hover:opacity-100 rounded-r-lg transition-ease-300 cursor-pointer"
                         >
-                          No
+                          Discard
                         </div>
                       </div>
                       <Image
@@ -247,7 +244,7 @@ const EditProjectImages = ({ project, setProject, isDialogOpen, setIsDialogOpen,
                         height={1080}
                         alt="project cover"
                         src={newImageUrl}
-                        className="w-full h-full rounded-lg"
+                        className="w-full h-full rounded-lg border-2 border-white border-dashed"
                       />
                     </div>
                   ) : (
@@ -261,7 +258,7 @@ const EditProjectImages = ({ project, setProject, isDialogOpen, setIsDialogOpen,
                           if (target.files && target.files.length > 0) {
                             if (target.files[0].type.split('/')[0] === 'image') {
                               try {
-                                const resizedPic = await resizeImage(target.files[0], 1920, 1080);
+                                const resizedPic = await resizeImage(target.files[0], 1280, 720);
                                 setNewImageUrl(URL.createObjectURL(resizedPic));
                                 setNewImage(resizedPic);
                               } catch (error) {
@@ -275,7 +272,10 @@ const EditProjectImages = ({ project, setProject, isDialogOpen, setIsDialogOpen,
                           }
                         }}
                       />
-                      <label className="w-full h-full flex-center cursor-pointer" htmlFor="image">
+                      <label
+                        className="w-full h-80 hover:bg-primary_comp_hover dark:hover:bg-dark_primary_comp_hover rounded-md flex-center cursor-pointer transition-ease-300"
+                        htmlFor="image"
+                      >
                         Click Here to Add Picture
                       </label>
                     </div>
@@ -287,47 +287,50 @@ const EditProjectImages = ({ project, setProject, isDialogOpen, setIsDialogOpen,
             <CarouselNext />
           </Carousel>
         ) : (
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppable">
-              {provided => (
-                <div {...provided.droppableProps} ref={provided.innerRef} className="w-full flex flex-col gap-4">
-                  {images.map((image, index) => {
-                    let imageHash = 'no-hash';
-                    if (project.hashes && index < project.hashes.length) imageHash = project.hashes[index];
-                    return (
-                      <Draggable key={index} draggableId={index.toString()} index={index}>
-                        {provided => (
-                          <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                            <Image
-                              crossOrigin="anonymous"
-                              width={430}
-                              height={270}
-                              className="w-full rounded-lg"
-                              alt={'Project Pic'}
-                              src={`${PROJECT_PIC_URL}/${image}`}
-                              placeholder="blur"
-                              blurDataURL={imageHash}
-                            />
-                          </div>
-                        )}
-                      </Draggable>
-                    );
-                  })}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
+          // <DragDropContext onDragEnd={onDragEnd}>
+          //   <Droppable droppableId="droppable">
+          //     {provided => (
+          //       <div {...provided.droppableProps} ref={provided.innerRef} className="w-full flex flex-col gap-4">
+          //         {images.map((image, index) => {
+          //           let imageHash = 'no-hash';
+          //           if (project.hashes && index < project.hashes.length) imageHash = project.hashes[index];
+          //           return (
+          //             <Draggable key={index} draggableId={index.toString()} index={index}>
+          //               {provided => (
+          //                 <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+          //                   <Image
+          //                     crossOrigin="anonymous"
+          //                     width={430}
+          //                     height={270}
+          //                     className="w-full rounded-lg"
+          //                     alt={'Project Pic'}
+          //                     src={`${PROJECT_PIC_URL}/${image}`}
+          //                     placeholder="blur"
+          //                     blurDataURL={imageHash}
+          //                   />
+          //                 </div>
+          //               )}
+          //             </Draggable>
+          //           );
+          //         })}
+          //         {provided.placeholder}
+          //       </div>
+          //     )}
+          //   </Droppable>
+          // </DragDropContext>
+          <></>
         )}
-        <Button
-          onClick={() => {
-            if (stage == 0) setStage(1);
-            else handleRearrangeImages();
-          }}
-          className="dark:bg-dark_primary_comp_hover dark:hover:bg-dark_primary_comp_active"
-        >
-          {stage == 0 ? 'Rearrange Photos' : 'Submit'}
-        </Button>
+        {/* {images.length > 1 && (
+          <Button
+            onClick={() => {
+              if (stage == 0) setStage(1);
+              else handleRearrangeImages();
+            }}
+            className="dark:bg-dark_primary_comp_hover dark:hover:bg-dark_primary_comp_active"
+          >
+            {stage == 0 ? 'Rearrange Photos' : 'Submit'}
+          </Button>
+        )} */}
         {stage == 1 && (
           <Button
             onClick={() => setStage(0)}

@@ -1,21 +1,16 @@
 import ProjectCard from '@/components/explore/project_card';
-import { ProjectBookmark } from '@/types';
-import React, { useState } from 'react';
-import ProjectView from '../../sections/explore/project_view';
+import { Project, ProjectBookmark } from '@/types';
+import React from 'react';
 import { ArrowArcLeft } from '@phosphor-icons/react';
 
 interface Props {
   bookmark: ProjectBookmark;
   setClick: React.Dispatch<React.SetStateAction<boolean>>;
   fetchBookmarks?: () => void;
+  setClickedProject?: React.Dispatch<React.SetStateAction<Project | null>>;
 }
 
-const Projects = ({ bookmark, setClick, fetchBookmarks }: Props) => {
-  const [clickedOnProject, setClickedOnProject] = useState(false);
-  const [clickedProjectIndex, setClickedProjectIndex] = useState(-1);
-
-  const [fadeInProject, setFadeInProject] = useState(true);
-
+const Projects = ({ bookmark, setClick, fetchBookmarks, setClickedProject }: Props) => {
   return (
     <div className="w-full flex flex-col gap-4 font-primary dark:text-white pt-6">
       <div className="flex items-center gap-2">
@@ -31,24 +26,13 @@ const Projects = ({ bookmark, setClick, fetchBookmarks }: Props) => {
       </div>
       {bookmark.projectItems?.length > 0 ? (
         <div className="w-full">
-          {clickedOnProject && (
-            <ProjectView
-              projectSlugs={bookmark.projectItems.map(projectItem => projectItem.project.slug)}
-              clickedProjectIndex={clickedProjectIndex}
-              setClickedProjectIndex={setClickedProjectIndex}
-              setClickedOnProject={setClickedOnProject}
-              fadeIn={fadeInProject}
-              setFadeIn={setFadeInProject}
-            />
-          )}
           {bookmark.projectItems.map((projectItem, index) => {
             return (
               <ProjectCard
                 key={projectItem.id}
                 index={index}
                 project={projectItem.project}
-                setClickedOnProject={setClickedOnProject}
-                setClickedProjectIndex={setClickedProjectIndex}
+                setClickedProject={setClickedProject}
               />
             );
           })}

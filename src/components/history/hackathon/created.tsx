@@ -1,9 +1,5 @@
-import Hackathon from '@/screens/hackathon/hackathon';
-import HackathonHistories from '@/sections/organization/hackathons/history';
 import { HackathonHistory } from '@/types';
 import HackathonHistoryWrapper from '@/wrappers/hackathon_history';
-import { ArrowUpRight } from '@phosphor-icons/react';
-import Link from 'next/link';
 import React from 'react';
 
 interface Props {
@@ -15,67 +11,64 @@ const Created = ({ history }: Props) => {
     case 0:
       return (
         <HackathonHistoryWrapper history={history}>
-          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">created a Hackathon: 🎉</div>
+          <div className="w-fit bg-priority_low px-1 rounded-md inline-flex items-center gap-1">
+            <span>created a Hackathon: 🎉</span>
+          </div>
         </HackathonHistoryWrapper>
       );
     case 3:
       return (
         <HackathonHistoryWrapper history={history}>
-          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
-            Added a Track: {history.hackathonTrack.title} 🎉
+          <div className="w-fit bg-priority_low px-1 rounded-md inline-flex items-center gap-1">
+            <span>Added a Track: {history.hackathonTrack.title} 🎉</span>
           </div>
         </HackathonHistoryWrapper>
       );
     case 6:
       return (
         <HackathonHistoryWrapper history={history}>
-          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
-            Added Prize: {history.hackathonPrize.title} 🎉
+          <div className="w-fit bg-priority_low px-1 rounded-md inline-flex items-center gap-1">
+            <span>Added Prize: {history.hackathonPrize.title} 🎉</span>
           </div>
         </HackathonHistoryWrapper>
       );
     case 9:
       return (
         <HackathonHistoryWrapper history={history}>
-          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
-            Added a Sponsor:{history.hackathonSponsor.name}
-            🎉
+          <div className="w-fit bg-priority_low px-1 rounded-md inline-flex items-center gap-1">
+            <span>Added a Sponsor: {history.hackathonSponsor.name} 🎉</span>
           </div>
         </HackathonHistoryWrapper>
       );
     case 12:
       return (
         <HackathonHistoryWrapper history={history}>
-          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
-            Added a FAQ:{history.hackathonFAQ.question}
-            🎉
+          <div className="w-fit bg-priority_low px-1 rounded-md inline-flex items-center gap-1">
+            <span>Added a FAQ: {history.hackathonFAQ.question} 🎉</span>
           </div>
         </HackathonHistoryWrapper>
       );
     case 15:
       return (
         <HackathonHistoryWrapper history={history}>
-          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
-            Added a Round:{history.hackathonRound.index}
-            🎉
+          <div className="w-fit bg-priority_low px-1 rounded-md inline-flex items-center gap-1">
+            <span>Added a Round: {history.hackathonRound.index} 🎉</span>
           </div>
         </HackathonHistoryWrapper>
       );
     case 18:
       return (
         <HackathonHistoryWrapper history={history}>
-          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
-            Added a Coordinator:{history.user.name}
-            🎉
+          <div className="w-fit bg-priority_low px-1 rounded-md inline-flex items-center gap-1">
+            <span>Added a Coordinator: {history.user.name} 🎉</span>
           </div>
         </HackathonHistoryWrapper>
       );
     case 20:
       return (
         <HackathonHistoryWrapper history={history}>
-          <div className="w-fit bg-priority_low px-1 rounded-md gap-4">
-            Added a Judge:{history.user.name}
-            🎉
+          <div className="w-fit bg-priority_low px-1 rounded-md inline-flex items-center gap-1">
+            <span>Added a Judge: {history.user.name} 🎉</span>
           </div>
         </HackathonHistoryWrapper>
       );

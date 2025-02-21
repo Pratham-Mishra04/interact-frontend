@@ -165,7 +165,10 @@ export interface User {
   isOrganization: boolean;
   organization: Organization | null;
   createdAt: string;
-  subscriptionType: string;
+  subscriptionType?: string;
+  secondaryEmail?: string;
+  credits?: number;
+  featuresBought?: string[];
 }
 
 export interface OrganizationMembership {
@@ -207,6 +210,7 @@ export interface Project {
   user: User;
   likedBy: User[];
   comments: Comment[];
+  noOpenings: number;
   noLikes: number;
   noShares: number;
   noComments: number;
@@ -218,15 +222,19 @@ export interface Project {
   openings: Opening[];
   chats: Chat[];
   isPrivate: boolean;
+  isFlagged: boolean;
   views: number;
   totalNoViews: number;
   noMembers: number;
   privateLinks: string[];
   links: string[];
+  buckets?: ResourceBucket[];
   organizationID: string;
   organization: Organization | null;
   createdAt: Date;
   history: ProjectHistory[] | null;
+  hackathonID?: string;
+  hackathon?: Hackathon;
 }
 
 export interface PostTag {
@@ -239,6 +247,8 @@ export interface Post {
   id: string;
   userID: string;
   rePostID: string;
+  communityID: string | null;
+  community: Community | null;
   rePost: Post | null;
   images: string[];
   content: string;
@@ -301,6 +311,8 @@ export interface Application {
   score: number;
   createdAt: Date;
   noComments: number;
+  meetingID?: string;
+  meeting?: Meeting;
 }
 
 export interface Notification {
@@ -681,6 +693,7 @@ export interface Meeting {
   id: string;
   dyteID: string;
   eventID: string;
+  applicationID?: string;
   title: string;
   description: string;
   tags: string[];
@@ -702,6 +715,7 @@ export interface Meeting {
   createdAt: Date;
   nextSessionTime: Date;
   sessions: Session[];
+  project?: Project;
 }
 
 export interface Session {
@@ -767,6 +781,8 @@ export interface Hackathon {
   coordinators: User[];
   judges: User[];
   isEnded?: boolean;
+  isRestricted: boolean;
+  entryPassword?: string;
   eventID: string;
   history: HackathonHistory[];
   tracks: HackathonTrack[];
@@ -787,7 +803,7 @@ export interface HackathonPrize {
   id: string;
   hackathonID: string;
   title: string;
-  trackID?: string;
+  hackathonTrackID?: string;
   track?: HackathonTrack;
   description?: string;
   amount: number;
@@ -835,7 +851,6 @@ export interface HackathonRound {
   startTime: Date;
   endTime: Date;
   judgingStartTime: Date;
-  judgingEndTime: Date;
   metrics: HackathonRoundScoreMetric[];
 }
 

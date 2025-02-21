@@ -11,12 +11,10 @@ import Loader from '@/components/common/loader';
 import { SERVER_ERROR } from '@/config/errors';
 import Image from 'next/image';
 import { MapPin } from '@phosphor-icons/react';
-import EventCard from '@/components/organization/event_card';
+import EventCard from '@/components/explore/event_card';
 import { Event, User } from '@/types';
 import Link from 'next/link';
 import moment from 'moment';
-import getIcon from '@/utils/funcs/get_icon';
-import getDomainName from '@/utils/funcs/get_domain_name';
 import { setRegisteredEvents, userSelector } from '@/slices/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import OrgSidebar from '@/components/common/org_sidebar';
@@ -27,9 +25,12 @@ import Report from '@/components/common/report';
 import SignUp from '@/components/common/signup_box';
 import { setCurrentChatID } from '@/slices/messagingSlice';
 import SendMessage from '@/sections/explore/send_message';
-import renderContentWithLinks from '@/utils/funcs/render_content_with_links';
 import SecondaryButton from '@/components/buttons/secondary_btn';
 import Hackathon from '@/screens/hackathon/hackathon';
+import PrimeWrapper from '@/wrappers/prime';
+import Links from '@/components/explore/show_links';
+import { EVENT_PIC_HASH_DEFAULT } from '@/config/constants';
+import Editor from '@/components/editor';
 
 interface Props {
   id: string;
@@ -37,7 +38,6 @@ interface Props {
 
 const EventComponent = ({ id }: Props) => {
   const [event, setEvent] = useState(initialEvent);
-  const [similarEvents, setSimilarEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [eventLikes, setEventLikes] = useState(0);
@@ -50,35 +50,14 @@ const EventComponent = ({ id }: Props) => {
 
   const getEvent = () => {
     const URL = `${EXPLORE_URL}/events/${id}`;
-    getHandler(URL)
+    getHandler(URL, undefined, true)
       .then(res => {
         if (res.statusCode === 200) {
           setEvent(res.data.event);
           setEventLikes(res.data.event?.noLikes);
           setLoading(false);
         } else {
-          if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
-          else {
-            Toaster.error(SERVER_ERROR, 'error_toaster');
-          }
-        }
-      })
-      .catch(err => {
-        Toaster.error(SERVER_ERROR, 'error_toaster');
-      });
-  };
-
-  const getSimilarEvents = () => {
-    const URL = `${EXPLORE_URL}/events/similar/${id}?limit=10`;
-    getHandler(URL)
-      .then(res => {
-        if (res.statusCode === 200) {
-          setSimilarEvents(res.data.events || []);
-        } else {
-          if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
-          else {
-            Toaster.error(SERVER_ERROR, 'error_toaster');
-          }
+          Toaster.error(res.data.message || SERVER_ERROR, 'error_toaster');
         }
       })
       .catch(err => {
@@ -88,7 +67,6 @@ const EventComponent = ({ id }: Props) => {
 
   useEffect(() => {
     getEvent();
-    getSimilarEvents();
   }, [id]);
 
   const chatSlices = user.personalChatSlices;
@@ -109,18 +87,19 @@ const EventComponent = ({ id }: Props) => {
     } else setClickedOnChat(true);
   };
 
-  const handleRegister = async () => {
+  const handleRegister = async (pass?: string) => {
     const toaster = Toaster.startLoad('Registering for the Event');
-    await getHandler(event.hackathonID ? `/hackathons/register/${event.hackathonID}` : `/events/register/${id}`)
+    getHandler(
+      event.hackathonID
+        ? `/hackathons/register/${event.hackathonID}${event.hackathon?.isRestricted ? `?code=${pass}` : ''}`
+        : `/events/register/${id}`
+    )
       .then(res => {
         if (res.statusCode === 200) {
           Toaster.stopLoad(toaster, 'Successfully registered for the Event!', 1);
           dispatch(setRegisteredEvents([...(user.registeredEvents || []), event.id]));
         } else {
-          if (res.data.message) Toaster.stopLoad(toaster, res.data.message, 0);
-          else {
-            Toaster.stopLoad(toaster, SERVER_ERROR, 0);
-          }
+          Toaster.stopLoad(toaster, res.data.message || SERVER_ERROR, 0);
         }
       })
       .catch(err => {
@@ -222,34 +201,46 @@ const EventComponent = ({ id }: Props) => {
               Event has Ended
             </button>
           )
-        ) : (
+        ) : user.id ? (
           <SecondaryButton label="Register Now!" onClick={handleRegister} />
+        ) : (
+          <SecondaryButton label="Sign Up To Register!" onClick={() => window.location.assign('/login')} />
         )}
       </div>
     );
   };
 
   const AboutHosts = () => (
-    <div className="w-2/5 bg-white rounded-xl max-md:w-full shadow-lg">
+    <div className="w-2/5 bg-white dark:bg-dark_primary_comp_hover rounded-xl max-md:w-full shadow-lg">
       <Image
         width={500}
-        height={280}
+        height={175}
         src={`${EVENT_PIC_URL}/${event.coverPic}`}
         alt="Event Picture"
         className="w-full object-cover rounded-t-xl"
         placeholder="blur"
-        blurDataURL={event.blurHash || 'no-hash'}
+        blurDataURL={
+          event.blurHash
+            ? event.blurHash == 'no-hash'
+              ? EVENT_PIC_HASH_DEFAULT
+              : event.blurHash
+            : EVENT_PIC_HASH_DEFAULT
+        }
       />
       <div className="w-full flex flex-col gap-6 p-4 pt-2">
         <LowerEvent event={event} numLikes={eventLikes} setNumLikes={setEventLikes} />
         {event.meetingID && <AboutSession />}
         <div className="w-full flex flex-col gap-4">
-          <div className="text-sm font-medium text-gray-500 border-b-2 border-gray-300 pb-2">HOSTED BY</div>
+          <div className="text-sm font-medium text-gray-500 dark:text-white border-b-2 border-gray-300 pb-2">
+            HOSTED BY
+          </div>
           <AboutUser user={event.organization.user} host={true} />
         </div>
         {event.coHosts && event.coHosts.length > 0 && (
           <div className="w-full flex flex-col gap-4">
-            <div className="text-sm font-medium text-gray-500 border-b-2 border-gray-300 pb-2">CO HOSTS</div>
+            <div className="text-sm font-medium text-gray-500 dark:text-white border-b-2 border-gray-300 pb-2">
+              CO HOSTS
+            </div>
             <div className="w-full flex flex-col gap-2">
               {event.coHosts?.map(org => (
                 <AboutUser key={org.id} user={org.user} />
@@ -259,7 +250,9 @@ const EventComponent = ({ id }: Props) => {
         )}
         {event.coordinators && event.coordinators.length > 0 && (
           <div className="w-full flex flex-col gap-4">
-            <div className="text-sm font-medium text-gray-500 border-b-2 border-gray-300 pb-2">COORDINATORS</div>
+            <div className="text-sm font-medium text-gray-500 dark:text-white border-b-2 border-gray-300 pb-2">
+              COORDINATORS
+            </div>
             <div className="flex flex-col gap-2">
               {event.coordinators.map(user => (
                 <AboutUser key={user.id} user={user} />
@@ -272,25 +265,19 @@ const EventComponent = ({ id }: Props) => {
             <div className="text-sm font-medium text-gray-500 border-b-2 border-gray-300 pb-2">
               MORE ABOUT THE EVENT
             </div>
-            <div className="w-full flex flex-wrap gap-4">
-              {event.links?.map(link => (
-                <Link key={link} href={link} target="_blank">
-                  {getIcon(getDomainName(link), 22, 'regular')}
-                </Link>
-              ))}
-            </div>{' '}
+            <Links links={event.links} excludeTitle />
           </div>
         )}
         <div className="w-full flex flex-col gap-1 text-sm">
           <div
             onClick={handleChat}
-            className="w-fit font-medium text-primary_black hover:text-gray-600 transition-ease-300 cursor-pointer"
+            className="w-fit font-medium text-primary_black dark:text-gray-300 hover:text-gray-600 dark:hover:text-white transition-ease-300 cursor-pointer"
           >
             Message the Host
           </div>
           <div
             onClick={() => setClickedOnReport(true)}
-            className="w-fit font-medium text-primary_black hover:text-primary_danger transition-ease-300 cursor-pointer"
+            className="w-fit font-medium text-primary_black dark:text-gray-300 hover:text-primary_danger dark:hover:text-primary_danger transition-ease-300 cursor-pointer"
           >
             Report Event
           </div>
@@ -306,9 +293,9 @@ const EventComponent = ({ id }: Props) => {
         <div className="w-full flex flex-col gap-2">
           <div className="text-sm font-medium text-gray-500">FROM</div>
           <div className="flex gap-3 items-center">
-            <div className="w-12 h-12 bg-gray-100 flex flex-col rounded-xl text-center p-1">
+            <div className="w-12 h-12 bg-gray-100 dark:bg-dark_primary_comp flex flex-col rounded-xl text-center p-1">
               <div className="w-full h-2/5 flex-center text-xxs uppercase">{moment(event.startTime).format('MMM')}</div>
-              <div className="w-full h-3/5 bg-gray-200 flex-center rounded-t-sm rounded-b-lg">
+              <div className="w-full h-3/5 bg-gray-200 dark:bg-dark_primary_comp_hover flex-center rounded-t-sm rounded-b-lg">
                 {moment(event.startTime).format('DD')}
               </div>
             </div>
@@ -321,9 +308,9 @@ const EventComponent = ({ id }: Props) => {
         <div className="w-full flex flex-col gap-2">
           <div className="text-sm font-medium text-gray-500">TO</div>
           <div className="flex gap-3 items-center">
-            <div className="w-12 h-12 bg-gray-100 flex flex-col rounded-xl text-center p-1">
+            <div className="w-12 h-12 bg-gray-100 dark:bg-dark_primary_comp flex flex-col rounded-xl text-center p-1">
               <div className="w-full h-2/5 flex-center text-xxs uppercase">{moment(event.endTime).format('MMM')}</div>
-              <div className="w-full h-3/5 bg-gray-200 flex-center rounded-t-sm rounded-b-lg">
+              <div className="w-full h-3/5 bg-gray-200 dark:bg-dark_primary_comp_hover flex-center rounded-t-sm rounded-b-lg">
                 {moment(event.endTime).format('DD')}
               </div>
             </div>
@@ -337,7 +324,7 @@ const EventComponent = ({ id }: Props) => {
       <div className="w-full flex flex-col gap-2">
         <div className="text-sm font-medium text-gray-500">LOCATION</div>
         <div className="flex items-center gap-2">
-          <div className="w-12 h-12 border-gray-100 border-4 flex-center p-2 rounded-xl">
+          <div className="w-12 h-12 border-gray-100 dark:border-dark_primary_btn border-4 flex-center p-2 rounded-xl">
             <MapPin size={20} />
           </div>
           <div>{event.location}</div>
@@ -351,9 +338,9 @@ const EventComponent = ({ id }: Props) => {
               <Link
                 //TODO add onClick setState of explore page to events
                 key={tag}
-                href={'/explore?search=' + tag}
+                href={'/events?search=' + tag}
                 target="_blank"
-                className="flex-center bg-gray-100 px-2 py-1 border-[1px] border-dashed border-gray-400 text-xs rounded-lg"
+                className="flex-center bg-gray-100 dark:bg-dark_primary_comp px-2 py-1 border-[1px] border-dashed border-gray-400 text-xs rounded-lg"
               >
                 {tag}
               </Link>
@@ -361,18 +348,19 @@ const EventComponent = ({ id }: Props) => {
           </div>
         </div>
       )}
-
-      <div className="w-full flex flex-col gap-2">
-        <div className="text-sm font-medium text-gray-500">ABOUT THE EVENT</div>
-        <div className="whitespace-pre-wrap">{renderContentWithLinks(event.description)}</div>
-      </div>
+      {event.description && (
+        <div className="w-full flex flex-col gap-2">
+          <div className="text-sm font-medium text-gray-500">ABOUT THE EVENT</div>
+          <div className="whitespace-pre-wrap">{<Editor content={event.description} editable={false} />}</div>
+        </div>
+      )}
     </div>
   );
 
   return (
     <BaseWrapper title={`${event.title}`}>
       {user.isOrganization ? <OrgSidebar index={1} /> : <Sidebar index={3} />}
-      <MainWrapper>
+      <MainWrapper restrictWidth>
         {event.hackathonID ? (
           <Hackathon event={event} handleRegister={handleRegister} />
         ) : (
@@ -389,7 +377,7 @@ const EventComponent = ({ id }: Props) => {
               ) : (
                 <SignUp setShow={setClickedOnReport} />
               ))}
-            <div className="w-full p-12 max-md:p-2 flex flex-col transition-ease-out-500 font-primary">
+            <PrimeWrapper>
               {loading ? (
                 <Loader />
               ) : (
@@ -398,27 +386,54 @@ const EventComponent = ({ id }: Props) => {
                     <AboutHosts />
                     <AboutEvent />
                   </div>
-                  {similarEvents && similarEvents.length > 0 && (
-                    <div className="w-full flex flex-col gap-4">
-                      <div className="w-full flex-center text-sm font-semibold text-gray-500">SIMILAR EVENTS</div>
-                      <div className="w-full flex gap-6 flex-wrap justify-around">
-                        {similarEvents.map(e => (
-                          <EventCard key={e.id} event={e} size={80} />
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
               )}
-            </div>
+            </PrimeWrapper>
           </>
         )}
+        <SimilarEvents id={id} />
       </MainWrapper>
     </BaseWrapper>
   );
 };
 
 export default EventComponent;
+
+export const SimilarEvents = ({ id }: { id: string }) => {
+  const [similarEvents, setSimilarEvents] = useState<Event[]>([]);
+
+  const getSimilarEvents = () => {
+    const URL = `${EXPLORE_URL}/events/similar/${id}?limit=10`;
+    getHandler(URL, undefined, true)
+      .then(res => {
+        if (res.statusCode === 200) {
+          setSimilarEvents(res.data.events || []);
+        } else {
+          Toaster.error(res.data.message || SERVER_ERROR, 'error_toaster');
+        }
+      })
+      .catch(err => {
+        Toaster.error(SERVER_ERROR, 'error_toaster');
+      });
+  };
+
+  useEffect(() => {
+    getSimilarEvents();
+  }, [id]);
+
+  return similarEvents && similarEvents.length > 0 ? (
+    <div className="w-full flex flex-col gap-4 mt-8">
+      <div className="w-full flex-center text-sm font-semibold text-gray-500 dark:text-gray-200">SIMILAR EVENTS</div>
+      <div className="w-full grid grid-cols-3 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1">
+        {similarEvents.map(e => (
+          <EventCard key={e.id} event={e} />
+        ))}
+      </div>
+    </div>
+  ) : (
+    <></>
+  );
+};
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { id } = context.query;

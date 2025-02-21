@@ -15,7 +15,7 @@ const AnnouncementCard = ({ announcement }: Props) => {
     <Link
       href={`/explore/announcement/${announcement.id}`}
       target="_blank"
-      className="w-full h-fit bg-white font-primary flex gap-1 border-primary_btn dark:border-dark_primary_btn border-[1px] dark:text-white rounded-xl p-2 max-md:px-4 max-md:py-4"
+      className="w-full h-fit bg-white dark:bg-dark_primary_comp font-primary flex gap-1 border-primary_btn dark:border-dark_primary_btn border-[1px] dark:text-white rounded-xl p-2 max-md:px-4 max-md:py-4"
     >
       <div className="h-full">
         <div className="rounded-full">

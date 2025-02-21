@@ -6,16 +6,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { currentChatIDSelector, setCurrentChatID } from '@/slices/messagingSlice';
 import { GROUP_CHAT_PIC_URL } from '@/config/routes';
 import { userIDSelector } from '@/slices/userSlice';
-import { Circle } from '@phosphor-icons/react';
-import { isChatUnread } from '@/utils/funcs/messaging';
+import { Circle, Lock } from '@phosphor-icons/react';
+import { getSelfMembership, isChatUnread } from '@/utils/funcs/messaging';
 
 interface Props {
   chat: Chat;
+  setChat?: React.Dispatch<React.SetStateAction<Chat>>;
   setChats: React.Dispatch<React.SetStateAction<Chat[]>>;
-  setUnreadChatCounts: React.Dispatch<React.SetStateAction<number[]>>;
+  setUnreadChatCounts?: React.Dispatch<React.SetStateAction<number[]>>;
+  setClickedOnChat?: React.Dispatch<React.SetStateAction<boolean>>;
+  wider?: boolean;
 }
 
-const GroupChatCard = ({ chat, setChats, setUnreadChatCounts }: Props) => {
+const GroupChatCard = ({ chat, setChat, setChats, setUnreadChatCounts, setClickedOnChat, wider = false }: Props) => {
   const userID = useSelector(userIDSelector);
   const dispatch = useDispatch();
 
@@ -24,12 +27,13 @@ const GroupChatCard = ({ chat, setChats, setUnreadChatCounts }: Props) => {
   const handleClick = () => {
     dispatch(setCurrentChatID(chat.id));
     if (isChatUnread(chat))
-      setUnreadChatCounts(([personalCount, groupCount, projectCount, requestCount]) => [
-        personalCount,
-        chat.projectID ? groupCount : groupCount - 1,
-        chat.projectID ? projectCount - 1 : projectCount,
-        requestCount,
-      ]);
+      if (setUnreadChatCounts)
+        setUnreadChatCounts(([personalCount, groupCount, projectCount, requestCount]) => [
+          personalCount,
+          chat.projectID ? groupCount : groupCount - 1,
+          chat.projectID ? projectCount - 1 : projectCount,
+          requestCount,
+        ]);
     setChats(prev =>
       prev.map(c => {
         if (c.id == chat.id && c.latestMessageID && isChatUnread(c)) {
@@ -40,6 +44,8 @@ const GroupChatCard = ({ chat, setChats, setUnreadChatCounts }: Props) => {
         return c;
       })
     );
+    if (setChat) setChat(chat);
+    if (setClickedOnChat) setClickedOnChat(true);
   };
 
   const getLatestMessageContent = () => {
@@ -75,11 +81,15 @@ const GroupChatCard = ({ chat, setChats, setUnreadChatCounts }: Props) => {
             <div className="text-xl font-semibold">{chat.title}</div>
             <div className="text-xs">
               {chat.projectID
-                ? '@' + chat.project?.title
+                ? chat.project?.title && '@' + chat.project?.title
                 : chat.organizationID && '@' + chat.organization?.user?.username}
             </div>
           </div>
-          {chat.latestMessageID ? (
+          {getSelfMembership(chat).userID != userID ? (
+            <div className="w-fit flex-center gap-1 font-light text-sm">
+              <Lock /> You are not a member of this chat
+            </div>
+          ) : chat.latestMessageID ? (
             <div className="w-full line-clamp-2 font-light">
               <span className="mr-2 font-medium">
                 {chat.latestMessage.userID == userID ? '• You' : `• ${chat.latestMessage.user.username}`}
@@ -95,8 +105,8 @@ const GroupChatCard = ({ chat, setChats, setUnreadChatCounts }: Props) => {
         </div>
         <div className="flex-center flex-col font text-xs">
           {chat.latestMessageID
-            ? getDisplayTime(chat.latestMessage.createdAt, false)
-            : getDisplayTime(chat.createdAt, false)}
+            ? getDisplayTime(chat.latestMessage.createdAt, wider, wider)
+            : getDisplayTime(chat.createdAt, wider, wider)}
           {chat.latestMessageID && isChatUnread(chat) && (
             <>
               <div className="text-xxs text-primary_text font-medium">Unread</div>

@@ -4,7 +4,7 @@ import LinksField from '../utils/edit_links';
 interface Props {
   label?: string;
   links: string[];
-  setLinks: React.Dispatch<React.SetStateAction<string[]>>;
+  setLinks: React.Dispatch<React.SetStateAction<string[]>> | ((val: string[]) => void);
   maxLinks: number;
   required?: boolean;
 }

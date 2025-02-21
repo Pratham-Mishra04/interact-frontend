@@ -112,13 +112,13 @@ const Report = ({
 
   return (
     <>
-      <div className="fixed top-24 max-md:top-20 w-2/3 max-md:w-5/6 h-2/3 max-md:h-5/6 backdrop-blur-2xl bg-white dark:bg-[#ffe1fc22] flex flex-col gap-2 max-md:gap-0 rounded-lg p-8 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 shadow-lg translate-x-1/2 animate-fade_third z-50">
+      <div className="fixed top-24 max-md:top-20 w-2/3 max-md:w-5/6 h-2/3 max-md:h-5/6 backdrop-blur-2xl bg-white dark:bg-dark_primary_comp flex flex-col gap-2 max-md:gap-0 rounded-lg p-8 dark:text-white font-primary overflow-y-auto border-[1px] border-primary_btn  dark:border-dark_primary_btn right-1/2 shadow-lg translate-x-1/2 animate-fade_third z-50">
         <div className="w-full flex justify-end">
           <X className="cursor-pointer" onClick={() => setShow(false)} size={32} />
         </div>
         <div className="w-full max-md:h-56 md:flex-1 flex flex-col justify-between gap-4">
           <div className="w-full flex flex-col gap-8">
-            <div className="font-semibold text-6xl text-gray-800 dark:text-white capitalize">
+            <div className="font-semibold text-6xl max-md:text-5xl text-gray-800 dark:text-white capitalize">
               Report {getItemType()}
             </div>
 
@@ -163,7 +163,7 @@ const Report = ({
       </div>
       <div
         onClick={() => setShow(false)}
-        className="bg-backdrop w-screen h-screen backdrop-blur-sm fixed top-0 left-0 animate-fade_third z-30"
+        className="bg-backdrop w-screen max-w-full h-screen max-h-full backdrop-blur-sm fixed top-0 left-0 animate-fade_third z-30"
       ></div>
     </>
   );

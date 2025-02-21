@@ -60,11 +60,7 @@ const OrgInvitationCard = ({ invitation, setInvitations }: Props) => {
       dispatch(setUnreadInvitations(unreadInvitations - 1));
       Toaster.stopLoad(toaster, 'Invitation Accepted', 1);
     } else {
-      if (res.data.message) {
-        Toaster.stopLoad(toaster, res.data.message, 0);
-      } else {
-        Toaster.stopLoad(toaster, SERVER_ERROR, 0);
-      }
+      Toaster.stopLoad(toaster, res.data.message || SERVER_ERROR, 0);
     }
 
     setMutex(false);

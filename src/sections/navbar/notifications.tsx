@@ -63,7 +63,7 @@ const Notifications = ({ setShow }: Props) => {
 
   return (
     <>
-      <div className="w-96 bg-gray-200 dark:bg-[#200c1944] font-primary max-md:w-full max-h-[480px] max-md:max-h-none max-md:h-screen overflow-y-auto fixed top-[72px] max-md:top-0 right-4 max-md:right-0 rounded-2xl max-md:rounded-none backdrop-blur-lg backdrop flex flex-col items-center p-2 z-[150] animate-fade_third">
+      <div className="w-96 bg-gray-200 dark:bg-dark_primary_comp font-primary max-md:w-full max-h-[480px] max-md:max-h-none max-md:h-screen overflow-y-auto fixed top-[72px] max-md:top-0 right-4 max-md:right-0 rounded-2xl max-md:rounded-none backdrop-blur-lg backdrop flex flex-col items-center p-2 z-[150] animate-fade_third">
         <div className="w-full flex flex-col gap-2 max-md:gap-4 p-4 pb-2">
           <div className="w-full flex items-center justify-between">
             <div className="w-fit text-start text-2xl max-md:text-3xl font-bold text-gradient">Notification Center</div>

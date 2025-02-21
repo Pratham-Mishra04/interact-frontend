@@ -6,43 +6,44 @@ import getHandler from '@/handlers/get_handler';
 import { Project } from '@/types';
 import Toaster from '@/utils/toaster';
 import React, { useState, useEffect } from 'react';
-import ProjectView from '@/sections/explore/project_view';
-import { useDispatch } from 'react-redux';
-import { setExploreTab } from '@/slices/feedSlice';
 import NoSearch from '@/components/fillers/search';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import OrderMenu from '@/components/common/order_menu';
+import { useSelector } from 'react-redux';
+import { userIDSelector } from '@/slices/userSlice';
+import { useWindowWidth } from '@react-hook/window-size';
 
-const Projects = () => {
+const Projects = ({
+  setClickedProject,
+}: {
+  setClickedProject?: React.Dispatch<React.SetStateAction<Project | null>>;
+}) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const [order, setOrder] = useState('trending');
 
-  const [clickedOnProject, setClickedOnProject] = useState(false);
-  const [clickedProjectIndex, setClickedProjectIndex] = useState(-1);
-
-  const [fadeInProjectView, setFadeInProjectView] = useState(true);
-
-  const dispatch = useDispatch();
-  const checkSet = new Set();
-
-  const fetchProjects = async (search: string | null, initialPage?: number) => {
+  const fetchProjects = async (search: string | null, cid: string | null, initialPage?: number) => {
     const URL = `${EXPLORE_URL}/projects?page=${initialPage ? initialPage : page}&limit=${10}&order=${order}${
       search ? `&search=${search}` : ''
-    }`;
+    }${cid ? '&cid=' + cid : ''}`;
 
-    const res = await getHandler(URL);
+    const res = await getHandler(URL, undefined, true);
     if (res.statusCode == 200) {
+      const projectsData = res.data.projects || [];
+
       if (initialPage == 1) {
-        setProjects(res.data.projects || []);
+        setProjects(projectsData);
+
+        if (setClickedProject && projectsData.length > 0) setClickedProject(projectsData[0]);
       } else {
-        const addedProjects = [...projects, ...(res.data.projects || [])];
+        const addedProjects = [...projects, ...projectsData];
         if (addedProjects.length === projects.length) setHasMore(false);
         setProjects(addedProjects);
       }
       setPage(prev => prev + 1);
+
       setLoading(false);
     } else {
       if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
@@ -56,11 +57,9 @@ const Projects = () => {
 
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
-      setProjects([res.data.project]);
-
-      if (res.data.project) {
-        setClickedProjectIndex(0);
-        setClickedOnProject(true);
+      const project = res.data.project;
+      if (project) {
+        setProjects([project]);
       }
 
       setLoading(false);
@@ -75,28 +74,26 @@ const Projects = () => {
     setProjects([]);
     setHasMore(true);
     setLoading(true);
-    const pid = new URLSearchParams(window.location.search).get('pid');
+    const pid = new URLSearchParams(window.location.search).get('id');
     if (pid && pid != '') fetchProject(pid);
-    else fetchProjects(new URLSearchParams(window.location.search).get('search'), 1);
+    else
+      fetchProjects(
+        new URLSearchParams(window.location.search).get('search'),
+        new URLSearchParams(window.location.search).get('cid'),
+        1
+      );
   }, [window.location.search, order]);
 
-  useEffect(() => {
-    const oid = new URLSearchParams(window.location.search).get('oid');
-    const action = new URLSearchParams(window.location.search).get('action');
-    if (oid && action == 'external') dispatch(setExploreTab(1)); //TODO add tab query to this url
+  const userID = useSelector(userIDSelector);
 
-    const tab = new URLSearchParams(window.location.search).get('tab');
-    if (tab && tab == 'projects') dispatch(setExploreTab(0));
-    else if (tab && tab == 'openings') dispatch(setExploreTab(1));
-    else if (tab && tab == 'users') dispatch(setExploreTab(2));
-    else if (tab && tab == 'organisations') dispatch(setExploreTab(3));
-  }, []);
+  const width = useWindowWidth();
+  const isMD = width < 768;
 
   return (
     <div>
       {(projects.length > 0 || order == 'last_viewed') && (
         <OrderMenu
-          orders={['trending', 'most_liked', 'most_viewed', 'latest', 'last_viewed']}
+          orders={['trending', 'most_liked', 'most_viewed', ...(userID ? ['latest', 'last_viewed'] : [])]}
           current={order}
           setState={setOrder}
         />
@@ -110,37 +107,18 @@ const Projects = () => {
             <InfiniteScroll
               className="w-full"
               dataLength={projects.length}
-              next={() => fetchProjects(new URLSearchParams(window.location.search).get('search'))}
+              next={() =>
+                fetchProjects(
+                  new URLSearchParams(window.location.search).get('search'),
+                  new URLSearchParams(window.location.search).get('cid')
+                )
+              }
               hasMore={hasMore}
               loader={<Loader />}
             >
-              {clickedOnProject && (
-                <ProjectView
-                  projectSlugs={projects.map(project => project.slug)}
-                  clickedProjectIndex={clickedProjectIndex}
-                  setClickedProjectIndex={setClickedProjectIndex}
-                  setClickedOnProject={setClickedOnProject}
-                  fadeIn={fadeInProjectView}
-                  setFadeIn={setFadeInProjectView}
-                />
-              )}
-              {projects.map((project, index) => {
-                if (checkSet.has(project.id)) {
-                  return;
-                } else {
-                  checkSet.add(project.id);
-                  return (
-                    <ProjectCard
-                      isLink
-                      key={project.id}
-                      index={index}
-                      project={project}
-                      setClickedOnProject={setClickedOnProject}
-                      setClickedProjectIndex={setClickedProjectIndex}
-                    />
-                  );
-                }
-              })}
+              {projects.map(project => (
+                <ProjectCard key={project.id} project={project} setClickedProject={setClickedProject} isLink={isMD} />
+              ))}
             </InfiniteScroll>
           ) : (
             <NoSearch />

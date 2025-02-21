@@ -30,7 +30,7 @@ const SearchSuggestions = ({ search, setShow }: Props) => {
 
   const fetchSearches = (abortController: AbortController) => {
     const URL = `${EXPLORE_URL}/trending_searches?limit=10${search != '' ? '&search=' + search : ''}`;
-    getHandler(URL, abortController.signal)
+    getHandler(URL, abortController.signal, true)
       .then(res => {
         if (res.statusCode === 200) {
           setSearches(res.data.searches || []);
@@ -76,14 +76,14 @@ const SearchSuggestions = ({ search, setShow }: Props) => {
         {searches.map((str, i) => {
           return (
             <Link
-              href={`/explore?search=${str}`}
+              href={`/projects?search=${str}`}
               key={i}
               onClick={() => {
                 search = str;
                 // setSearch(str);
                 setShow(false);
               }}
-              className="w-fit flex items-center gap-2 bg-slate-100 dark:bg-[#ff9bff39] dark:border-dark_primary_btn dark:border-[1px] rounded-lg px-4 py-1"
+              className="w-fit flex items-center gap-2 bg-slate-100 dark:bg-dark_primary_comp dark:border-dark_primary_btn dark:border-[1px] rounded-lg px-4 py-1"
             >
               <div>{str}</div>
               {i < 3 && <ChartLineUp />}

@@ -31,9 +31,7 @@ interface Props {
 }
 
 const GroupInfo = ({ chat, setChat, setStateChats, setShow, access }: Props) => {
-  const [clickedOnEditMembership, setClickedOnEditMembership] = useState(false);
   const [clickedEditUserMembership, setClickedEditUserMembership] = useState(initialChatMembership);
-  const [clickedOnAddMembers, setClickedOnAddMembers] = useState(false);
   const [clickedOnWithdrawInvitation, setClickedOnWithdrawInvitation] = useState(false);
   const [clickedInvitationToWithdraw, setClickedInvitationToWithdraw] = useState(initialInvitation);
   const [clickedOnDelete, setClickedOnDelete] = useState(false);
@@ -185,17 +183,6 @@ const GroupInfo = ({ chat, setChat, setStateChats, setShow, access }: Props) => 
         />
       )}
       <div className="w-full h-full overflow-y-auto thin_scrollbar flex flex-col gap-4">
-        {clickedOnEditMembership && (
-          <EditMembership
-            membership={clickedEditUserMembership}
-            setShow={setClickedOnEditMembership}
-            setChat={setChat}
-            setChats={setStateChats}
-          />
-        )}
-        {clickedOnAddMembers && (
-          <AddGroupMembers setShow={setClickedOnAddMembers} chat={chat} setChat={setChat} setChats={setStateChats} />
-        )}
         {clickedOnExit && <ConfirmDelete setShow={setClickedOnExit} handleDelete={handleExit} title="Confirm Exit?" />}
         {clickedOnReport && <Report setShow={setClickedOnReport} />}
         {clickedOnDelete && <ConfirmDelete setShow={setClickedOnDelete} handleDelete={handleDelete} />}
@@ -268,7 +255,7 @@ const GroupInfo = ({ chat, setChat, setStateChats, setShow, access }: Props) => 
                   onChange={el => setDescription(el.target.value)}
                 />
 
-                <Checkbox val={isAdminOnly} setVal={setIsAdminOnly} label="Admin Only Chat" border={false} />
+                <Checkbox val={isAdminOnly} setVal={setIsAdminOnly} label="Admin Only Chat" />
 
                 <div className="lg:hidden w-full flex justify-end">
                   <X onClick={() => setClickedOnEdit(false)} className="cursor-pointer" size={24} />
@@ -303,15 +290,7 @@ const GroupInfo = ({ chat, setChat, setStateChats, setShow, access }: Props) => 
             {chat.memberships.length} Participant{chat.memberships.length == 1 ? '' : 's'}
           </div>
           <div className="w-full flex flex-col gap-1">
-            {access && (
-              <div
-                onClick={() => setClickedOnAddMembers(true)}
-                className="w-full h-12 p-4 bg-primary_comp_hover dark:bg-dark_primary_comp_hover rounded-md flex items-center justify-between cursor-pointer"
-              >
-                <div className="">Add Members</div>
-                <Plus size={24} />
-              </div>
-            )}
+            {access && <AddGroupMembers chat={chat} setChat={setChat} setChats={setStateChats} />}
             {chat.memberships.map(m => {
               return (
                 <div
@@ -337,13 +316,13 @@ const GroupInfo = ({ chat, setChat, setStateChats, setShow, access }: Props) => 
                     </div>
                   </div>
                   {access && getSelfMembership(chat).id != m.id && (
-                    <Pen
-                      onClick={() => {
-                        setClickedEditUserMembership(m);
-                        setClickedOnEditMembership(true);
-                      }}
-                      className="cursor-pointer"
-                      size={20}
+                    <EditMembership
+                      membership={clickedEditUserMembership}
+                      setChat={setChat}
+                      setChats={setStateChats}
+                      trigger={
+                        <Pen onClick={() => setClickedEditUserMembership(m)} className="cursor-pointer" size={20} />
+                      }
                     />
                   )}
                 </div>

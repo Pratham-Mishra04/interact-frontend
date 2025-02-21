@@ -21,6 +21,7 @@ import { SERVER_ERROR } from '@/config/errors';
 import generateRandomProfilePicture from '@/utils/generate_profile_picture';
 import StrongPassInfo from '@/components/common/strong_pass_info';
 import RegistrationButton from '@/components/buttons/registration_btn';
+import Link from 'next/link';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -28,7 +29,7 @@ const SignUp = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  // const [earlyAccessToken, setEarlyAccessToken] = useState('');
+  const [referrerID, setReferrerID] = useState('');
   const [mutex, setMutex] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
@@ -102,7 +103,7 @@ const SignUp = () => {
     const toaster = Toaster.startLoad('Creating your Account...');
 
     await configuredAxios
-      .post(`${BACKEND_URL}/signup`, formData, {
+      .post(`${BACKEND_URL}/signup?referrerID=${referrerID}`, formData, {
         withCredentials: true,
       })
       .then(res => {
@@ -110,17 +111,19 @@ const SignUp = () => {
           Toaster.stopLoad(toaster, 'Account created!', 1);
           const user: User = res.data.user;
           user.email = res.data.email;
+          user.secondaryEmail = res.data.secondaryEmail;
           user.phoneNo = res.data.phoneNo || '';
           user.resume = res.data.resume || '';
           user.createdAt = res.data.createdAt || new Date();
           Cookies.set('token', res.data.token, {
             expires: Number(process.env.NEXT_PUBLIC_COOKIE_EXPIRATION_TIME),
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict',
           });
           Cookies.set('id', user.id, {
             expires: Number(process.env.NEXT_PUBLIC_COOKIE_EXPIRATION_TIME),
           });
           dispatch(setUser({ ...user, isVerified: false }));
-          //Early Access - dispatch(setUser({ ...user, isVerified: true }));
           dispatch(setConfig());
           dispatch(setUnreadNotifications(1)); //welcome notification
           dispatch(setOnboarding(true));
@@ -129,9 +132,6 @@ const SignUp = () => {
 
           sessionStorage.setItem('verification-redirect', 'signup-callback');
           window.location.assign('/verification');
-
-          //Early Access -  sessionStorage.setItem('onboarding-redirect', 'signup');
-          //Early Access -  router.replace('/onboarding');
         }
         setMutex(false);
       })
@@ -148,12 +148,12 @@ const SignUp = () => {
     const token = new URLSearchParams(window.location.search).get('token');
     const email = new URLSearchParams(window.location.search).get('email');
 
-    // if (token && token != '') setEarlyAccessToken(token);
+    if (token && token != '') setReferrerID(token);
     if (email && email != '') setEmail(email);
   }, [window.location.search]);
 
   const handleGoogleLogin = () => {
-    window.location.assign(`${BACKEND_URL}/auth/google`);
+    window.location.assign(`${BACKEND_URL}/auth/google?referrerID=${referrerID}`);
   };
   return (
     <>
@@ -164,7 +164,7 @@ const SignUp = () => {
           content="Sign up for Interact! Interact is a groundbreaking web platform designed for college-going students, freelancers, professionals, and creatives."
         />
       </Head>
-      <div className="h-full flex">
+      <div className="h-full flex dark:bg-dark_primary_comp">
         {clickedOnStrongPassInfo ? (
           <StrongPassInfo password={password} confirmPassword={confirmPassword} setShow={setClickedOnStrongPassInfo} />
         ) : (
@@ -172,7 +172,12 @@ const SignUp = () => {
         )}
         <div className="w-[45%] max-lg:w-full h-full min-h-screen font-primary gap-12 py-8 px-8 flex flex-col justify-between items-center">
           <div className="w-full flex justify-start items-center">
-            <ReactSVG src="/onboarding_logo.svg" />
+            <Link href="/" className="hidden dark:flex">
+              <ReactSVG src="/onboarding_logo_dark.svg" />
+            </Link>
+            <Link href="/" className="static dark:hidden">
+              <ReactSVG src="/onboarding_logo.svg" />
+            </Link>
           </div>
           <form onSubmit={handleSubmit} className="w-3/5 max-md:w-full flex flex-col items-center gap-6">
             <div className="flex flex-col gap-2 text-center">
@@ -181,7 +186,7 @@ const SignUp = () => {
             </div>
             <div
               onClick={handleGoogleLogin}
-              className="w-full flex gap-4 justify-center cursor-pointer shadow-md  border-[#D4D9E1] hover:bg-[#F2F2F2] active:bg-[#EDEDED] border-2 rounded-xl px-4 py-2"
+              className="w-full flex gap-4 justify-center cursor-pointer shadow-md  border-[#D4D9E1] hover:bg-[#F2F2F2] dark:hover:bg-dark_primary_comp_hover active:bg-[#EDEDED] dark:active:bg-dark_primary_comp_active border-2 rounded-xl px-4 py-2"
             >
               <div>
                 <ReactSVG src="/assets/google.svg" />
@@ -343,7 +348,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
     return {
       redirect: {
         permanent: true,
-        destination: '/home',
+        destination: '/',
       },
       props: { token },
     };

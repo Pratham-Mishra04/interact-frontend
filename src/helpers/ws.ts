@@ -3,7 +3,7 @@ import socketService from '@/config/ws';
 import patchHandler from '@/handlers/patch_handler';
 import { setCurrentOrgRole } from '@/slices/orgSlice';
 import { store } from '@/store';
-import { Chat, Message, OrganizationMembership, TypingStatus, User } from '@/types';
+import { Chat, Hackathon, Message, OrganizationMembership, TypingStatus, User } from '@/types';
 import { initialUser } from '@/types/initials';
 import { getUserFromState } from '@/utils/funcs/redux';
 import sortChats from '@/utils/funcs/sort_chats';
@@ -119,6 +119,27 @@ export class SendUpdateMembership {
     this.userID = userID;
     this.organizationID = organizationID;
     this.role = role;
+  }
+}
+
+export class UpdateHackathonEvent {
+  hackathon = {} as Hackathon;
+
+  constructor(hackathon: Hackathon) {
+    this.hackathon = {
+      ...hackathon,
+      description: '',
+      tags: [],
+      links: [],
+      participants: [],
+      coordinators: [],
+      history: [],
+      tracks: [],
+      sponsors: [],
+      prizes: [],
+      rounds: [],
+      faqs: [],
+    };
   }
 }
 

@@ -23,9 +23,13 @@ const SharedOpeningMessage = ({ message }: Props) => {
         className={'rounded-full w-8 h-8 cursor-pointer border-[1px] border-black'}
       />
       <div className={`w-3/4 max-md:w-4/5 flex flex-wrap gap-2 ${message.userID === userID ? 'flex-row-reverse' : ''}`}>
-        <div className="w-full max-w-[27rem] flex flex-col text-sm cursor-default dark:bg-dark_primary_comp_hover gap-2">
+        <div className="w-full max-w-[27rem] flex flex-col text-sm cursor-default gap-2">
           <OpeningCard opening={message.opening} />
-          {message.content != '' && <div className="bg-primary_comp rounded-lg px-4 py-2">{message.content}</div>}
+          {message.content != '' && (
+            <div className="bg-primary_comp dark:bg-dark_primary_comp_hover rounded-lg px-4 py-2">
+              {message.content}
+            </div>
+          )}
         </div>
         <div
           className={` flex items-center gap-1 text-xs self-end ${message.userID === userID ? 'flex-row-reverse' : ''}`}

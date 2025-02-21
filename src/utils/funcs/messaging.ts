@@ -1,17 +1,25 @@
 import { Chat } from '@/types';
-import { initialChatMembership } from '@/types/initials';
+import { initialChatMembership, initialUser } from '@/types/initials';
 import Cookies from 'js-cookie';
 
 export const getMessagingUser = (chat: Chat) => {
   const userID = Cookies.get('id');
-  if (chat.memberships[0].userID == userID) return chat.memberships[1].user;
-  return chat.memberships[0].user;
+  try {
+    if (chat?.memberships[0]?.userID == userID) return chat.memberships[1].user;
+    return chat.memberships[0].user;
+  } catch (e) {
+    return initialUser;
+  }
 };
 
 export const getMessagingMembership = (chat: Chat) => {
   const userID = Cookies.get('id');
-  if (chat.memberships[0].userID == userID) return chat.memberships[1];
-  return chat.memberships[0];
+  try {
+    if (chat?.memberships[0]?.userID == userID) return chat.memberships[1];
+    return chat.memberships[0] || initialChatMembership;
+  } catch (e) {
+    return initialChatMembership;
+  }
 };
 
 export const getSelfMembership = (chat: Chat) => {

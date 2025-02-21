@@ -32,7 +32,7 @@ const Order = ({ fieldName, options, icon, selectedOption, setSelectedOption }: 
     <div ref={menuRef} className="relative z-10">
       <FilterButton fieldName={fieldName} filledText={selectedOption} icon={icon} setShow={setShow} />
       {show && (
-        <div className="w-48 h-fit p-3 bg-white flex flex-col gap-2 absolute -bottom-2 left-0 translate-y-full rounded-md border-[1px] border-gray-200 shadow-md animate-fade_third">
+        <div className="w-48 h-fit p-3 bg-white dark:bg-dark_primary_comp dark:border-dark_primary_btn flex flex-col gap-2 absolute -bottom-2 left-0 translate-y-full rounded-md border-[1px] border-gray-200 shadow-md animate-fade_third">
           <div className="text-xl font-medium">{fieldName}</div>
           <div className="w-full flex flex-col gap-1">
             {options.map((option, index) => (

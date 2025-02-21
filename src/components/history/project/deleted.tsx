@@ -11,13 +11,21 @@ const Deleted = ({ history }: Props) => {
     case 5: //User deleted opening
       return (
         <ProjectHistoryWrapper history={history}>
-          <div className="w-fit text-center flex-center gap-1">deleted an Opening - {history.deletedText}.</div>
+          <div className="w-fit inline items-center gap-1">
+            <span>deleted an Opening - </span>
+            <span>{history.deletedText}</span>
+            <span>.</span>
+          </div>
         </ProjectHistoryWrapper>
       );
     case 12: //User withdrew invitation
       return (
         <ProjectHistoryWrapper history={history}>
-          <div className="w-fit text-center flex-center gap-1">withdrew an Invitation - {history.deletedText}.</div>
+          <div className="w-fit inline items-center gap-1">
+            <span>withdrew an Invitation - </span>
+            <span>{history.deletedText}</span>
+            <span>.</span>
+          </div>
         </ProjectHistoryWrapper>
       );
     default:

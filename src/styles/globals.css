@@ -32,11 +32,19 @@
 }
 
 .fade-img {
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0)100%);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
 }
 
 .fade-img2 {
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.2)50%, rgba(0, 0, 0, 0)100%);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0) 100%);
+}
+
+.fade-img-right {
+  mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 90%);
+}
+
+.fade-img-left {
+  mask-image: linear-gradient(to left, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 90%);
 }
 
 .hover-underline-animation {
@@ -373,4 +381,274 @@ html {
 [data-rbd-draggable-id] {
   left: auto !important;
   top: auto !important;
+}
+
+.bg_onboarding {
+  width: 100%;
+  height: 100%;
+  --s: 164px; /* control the size */
+  --c1: #b3e5fc; /* light blue */
+  --c2: #4fc3f7; /* medium blue */
+
+  --_l: #0000 calc(25% / 3), var(--c1) 0 25%, #0000 0;
+  --_g: conic-gradient(from 120deg at 50% 87.5%, var(--c1) 120deg, #0000 0);
+
+  background: var(--_g), var(--_g) 0 calc(var(--s) / 2), conic-gradient(from 180deg at 75%, var(--c2) 60deg, #0000 0),
+    conic-gradient(from 60deg at 75% 75%, var(--c1) 0 60deg, #0000 0),
+    linear-gradient(150deg, var(--_l)) 0 calc(var(--s) / 2),
+    conic-gradient(at 25% 25%, #0000 50%, var(--c2) 0 240deg, var(--c1) 0 300deg, var(--c2) 0),
+    linear-gradient(-150deg, var(--_l)) #01579b; /* darker blue for third color */
+  background-size: calc(0.866 * var(--s)) var(--s);
+}
+
+.infinite-scroll-component__outerdiv > div {
+  overflow: hidden !important;
+}
+
+.rotate-x-landing {
+  transform: perspective(800px) rotateX(15deg);
+}
+
+.rotate-x-landing {
+  transform: perspective(800px) rotateX(15deg);
+}
+
+.tiptap > :first-child {
+  margin-top: 0;
+}
+
+.tiptap p {
+  margin: 0.15rem 0;
+  @apply leading-5;
+}
+
+.tiptap ul {
+  list-style-type: disc;
+}
+
+.tiptap ol {
+  list-style-type: decimal;
+}
+
+.tiptap ul,
+.tiptap ol {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-top: 0.1rem;
+  margin-bottom: 0.1rem;
+  margin-left: 0.4rem;
+}
+
+.tiptap ul[data-type='taskList'] {
+  list-style: none;
+  margin-left: 0;
+  padding: 0;
+}
+
+.tiptap ul[data-type='taskList'] li {
+  align-items: flex-start;
+  display: flex;
+}
+
+.tiptap ul[data-type='taskList'] li > label {
+  flex: 0 0 auto;
+  margin-right: 0.5rem;
+  user-select: none;
+}
+
+.tiptap ul[data-type='taskList'] li > div {
+  flex: 1 1 auto;
+}
+
+.tiptap input[type='checkbox'] {
+  cursor: pointer;
+}
+
+.tiptap ul[data-type='taskList'] {
+  margin: 0;
+}
+
+.tiptap h1,
+.tiptap h2,
+.tiptap h3,
+.tiptap h4,
+.tiptap h5,
+.tiptap h6 {
+  line-height: 1;
+  text-wrap: pretty;
+}
+
+.tiptap h1,
+.tiptap h2 {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tiptap h1 {
+  font-size: 1.4rem;
+  @apply font-bold;
+}
+
+.tiptap h2 {
+  font-size: 1.2rem;
+  @apply font-semibold;
+}
+
+.tiptap h3 {
+  font-size: 1.1rem;
+  @apply font-medium;
+}
+
+.tiptap h4,
+.tiptap h5,
+.tiptap h6 {
+  font-size: 1rem;
+}
+
+.tiptap code {
+  border-radius: 0.4rem;
+  font-size: 0.9rem;
+  padding: 0.1rem 0.3rem;
+  @apply bg-neutral-200 text-black dark:text-white dark:bg-neutral-700;
+}
+
+.tiptap pre {
+  border-radius: 0.5rem;
+  color: #fff;
+  font-family: 'JetBrainsMono', monospace;
+  margin: 0 0;
+  padding: 0.1rem 0.3rem;
+  @apply bg-neutral-700;
+}
+
+.tiptap pre code {
+  background: none;
+  color: inherit;
+  font-size: 0.9rem;
+  padding: 0;
+}
+
+.tiptap mark {
+  border-radius: 0.4rem;
+  font-size: 0.9rem;
+  box-decoration-break: clone;
+  padding: 0.1rem 0.3rem;
+  @apply bg-blue-500 text-white;
+}
+
+.tiptap blockquote {
+  margin: 0.5rem 0;
+  padding-left: 1rem;
+  font-family: 'Gilroy-medium', sans-serif;
+  margin: 0.8rem 0;
+  @apply border-2 border-dotted border-neutral-300 dark:border-neutral-200 p-2 rounded-md text-neutral-800 dark:text-neutral-100;
+}
+
+.tiptap hr {
+  border: none;
+  border-top: 2.5px solid #6a6a6a;
+  cursor: pointer;
+  margin: 0.5rem 0;
+  @apply border-t-[2.5px] border-neutral-300 dark:border-neutral-500;
+}
+
+.tiptap hr.ProseMirror-selectednode {
+  @apply border-t-2 border-neutral-500 dark:border-neutral-400;
+}
+
+.tiptap a {
+  @apply text-blue-500 underline cursor-pointer hover:text-blue-700;
+}
+
+.tiptap .mention {
+  border-radius: 0.4rem;
+  box-decoration-break: clone;
+  padding: 0.1rem 0.3rem;
+}
+
+.tiptap .mention::after {
+  content: '\200B';
+}
+
+.tiptap .mention {
+  @apply hover:cursor-pointer hover:text-blue-500 font-medium p-0;
+}
+
+.tiptap .mention[data-mention-category='orgs'] {
+  @apply hover:text-orange-500;
+}
+
+.tiptap .mention[data-mention-category='events'] {
+  @apply hover:text-purple-500;
+}
+
+.tiptap .mention[data-mention-category='projects'] {
+  @apply hover:text-sky-500;
+}
+
+.tiptap .mention[data-mention-category='communities'] {
+  @apply hover:text-rose-500;
+}
+
+.tiptap .mention[data-mention-category='openings'] {
+  @apply hover:text-emerald-500;
+}
+
+.tiptap .color {
+  white-space: nowrap;
+}
+
+.tiptap .color::before {
+  /*background-color: var(--color);*/
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 2px;
+  content: ' ';
+  display: inline-block;
+  height: 1em;
+  margin-bottom: 0.15em;
+  margin-right: 0.1em;
+  vertical-align: middle;
+  width: 1em;
+}
+
+.tiptap .character-count {
+  align-items: center;
+  display: flex;
+  font-size: 0.75rem;
+  gap: 0.5rem;
+  margin: 1.5rem;
+  color: rgb(202, 202, 202);
+}
+
+.tiptap .character-count svg {
+  @apply text-purple-500;
+}
+
+.tiptap .character-count--warning,
+.tiptap .character-count--warning svg {
+  @apply text-red-500;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  @apply text-gray-400;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.editor-bubble-menu button {
+  @apply p-1 rounded-sm;
+}
+
+.editor-bubble-menu button:hover {
+  @apply hover:bg-primary_comp_hover dark:hover:bg-dark_primary_comp_hover;
+}
+
+.editor-bubble-menu button.is-active {
+  @apply bg-primary_comp_active dark:bg-dark_primary_comp_active;
+}
+
+.editor-bubble-menu button.is-active:hover {
+  @apply hover:bg-primary_comp_active hover:dark:bg-dark_primary_comp_active;
 }

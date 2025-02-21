@@ -5,8 +5,6 @@ import { EXPLORE_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
 import Toaster from '@/utils/toaster';
 import ProjectCard from '../../components/explore/project_card';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import Loader from '../../components/common/loader';
 import { SidePrimeWrapper } from '@/wrappers/side';
 
 interface Props {
@@ -15,19 +13,14 @@ interface Props {
 
 const SimilarProjects = ({ slug }: Props) => {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
 
   const fetchProjects = () => {
-    const URL = `${EXPLORE_URL}/projects/similar/${slug}?page=${page}&limit=${6}`;
-    getHandler(URL)
+    const URL = `${EXPLORE_URL}/projects/similar/${slug}?limit=${6}`;
+    getHandler(URL, undefined, true)
       .then(res => {
         if (res.statusCode === 200) {
-          const addedProjects = Array.from(new Set([...projects, ...(res.data.projects || [])]));
-          if (addedProjects.length === projects.length) setHasMore(false);
-          setProjects(addedProjects);
-          setPage(prev => prev + 1);
+          setProjects(res.data.projects || []);
           setLoading(false);
         } else {
           if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
@@ -42,7 +35,6 @@ const SimilarProjects = ({ slug }: Props) => {
   };
 
   useEffect(() => {
-    setPage(1);
     setProjects([]);
     fetchProjects();
   }, [slug]);
@@ -51,17 +43,11 @@ const SimilarProjects = ({ slug }: Props) => {
     <SidePrimeWrapper>
       <div className="w-full flex flex-col gap-2">
         <div className="text-lg font-semibold">Similar Projects</div>
-        <InfiniteScroll
-          className="w-full"
-          dataLength={projects.length}
-          next={() => fetchProjects()}
-          hasMore={hasMore}
-          loader={<Loader />}
-        >
+        <div className="w-full">
           {projects.map(project => (
             <ProjectCard key={project.id} project={project} isLink smaller />
           ))}
-        </InfiniteScroll>
+        </div>
       </div>
     </SidePrimeWrapper>
   ) : (

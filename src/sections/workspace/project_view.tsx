@@ -28,9 +28,9 @@ import renderContentWithLinks from '@/utils/funcs/render_content_with_links';
 import Tags from '@/components/common/tags';
 import { checkOrgProjectAccess, checkParticularOrgAccess, checkProjectAccess } from '@/utils/funcs/access';
 import { ORG_MANAGER, ORG_SENIOR, PROJECT_EDITOR, PROJECT_MEMBER, PROJECT_OWNER } from '@/config/constants';
-import { currentOrgSelector } from '@/slices/orgSlice';
+import { orgSelector } from '@/slices/orgSlice';
 import { getProjectPicHash, getProjectPicURL } from '@/utils/funcs/safe_extract';
-import EditProjectImages from './edit_project_images';
+import Editor from '@/components/editor';
 
 interface Props {
   projectSlugs: string[];
@@ -74,7 +74,7 @@ const ProjectView = ({
     try {
       slug = projectSlugs[clickedProjectIndex];
     } finally {
-      let URL = checkProjectAccess(PROJECT_MEMBER, clickedProject.id, clickedProject)
+      let URL = checkProjectAccess(user, PROJECT_MEMBER, clickedProject.id, clickedProject)
         ? `${PROJECT_URL}/${slug}`
         : `${ORG_URL}/${clickedProject.organizationID}/projects/${slug}`;
 
@@ -126,7 +126,7 @@ const ProjectView = ({
     }
   };
 
-  const currentOrg = useSelector(currentOrgSelector);
+  const org = useSelector(orgSelector);
 
   const sendOTP = async () => {
     const toaster = Toaster.startLoad('Sending OTP');
@@ -179,16 +179,6 @@ const ProjectView = ({
     const abortController = new AbortController();
     fetchProject(abortController);
   }, [clickedProjectIndex]);
-
-  useEffect(() => {
-    document.documentElement.style.overflowY = 'hidden';
-    document.documentElement.style.height = '100vh';
-
-    return () => {
-      document.documentElement.style.overflowY = 'auto';
-      document.documentElement.style.height = 'auto';
-    };
-  }, []);
 
   const handleClickPrev = () => {
     if (clickedProjectIndex != 0) {
@@ -293,7 +283,7 @@ const ProjectView = ({
                           `/${project.user.isOrganization ? 'organisations' : 'users'}/${project.user.username}`
                         )
                       }
-                      className="cursor-pointer hover-underline-animation after:bg-black"
+                      className="cursor-pointer hover-underline-animation after:bg-black dark:after:bg-white"
                     >
                       {project.user.name}
                     </div>
@@ -336,26 +326,7 @@ const ProjectView = ({
                   <div className="font-semibold text-lg">{project.tagline}</div>
 
                   <div className="text-sm whitespace-pre-wrap">
-                    {project.description.length > 200 ? (
-                      <>
-                        {clickedOnReadMore ? (
-                          project.description
-                        ) : (
-                          <>
-                            {project.description.substring(0, 200)}
-                            <span
-                              onClick={() => setClickedOnReadMore(true)}
-                              className="text-xs italic opacity-60 cursor-pointer"
-                            >
-                              {' '}
-                              Read More...
-                            </span>
-                          </>
-                        )}
-                      </>
-                    ) : (
-                      renderContentWithLinks(project.description)
-                    )}
+                    <Editor editable={false} content={project.description} truncate maxHeight={120} />
                   </div>
                   {project.tags && <Tags tags={project.tags} displayAll={true} />}
                   <Collaborators memberships={project.memberships} workspace={true} />
@@ -365,10 +336,22 @@ const ProjectView = ({
 
                 <div className="w-full mx-auto flex flex-col gap-2 pb-4">
                   {/* <EditProjectImages project={project} setProjects={setProjects} setProject={setProject} /> */}
-                  {checkOrgProjectAccess(PROJECT_EDITOR, project.id, ORG_SENIOR, project.organization) && (
-                    <EditProject project={project} setProjects={setProjects} setProject={setProject} />
-                  )}
-                  {checkOrgProjectAccess(PROJECT_OWNER, project.id, ORG_MANAGER, project.organization) ? (
+                  {checkOrgProjectAccess(
+                    { user, organization: org },
+                    PROJECT_EDITOR,
+                    project.id,
+                    ORG_SENIOR,
+                    project.organization,
+                    !!(project.organizationID && project.organizationID != '')
+                  ) && <EditProject project={project} setProjects={setProjects} setProject={setProject} />}
+                  {checkOrgProjectAccess(
+                    { user, organization: org },
+                    PROJECT_OWNER,
+                    project.id,
+                    ORG_MANAGER,
+                    project.organization,
+                    !!(project.organizationID && project.organizationID != '')
+                  ) ? (
                     <div
                       onClick={() => setClickedOnDelete(true)}
                       className="w-full text-lg font-medium py-2 flex-center border-[1px] border-primary_danger hover:text-white hover:bg-primary_danger rounded-lg cursor-pointer transition-ease-300"
@@ -376,7 +359,7 @@ const ProjectView = ({
                       Delete Project
                     </div>
                   ) : (
-                    checkProjectAccess(PROJECT_MEMBER, project.id) && (
+                    checkProjectAccess(user, PROJECT_MEMBER, project.id) && (
                       <div
                         onClick={() => setClickedOnLeave(true)}
                         className="w-full text-lg font-medium py-2 flex-center border-[1px] border-primary_danger hover:text-white hover:bg-primary_danger rounded-lg cursor-pointer transition-ease-300"

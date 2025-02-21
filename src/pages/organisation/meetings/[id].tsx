@@ -15,6 +15,7 @@ import { USER_PROFILE_PIC_URL } from '@/config/routes';
 import deleteHandler from '@/handlers/delete_handler';
 import getHandler from '@/handlers/get_handler';
 import postHandler from '@/handlers/post_handler';
+import { useOrgAccess } from '@/hooks/use-org-access';
 import AddMeetingParticipants from '@/sections/organization/meetings/add_participants';
 import EditMeeting from '@/sections/organization/meetings/edit_meeting';
 import ParticipantsList from '@/sections/organization/meetings/view_participants';
@@ -22,7 +23,6 @@ import { currentOrgSelector } from '@/slices/orgSlice';
 import { userSelector } from '@/slices/userSlice';
 import { Session } from '@/types';
 import { initialMeeting } from '@/types/initials';
-import checkOrgAccess from '@/utils/funcs/access';
 import { getUserFromState } from '@/utils/funcs/redux';
 import renderContentWithLinks from '@/utils/funcs/render_content_with_links';
 import { getNextSessionTime } from '@/utils/funcs/session_details';
@@ -35,7 +35,7 @@ import moment from 'moment';
 import Image from 'next/image';
 import Link from 'next/link';
 import { GetServerSidePropsContext } from 'next/types';
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 interface Props {
@@ -57,6 +57,9 @@ const Meeting = ({ id }: Props) => {
 
   const user = useSelector(userSelector);
   const currentOrg = useSelector(currentOrgSelector);
+
+  const isMember = useOrgAccess(ORG_MEMBER);
+  const isSenior = useOrgAccess(ORG_SENIOR);
 
   const getMeeting = async () => {
     const URL = `/org/${currentOrg.id}/meetings/${id}`;
@@ -153,7 +156,7 @@ const Meeting = ({ id }: Props) => {
 
   const Block = ({ label, child, alignEnd = false }: BlockProps) => (
     <div className={`flex flex-col ${alignEnd && 'items-end'} gap-1`}>
-      <div className="text-sm font-medium uppercase text-gray-700">{label}</div>
+      <div className="text-sm font-medium uppercase text-gray-700 dark:text-white">{label}</div>
       {child}
     </div>
   );
@@ -242,7 +245,7 @@ const Meeting = ({ id }: Props) => {
                       </div>
                     </div>
                     <div className="w-fit flex-center gap-4">
-                      {checkOrgAccess(ORG_MEMBER) && !meeting.isLive && sessions && sessions.length > 0 && (
+                      {isMember && !meeting.isLive && sessions && sessions.length > 0 && (
                         <Record
                           onClick={() => setClickedOnViewRecordings(true)}
                           className=" cursor-pointer"
@@ -250,10 +253,10 @@ const Meeting = ({ id }: Props) => {
                           weight="duotone"
                         />
                       )}
-                      {!meeting.eventID && checkOrgAccess(ORG_SENIOR) && (
+                      {!meeting.eventID && isSenior && (
                         <Pen onClick={() => setClickedOnEdit(true)} className="cursor-pointer" size={28} />
                       )}
-                      {checkOrgAccess(ORG_SENIOR) && (
+                      {isSenior && (
                         <Trash onClick={() => setClickedOnDelete(true)} className="cursor-pointer" size={28} />
                       )}
                       <button
@@ -269,14 +272,14 @@ const Meeting = ({ id }: Props) => {
                     <div className="w-2/3 max-md:w-full flex flex-col gap-6">
                       <div className="flex items-center gap-2">
                         <div
-                          className={`text-xs px-2 py-1 ${
+                          className={`text-xs px-2 py-1 dark:text-primary_black ${
                             meeting.isOpenForMembers ? 'bg-priority_low' : 'bg-priority_high'
                           } rounded-full `}
                         >
                           {meeting.isOpenForMembers ? 'Open for members' : 'Restricted'}
                         </div>
                         <div
-                          className={`text-xs px-2 py-1 ${
+                          className={`text-xs px-2 py-1 dark:text-primary_black ${
                             meeting.allowExternalParticipants ? 'bg-priority_low' : 'bg-priority_high'
                           } rounded-full `}
                         >
@@ -295,7 +298,7 @@ const Meeting = ({ id }: Props) => {
                           label="Status"
                           child={
                             <div
-                              className={`w-fit text-sm px-2 py-1 ${
+                              className={`w-fit text-sm px-2 py-1 dark:text-primary_black ${
                                 status == 'Live'
                                   ? 'bg-priority_low'
                                   : status == 'Ended'
@@ -311,7 +314,7 @@ const Meeting = ({ id }: Props) => {
                           label="Frequency"
                           child={
                             <div
-                              className={`w-fit text-sm px-2 py-1 ${
+                              className={`w-fit text-sm px-2 py-1 dark:text-primary_black ${
                                 meeting.frequency == 'none' ? 'bg-blue-200' : 'bg-priority_mid'
                               } rounded-full capitalize`}
                             >
@@ -371,7 +374,9 @@ const Meeting = ({ id }: Props) => {
 
                       {(!meeting.isOpenForMembers || meeting.allowExternalParticipants) && (
                         <div className="w-fit flex flex-col gap-1">
-                          <div className="text-sm font-medium uppercase text-gray-700">Accepted Users</div>
+                          <div className="text-sm font-medium uppercase text-gray-700 dark:text-white">
+                            Accepted Users
+                          </div>
                           {meeting.participants && meeting.participants.length > 0 ? (
                             <span
                               onClick={() => setClickedOnViewParticipants(true)}
@@ -427,8 +432,10 @@ const Meeting = ({ id }: Props) => {
                           )}
 
                           {isParticipant() && !meeting?.rsvp.map(u => u.id).includes(user.id) && (
-                            <div className="w-full bg-white flex flex-col gap-2 rounded-md p-4 shadow-md">
-                              <div className="w-full text-2xl font-semibold text-primary_black">RSVP Now!</div>
+                            <div className="w-full bg-white dark:bg-dark_primary_comp flex flex-col gap-2 rounded-md p-4 shadow-md">
+                              <div className="w-full text-2xl font-semibold text-primary_black dark:text-white">
+                                RSVP Now!
+                              </div>
                               <div className="text-sm">
                                 Looks like you haven&apos;t confirmed your presence yet. Click the button below and let
                                 other participants know you&apos;ll be joining the meeting!
@@ -453,6 +460,7 @@ const Meeting = ({ id }: Props) => {
                   sessions={sessions}
                   setClickedOnSession={setClickedOnSession}
                   setClickedSessionID={setClickedSessionID}
+                  org={false}
                 />
               )}
             </div>

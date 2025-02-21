@@ -18,6 +18,7 @@ import EditTeam from './edit_team';
 import ConfirmDelete from '@/components/common/confirm_delete';
 import { Trash } from '@phosphor-icons/react/dist/ssr';
 import { userSelector } from '@/slices/userSlice';
+import { useOrgAccess } from '@/hooks/use-org-access';
 
 interface Props {
   teamID: string;
@@ -183,6 +184,9 @@ const MembersList = ({ teamID, setShow, setOrganization }: Props) => {
     getTeam();
   }, []);
 
+  const isSenior = useOrgAccess(ORG_SENIOR);
+  const isManager = useOrgAccess(ORG_MANAGER);
+
   return clickedOnEditTeam ? (
     <EditTeam setShow={setClickedOnEditTeam} team={team} setTeam={setTeam} setOrganization={setOrganization} />
   ) : clickedOnDelete ? (
@@ -194,8 +198,8 @@ const MembersList = ({ teamID, setShow, setOrganization }: Props) => {
       <div className="w-full flex items-center justify-between flex-wrap">
         <div className="text-2xl font-semibold">Team Members ({(team.memberships || []).length}) </div>
         <div className="flex-center gap-2">
-          {checkOrgAccess(ORG_SENIOR) && <Pen onClick={() => setClickedOnEditTeam(true)} className="cursor-pointer" />}
-          {checkOrgAccess(ORG_MANAGER) && <Trash onClick={() => setClickedOnDelete(true)} className="cursor-pointer" />}
+          {isSenior && <Pen onClick={() => setClickedOnEditTeam(true)} className="cursor-pointer" />}
+          {isManager && <Trash onClick={() => setClickedOnDelete(true)} className="cursor-pointer" />}
           {team.memberships.map(membership => membership.userID).includes(user.id) && (
             <div
               onClick={() => setClickedOnLeave(true)}
@@ -212,7 +216,7 @@ const MembersList = ({ teamID, setShow, setOrganization }: Props) => {
           <div
             key={membership.id}
             className={`w-full h-12 px-2 bg-white ${
-              checkOrgAccess(ORG_SENIOR) && 'hover:bg-slate-100'
+              isSenior && 'hover:bg-slate-100'
             } rounded-xl border-gray-400 flex items-center text-sm text-primary_black transition-ease-300`}
           >
             <div className="grow flex items-center gap-1">
@@ -229,9 +233,7 @@ const MembersList = ({ teamID, setShow, setOrganization }: Props) => {
                 <div className="text-xs">@{membership.user.username}</div>
               </div>
             </div>
-            {checkOrgAccess(ORG_SENIOR) && (
-              <XCircle onClick={() => handleRemove(membership.user.id)} className="cursor-pointer" />
-            )}
+            {isSenior && <XCircle onClick={() => handleRemove(membership.user.id)} className="cursor-pointer" />}
           </div>
         ))}
       </div>

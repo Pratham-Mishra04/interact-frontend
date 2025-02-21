@@ -30,7 +30,11 @@ const MainWrapper: React.FC<WrapperProps> = ({ children, restrictWidth = false, 
       {cookiesDisabled && <CookiesCheck />}
       <div className="bg-white h-[0px] dark:h-[1px] w-full sticky top-16 z-10"></div>
       <div className="bg-main dark:bg-dark_main h-base w-full fixed top-16 backdrop-blur-md -z-10 transition-ease-500"></div>
-      <div className={`${restrictWidth ? 'w-[calc(100vw-280px)] mx-auto' : 'w-full'} px-8 pb-base_padding pt-8`}>
+      <div
+        className={`${
+          restrictWidth ? 'w-[calc(100vw-280px)] mx-auto max-lg:w-full' : 'w-full'
+        } px-8 pb-base_padding pt-8 max-md:p-4`}
+      >
         {children}
       </div>
     </div>

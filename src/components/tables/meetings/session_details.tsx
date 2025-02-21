@@ -8,16 +8,18 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Loader from '../../common/loader';
 import moment from 'moment';
-import { ChatCenteredDots, FunnelSimple, Subtitles } from '@phosphor-icons/react';
+import { ChatCenteredDots, Subtitles } from '@phosphor-icons/react';
 import ToolTip from '../../utils/tooltip';
 import Link from 'next/link';
 import { getParticipationDuration } from '@/utils/funcs/session_details';
+import { APPLICATION_URL } from '@/config/routes';
 
 interface Props {
   sessionID: string;
   session: Session;
   meetingHostID: string;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
+  applicationID?: string;
 }
 
 interface Participant {
@@ -28,7 +30,7 @@ interface Participant {
   role: string;
 }
 
-const SessionDetailsTable = ({ sessionID, meetingHostID, session, setShow }: Props) => {
+const SessionDetailsTable = ({ sessionID, meetingHostID, session, setShow, applicationID }: Props) => {
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -43,7 +45,10 @@ const SessionDetailsTable = ({ sessionID, meetingHostID, session, setShow }: Pro
 
   const fetchParticipants = async () => {
     setLoading(true);
-    const URL = `/org/${currentOrg.id}/meetings/details/${sessionID}?page=${page}&limit=${limit}&type=participants`;
+    const URL =
+      (applicationID
+        ? `${APPLICATION_URL}/meeting/details/${applicationID}/`
+        : `/org/${currentOrg.id}/meetings/details/`) + `${sessionID}?page=${page}&limit=${limit}&type=participants`;
     const res = await getHandler(URL);
     if (res.statusCode === 200) {
       const addedUsers = [...(res.data.participants || []), ...participants];
@@ -198,7 +203,7 @@ const SessionDetailsTable = ({ sessionID, meetingHostID, session, setShow }: Pro
             hasMore && (
               <div
                 onClick={fetchParticipants}
-                className="w-fit mx-auto pt-4 text-xs text-gray-700 font-medium hover-underline-animation after:bg-gray-700 cursor-pointer"
+                className="w-fit mx-auto pt-4 text-xs text-gray-700 dark:text-white font-medium hover-underline-animation after:bg-gray-700 cursor-pointer"
               >
                 Load More
               </div>

@@ -6,9 +6,9 @@ import { ORG_SENIOR } from '@/config/constants';
 import { SERVER_ERROR } from '@/config/errors';
 import { ORG_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
-import NewResource from '@/sections/organization/resources/new_resource';
-import ResourceView from '@/sections/organization/resources/resource_view';
-import { currentOrgSelector } from '@/slices/orgSlice';
+import NewResource from '@/sections/resources/new_resource';
+import ResourceView from '@/sections/resources/resource_view';
+import { currentOrgSelector, orgSelector } from '@/slices/orgSlice';
 import { ResourceBucket } from '@/types';
 import { initialOrganization, initialResourceBucket } from '@/types/initials';
 import checkOrgAccess from '@/utils/funcs/access';
@@ -20,16 +20,16 @@ import { Info, Plus } from '@phosphor-icons/react';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Mascot from '@/components/fillers/mascot';
+import { useOrgAccess } from '@/hooks/use-org-access';
+import { userSelector } from '@/slices/userSlice';
 
 const Resources = () => {
   const [resources, setResources] = useState<ResourceBucket[]>([]);
   const [loading, setLoading] = useState(true);
-  const [organization, setOrganization] = useState(initialOrganization);
 
   const [clickedOnResource, setClickedOnResource] = useState(false);
   const [clickedResource, setClickedResource] = useState<ResourceBucket>(initialResourceBucket);
 
-  const [clickedOnNewResource, setClickedOnNewResource] = useState(false);
   const [clickedOnInfo, setClickedOnInfo] = useState(false);
 
   const currentOrg = useSelector(currentOrgSelector);
@@ -39,8 +39,7 @@ const Resources = () => {
     getHandler(URL)
       .then(res => {
         if (res.statusCode === 200) {
-          const resourceData = res.data.resourceBuckets || [];
-          setOrganization(res.data.organization);
+          const resourceData = res.data.buckets || [];
           setResources(resourceData);
           const rid = new URLSearchParams(window.location.search).get('rid');
           if (rid && rid != '') {
@@ -65,26 +64,23 @@ const Resources = () => {
     getResourceBuckets();
   }, []);
 
+  const user = useSelector(userSelector);
+  const org = useSelector(orgSelector);
+
+  const isSenior = useOrgAccess(ORG_SENIOR);
+
   return (
     <BaseWrapper title={`Resources | ${currentOrg.title}`}>
       <OrgSidebar index={14} />
       <MainWrapper>
-        {clickedOnNewResource && (
-          <NewResource setShow={setClickedOnNewResource} organization={organization} setResources={setResources} />
-        )}
         {clickedOnInfo && <AccessTree type="resource" setShow={setClickedOnInfo} />}
         <div className="w-full flex flex-col relative">
           <div className="w-full flex justify-between items-center p-base_padding">
             <div className="text-6xl max-md:text-4xl font-semibold dark:text-white font-primary">Resources</div>
 
             <div className="flex items-center gap-2">
-              {checkOrgAccess(ORG_SENIOR) && (
-                <Plus
-                  onClick={() => setClickedOnNewResource(true)}
-                  size={42}
-                  className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
-                  weight="regular"
-                />
+              {isSenior && (
+                <NewResource setResources={setResources} resourceType="org" resourceParentID={currentOrg.id} />
               )}
               <Info
                 onClick={() => setClickedOnInfo(true)}
@@ -107,17 +103,21 @@ const Resources = () => {
                         resource={resource}
                         setClickedOnResource={setClickedOnResource}
                         setClickedResource={setClickedResource}
+                        checkerFunc={a => checkOrgAccess({ user, organization: org }, a)}
                       />
                     );
                   })}
                 </div>
-                {clickedOnResource && checkOrgAccess(clickedResource.viewAccess) && (
+                {clickedOnResource && checkOrgAccess({ user, organization: org }, clickedResource.viewAccess) && (
                   <ResourceView
                     setShow={setClickedOnResource}
                     resourceBucket={clickedResource}
                     setResources={setResources}
                     setClickedResourceBucket={setClickedResource}
                     setClickedOnResourceBucket={setClickedOnResource}
+                    resourceType="org"
+                    resourceParentID={currentOrg.id}
+                    checkerFunc={a => checkOrgAccess({ user, organization: org }, a)}
                   />
                 )}
               </div>

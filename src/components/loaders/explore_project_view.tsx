@@ -1,11 +1,10 @@
 import { X } from '@phosphor-icons/react';
 import React from 'react';
 interface Props {
-  setClickedOnProject: React.Dispatch<React.SetStateAction<boolean>>;
-  fadeIn: boolean;
+  fadeIn?: boolean;
 }
 
-const ProjectViewLoader = ({ setClickedOnProject, fadeIn }: Props) => {
+const ProjectViewLoader = ({ fadeIn }: Props) => {
   return (
     <div
       className={`w-screen h-screen dark:text-white font-primary fixed top-0 left-0 z-50 flex bg-backdrop backdrop-blur-2xl ${
@@ -44,16 +43,6 @@ const ProjectViewLoader = ({ setClickedOnProject, fadeIn }: Props) => {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="w-16 h-screen flex flex-col items-center justify-between py-3 max-lg:fixed max-lg:top-0 max-lg:right-0">
-        <div
-          onClick={() => setClickedOnProject(false)}
-          className="w-10 h-10 rounded-full flex-center bg-gray-100 dark:bg-dark_primary_comp_hover cursor-pointer"
-        >
-          <X size={24} weight="bold" />
-        </div>
-        <div className="w-10 h-10 rounded-full"></div>
       </div>
     </div>
   );
