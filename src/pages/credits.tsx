@@ -46,7 +46,7 @@ const CreditCard = ({ title, description, amount, credits, planID }: Props) => {
       </div>
 
       <div className="w-full flex-center">
-        <RazorpayPaymentButton title="Buy Now 2" planID={planID} amount={amount} credits={credits} />
+        <RazorpayPaymentButton title="Buy Now" planID={planID} amount={amount} credits={credits} />
       </div>
     </div>
   );
