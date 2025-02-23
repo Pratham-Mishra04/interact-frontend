@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import React, { useEffect, useState } from 'react';
 
 interface Props {
@@ -5,9 +6,10 @@ interface Props {
   limit?: number;
   center?: boolean;
   displayAll?: boolean;
+  className?: string;
 }
 
-const Tags = ({ tags, limit = 20, center = false, displayAll = false }: Props) => {
+const Tags = ({ tags, limit = 20, center = false, displayAll = false, className }: Props) => {
   const [displayTags, setDisplayTags] = useState<string[]>([]);
   useEffect(() => {
     if (displayAll) setDisplayTags(tags || []);
@@ -28,14 +30,22 @@ const Tags = ({ tags, limit = 20, center = false, displayAll = false }: Props) =
           return (
             <div
               key={tag}
-              className="flex-center px-2 py-1 font-primary text-xs dark:text-white border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg"
+              className={cn(
+                'flex-center px-2 py-1 font-primary text-xs dark:text-white border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg',
+                className
+              )}
             >
               {tag}
             </div>
           );
         })}
       {!displayAll && tags.length - displayTags.length > 0 && (
-        <div className="flex-center px-2 py-1 font-primary text-xs dark:text-white border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg">
+        <div
+          className={cn(
+            'flex-center px-2 py-1 font-primary text-xs dark:text-white border-[1px] border-primary_btn  dark:border-dark_primary_btn rounded-lg',
+            className
+          )}
+        >
           +{tags.length - displayTags.length}
         </div>
       )}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const CreateNewProject = () => {
+const FiltersAndOptions = () => {
   const [sortBy, setSortBy] = useState('Most Liked');
   const [category, setCategory] = useState('Example : AI/ML');
   const [timePosted, setTimePosted] = useState('Last 7 days');
@@ -124,4 +124,4 @@ const CreateNewProject = () => {
   );
 };
 
-export default CreateNewProject;
+export default FiltersAndOptions;

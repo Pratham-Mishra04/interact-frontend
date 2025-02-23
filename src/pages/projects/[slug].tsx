@@ -22,7 +22,7 @@ import Links from '@/components/explore/show_links';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { setEditorProjects, setManagerProjects, setMemberProjects, userSelector } from '@/slices/userSlice';
-import { checkOrgProjectAccess, checkProjectAccess, checkStaticProjectAccess } from '@/utils/funcs/access';
+import { checkOrgProjectAccess, checkStaticProjectAccess } from '@/utils/funcs/access';
 import { ORG_SENIOR, PROJECT_EDITOR, PROJECT_MANAGER, PROJECT_MEMBER } from '@/config/constants';
 import LowerProject from '@/components/lowers/lower_project';
 import { PencilSimple } from '@phosphor-icons/react/dist/ssr';
@@ -30,7 +30,6 @@ import EditProjectImages from '@/sections/workspace/edit_project_images';
 import Tasks from '@/sections/workspace/tasks';
 import Collaborators from '@/sides/project/collaborators';
 import Activity from '@/sides/project/activity';
-import moment from 'moment';
 import ProjectLoader from '@/components/loaders/project';
 import SideLoader from '@/components/loaders/side';
 import axios from 'axios';
@@ -221,9 +220,8 @@ const ProjectComponent = ({
                 {/* <UserProjects user={project.user} projectID={project.id} /> */}
                 <Collaborators project={project} setProject={setProject} />
               </SidePrimeWrapper>
-              
+
               {/* <Openings project={project} setProject={setProject} permissionConfig={permissionConfig} /> */}
-              
             </>
           )}
           {!err && project.id && !loading && (

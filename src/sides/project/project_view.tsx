@@ -1,11 +1,10 @@
 import { USER_PROFILE_PIC_URL } from '@/config/routes';
 import { Project } from '@/types';
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import { ArrowUpRight, Buildings } from '@phosphor-icons/react';
 import Link from 'next/link';
 import Links from '@/components/explore/show_links';
-import renderContentWithLinks from '@/utils/funcs/render_content_with_links';
 import { SidePrimeWrapper } from '@/wrappers/side';
 import LowerProject from '@/components/lowers/lower_project';
 import ProjectCardCarousel from '@/components/explore/project_card_carousel';
@@ -18,8 +17,6 @@ interface Props {
 }
 
 const ProjectView = ({ project, setProject, openInNewTab }: Props) => {
-  const [clickedOnReadMore, setClickedOnReadMore] = useState(false);
-
   return (
     <SidePrimeWrapper stickTop>
       <div
