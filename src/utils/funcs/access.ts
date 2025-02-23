@@ -96,7 +96,46 @@ export const checkParticularOrgAccess = (accessRole: string, checkOrg: Organizat
   }
 };
 
-export const checkProjectAccess = (user: UserState, role: string, projectID?: string, project?: Project) => {
+export const checkProjectAccess = (
+  user: UserState,
+  action: string,
+  config?: PermissionConfig,
+  projectID?: string,
+  project?: Project
+) => {
+  if (!user) return false;
+
+  const ownerProjects = user.ownerProjects;
+  const managerProjects = user.managerProjects;
+  const editorProjects = user.editorProjects;
+  const memberProjects = user.memberProjects;
+
+  if (!projectID) return false;
+
+  const isOwner = ownerProjects.includes(projectID) || project?.userID == user.id;
+  const isManager = managerProjects.includes(projectID);
+  const isEditor = editorProjects.includes(projectID);
+  const isMember = memberProjects.includes(projectID);
+
+  const requiredRole = config ? config[action] : undefined;
+
+  if (!requiredRole) return false;
+
+  switch (requiredRole) {
+    case PROJECT_OWNER:
+      return isOwner;
+    case PROJECT_MANAGER:
+      return isOwner || isManager;
+    case PROJECT_EDITOR:
+      return isOwner || isManager || isEditor;
+    case PROJECT_MEMBER:
+      return isOwner || isManager || isEditor || isMember;
+    default:
+      return false;
+  }
+};
+
+export const checkStaticProjectAccess = (user: UserState, role: string, projectID?: string, project?: Project) => {
   if (!user) return false;
 
   const ownerProjects = user.ownerProjects;
@@ -128,13 +167,32 @@ export const checkProjectAccess = (user: UserState, role: string, projectID?: st
 //TODO take orgID from project
 export const checkOrgProjectAccess = (
   state: OrgAccessState,
+  action: string,
+  projectID: string,
+  orgRole: string,
+  config?: PermissionConfig,
+  org?: Organization | null,
+  isOrgProject: boolean = false
+) => {
+  const projectAccess = checkProjectAccess(state.user, action, config, projectID);
+  const orgAccess = org
+    ? checkParticularOrgAccess(orgRole, org)
+    : isOrgProject
+    ? checkOrgAccess(state, orgRole)
+    : false;
+
+  return projectAccess || orgAccess;
+};
+
+export const checkStaticOrgProjectAccess = (
+  state: OrgAccessState,
   projectRole: string,
   projectID: string,
   orgRole: string,
   org?: Organization | null,
   isOrgProject: boolean = false
 ) => {
-  const projectAccess = checkProjectAccess(state.user, projectRole, projectID);
+  const projectAccess = checkStaticProjectAccess(state.user, projectRole, projectID);
   const orgAccess = org
     ? checkParticularOrgAccess(orgRole, org)
     : isOrgProject

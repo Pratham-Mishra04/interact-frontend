@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Project, ProjectBookmark } from '@/types';
+import { PermissionConfig, Project, ProjectBookmark } from '@/types';
 import deleteHandler from '@/handlers/delete_handler';
 import getHandler from '@/handlers/get_handler';
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,7 +26,13 @@ import SignUp from '../common/signup_box';
 import Share from '@/sections/lowers/share';
 import ProjectCard from '../cards/project';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { checkOrgProjectAccess, checkParticularOrgAccess, checkProjectAccess } from '@/utils/funcs/access';
+import {
+  checkOrgProjectAccess,
+  checkParticularOrgAccess,
+  checkProjectAccess,
+  checkStaticOrgProjectAccess,
+  checkStaticProjectAccess,
+} from '@/utils/funcs/access';
 import { ORG_MANAGER, ORG_SENIOR, PROJECT_EDITOR, PROJECT_MEMBER, PROJECT_OWNER } from '@/config/constants';
 import EditProject from '@/sections/workspace/edit_project';
 import { SERVER_ERROR } from '@/config/errors';
@@ -38,6 +44,7 @@ import { orgSelector } from '@/slices/orgSlice';
 interface Props {
   project: Project;
   setProject?: React.Dispatch<React.SetStateAction<Project>>;
+  permissionConfig?: PermissionConfig;
 }
 
 interface bookMarkStatus {
@@ -46,7 +53,7 @@ interface bookMarkStatus {
   bookmarkID: string;
 }
 
-const LowerProject = ({ project, setProject }: Props) => {
+const LowerProject = ({ project, setProject, permissionConfig }: Props) => {
   const [liked, setLiked] = useState(false);
   const [numLikes, setNumLikes] = useState(project.noLikes);
   const [bookmarkStatus, setBookmarkStatus] = useState<bookMarkStatus>({
@@ -289,9 +296,10 @@ const LowerProject = ({ project, setProject }: Props) => {
           <PopoverContent className="flex flex-col gap-2 text-sm w-48 p-3" align="end">
             {checkOrgProjectAccess(
               { user, organization: org },
-              PROJECT_EDITOR,
+              'edit_project',
               project.id,
               ORG_SENIOR,
+              permissionConfig,
               project.organization,
               !!(project.organizationID && project.organizationID != '')
             ) && <EditProject project={project} setProject={setProject} />}
@@ -306,8 +314,8 @@ const LowerProject = ({ project, setProject }: Props) => {
               <Export className="cursor-pointer max-lg:w-6 max-lg:h-6" size={20} weight="regular" />
               Share
             </div>
-            {checkProjectAccess(user, PROJECT_MEMBER, project.id) &&
-            !checkProjectAccess(user, PROJECT_OWNER, project.id) ? (
+            {checkStaticProjectAccess(user, PROJECT_MEMBER, project.id) &&
+            !checkStaticProjectAccess(user, PROJECT_OWNER, project.id) ? (
               <div
                 onClick={() => {
                   setClickedOnLeave(true);
@@ -330,7 +338,7 @@ const LowerProject = ({ project, setProject }: Props) => {
                 <WarningCircle className="cursor-pointer max-lg:w-6 max-lg:h-6" size={20} /> Report
               </div>
             )}
-            {checkOrgProjectAccess(
+            {checkStaticOrgProjectAccess(
               { user, organization: org },
               PROJECT_OWNER,
               project.id,

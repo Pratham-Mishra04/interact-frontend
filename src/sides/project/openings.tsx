@@ -1,5 +1,5 @@
 import React from 'react';
-import { Project } from '@/types';
+import { PermissionConfig, Project } from '@/types';
 import Link from 'next/link';
 import moment from 'moment';
 import { SidePrimeWrapper } from '@/wrappers/side';
@@ -13,17 +13,19 @@ import { userSelector } from '@/slices/userSlice';
 interface Props {
   project: Project;
   setProject: React.Dispatch<React.SetStateAction<Project>>;
+  permissionConfig?: PermissionConfig;
 }
 
-const Openings = ({ project, setProject }: Props) => {
+const Openings = ({ project, setProject, permissionConfig }: Props) => {
   const user = useSelector(userSelector);
 
-  return (project.openings && project.openings.length > 0) || checkProjectAccess(user, PROJECT_MANAGER, project.id) ? (
+  return (project.openings && project.openings.length > 0) ||
+    checkProjectAccess(user, 'manage_openings', permissionConfig, project.id) ? (
     <SidePrimeWrapper>
       <div className="w-full flex flex-col gap-2">
         <div className="w-full flex items-center justify-between">
           <div className="text-lg font-medium">Active Openings</div>
-          {checkProjectAccess(user, PROJECT_MANAGER, project.id) ? (
+          {checkProjectAccess(user, 'manage_openings', permissionConfig, project.id) ? (
             <div className="flex-center gap-2">
               <AddOpening project={project} setProject={setProject} org={false} />
               {project.openings && project.openings.length > 0 && (
@@ -63,7 +65,7 @@ const Openings = ({ project, setProject }: Props) => {
                     <OpeningBookmarkIcon opening={opening} />
                   </div> */}
                   </div>
-                  {checkProjectAccess(user, PROJECT_MANAGER, project.id) ? (
+                  {checkProjectAccess(user, 'see_applications', permissionConfig, project.id) ? (
                     <div className="w-full flex items-center gap-1 text-sm">
                       {opening.noApplications} Applications
                       <Link href={`/workspace/manage/applications/${opening.id}`} className="text-xs">

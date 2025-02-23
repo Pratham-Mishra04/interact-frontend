@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Project, Task } from '@/types';
+import { PermissionConfig, Project, Task } from '@/types';
 import { SERVER_ERROR } from '@/config/errors';
 import { ORG_URL, PROJECT_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
@@ -19,9 +19,10 @@ import { userSelector } from '@/slices/userSlice';
 interface Props {
   project: Project;
   org?: boolean;
+  permissionConfig?: PermissionConfig;
 }
 
-const Tasks = ({ project, org = false }: Props) => {
+const Tasks = ({ project, org = false, permissionConfig }: Props) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -68,7 +69,7 @@ const Tasks = ({ project, org = false }: Props) => {
       {loading ? (
         <TasksLoader />
       ) : tasks.length == 0 ? (
-        checkProjectAccess(user, PROJECT_MANAGER, project.id) ? (
+        checkProjectAccess(user, 'manage_tasks', permissionConfig, project.id) ? (
           <>
             <div className="text-center my-2">
               <span className="text-xl text-gradient font-semibold">Empty Here! </span>The to-do list 📝 is your canvas,
