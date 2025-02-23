@@ -13,6 +13,7 @@ import { resizeImage } from '@/utils/resize_image';
 import Image from 'next/image';
 import postHandler from '@/handlers/post_handler';
 import { X } from '@phosphor-icons/react';
+import ImageEditorDialog, { handleImageInputChange } from '@/components/image-editor/dialog';
 // import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 
 interface Props {
@@ -28,6 +29,7 @@ const EditProjectImages = ({ project, setProject, isDialogOpen, setIsDialogOpen,
   const [newImage, setNewImage] = useState<File>();
   const [newImageUrl, setNewImageUrl] = useState<string>('');
   const [images, setImages] = useState<string[]>(project.images || []);
+  const [openImageEditor, setOpenImageEditor] = useState(false);
 
   const [stage, setStage] = useState(0);
   const [mutex, setMutex] = useState(false);
@@ -178,6 +180,16 @@ const EditProjectImages = ({ project, setProject, isDialogOpen, setIsDialogOpen,
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      {openImageEditor && newImage && <ImageEditorDialog
+        open={openImageEditor}
+        setOpen={setOpenImageEditor}
+        handleUpdate={(file: File)=>{
+          setNewImageUrl(URL.createObjectURL(file));
+          setNewImage(file);
+        }}
+        aspectRatio={1280 / 720}
+        image={newImage}
+      />}
       <DialogContent className={`sm:max-w-md ${stage == 0 ? 'min-w-[50%] px-16' : 'min-w-[30%]'} overflow-x-hidden`}>
         <DialogHeader>
           <DialogTitle className="text-3xl">Edit Project Images</DialogTitle>
@@ -254,23 +266,12 @@ const EditProjectImages = ({ project, setProject, isDialogOpen, setIsDialogOpen,
                         className="hidden"
                         id="image"
                         multiple={false}
-                        onChange={async ({ target }) => {
-                          if (target.files && target.files.length > 0) {
-                            if (target.files[0].type.split('/')[0] === 'image') {
-                              try {
-                                const resizedPic = await resizeImage(target.files[0], 1280, 720);
-                                setNewImageUrl(URL.createObjectURL(resizedPic));
-                                setNewImage(resizedPic);
-                              } catch (error) {
-                                console.error('Error while resizing image:', error);
-                                return null;
-                              }
-                            } else {
-                              Toaster.error('Only Images allowed');
-                              return null;
-                            }
-                          }
-                        }}
+                        onChange={(e)=>handleImageInputChange(e, (file: File)=>{
+                          setOpenImageEditor(()=>{
+                            setNewImage(file);
+                            return true;
+                          });
+                        })}
                       />
                       <label
                         className="w-full h-80 hover:bg-primary_comp_hover dark:hover:bg-dark_primary_comp_hover rounded-md flex-center cursor-pointer transition-ease-300"

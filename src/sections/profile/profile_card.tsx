@@ -1,6 +1,6 @@
 import { USER_PROFILE_PIC_URL, USER_URL } from '@/config/routes';
 import { User } from '@/types';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Tags from '@/components/utils/edit_tags';
 import Toaster from '@/utils/toaster';
@@ -19,6 +19,10 @@ import { SERVER_ERROR } from '@/config/errors';
 import CopyClipboardButton from '@/components/buttons/copy_clipboard_btn';
 import { SidePrimeWrapper } from '@/wrappers/side';
 import TooltipIcon from '@/components/common/tooltip_icon';
+import { AtSign } from 'lucide-react';
+import ImageEditorDialog, {
+  handleImageInputChange, handleImageInputClick
+} from '@/components/image-editor/dialog';
 
 interface Props {
   user: User;
@@ -41,6 +45,7 @@ const ProfileCard = ({ user, setUser }: Props) => {
   const [clickedOnTags, setClickedOnTags] = useState(false);
   const [clickedOnLinks, setClickedOnLinks] = useState(false);
   const [clickedOnProfilePic, setClickedOnProfilePic] = useState(false);
+  const [openImageEditor, setOpenImageEditor] = useState<boolean>(false);
 
   const dispatch = useDispatch();
 
@@ -159,6 +164,17 @@ const ProfileCard = ({ user, setUser }: Props) => {
     <>
       {clickedOnFollowers ? <Connections type="followers" user={user} setShow={setClickedOnFollowers} /> : <></>}
       {clickedOnFollowing ? <Connections type="following" user={user} setShow={setClickedOnFollowing} /> : <></>}
+      {openImageEditor && userPic && <ImageEditorDialog
+        open={openImageEditor}
+        setOpen={setOpenImageEditor}
+        image={userPic}
+        circularCrop
+        handleUpdate={(file: File, view?: string)=>{
+            if (view) setUserPicView(view);
+            setUserPic(file);
+            setClickedOnProfilePic(true);
+        }}
+      />}
       <SidePrimeWrapper stickTop>
         <div className="w-full flex-center flex-col gap-4 py-2">
           <div className="absolute group top-4 right-4">
@@ -172,18 +188,15 @@ const ProfileCard = ({ user, setUser }: Props) => {
             type="file"
             className="hidden"
             id="userPic"
+            accept="image/*"
             multiple={false}
-            onChange={async ({ target }) => {
-              if (target.files && target.files[0]) {
-                const file = target.files[0];
-                if (file.type.split('/')[0] == 'image') {
-                  const resizedPic = await resizeImage(file, 500, 500);
-                  setUserPicView(URL.createObjectURL(resizedPic));
-                  setUserPic(resizedPic);
-                  setClickedOnProfilePic(true);
-                } else Toaster.error('Only Image Files can be selected');
-              }
-            }}
+            onClick={handleImageInputClick}
+            onChange={e=>handleImageInputChange(e, (file: File)=>{
+              setOpenImageEditor(()=>{
+                setUserPic(file);
+                return true;
+              });
+            })}
           />
           {clickedOnProfilePic ? (
             <div className="relative">
@@ -244,10 +257,14 @@ const ProfileCard = ({ user, setUser }: Props) => {
           ) : (
             <div
               onClick={() => setClickedOnName(true)}
-              className="w-full relative group rounded-lg flex-center p-2 hover:bg-primary_comp dark:hover:bg-dark_primary_comp_hover  cursor-pointer transition-ease-300"
+              className="w-full relative group rounded-lg flex-center flex-col p-2 hover:bg-primary_comp dark:hover:bg-dark_primary_comp_hover  cursor-pointer transition-ease-300"
             >
               <PencilSimple className="absolute opacity-0 group-hover:opacity-100 top-2 right-2 transition-ease-300" />
               <div className="text-3xl max-md:text-2xl text-center font-bold text-gradient">{user.name}</div>
+              <div className="flex items-center gap-0.5 text-sm max-md:text-xs text-slate-900 dark:text-neutral-300 mt-0.5 py-0.5 px-3 bg-slate-100 dark:bg-neutral-800 rounded-xl text-center font-medium">
+                <AtSign size={13} className={'mt-0.5'} />
+                <p>{user.username}</p>
+              </div>
             </div>
           )}
 

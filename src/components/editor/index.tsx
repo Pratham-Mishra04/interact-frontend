@@ -291,14 +291,14 @@ const Editor = ({
         <EditorContent editor={editor} />
         {editor && editable && limit && <CountWidget charCount={charCount} limit={limit} className="m-1 ml-2" />}
         {!expanded && isOverflowing && (<div
-          className='absolute bottom-0 w-full bg-gradient-to-t from-white to-transparent h-10'
+          className='absolute bottom-0 w-full bg-gradient-to-t from-white dark:from-dark_primary_comp to-transparent dark:to-neutral-700/10 h-10'
         ></div>)}
       </div>
       {!expanded && isOverflowing && (
         <div className='flex justify-start text-sm mb-2 items-start'>
           <button
             onClick={() => setExpanded(true)}
-            className='mt-2 bg-neutral-200 hover:bg-slate-200 px-1.5 rounded-xl'
+            className='mt-2 bg-neutral-200 hover:bg-slate-200 bg-neutral-700 hover:bg-slate-700 px-1.5 rounded-xl'
             title="Read More"
             >
             <Ellipsis className='size-5' />

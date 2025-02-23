@@ -20,6 +20,7 @@ import { initialOrganization } from '@/types/initials';
 import UserCard from '@/components/cards/user';
 import { SidePrimeWrapper } from '@/wrappers/side';
 import TooltipIcon from '@/components/common/tooltip_icon';
+import { AtSign } from 'lucide-react';
 
 interface Props {
   user: User;
@@ -111,7 +112,13 @@ const ProfileCard = ({ user, organisation = initialOrganization, org = false }: 
             )}
           </div>
 
-          <div className="text-3xl max-lg:text-2xl text-center font-bold text-gradient">{user.name}</div>
+          <div className={"flex flex-col items-center gap-0.5"}>
+            <div className="text-3xl max-lg:text-2xl text-center font-bold text-gradient">{user.name}</div>
+            <div className="flex items-center gap-0.5 text-sm max-md:text-xs text-slate-900 dark:text-neutral-300 mt-0.5 py-0.5 px-3 bg-slate-100 dark:bg-neutral-800 rounded-xl text-center font-medium">
+              <AtSign size={13} className={'mt-0.5'} />
+              <p>{user.username}</p>
+            </div>
+          </div>
 
           <div className="w-full flex justify-center text-lg gap-6">
             <div onClick={() => setClickedOnFollowers(true)} className="flex gap-1 cursor-pointer">
