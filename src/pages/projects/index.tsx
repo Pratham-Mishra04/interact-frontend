@@ -44,14 +44,12 @@ const Projects = () => {
     <BaseWrapper title="Projects">
       <Sidebar index={2} />
       <MainWrapper sidebarLayout restrictWidth>
-        <div className="w-3/4 max-md:w-full">
+        <div className="w-full">
           {userID ? (
             <>
               <MenuBar items={['Explore', 'Workspace', 'Saved']} active={active} setState={setActive} />
               {active === 0 ? (
-                <PrimeWrapper index={-1} maxIndex={0}>
-                  <ExploreProjects />
-                </PrimeWrapper>
+                <ExploreProjects />
               ) : active === 1 ? (
                 <PrimeWrapper index={1} maxIndex={2}>
                   <CombinedProjects />
@@ -70,16 +68,6 @@ const Projects = () => {
             </PrimeWrapper>
           )}
         </div>
-        {/* Sidebar with New Project & Project View */}
-        <SideBarWrapper hideMD>
-          {/* {userID && (
-            <SidePrimeWrapper>
-              <NewProject setTriggerReload={setTriggerWorkspaceReload} setActiveTab={setActive} />
-            </SidePrimeWrapper>
-          )} */}
-          <></>
-          {/* {clickedProject && <CreateNewProject />} */}
-        </SideBarWrapper>
       </MainWrapper>
     </BaseWrapper>
   );

@@ -8,9 +8,10 @@ interface Props {
   size?: number;
   gap?: number;
   showAll?: boolean;
+  showMoreText?: boolean;
 }
 
-const PictureList = ({ users, size = 4, gap = 1, showAll = false }: Props) => {
+const PictureList = ({ users, size = 4, gap = 1, showAll = false, showMoreText = true }: Props) => {
   const variations = [
     'left-0',
     'left-1',
@@ -80,7 +81,7 @@ const PictureList = ({ users, size = 4, gap = 1, showAll = false }: Props) => {
                 );
               })}
           </div>
-          {users.length > 3 && (
+          {users.length > 3 && showMoreText && (
             <>
               <div>+</div>
               <div>

@@ -55,7 +55,7 @@ const ProjectCard = ({ project, setClickedProject, isLink = false, smaller = fal
           {!smaller && (
             <div className="absolute top-2 right-3 text-xs">{moment(new Date(project.createdAt)).fromNow()}</div>
           )}
-          <div className={`w-full flex flex-row space-x-4 ${!smaller ? 'mb-4' : ''} items-center`}>
+          <div className={`w-full flex flex-row ${!smaller ? 'gap-4 mb-4' : 'gap-2'} items-center`}>
             <ProjectCardCarousel project={project} width="1/5" />
             <div className="h-full w-3/4 flex flex-col justify-between">
               <div className="w-full">
@@ -70,7 +70,11 @@ const ProjectCard = ({ project, setClickedProject, isLink = false, smaller = fal
               </div>
               {!smaller && (
                 <div className="w-full flex items-center mt-2">
-                  <PictureList users={[project.user, ...(project?.memberships?.map(m => m.user) || [])]} />
+                  <PictureList
+                    users={[project.user, ...(project?.memberships?.map(m => m.user) || [])]}
+                    showMoreText={false}
+                    gap={2}
+                  />
                   <UserHoverCard
                     trigger={<div className="hover:underline underline-offset-2">{project.user.name}</div>}
                     user={project.user}
@@ -127,7 +131,11 @@ const ProjectCard = ({ project, setClickedProject, isLink = false, smaller = fal
           <div className="flex flex-row justify-between w-full">
             <div className="w-full mt-2 flex flex-row justify-start items-start mb-1">
               <div>
-                <Tags tags={project.tags} limit={30} center />
+                <Tags
+                  tags={project.tags}
+                  limit={20}
+                  className="border-[1px] border-[#2FB0F6] dark:border-[#2FB0F6] text-[#2FB0F6] dark:text-[#2FB0F6] py-1 px-2"
+                />
               </div>
             </div>
             <div className="flex items-center justify-end">

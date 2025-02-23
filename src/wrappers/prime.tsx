@@ -13,7 +13,7 @@ const PrimeWrapper: React.FC<WrapperProps> = ({ children, index = 0, maxIndex = 
     <div
       className={`w-full bg-white dark:bg-dark_primary_comp rounded-lg ${
         index == 0 && includeBorder ? 'rounded-tl-none' : index == maxIndex && includeBorder && 'rounded-tr-none'
-      } p-base_padding transition-ease-300`}
+      } p-4 transition-ease-300`}
     >
       {children}
     </div>

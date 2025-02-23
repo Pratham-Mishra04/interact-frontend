@@ -8,28 +8,31 @@ import Toaster from '@/utils/toaster';
 import React, { useState, useEffect } from 'react';
 import NoSearch from '@/components/fillers/search';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import OrderMenu from '@/components/common/order_menu';
-import { useSelector } from 'react-redux';
-import { userIDSelector } from '@/slices/userSlice';
 import { useWindowWidth } from '@react-hook/window-size';
+import PrimeWrapper from '@/wrappers/prime';
+import SideBarWrapper from '@/wrappers/side';
+import FiltersAndOptions from '@/sides/project/filters';
 
 const Projects = ({
   setClickedProject,
-  triggerReload,
 }: {
   setClickedProject?: React.Dispatch<React.SetStateAction<Project | null>>;
-  triggerReload?: boolean;
 }) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const [order, setOrder] = useState('trending');
+  const [category, setCategory] = useState('');
+  const [time, setTime] = useState('Last 7 days');
+  const [tags, setTags] = useState<string[]>([]);
 
   const fetchProjects = async (search: string | null, cid: string | null, initialPage?: number) => {
     const URL = `${EXPLORE_URL}/projects?page=${initialPage ? initialPage : page}&limit=${10}&order=${order}${
       search ? `&search=${search}` : ''
-    }${cid ? '&cid=' + cid : ''}`;
+    }${cid ? '&cid=' + cid : ''}${category ? '&category=' + category : ''}${time ? '&time=' + time : ''}${
+      tags.length > 0 ? `&tags=${tags.join(',')}` : ''
+    }`;
 
     const res = await getHandler(URL, undefined, true);
     if (res.statusCode == 200) {
@@ -84,49 +87,59 @@ const Projects = ({
         new URLSearchParams(window.location.search).get('cid'),
         1
       );
-  }, [window.location.search, order]);
-
-  const userID = useSelector(userIDSelector);
+  }, [window.location.search, order, category, time, tags]);
 
   const width = useWindowWidth();
-  const isMD = width < 768;
 
   return (
-    <div>
-      {/* {(projects.length > 0 || order == 'last_viewed') && (
-        // <OrderMenu
-        //   orders={['trending', 'most_liked', 'most_viewed', ...(userID ? ['latest', 'last_viewed'] : [])]}
-        //   current={order}
-        //   setState={setOrder}
-        // />
-      )} */}
-
-      {loading ? (
-        <Loader />
-      ) : (
-        <div className="w-full">
-          {projects.length > 0 ? (
-            <InfiniteScroll
-              className="w-full space-y-4 "
-              dataLength={projects.length}
-              next={() =>
-                fetchProjects(
-                  new URLSearchParams(window.location.search).get('search'),
-                  new URLSearchParams(window.location.search).get('cid')
-                )
-              }
-              hasMore={hasMore}
-              loader={<Loader />}
-            >
-              {projects.map(project => (
-                <ProjectCard key={project.id} project={project} setClickedProject={setClickedProject} isLink={true} />
-              ))}
-            </InfiniteScroll>
+    <div className="w-full flex space-x-6">
+      <div className="w-3/4 max-md:w-full">
+        <PrimeWrapper index={-1} maxIndex={0}>
+          {loading ? (
+            <Loader />
           ) : (
-            <NoSearch />
+            <div className="w-full">
+              {projects.length > 0 ? (
+                <InfiniteScroll
+                  className="w-full space-y-4 "
+                  dataLength={projects.length}
+                  next={() =>
+                    fetchProjects(
+                      new URLSearchParams(window.location.search).get('search'),
+                      new URLSearchParams(window.location.search).get('cid')
+                    )
+                  }
+                  hasMore={hasMore}
+                  loader={<Loader />}
+                >
+                  {projects.map(project => (
+                    <ProjectCard
+                      key={project.id}
+                      project={project}
+                      setClickedProject={setClickedProject}
+                      isLink={true}
+                    />
+                  ))}
+                </InfiniteScroll>
+              ) : (
+                <NoSearch />
+              )}
+            </div>
           )}
-        </div>
-      )}
+        </PrimeWrapper>
+      </div>
+      <SideBarWrapper>
+        <FiltersAndOptions
+          order={order}
+          setOrder={setOrder}
+          category={category}
+          setCategory={setCategory}
+          time={time}
+          setTime={setTime}
+          tags={tags}
+          setTags={setTags}
+        />
+      </SideBarWrapper>
     </div>
   );
 };
