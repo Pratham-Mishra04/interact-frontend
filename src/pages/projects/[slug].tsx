@@ -193,6 +193,7 @@ const ProjectComponent = ({
                   <Links links={project.links} />
                 </div>
                 {project.id && <CommentProject project={project} />}
+                <Openings project={project} setProject={setProject} />
               </div>
             )}
           </PrimeWrapper>
@@ -211,13 +212,15 @@ const ProjectComponent = ({
                 <div className="w-full flex flex-col gap-2">
                   <div className="w-full flex items-center justify-between">
                     <div className="text-lg font-medium">Project By</div>
-                    <div className="text-xs font-medium">{moment(project.createdAt).fromNow()}</div>
+                    {/* <div className="text-xs font-medium">{moment(project.createdAt).fromNow()}</div> */}
                   </div>
                   <UserSideCard user={project.user} />
                 </div>
+                {/* <UserProjects user={project.user} projectID={project.id} /> */}
+                <Collaborators project={project} setProject={setProject} />
               </SidePrimeWrapper>
-              <Collaborators project={project} setProject={setProject} />
-              <Openings project={project} setProject={setProject} />
+
+              {/* <Openings project={project} setProject={setProject} /> */}
             </>
           )}
           {!err && project.id && !loading && (

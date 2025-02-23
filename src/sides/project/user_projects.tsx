@@ -43,7 +43,7 @@ const UserProjects = ({ user, projectID }: Props) => {
   return projects.length > 0 ? (
     <SidePrimeWrapper>
       <div className="w-full flex flex-col gap-2">
-        <div className="text-lg font-semibold">More from {user.name}</div>
+        <div className="text-xl font-semibold">More from {user.name}</div>
         <div className="w-full">
           {projects.map(project => (
             <ProjectCard key={project.id} project={project} isLink smaller />
