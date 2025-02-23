@@ -30,7 +30,7 @@ const Home = () => {
       <Sidebar index={1} />
       <MainWrapper restrictWidth sidebarLayout>
         <div className="w-2/3 max-md:w-full">
-          <Link href={'/events'}>
+          {/* <Link href={'/events'}>
             <Image
               src={'/home/banner.png'}
               height={460}
@@ -38,7 +38,7 @@ const Home = () => {
               className={'rounded-lg w-full mb-4 shadow-sm'}
               alt={'live-on-interact'}
             />
-          </Link>
+          </Link> */}
           <MenuBar
             items={
               user.id

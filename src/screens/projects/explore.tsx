@@ -15,8 +15,10 @@ import { useWindowWidth } from '@react-hook/window-size';
 
 const Projects = ({
   setClickedProject,
+  triggerReload,
 }: {
   setClickedProject?: React.Dispatch<React.SetStateAction<Project | null>>;
+  triggerReload?: boolean;
 }) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -91,21 +93,21 @@ const Projects = ({
 
   return (
     <div>
-      {(projects.length > 0 || order == 'last_viewed') && (
-        <OrderMenu
-          orders={['trending', 'most_liked', 'most_viewed', ...(userID ? ['latest', 'last_viewed'] : [])]}
-          current={order}
-          setState={setOrder}
-        />
-      )}
+      {/* {(projects.length > 0 || order == 'last_viewed') && (
+        // <OrderMenu
+        //   orders={['trending', 'most_liked', 'most_viewed', ...(userID ? ['latest', 'last_viewed'] : [])]}
+        //   current={order}
+        //   setState={setOrder}
+        // />
+      )} */}
 
       {loading ? (
         <Loader />
       ) : (
-        <div className="w-full pt-4">
+        <div className="w-full">
           {projects.length > 0 ? (
             <InfiniteScroll
-              className="w-full"
+              className="w-full space-y-4 "
               dataLength={projects.length}
               next={() =>
                 fetchProjects(
@@ -117,7 +119,7 @@ const Projects = ({
               loader={<Loader />}
             >
               {projects.map(project => (
-                <ProjectCard key={project.id} project={project} setClickedProject={setClickedProject} isLink={isMD} />
+                <ProjectCard key={project.id} project={project} setClickedProject={setClickedProject} isLink={true} />
               ))}
             </InfiniteScroll>
           ) : (

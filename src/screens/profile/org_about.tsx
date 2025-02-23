@@ -196,7 +196,7 @@ const About = ({ profile, organisation }: Props) => {
                   {profile.areasOfCollaboration?.map((el, i) => (
                     <div
                       key={i}
-                      className="flex-center bg-gray-50 px-2 py-1 border-[1px] border-dashed border-gray-400 text-xs rounded-lg"
+                      className="flex-center bg-gray-50 text-black px-2 py-1 border-[1px] border-dashed border-gray-400 text-xs rounded-lg"
                     >
                       {el}
                     </div>
