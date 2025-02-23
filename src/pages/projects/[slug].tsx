@@ -71,6 +71,7 @@ const ProjectComponent = ({
     if (res.statusCode == 200) {
       setProject(res.data.project);
       setPermissionConfig(res.data.permissionConfig);
+      console.log(res.data.permissionConfig);
       const membership = res.data.membership;
       if (membership && !checkStaticProjectAccess(user, PROJECT_MEMBER, project.id)) {
         if (membership.role === PROJECT_MEMBER) dispatch(setMemberProjects([...user.memberProjects, project.id]));

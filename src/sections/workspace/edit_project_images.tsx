@@ -9,11 +9,10 @@ import { useSelector } from 'react-redux';
 import { Dialog, DialogContent, DialogTitle, DialogHeader } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { resizeImage } from '@/utils/resize_image';
 import Image from 'next/image';
 import postHandler from '@/handlers/post_handler';
 import { X } from '@phosphor-icons/react';
-import ImageEditorDialog, { handleImageInputChange } from '@/components/image-editor/dialog';
+import ImageEditorDialog, { handleImageInputChange } from '@/components/form/image-editor';
 // import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 
 interface Props {
@@ -180,16 +179,18 @@ const EditProjectImages = ({ project, setProject, isDialogOpen, setIsDialogOpen,
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      {openImageEditor && newImage && <ImageEditorDialog
-        open={openImageEditor}
-        setOpen={setOpenImageEditor}
-        handleUpdate={(file: File)=>{
-          setNewImageUrl(URL.createObjectURL(file));
-          setNewImage(file);
-        }}
-        aspectRatio={1280 / 720}
-        image={newImage}
-      />}
+      {openImageEditor && newImage && (
+        <ImageEditorDialog
+          open={openImageEditor}
+          setOpen={setOpenImageEditor}
+          handleUpdate={(file: File) => {
+            setNewImageUrl(URL.createObjectURL(file));
+            setNewImage(file);
+          }}
+          aspectRatio={1280 / 720}
+          image={newImage}
+        />
+      )}
       <DialogContent className={`sm:max-w-md ${stage == 0 ? 'min-w-[50%] px-16' : 'min-w-[30%]'} overflow-x-hidden`}>
         <DialogHeader>
           <DialogTitle className="text-3xl">Edit Project Images</DialogTitle>
@@ -266,12 +267,14 @@ const EditProjectImages = ({ project, setProject, isDialogOpen, setIsDialogOpen,
                         className="hidden"
                         id="image"
                         multiple={false}
-                        onChange={(e)=>handleImageInputChange(e, (file: File)=>{
-                          setOpenImageEditor(()=>{
-                            setNewImage(file);
-                            return true;
-                          });
-                        })}
+                        onChange={e =>
+                          handleImageInputChange(e, (file: File) => {
+                            setOpenImageEditor(() => {
+                              setNewImage(file);
+                              return true;
+                            });
+                          })
+                        }
                       />
                       <label
                         className="w-full h-80 hover:bg-primary_comp_hover dark:hover:bg-dark_primary_comp_hover rounded-md flex-center cursor-pointer transition-ease-300"

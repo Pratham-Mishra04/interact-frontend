@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Tags from '@/components/utils/edit_tags';
 import Toaster from '@/utils/toaster';
-import { resizeImage } from '@/utils/resize_image';
 import { Check, PencilSimple, X } from '@phosphor-icons/react';
 import { useDispatch } from 'react-redux';
 import patchHandler from '@/handlers/patch_handler';
@@ -20,9 +19,7 @@ import CopyClipboardButton from '@/components/buttons/copy_clipboard_btn';
 import { SidePrimeWrapper } from '@/wrappers/side';
 import TooltipIcon from '@/components/common/tooltip_icon';
 import { AtSign } from 'lucide-react';
-import ImageEditorDialog, {
-  handleImageInputChange, handleImageInputClick
-} from '@/components/image-editor/dialog';
+import ImageEditorDialog, { handleImageInputChange, handleImageInputClick } from '@/components/form/image-editor';
 
 interface Props {
   user: User;
@@ -164,17 +161,19 @@ const ProfileCard = ({ user, setUser }: Props) => {
     <>
       {clickedOnFollowers ? <Connections type="followers" user={user} setShow={setClickedOnFollowers} /> : <></>}
       {clickedOnFollowing ? <Connections type="following" user={user} setShow={setClickedOnFollowing} /> : <></>}
-      {openImageEditor && userPic && <ImageEditorDialog
-        open={openImageEditor}
-        setOpen={setOpenImageEditor}
-        image={userPic}
-        circularCrop
-        handleUpdate={(file: File, view?: string)=>{
+      {openImageEditor && userPic && (
+        <ImageEditorDialog
+          open={openImageEditor}
+          setOpen={setOpenImageEditor}
+          image={userPic}
+          circularCrop
+          handleUpdate={(file: File, view?: string) => {
             if (view) setUserPicView(view);
             setUserPic(file);
             setClickedOnProfilePic(true);
-        }}
-      />}
+          }}
+        />
+      )}
       <SidePrimeWrapper stickTop>
         <div className="w-full flex-center flex-col gap-4 py-2">
           <div className="absolute group top-4 right-4">
@@ -191,12 +190,14 @@ const ProfileCard = ({ user, setUser }: Props) => {
             accept="image/*"
             multiple={false}
             onClick={handleImageInputClick}
-            onChange={e=>handleImageInputChange(e, (file: File)=>{
-              setOpenImageEditor(()=>{
-                setUserPic(file);
-                return true;
-              });
-            })}
+            onChange={e =>
+              handleImageInputChange(e, (file: File) => {
+                setOpenImageEditor(() => {
+                  setUserPic(file);
+                  return true;
+                });
+              })
+            }
           />
           {clickedOnProfilePic ? (
             <div className="relative">
