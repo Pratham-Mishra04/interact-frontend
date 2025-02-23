@@ -24,13 +24,13 @@ import PrimeWrapper from '@/wrappers/prime';
 import SideBarWrapper from '@/wrappers/side';
 import patchHandler from '@/handlers/patch_handler';
 import { useDispatch } from 'react-redux';
-import { resizeImage } from '@/utils/resize_image';
 import { Check, ImageSquare, PencilSimple, X } from '@phosphor-icons/react';
 import SaveButton from '@/components/buttons/save_btn';
 import axios from 'axios';
 import { User } from '@/types';
 import { generateSEOProps } from '@/lib/seo';
 import { NextSeoProps } from 'next-seo';
+import ImageEditorDialog, { handleImageInputChange, handleImageInputClick } from '@/components/form/image-editor';
 
 interface Props {
   initialUser: User | null;
@@ -47,6 +47,7 @@ const UserComponent = ({ initialUser, err, seoProps }: Props) => {
   const [tagline, setTagline] = useState('');
   const [coverPic, setCoverPic] = useState<File>();
   const [coverPicView, setCoverPicView] = useState(`${USER_COVER_PIC_URL}/${user?.coverPic}`);
+  const [openImageEditor, setOpenImageEditor] = useState(false);
 
   const loggedInUser = useSelector(userSelector);
 
@@ -158,22 +159,33 @@ const UserComponent = ({ initialUser, err, seoProps }: Props) => {
         <div className="w-2/3 max-md:w-full relative">
           {user.username == loggedInUser.username ? (
             <>
+              {openImageEditor && coverPic && (
+                <ImageEditorDialog
+                  open={openImageEditor}
+                  setOpen={setOpenImageEditor}
+                  image={coverPic}
+                  aspectRatio={900 / 300}
+                  handleUpdate={(file: File, view?: string) => {
+                    if (view) setCoverPicView(view);
+                    setCoverPic(file);
+                    setClickedOnCoverPic(true);
+                  }}
+                />
+              )}
               <input
                 type="file"
                 className="hidden"
                 id="coverPic"
                 multiple={false}
-                onChange={async ({ target }) => {
-                  if (target.files && target.files[0]) {
-                    const file = target.files[0];
-                    if (file.type.split('/')[0] == 'image') {
-                      const resizedPic = await resizeImage(file, 900, 300);
-                      setCoverPicView(URL.createObjectURL(resizedPic));
-                      setCoverPic(resizedPic);
-                      setClickedOnCoverPic(true);
-                    } else Toaster.error('Only Image Files can be selected');
-                  }
-                }}
+                onClick={handleImageInputClick}
+                onChange={e =>
+                  handleImageInputChange(e, (file: File) => {
+                    setOpenImageEditor(() => {
+                      setCoverPic(file);
+                      return true;
+                    });
+                  })
+                }
               />
               {clickedOnCoverPic ? (
                 <div>

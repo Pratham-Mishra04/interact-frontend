@@ -28,7 +28,6 @@ const configPersistConfig = {
     'lastFetchedApplications',
     'lastFetchedUnreadNotifications',
     'lastFetchedUnreadInvitations',
-    'lastFetchedOrganizationMemberships',
     'lastFetchedCommunityMemberships',
   ],
 };

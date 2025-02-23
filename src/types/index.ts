@@ -166,6 +166,8 @@ export interface User {
   organization: Organization | null;
   createdAt: string;
   secondaryEmail?: string;
+  credits?: number;
+  featuresBought?: string[];
 }
 
 export interface OrganizationMembership {

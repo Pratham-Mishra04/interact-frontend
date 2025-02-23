@@ -5,7 +5,7 @@ import ManageMemberships from '@/sections/workspace/manage_memberships';
 import AddCollaborators from '@/sections/workspace/manage_project/add_collaborators';
 import { userSelector } from '@/slices/userSlice';
 import { Project } from '@/types';
-import { checkProjectAccess } from '@/utils/funcs/access';
+import { checkStaticProjectAccess } from '@/utils/funcs/access';
 import { SidePrimeWrapper } from '@/wrappers/side';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -22,7 +22,7 @@ const Collaborators = ({
   const isManager = useOrgAccess(ORG_MANAGER, project.organizationID);
 
   const isAllowed = useMemo(() => {
-    const projectAccess = checkProjectAccess(user, PROJECT_MANAGER, project.id);
+    const projectAccess = checkStaticProjectAccess(user, PROJECT_MANAGER, project.id);
     const orgAccess = !!(project.organizationID && project.organizationID !== '' && isManager);
 
     return projectAccess || orgAccess;

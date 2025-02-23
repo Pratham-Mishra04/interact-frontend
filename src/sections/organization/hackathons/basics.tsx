@@ -6,11 +6,10 @@ import Time from '@/components/form/time';
 import { Hackathon } from '@/types';
 import { PencilSimple } from '@phosphor-icons/react';
 import { EVENT_PIC_URL } from '@/config/routes';
-import { resizeImage } from '@/utils/resize_image';
-import Toaster from '@/utils/toaster';
 import Image from 'next/image';
 import Checkbox from '@/components/form/checkbox';
 import EditorInput from '@/components/form/editor-input';
+import ImageEditorDialog, { handleImageInputChange, handleImageInputClick } from '@/components/form/image-editor';
 
 interface BasicsProps {
   title: string;
@@ -33,7 +32,7 @@ interface BasicsProps {
   setIsRestricted?: (isRestricted: boolean) => void;
   entryPassword?: string;
   setEntryPassword?: (entryPassword: string) => void;
-  coverPic?: string;
+  coverPic?: File;
   setCoverPic: (file: File | null) => void;
   isEditMode: boolean;
   onSave?: (updatedData: Partial<Hackathon>) => void;
@@ -73,6 +72,7 @@ const Basics: React.FC<BasicsProps> = ({
   const [localLinks, setLocalLinks] = useState(links);
   const [localIsRestricted, setLocalIsRestricted] = useState(isRestricted);
   const [coverPicView, setCoverPicView] = useState(`${EVENT_PIC_URL}/${coverPic || 'default.jpg'}`);
+  const [openImageEditor, setOpenImageEditor] = useState(false);
 
   const handleSave = () => {
     const updatedData: Partial<Hackathon> = {
@@ -90,22 +90,33 @@ const Basics: React.FC<BasicsProps> = ({
 
   return (
     <div className="w-full flex flex-col gap-8 max-lg:gap-4">
+      {openImageEditor && coverPic && (
+        <ImageEditorDialog
+          open={openImageEditor}
+          setOpen={setOpenImageEditor}
+          image={coverPic}
+          aspectRatio={1920 / 720}
+          handleUpdate={(file: File, view?: string) => {
+            if (view) setCoverPicView(view);
+            setCoverPic(file);
+          }}
+        />
+      )}
       <div className="w-full relative group">
         <input
           type="file"
           className="hidden"
           id="coverPic"
           multiple={false}
-          onChange={async ({ target }) => {
-            if (target.files && target.files[0]) {
-              const file = target.files[0];
-              if (file.type.split('/')[0] == 'image') {
-                const resizedPic = await resizeImage(file, 1920, 720);
-                setCoverPicView(URL.createObjectURL(resizedPic));
-                setCoverPic(resizedPic);
-              } else Toaster.error('Only Image Files can be selected');
-            }
-          }}
+          onClick={handleImageInputClick}
+          onChange={e =>
+            handleImageInputChange(e, (file: File) => {
+              setOpenImageEditor(() => {
+                setCoverPic(file);
+                return true;
+              });
+            })
+          }
         />
         <div className="w-full h-full relative group">
           <label

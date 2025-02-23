@@ -54,6 +54,8 @@ const Login = () => {
           user.phoneNo = res.data.phoneNo || '';
           user.resume = res.data.resume || '';
           user.createdAt = res.data.createdAt || new Date();
+          user.credits = res.data.credits || 0;
+          user.featuresBought = res.data.features || [];
           Cookies.set('token', res.data.token, {
             expires: Number(process.env.NEXT_PUBLIC_COOKIE_EXPIRATION_TIME),
             secure: process.env.NODE_ENV === 'production',

@@ -2,7 +2,7 @@ import Sidebar from '@/components/common/sidebar';
 import { SERVER_ERROR, TOKEN_EXPIRATION_ERROR } from '@/config/errors';
 import { BACKEND_URL, EXPLORE_URL, PROJECT_PIC_URL, PROJECT_URL } from '@/config/routes';
 import getHandler from '@/handlers/get_handler';
-import { Project } from '@/types';
+import { PermissionConfig, Project } from '@/types';
 import { getProjectPicHash, getProjectPicURL } from '@/utils/funcs/safe_extract';
 import Toaster from '@/utils/toaster';
 import BaseWrapper from '@/wrappers/base';
@@ -22,7 +22,7 @@ import Links from '@/components/explore/show_links';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { setEditorProjects, setManagerProjects, setMemberProjects, userSelector } from '@/slices/userSlice';
-import { checkOrgProjectAccess, checkProjectAccess } from '@/utils/funcs/access';
+import { checkOrgProjectAccess, checkProjectAccess, checkStaticProjectAccess } from '@/utils/funcs/access';
 import { ORG_SENIOR, PROJECT_EDITOR, PROJECT_MANAGER, PROJECT_MEMBER } from '@/config/constants';
 import LowerProject from '@/components/lowers/lower_project';
 import { PencilSimple } from '@phosphor-icons/react/dist/ssr';
@@ -55,9 +55,8 @@ const ProjectComponent = ({
   seoProps: NextSeoProps;
 }) => {
   const [project, setProject] = useState<Project>(initialProject || initialProjectObj);
+  const [permissionConfig, setPermissionConfig] = useState<PermissionConfig | undefined>({});
   const [loading, setLoading] = useState(true);
-
-  const [clickedOnReadMore, setClickedOnReadMore] = useState(false);
   const [clickedOnEditProjectImages, setClickedOnEditProjectImages] = useState(false);
 
   const user = useSelector(userSelector);
@@ -71,8 +70,10 @@ const ProjectComponent = ({
     const res = await getHandler(URL);
     if (res.statusCode == 200) {
       setProject(res.data.project);
+      setPermissionConfig(res.data.permissionConfig);
+      console.log(res.data.permissionConfig);
       const membership = res.data.membership;
-      if (membership && !checkProjectAccess(user, PROJECT_MEMBER, project.id)) {
+      if (membership && !checkStaticProjectAccess(user, PROJECT_MEMBER, project.id)) {
         if (membership.role === PROJECT_MEMBER) dispatch(setMemberProjects([...user.memberProjects, project.id]));
         else if (membership.role === PROJECT_EDITOR) dispatch(setEditorProjects([...user.editorProjects, project.id]));
         else if (membership.role === PROJECT_MANAGER)
@@ -102,9 +103,10 @@ const ProjectComponent = ({
                 <div className="w-full relative group">
                   {checkOrgProjectAccess(
                     { user, organization: org },
-                    PROJECT_EDITOR,
+                    'edit_project',
                     project.id,
                     ORG_SENIOR,
+                    permissionConfig,
                     project.organization,
                     !!(project.organizationID && project.organizationID != '')
                   ) && (
@@ -183,7 +185,7 @@ const ProjectComponent = ({
                 <div className="w-full flex flex-col gap-4">
                   <div className="w-full flex items-center justify-between flex-wrap gap-4">
                     <div className="w-fit font-bold text-4xl text-gradient">{project.title}</div>
-                    <LowerProject project={project} setProject={setProject} />
+                    <LowerProject project={project} setProject={setProject} permissionConfig={permissionConfig} />
                   </div>
                   <div className="font-semibold text-lg">{project.tagline}</div>
                   <Tags tags={project.tags} displayAll />
@@ -197,7 +199,7 @@ const ProjectComponent = ({
               </div>
             )}
           </PrimeWrapper>
-          {checkProjectAccess(user, PROJECT_MEMBER, project.id) && <ProjectChats projectID={project.id} />}
+          {checkStaticProjectAccess(user, PROJECT_MEMBER, project.id) && <ProjectChats projectID={project.id} />}
         </div>
         <SideBarWrapper>
           {loading ? (
@@ -219,13 +221,14 @@ const ProjectComponent = ({
                 {/* <UserProjects user={project.user} projectID={project.id} /> */}
                 <Collaborators project={project} setProject={setProject} />
               </SidePrimeWrapper>
-
-              {/* <Openings project={project} setProject={setProject} /> */}
+              
+              {/* <Openings project={project} setProject={setProject} permissionConfig={permissionConfig} /> */}
+              
             </>
           )}
           {!err && project.id && !loading && (
             <>
-              {!checkProjectAccess(user, PROJECT_MEMBER, project.id) ? (
+              {!checkStaticProjectAccess(user, PROJECT_MEMBER, project.id) ? (
                 <>
                   <UserProjects user={project.user} projectID={project.id} />
                   <SimilarProjects slug={project.slug} />
@@ -233,8 +236,8 @@ const ProjectComponent = ({
               ) : (
                 <>
                   <Activity project={project} />
-                  <Tasks project={project} />
-                  <Resources projectID={project.id} />
+                  <Tasks project={project} permissionConfig={permissionConfig} />
+                  <Resources projectID={project.id} permissionConfig={permissionConfig} />
                 </>
               )}
             </>
