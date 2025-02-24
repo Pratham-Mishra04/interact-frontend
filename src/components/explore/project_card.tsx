@@ -1,17 +1,14 @@
 import React, { ReactNode } from 'react';
 import { Project } from '@/types';
-import { BookBookmark, Eye, EyeSlash, HeartStraight, SuitcaseSimple, Warning } from '@phosphor-icons/react';
+import { BookmarkSimple, Eye, EyeSlash, HeartStraight, SuitcaseSimple, Warning } from '@phosphor-icons/react';
 import Link from 'next/link';
 import UserHoverCard from './user_hover_card';
 import ProjectCardCarousel from './project_card_carousel';
 import TooltipIcon from '../common/tooltip_icon';
-import Image from 'next/image';
-import { USER_PROFILE_PIC_URL } from '@/config/routes';
-import BookmarkComponent from '../bookmarks/bookmark';
-import { Bookmark } from 'lucide-react';
 import moment from 'moment';
 import Tags from '../common/tags';
 import PictureList from '../common/picture_list';
+
 interface Props {
   index?: number;
   project: Project;
@@ -57,7 +54,7 @@ const ProjectCard = ({ project, setClickedProject, isLink = false, smaller = fal
           )}
           <div className={`w-full flex flex-row ${!smaller ? 'gap-4 mb-4' : 'gap-2'} items-center`}>
             <ProjectCardCarousel project={project} width="1/5" />
-            <div className="h-full w-3/4 flex flex-col justify-between">
+            <div className={`h-full ${smaller ? 'w-4/5' : 'w-3/4'} flex flex-col justify-between`}>
               <div className="w-full">
                 <div className={`${!smaller && 'text-xl'} max-md:text-base font-medium line-clamp-1`}>
                   {!smaller ? project.title : project.title.slice(0, 27) + (project.title.length > 25 ? '...' : '')}
@@ -79,7 +76,7 @@ const ProjectCard = ({ project, setClickedProject, isLink = false, smaller = fal
                     trigger={<div className="hover:underline underline-offset-2">{project.user.name}</div>}
                     user={project.user}
                   />
-                  {project.noMembers > 0 && <div className="ml-1">+ {project.noMembers} users</div>}
+                  {project.noMembers - 1 > 0 && <div className="ml-1">+ {project.noMembers - 1} others</div>}
                 </div>
               )}
             </div>
@@ -115,8 +112,8 @@ const ProjectCard = ({ project, setClickedProject, isLink = false, smaller = fal
                       <div>{project.noLikes}</div>
                     </div>
                     <div className="flex items-center gap-1 text-xs max-md:hidden">
-                      <TooltipIcon label="Bookmarks" icon={<Bookmark size={20} />} excludeHoverEffect />
-                      <div>{project.noShares}</div>
+                      <TooltipIcon label="Bookmarks" icon={<BookmarkSimple size={20} />} excludeHoverEffect />
+                      <div>{project.noBookmarks}</div>
                     </div>
                     <div className="flex items-center gap-1 text-xs">
                       <TooltipIcon label="Impressions" icon={<Eye size={20} />} excludeHoverEffect />
@@ -142,11 +139,11 @@ const ProjectCard = ({ project, setClickedProject, isLink = false, smaller = fal
               <div className="flex space-x-4">
                 <div className="flex items-center gap-1 text-xs max-md:hidden">
                   <TooltipIcon label="Likes" icon={<HeartStraight size={20} />} excludeHoverEffect />
-                  <div>{project.noOpenings}</div>
+                  <div>{project.noLikes}</div>
                 </div>
-                <div className="flex items-center gap-1 text-xs max-md:hidden">
-                  <TooltipIcon label="Likes" icon={<Bookmark size={20} />} excludeHoverEffect />
-                  <div>{project.noShares}</div>
+                <div className="flex items-center gap-1 text-xs">
+                  <TooltipIcon label="Impressions" icon={<Eye size={20} />} excludeHoverEffect />
+                  <div>{project.noImpressions}</div>
                 </div>
               </div>
             </div>

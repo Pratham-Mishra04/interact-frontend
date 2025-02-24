@@ -8,10 +8,12 @@ import Toaster from '@/utils/toaster';
 import React, { useState, useEffect } from 'react';
 import NoSearch from '@/components/fillers/search';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { useWindowWidth } from '@react-hook/window-size';
 import PrimeWrapper from '@/wrappers/prime';
 import SideBarWrapper from '@/wrappers/side';
 import FiltersAndOptions from '@/sides/project/filters';
+import { convertToRFC3339 } from '@/utils/funcs/misc';
+import { useSelector } from 'react-redux';
+import { userIDSelector } from '@/slices/userSlice';
 
 const Projects = ({
   setClickedProject,
@@ -24,15 +26,15 @@ const Projects = ({
   const [page, setPage] = useState(1);
   const [order, setOrder] = useState('trending');
   const [category, setCategory] = useState('');
-  const [time, setTime] = useState('Last 7 days');
+  const [time, setTime] = useState('');
   const [tags, setTags] = useState<string[]>([]);
 
   const fetchProjects = async (search: string | null, cid: string | null, initialPage?: number) => {
     const URL = `${EXPLORE_URL}/projects?page=${initialPage ? initialPage : page}&limit=${10}&order=${order}${
       search ? `&search=${search}` : ''
-    }${cid ? '&cid=' + cid : ''}${category ? '&category=' + category : ''}${time ? '&time=' + time : ''}${
-      tags.length > 0 ? `&tags=${tags.join(',')}` : ''
-    }`;
+    }${cid ? '&cid=' + cid : ''}${category ? '&category=' + category : ''}${
+      time ? '&created_at=' + convertToRFC3339(time) : ''
+    }${tags.length > 0 ? `&tags=${tags.join(',')}` : ''}`;
 
     const res = await getHandler(URL, undefined, true);
     if (res.statusCode == 200) {
@@ -51,8 +53,7 @@ const Projects = ({
 
       setLoading(false);
     } else {
-      if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
-      else Toaster.error(SERVER_ERROR, 'error_toaster');
+      Toaster.error(res.data.message || SERVER_ERROR, 'error_toaster');
     }
   };
 
@@ -69,8 +70,7 @@ const Projects = ({
 
       setLoading(false);
     } else {
-      if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
-      else Toaster.error(SERVER_ERROR, 'error_toaster');
+      Toaster.error(res.data.message || SERVER_ERROR, 'error_toaster');
     }
   };
 
@@ -89,7 +89,7 @@ const Projects = ({
       );
   }, [window.location.search, order, category, time, tags]);
 
-  const width = useWindowWidth();
+  const userID = useSelector(userIDSelector);
 
   return (
     <div className="w-full flex space-x-6">
@@ -132,6 +132,7 @@ const Projects = ({
         <FiltersAndOptions
           order={order}
           setOrder={setOrder}
+          orders={['trending', 'most_liked', 'most_viewed', ...(userID ? ['latest', 'last_viewed'] : [])]}
           category={category}
           setCategory={setCategory}
           time={time}

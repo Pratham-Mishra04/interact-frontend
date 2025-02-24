@@ -214,6 +214,7 @@ export interface Project {
   noShares: number;
   noComments: number;
   noImpressions: number;
+  noBookmarks: number;
   tags: string[];
   category: string;
   memberships: Membership[];

@@ -7,24 +7,24 @@ import Toaster from '@/utils/toaster';
 import React, { useEffect, useState } from 'react';
 import NoProjects from '@/components/fillers/your_projects';
 import { SERVER_ERROR } from '@/config/errors';
-import OrderMenu from '@/components/common/order_menu';
-import { useWindowWidth } from '@react-hook/window-size';
-import NewProject from '@/sections/workspace/new_project';
+import SideBarWrapper from '@/wrappers/side';
+import FiltersAndOptions from '@/sides/project/filters';
+import { convertToRFC3339 } from '@/utils/funcs/misc';
+import PrimeWrapper from '@/wrappers/prime';
 
 const CombinedProjects = ({
-  triggerReload,
   setClickedProject,
 }: {
-  triggerReload?: boolean;
   setClickedProject?: React.Dispatch<React.SetStateAction<Project | null>>;
 }) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState('activity');
+  const [time, setTime] = useState('');
 
   const getProjects = (abortController: AbortController) => {
     setLoading(true);
-    const URL = `${WORKSPACE_URL}/projects?order=${order}`;
+    const URL = `${WORKSPACE_URL}/projects?order=${order}${time ? '&created_at=' + convertToRFC3339(time) : ''}`;
     getHandler(URL, abortController.signal)
       .then(res => {
         if (res.statusCode === 200) {
@@ -42,10 +42,7 @@ const CombinedProjects = ({
           }
           setLoading(false);
         } else if (res.status != -1) {
-          if (res.data.message) Toaster.error(res.data.message, 'error_toaster');
-          else {
-            Toaster.error(SERVER_ERROR, 'error_toaster');
-          }
+          Toaster.error(res.data.message || SERVER_ERROR, 'error_toaster');
         }
       })
       .catch(err => {
@@ -64,36 +61,41 @@ const CombinedProjects = ({
     return () => {
       abortController.abort();
     };
-  }, [order, triggerReload]);
-
-  const width = useWindowWidth();
-  const isMD = width < 768;
+  }, [order, time]);
 
   return (
-    <div className="w-full">
-      <OrderMenu orders={['activity', 'most_liked', 'most_viewed', 'latest']} current={order} setState={setOrder} />
-
-      <div className="w-full my-4">
-        <NewProject setProjects={setProjects} />
+    <div className="w-full flex space-x-6">
+      <div className="w-3/4 max-md:w-full">
+        <PrimeWrapper index={-1} maxIndex={0}>
+          {loading ? (
+            <Loader />
+          ) : projects.length > 0 ? (
+            <div className="w-full space-y-4 ">
+              {projects.map((project, index) => (
+                <ProjectCard
+                  key={project.id}
+                  index={index}
+                  project={project}
+                  setClickedProject={setClickedProject}
+                  isLink
+                />
+              ))}
+            </div>
+          ) : (
+            <NoProjects />
+          )}
+        </PrimeWrapper>
       </div>
-
-      {loading ? (
-        <Loader />
-      ) : projects.length > 0 ? (
-        <div className="w-full">
-          {projects.map((project, index) => (
-            <ProjectCard
-              key={project.id}
-              index={index}
-              project={project}
-              setClickedProject={setClickedProject}
-              isLink={isMD}
-            />
-          ))}
-        </div>
-      ) : (
-        <NoProjects />
-      )}
+      <SideBarWrapper>
+        <FiltersAndOptions
+          order={order}
+          setOrder={setOrder}
+          orders={['activity', 'most_liked', 'most_viewed', 'latest']}
+          time={time}
+          setTime={setTime}
+          setProjects={setProjects}
+        />
+      </SideBarWrapper>
     </div>
   );
 };

@@ -51,9 +51,7 @@ const Projects = () => {
               {active === 0 ? (
                 <ExploreProjects />
               ) : active === 1 ? (
-                <PrimeWrapper index={1} maxIndex={2}>
-                  <CombinedProjects />
-                </PrimeWrapper>
+                <CombinedProjects />
               ) : (
                 active === 2 && (
                   <PrimeWrapper index={2} maxIndex={2}>
