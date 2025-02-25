@@ -69,7 +69,7 @@ const Openings = ({ project, setProject, permissionConfig }: Props) => {
                     </div>
                   ) : (
                     <div className="w-full text-sm line-clamp-2 text-[#525252]">
-                      {opening.noApplications} Applications
+                      {opening.noApplications > 0 && `${opening.noApplications} Applications`}
                     </div>
                   )}
                   <div className="w-full flex justify-between items-end">

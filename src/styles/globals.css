@@ -652,3 +652,12 @@ html {
 .editor-bubble-menu button.is-active:hover {
   @apply hover:bg-primary_comp_active hover:dark:bg-dark_primary_comp_active;
 }
+
+@font-face {
+  font-family: "mangaka";
+  src: url("/fonts/Mangaka.otf") format("opentype");
+}
+
+.mangaka {
+  font-family: "mangaka";
+}

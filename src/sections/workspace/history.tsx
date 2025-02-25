@@ -48,7 +48,7 @@ const History = ({ project, org = false }: Props) => {
   return (
     <Dialog>
       <DialogTrigger>
-        <div className="text-xs hover:underline underline-offset-2 cursor-pointer">view all</div>
+        <div className="text-xs hover:underline underline-offset-2 cursor-pointer">See all</div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md min-w-[30%]">
         <DialogHeader>

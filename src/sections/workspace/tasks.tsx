@@ -15,7 +15,7 @@ import { SidePrimeWrapper } from '@/wrappers/side';
 import NewTask from '../tasks/new_task';
 import { useSelector } from 'react-redux';
 import { userSelector } from '@/slices/userSlice';
-
+import Image from 'next/image';
 interface Props {
   project: Project;
   org?: boolean;
@@ -52,39 +52,45 @@ const Tasks = ({ project, org = false, permissionConfig }: Props) => {
   }, []);
 
   const user = useSelector(userSelector);
-
+  <style>
+    @import
+    url('https://fonts.googleapis.com/css2?family=Birthstone&family=Birthstone+Bounce:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Outfit:wght@100..900&display=swap');
+  </style>;
   return (
     <SidePrimeWrapper>
-      <div className="flex gap-2 items-center">
-        <Gavel className="max-md:hidden" size={24} weight="duotone" />
-        <div className="grow flex justify-between items-center text-lg font-medium">
-          Tasks
-          {tasks.length > 0 && (
-            <Link href={`/${org ? 'organisation/projects' : 'workspace'}/tasks/${project.slug}`}>
-              <div className="text-xs hover:underline underline-offset-2 cursor-pointer">view all</div>
-            </Link>
-          )}
-        </div>
-      </div>
       {loading ? (
         <TasksLoader />
       ) : tasks.length == 0 ? (
         checkProjectAccess(user, 'manage_tasks', permissionConfig, project.id) ? (
           <>
-            <div className="text-center my-2">
-              <span className="text-xl text-gradient font-semibold">Empty Here! </span>The to-do list 📝 is your canvas,
-              time to paint it with tasks and turn this project into a masterpiece!
+            <div className="flex flex-row justify-between items-center">
+              <span className="text-xl">Tasks</span>
+              <NewTask
+                org={false}
+                project={project}
+                setTasks={setTasks}
+                trigger={
+                  <div className="w-fit mx-auto text-md text-white font-medium bg-light_blue_button  cursor-pointer rounded-lg px-3 py-1">
+                    Add Task
+                  </div>
+                }
+              />
             </div>
-            <NewTask
-              org={false}
-              project={project}
-              setTasks={setTasks}
-              trigger={
-                <div className="w-fit mx-auto text-xl text-gradient font-medium hover-underline-animation after:bg-dark_primary_btn cursor-pointer">
-                  Add a Task
-                </div>
-              }
+            <Image
+              src="/assets/new_task.svg"
+              alt="new task"
+              width={300}
+              height={300}
+              layout="fixed"
+              className="mx-auto"
             />
+            <div className="flex flex-col items-center mt-2 space-y-1">
+              <div className="text-text_neutral text-md font-semibold font-['DM Sans']">
+                No tasks Assigned Right now
+              </div>
+              <div className="text-white/70 text-4xl font-normal mangaka">Don’t Lack</div>
+              <div className="text-center text-text_neutral text-md font-semibold">Behind</div>
+            </div>
           </>
         ) : (
           <div className="text-lg max-md:text-base">

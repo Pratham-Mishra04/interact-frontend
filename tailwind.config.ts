@@ -65,6 +65,8 @@ const config: Config = {
         priority_low: '#bffbbe',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
+        light_blue_button : '#2fb0f6',
+        text_neutral : '#525252',
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
