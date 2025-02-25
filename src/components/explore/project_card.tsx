@@ -109,11 +109,11 @@ const ProjectCard = ({ project, setClickedProject, isLink = false, smaller = fal
                   <div className="flex space-x-4">
                     <div className="flex items-center gap-1 text-xs max-md:hidden">
                       <TooltipIcon label="Likes" icon={<HeartStraight size={20} />} excludeHoverEffect />
-                      <div>{project.noLikes}</div>
+                      <div>{project.noLikes > 0 && project.noLikes}</div>
                     </div>
                     <div className="flex items-center gap-1 text-xs max-md:hidden">
                       <TooltipIcon label="Bookmarks" icon={<BookmarkSimple size={20} />} excludeHoverEffect />
-                      <div>{project.noBookmarks}</div>
+                      <div>{project.noBookmarks > 0 && project.noBookmarks}</div>
                     </div>
                     <div className="flex items-center gap-1 text-xs">
                       <TooltipIcon label="Impressions" icon={<Eye size={20} />} excludeHoverEffect />

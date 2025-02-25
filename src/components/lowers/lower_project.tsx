@@ -273,7 +273,7 @@ const LowerProject = ({ project, setProject, permissionConfig }: Props) => {
             size={28}
             weight={liked ? 'fill' : 'regular'}
           />
-          <div className=""> {numLikes}</div>
+          <div className=""> {numLikes > 0 && numLikes}</div>
         </div>
         <BookmarkSimple
           className={`cursor-pointer max-md:w-6 max-md:h-6 opacity-60 ${

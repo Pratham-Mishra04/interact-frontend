@@ -72,7 +72,9 @@ const NewResource = ({ setShowResources, setResources, resourceType, resourcePar
           className="flex-center rounded-full hover:bg-white p-2 transition-ease-300 cursor-pointer"
           weight="regular"
         /> */}
-        <Plus className="cursor-pointer" size={20} />
+        <div className=" px-4 py-1 bg-light_blue_button rounded-lg justify-center items-center">
+          <div className="text-white/90 text-md font-semibold font-['DM Sans']">Create Now</div>
+        </div>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

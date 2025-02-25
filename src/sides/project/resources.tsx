@@ -12,7 +12,7 @@ import Toaster from '@/utils/toaster';
 import { SidePrimeWrapper } from '@/wrappers/side';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-
+import Image from 'next/image';
 interface Props {
   projectID: string;
   permissionConfig?: PermissionConfig;
@@ -58,8 +58,15 @@ const Resources = ({ projectID, permissionConfig }: Props) => {
           )}
         </div>
         <div>
-          {buckets?.length === 0 && !loading ? (
-            <></>
+          {buckets?.length === 0 ? (
+            <div className="mt-4 mb-2">
+              <Image src="/assets/new_resource.svg" alt="new task" width={200} height={200} className="mx-auto" />
+              <div className="flex flex-col items-center mt-2 space-y-1">
+                <div className="text-text_neutral text-md font-semibold font-['DM Sans']">No Files Shared till now</div>
+                <div className="text-white/70 text-4xl font-normal mangaka">No Buckets</div>
+                <div className="text-center text-text_neutral text-md font-semibold">Existing</div>
+              </div>
+            </div>
           ) : (
             <>
               <div className="w-full flex-wrap flex max-md:flex-col max-md:items-center flex-row gap-4">
