@@ -95,8 +95,8 @@ export const features = {
         },
       ],
       quote: {
-        name: 'Pratham',
-        designation: 'Founder',
+        name: 'Pranay',
+        designation: 'Co-Founder',
         quote:
           'Every event is a chance to learn, compete, and grow. Whether it’s a workshop or a hackathon, Interact makes sure your journey is smooth, productive, and full of possibilities.',
         position: 'end',
@@ -186,8 +186,8 @@ export const features = {
         },
       ],
       quote: {
-        name: 'Pratham',
-        designation: 'Founder',
+        name: 'Pranay',
+        designation: 'Co-Founder',
         quote:
           'Meetings aren’t just about discussion—they’re about alignment and action. Interact ensures that every meeting is well-organized, productive, and moves your team closer to its goals.',
         position: 'start',
